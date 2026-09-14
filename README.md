@@ -49,12 +49,14 @@ aceptación → escenario BDD → test → código.
 
 ## Equipo
 
-| Apellido y Nombre | Usuario de GitHub |
-|---|---|
-| Sorato, Emiliano | [@emisorato1](https://github.com/emisorato1) |
-| Salinas, Agustín | [@Salinas5](https://github.com/Salinas5) |
-| Bustos, Juliana | [@bustosjuliana](https://github.com/bustosjuliana) |
-| Eula, Maximiliano | [@maxi627](https://github.com/maxi627) |
+| Apellido y Nombre | Rol | Usuario de GitHub |
+|---|---|---|
+| Sorato, Emiliano | Agile Enabler | [@emisorato1](https://github.com/emisorato1) |
+| Salinas, Agustín | Product Builder | [@Salinas5](https://github.com/Salinas5) |
+| Bustos, Juliana | Product Builder | [@bustosjuliana](https://github.com/bustosjuliana) |
+| Eula, Maximiliano | Product Builder | [@maxi627](https://github.com/maxi627) |
+
+El rol de Product Architect lo ocupan los profesores de la cátedra.
 
 ## Tablero
 
