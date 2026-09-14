@@ -58,6 +58,11 @@ aceptación → escenario BDD → test → código.
 
 El rol de Product Architect lo ocupan los profesores de la cátedra.
 
+## Documentación del proceso
+
+- [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
+- [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
+
 ## Tablero
 
 El seguimiento del trabajo se lleva en el GitHub Project del equipo:
