@@ -33,7 +33,7 @@ Siempre, al empezar una sesión:
 | Si la historia está en... | Lo que sigue es... |
 |---|---|
 | Product Backlog | No se toca: entra al sprint en la planning. Si no está estimada, se estima con Planning Poker. |
-| Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
+| Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/sprint-N/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
 | Especificación SDD | Completar Diseño y Tareas con sus puertas. Cuando pasa la Puerta 3, mover a *En progreso*. |
 | En progreso | Implementar con TDD, tarea por tarea. Cuando está lista, abrir el pull request y mover a *En review*. |
 | En review | Esperar la revisión de otro integrante. Si hay correcciones, volver a *En progreso*. |
@@ -214,7 +214,8 @@ Requisitos → [P1] → Diseño → [P2] → Tareas → [P3] → Implementación
 
 Cada fase produce un documento que se revisa **antes** de avanzar. La plantilla está en
 [docs/specs/PLANTILLA.md](docs/specs/PLANTILLA.md) y la spec de cada historia va en
-`docs/specs/NN-nombre-de-la-funcionalidad.md`, versionada junto al código.
+`docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md`, versionada junto al código: una
+carpeta por sprint, como explica [docs/specs/README.md](docs/specs/README.md).
 
 Reglas de las puertas:
 
@@ -271,8 +272,14 @@ main                 rama "de producción": siempre estable, siempre compila, si
 
 - Nombre de la rama: `historia-<numero>-<descripcion-corta>`. Para un defecto:
   `defecto-<numero>-<descripcion-corta>`.
-- **Una historia = una rama = un pull request.** No mezclar dos historias en una rama:
-  hace imposible revisar y rompe la trazabilidad.
+- **Una tarjeta del tablero = una historia = una rama = un pull request.** No mezclar dos
+  historias en una rama: hace imposible revisar y rompe la trazabilidad.
+- Al mergear el PR, **GitHub borra la rama solo**. No hace falta limpiarla a mano. Para
+  borrar tu copia local de las ramas que ya no existen en el remoto:
+
+  ```bash
+  git fetch --prune
+  ```
 - Antes de abrir el PR, traer `dev` a tu rama y resolver los conflictos vos:
 
   ```bash
@@ -282,6 +289,44 @@ main                 rama "de producción": siempre estable, siempre compila, si
 
 - No se hace `push --force` sobre ramas compartidas ni se aplasta el historial: los commits
   del ciclo TDD son la evidencia que se evalúa.
+
+### Protección de ramas
+
+`main` y `dev` están protegidas en GitHub, así que las reglas de arriba no dependen de la
+buena memoria de nadie:
+
+- No se puede pushear directo: hace falta un pull request.
+- El PR necesita **1 aprobación** y el **CI en verde** para poder mergearse.
+- Si se suben commits nuevos, las aprobaciones anteriores se descartan.
+- No se permite `push --force` ni borrar la rama.
+- Solo se puede mergear con **merge commit**: squash y rebase están desactivados.
+- Los comentarios del PR tienen que estar resueltos antes de mergear.
+
+El dueño del repositorio puede saltear la protección en una emergencia. Si alguna vez se
+usa, se avisa al equipo y se deja dicho por qué.
+
+### Historias y tareas: qué es una rama y qué no
+
+| Nivel | Qué es | Dónde vive |
+|---|---|---|
+| Historia | una tarjeta del tablero, algo que le sirve al usuario | **una rama y un PR** |
+| Tarea | un paso de la Fase 3 de la spec, un ciclo de TDD | **commits** dentro de la rama de la historia |
+
+Las tareas **no** llevan rama propia. Una tarea es "el test de que no se puede crear un
+proyecto sin nombre" más su implementación: dos commits. Partir eso en ramas daría PRs de
+tres líneas, multiplicaría las revisiones y rompería la trazabilidad, porque el PR ya no
+cerraría una historia completa.
+
+Si una historia se siente demasiado grande para una sola rama (13 o 21 story points), el
+problema no es la rama: **hay que partir la historia en dos historias**, cada una con su
+tarjeta, su spec y su valor propio. Eso se decide en la planning o en el refinamiento, no
+mientras se programa.
+
+### Cómo se mergea
+
+Solo está habilitado el **merge commit**. El squash y el rebase están desactivados a
+propósito: aplastan los commits y borrarían la evidencia del ciclo TDD, que es lo que
+la cátedra evalúa.
 
 ### Dos personas, la misma historia
 
@@ -347,7 +392,7 @@ Para tenerlas hay que ir cargando los datos mientras se trabaja:
 | `CLAUDE.md` | este archivo: las reglas de trabajo |
 | `AGENTS.md` | convenciones técnicas: comandos, estructura, estilo, git, límites |
 | `ESTADO.md` | estado del tablero (generado, no editar) |
-| `docs/specs/` | una spec por funcionalidad |
+| `docs/specs/sprint-N/` | una spec por funcionalidad, agrupadas por sprint |
 | `docs/actas/` | plannings, reviews y retrospectivas |
 | `docs/guia-planning-poker.md` | cómo estimamos |
 

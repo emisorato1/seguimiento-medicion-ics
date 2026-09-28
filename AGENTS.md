@@ -40,7 +40,7 @@ gofmt -l .               # listar archivos mal formateados
 ```
 cmd/            punto de entrada de la aplicación
 internal/       nucleo de la solución y reglas de negocio (Go)
-docs/specs/     especificaciones SDD, una por funcionalidad
+docs/specs/     especificaciones SDD, una carpeta por sprint
 docs/actas/     actas de plannings, reviews y retrospectivas
 scripts/        utilidades del tablero y del estado
 ```
@@ -80,7 +80,9 @@ func (s Story) IsEstimated() bool {
 - Mensajes de commit en minúscula, con prefijo: `feat:`, `fix:`, `test:`, `docs:`, `refactor:`.
 - El PR se completa con la plantilla, enlaza la issue y la spec, y lo revisa otro integrante.
 - No se mergea con el CI en rojo.
-- No aplastar commits al mergear ni hacer `push --force`: se pierde la evidencia del TDD.
+- Se mergea con **merge commit**: squash y rebase están desactivados para no perder la
+  evidencia del TDD. Tampoco se hace `push --force`.
+- La rama se borra sola al mergear el PR; localmente se limpia con `git fetch --prune`.
 
 Las reglas completas del flujo de ramas están en [CLAUDE.md](CLAUDE.md).
 

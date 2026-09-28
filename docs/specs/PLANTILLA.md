@@ -1,7 +1,8 @@
 # Plantilla de especificación SDD
 
-Copiar este archivo a `docs/specs/NN-nombre-de-la-funcionalidad.md` (el NN es el número de
-la issue) y completarlo **antes** de escribir código.
+Copiar este archivo a `docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md` —la carpeta del
+sprint en el que se comprometió la historia, y el NN es el número de la issue— y completarlo
+**antes** de escribir código.
 
 El flujo tiene cuatro fases con una puerta de aprobación entre cada una:
 
