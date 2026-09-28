@@ -60,6 +60,8 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 
 ## Documentación del proceso
 
+- [AGENTS.md](AGENTS.md) — comandos, estructura, estilo, flujo de git y límites del proyecto.
+- [Plantilla de especificación SDD](docs/specs/PLANTILLA.md) — el flujo de cuatro fases con sus puertas de aprobación.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
 
