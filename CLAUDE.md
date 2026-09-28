@@ -271,8 +271,14 @@ main                 rama "de producción": siempre estable, siempre compila, si
 
 - Nombre de la rama: `historia-<numero>-<descripcion-corta>`. Para un defecto:
   `defecto-<numero>-<descripcion-corta>`.
-- **Una historia = una rama = un pull request.** No mezclar dos historias en una rama:
-  hace imposible revisar y rompe la trazabilidad.
+- **Una tarjeta del tablero = una historia = una rama = un pull request.** No mezclar dos
+  historias en una rama: hace imposible revisar y rompe la trazabilidad.
+- Al mergear el PR, **GitHub borra la rama solo**. No hace falta limpiarla a mano. Para
+  borrar tu copia local de las ramas que ya no existen en el remoto:
+
+  ```bash
+  git fetch --prune
+  ```
 - Antes de abrir el PR, traer `dev` a tu rama y resolver los conflictos vos:
 
   ```bash
@@ -292,10 +298,34 @@ buena memoria de nadie:
 - El PR necesita **1 aprobación** y el **CI en verde** para poder mergearse.
 - Si se suben commits nuevos, las aprobaciones anteriores se descartan.
 - No se permite `push --force` ni borrar la rama.
+- Solo se puede mergear con **merge commit**: squash y rebase están desactivados.
 - Los comentarios del PR tienen que estar resueltos antes de mergear.
 
 El dueño del repositorio puede saltear la protección en una emergencia. Si alguna vez se
 usa, se avisa al equipo y se deja dicho por qué.
+
+### Historias y tareas: qué es una rama y qué no
+
+| Nivel | Qué es | Dónde vive |
+|---|---|---|
+| Historia | una tarjeta del tablero, algo que le sirve al usuario | **una rama y un PR** |
+| Tarea | un paso de la Fase 3 de la spec, un ciclo de TDD | **commits** dentro de la rama de la historia |
+
+Las tareas **no** llevan rama propia. Una tarea es "el test de que no se puede crear un
+proyecto sin nombre" más su implementación: dos commits. Partir eso en ramas daría PRs de
+tres líneas, multiplicaría las revisiones y rompería la trazabilidad, porque el PR ya no
+cerraría una historia completa.
+
+Si una historia se siente demasiado grande para una sola rama (13 o 21 story points), el
+problema no es la rama: **hay que partir la historia en dos historias**, cada una con su
+tarjeta, su spec y su valor propio. Eso se decide en la planning o en el refinamiento, no
+mientras se programa.
+
+### Cómo se mergea
+
+Solo está habilitado el **merge commit**. El squash y el rebase están desactivados a
+propósito: aplastan los commits y borrarían la evidencia del ciclo TDD, que es lo que
+la cátedra evalúa.
 
 ### Dos personas, la misma historia
 
