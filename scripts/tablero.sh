@@ -79,7 +79,7 @@ case "$1" in
   ver)
     gh project item-list "$NUMERO" --owner "$OWNER" --limit 200 --format json \
       | jq -r '.items[]
-          | "#\(.content.number)\t\(.status // "sin estado")\t\(.["story points"] // "-") SP\t\(.title)"' \
+          | "#\(.content.number)\t\(.status // "sin estado")\t\((to_entries | map(select(.key | ascii_downcase == "story points")) | .[0].value) // "-") SP\t\(.title)"' \
       | sort -t'#' -k2 -n
     ;;
   estado)
