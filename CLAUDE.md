@@ -283,6 +283,20 @@ main                 rama "de producción": siempre estable, siempre compila, si
 - No se hace `push --force` sobre ramas compartidas ni se aplasta el historial: los commits
   del ciclo TDD son la evidencia que se evalúa.
 
+### Protección de ramas
+
+`main` y `dev` están protegidas en GitHub, así que las reglas de arriba no dependen de la
+buena memoria de nadie:
+
+- No se puede pushear directo: hace falta un pull request.
+- El PR necesita **1 aprobación** y el **CI en verde** para poder mergearse.
+- Si se suben commits nuevos, las aprobaciones anteriores se descartan.
+- No se permite `push --force` ni borrar la rama.
+- Los comentarios del PR tienen que estar resueltos antes de mergear.
+
+El dueño del repositorio puede saltear la protección en una emergencia. Si alguna vez se
+usa, se avisa al equipo y se deja dicho por qué.
+
 ### Dos personas, la misma historia
 
 El tablero es el candado: si una historia está en *En progreso*, ya la está haciendo alguien.
