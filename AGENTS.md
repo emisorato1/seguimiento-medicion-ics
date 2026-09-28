@@ -73,12 +73,16 @@ func (s Story) IsEstimated() bool {
 
 ## Flujo de git
 
-- Rama principal: `main`.
-- Una rama por historia: `historia-<numero>-<descripcion-corta>` (ej. `historia-3-crear-proyecto`).
+- Ramas: `main` (producción) ← PR ← `dev` (integración) ← PR ← rama de historia.
+- Una rama por historia, sacada de `dev`: `historia-<numero>-<descripcion-corta>`
+  (ej. `historia-3-crear-proyecto`). Para defectos: `defecto-<numero>-<descripcion>`.
+- Nadie commitea directo a `main` ni a `dev`.
 - Mensajes de commit en minúscula, con prefijo: `feat:`, `fix:`, `test:`, `docs:`, `refactor:`.
-- Todo entra a `main` por **pull request**, revisado por otro integrante. El PR tiene que
-  enlazar la issue y la spec.
-- No aplastar commits al mergear: se pierde la evidencia del TDD.
+- El PR se completa con la plantilla, enlaza la issue y la spec, y lo revisa otro integrante.
+- No se mergea con el CI en rojo.
+- No aplastar commits al mergear ni hacer `push --force`: se pierde la evidencia del TDD.
+
+Las reglas completas del flujo de ramas están en [CLAUDE.md](CLAUDE.md).
 
 ## Boundaries
 

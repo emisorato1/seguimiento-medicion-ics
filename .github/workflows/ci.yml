@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
+
+jobs:
+  verificar:
+    name: Formato, analisis y tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache: true
+
+      - name: Formato (gofmt)
+        run: |
+          sin_formato=$(gofmt -l .)
+          if [ -n "$sin_formato" ]; then
+            echo "Estos archivos no estan formateados con gofmt:"
+            echo "$sin_formato"
+            exit 1
+          fi
+
+      - name: Analisis estatico (go vet)
+        run: go vet ./...
+
+      - name: Tests
+        run: go test ./... -cover

@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-09-28 16:35. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-09-28 16:43. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -60,7 +60,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-94d1dc2 2026-09-28 docs: definir las reglas de trabajo del proyecto y automatizar el estado del tablero
+5e23152 2026-09-28 docs: definir las reglas de trabajo del proyecto y automatizar el estado del tablero
 d0f90df 2026-09-28 docs: agregar plantilla de spec sdd, guia para agentes y acta de cierre del sprint 0
 43caf9c 2026-09-14 docs: agregar guia de planning poker y acta de la planning del sprint 1
 1d8ec0c 2026-09-14 docs: asignar roles de Scrum a los integrantes

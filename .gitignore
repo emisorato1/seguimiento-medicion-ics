@@ -1,0 +1,11 @@
+# binarios compilados
+/dist/
+/app
+*.exe
+
+# salidas de tests
+*.out
+coverage.*
+
+# archivos del sistema
+.DS_Store

@@ -15,6 +15,15 @@ Las convenciones técnicas (comandos, estructura, estilo de código, git) están
 
 Siempre, al empezar una sesión:
 
+0. **Sincronizar antes que nada.** El repositorio lo tocan cuatro personas:
+
+   ```bash
+   git checkout dev && git pull
+   ```
+
+   Nunca empezar a trabajar sobre una copia vieja. Si ya estabas en una rama de trabajo,
+   traé `dev` primero: `git pull origin dev`.
+
 1. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
    estimadas. Si tenés `gh`, regeneralo primero con `scripts/estado.sh`.
 2. Elegir la historia a trabajar: la de más arriba en **Sprint Backlog**, o seguir la que
@@ -241,6 +250,95 @@ spec → criterios → escenario BDD → test → código. Cada spec cierra con 
 
 ---
 
+## Git y ramas
+
+Tres niveles, como en un proyecto real:
+
+```
+main                 rama "de producción": siempre estable, siempre compila, siempre verde
+ └── dev             integración: acá se juntan las historias terminadas del sprint
+      └── historia-3-crear-proyecto     una rama por historia
+      └── historia-4-registrar-integrantes
+```
+
+- **Nadie commitea directo a `main` ni a `dev`.** Todo entra por pull request.
+- Una rama por historia, sacada siempre de `dev` actualizado:
+
+  ```bash
+  git checkout dev && git pull
+  git checkout -b historia-3-crear-proyecto
+  ```
+
+- Nombre de la rama: `historia-<numero>-<descripcion-corta>`. Para un defecto:
+  `defecto-<numero>-<descripcion-corta>`.
+- **Una historia = una rama = un pull request.** No mezclar dos historias en una rama:
+  hace imposible revisar y rompe la trazabilidad.
+- Antes de abrir el PR, traer `dev` a tu rama y resolver los conflictos vos:
+
+  ```bash
+  git checkout dev && git pull
+  git checkout historia-3-crear-proyecto && git merge dev
+  ```
+
+- No se hace `push --force` sobre ramas compartidas ni se aplasta el historial: los commits
+  del ciclo TDD son la evidencia que se evalúa.
+
+### Dos personas, la misma historia
+
+El tablero es el candado: si una historia está en *En progreso*, ya la está haciendo alguien.
+No la tomes. Si necesitás trabajar sobre algo que otro está tocando, se habla primero.
+
+## Pull requests
+
+El PR se abre cuando la historia cumple la Definición de Terminado. La plantilla
+([.github/pull_request_template.md](.github/pull_request_template.md)) se completa entera:
+es parte de la documentación que se evalúa, no un trámite.
+
+- El PR enlaza la **historia** y la **spec**, y usa `Closes #N` para que la issue se cierre sola.
+- **Revisa alguien que no escribió el código.** Es la puerta de calidad del flujo.
+- Quien revisa mira: que el código haga lo que dice la spec, que los tests cubran los
+  escenarios BDD, y que se entienda. Si no se entiende, se pide que se aclare.
+- Plazo: si a las 48 h nadie revisó, el Agile Enabler busca revisor. Un PR parado frena a todos.
+- No se mergea con el CI en rojo. Nunca.
+- Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
+
+### De `dev` a `main`
+
+Al cerrar el sprint se abre un PR de `dev` a `main` con el incremento completo. Ese PR lo
+revisa el equipo junto en la review, y al mergear se etiqueta:
+
+```bash
+git tag -a v0.1.0-sprint1 -m "Incremento del Sprint 1"
+git push origin v0.1.0-sprint1
+```
+
+Cada tag es la evidencia de un incremento entregado.
+
+## CI y CD
+
+| Workflow | Cuándo corre | Qué hace |
+|---|---|---|
+| [CI](.github/workflows/ci.yml) | en cada PR y push a `dev` o `main` | `gofmt`, `go vet` y `go test ./... -cover` |
+| [CD](.github/workflows/cd.yml) | al entrar algo a `main` | corre los tests, compila y publica los binarios |
+
+Si el CI se pone en rojo en `dev` o `main`, **arreglarlo es la prioridad número uno** del
+equipo, antes que seguir con cualquier historia. Una rama rota bloquea a los cuatro.
+
+## Medir nuestro propio proyecto
+
+El informe final pide métricas, y las más fáciles de defender son las de este mismo proyecto.
+Para tenerlas hay que ir cargando los datos mientras se trabaja:
+
+- **Horas**: al empezar una historia se carga *Horas estimadas* en el tablero; al terminarla,
+  *Horas reales*. Con eso sale la desviación.
+- **Defectos**: los errores que encontramos entre nosotros se cargan como issue con la
+  etiqueta `defecto`, indicando la historia relacionada y en qué sprint se detectó y se
+  resolvió. Sin esto no hay datos de calidad para el informe.
+- **Velocidad**: sale sola de los story points completados al cerrar cada sprint, siempre que
+  el tablero esté al día.
+
+---
+
 ## Documentación
 
 | Dónde | Qué |
@@ -271,8 +369,10 @@ una línea, la tenés que poder justificar.
 
 **Siempre:**
 
+- Hacer `git pull` sobre `dev` al empezar la sesión, antes de leer nada más.
 - Leer `ESTADO.md` y este archivo al empezar una sesión.
 - Trabajar sobre una historia del tablero, y mover la historia cuando cambia de estado.
+- Trabajar siempre en una rama de historia sacada de `dev`.
 - Respetar el orden: spec aprobada antes que código, test antes que implementación.
 - Regenerar `ESTADO.md` y commitearlo cuando se toca el tablero.
 
@@ -284,6 +384,8 @@ una línea, la tenés que poder justificar.
 
 **Nunca:**
 
+- Commitear directo a `main` o a `dev`.
+- Mergear un pull request con el CI en rojo, o mergear el PR propio sin que lo revise otro.
 - Escribir código de una historia sin spec aprobada.
 - Completar actas o retrospectivas con contenido inventado: lo que dijo el equipo lo escribe
   el equipo.
