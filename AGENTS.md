@@ -1,11 +1,10 @@
 # Guía del proyecto para agentes de IA
 
-Este archivo le dice a un agente de IA (Claude Code, Copilot, Cursor) cómo trabajar en este
-repositorio. También sirve como referencia rápida para los integrantes del equipo.
+Convenciones técnicas del repositorio, para agentes de IA (Claude Code, Copilot, Cursor) y
+para los integrantes del equipo.
 
-La cátedra permite usar IA, pero **todo lo generado tiene que quedar entendido y validado
-por el equipo**: respondemos por el código igual que si lo hubiéramos escrito a mano. Nada
-de pegar sin leer.
+**Las reglas de trabajo — el flujo, los sprints, las historias y el tablero — están en
+[CLAUDE.md](CLAUDE.md).** Leelo primero. Este archivo es solo el cómo técnico.
 
 ## Qué es este proyecto
 
@@ -15,6 +14,8 @@ las reglas de negocio van en **Go**. Ver el [README](README.md).
 ## Comandos
 
 ```bash
+scripts/estado.sh        # regenerar ESTADO.md desde el tablero
+scripts/tablero.sh ver   # ver el estado de las historias
 go test ./...            # correr todos los tests
 go test ./internal/...   # solo los tests del dominio
 go test -run TestX ./... # correr un test puntual
@@ -41,27 +42,32 @@ cmd/            punto de entrada de la aplicación
 internal/       nucleo de la solución y reglas de negocio (Go)
 docs/specs/     especificaciones SDD, una por funcionalidad
 docs/actas/     actas de plannings, reviews y retrospectivas
+scripts/        utilidades del tablero y del estado
 ```
 
 ## Estilo de código
 
 - Formatear siempre con `gofmt`. Sin excepciones.
-- Nombres de tipos, funciones y variables **en español**, como el dominio del problema
-  (`Proyecto`, `Historia`, `calcularVelocidad`). Los comentarios también en español.
+- Nombres de tipos, funciones y variables **en inglés**, que es la convención de Go
+  (`Project`, `Story`, `CalculateVelocity`). Los comentarios y la documentación, en español.
+- Cuando el nombre traduce un término del dominio, usar siempre la misma traducción:
+  proyecto → `Project`, historia → `Story`, sprint → `Sprint`, defecto → `Defect`,
+  esfuerzo → `Effort`, métrica → `Metric`, story points → `StoryPoints`.
 - Código simple y explícito. Es un trabajo práctico de la facultad, no una librería: se
   prefiere la versión que se entiende leyéndola una vez.
 - Los errores se devuelven, no se hace `panic`.
 
 ```go
-// Historia es un elemento del Product Backlog.
-type Historia struct {
+// Story es un elemento del Product Backlog.
+type Story struct {
 	ID          int
-	Titulo      string
+	Title       string
 	StoryPoints int
 }
 
-func (h Historia) EstaEstimada() bool {
-	return h.StoryPoints > 0
+// IsEstimated indica si la historia ya tiene una estimación acordada.
+func (s Story) IsEstimated() bool {
+	return s.StoryPoints > 0
 }
 ```
 
@@ -99,11 +105,5 @@ func (h Historia) EstaEstimada() bool {
 
 ## Cómo trabajamos
 
-El flujo es SDD de cuatro fases con puertas de aprobación:
-
-```
-Requisitos → [P1] → Diseño → [P2] → Tareas → [P3] → Implementación
-```
-
-La plantilla está en [docs/specs/PLANTILLA.md](docs/specs/PLANTILLA.md). Se revisa en las
-puertas, no durante la implementación.
+El flujo completo está en [CLAUDE.md](CLAUDE.md): SDD de cuatro fases con puertas de
+aprobación, BDD, TDD y las reglas del tablero.

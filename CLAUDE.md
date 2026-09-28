@@ -1,0 +1,291 @@
+# Reglas de trabajo del proyecto
+
+Proyecto integrador de **Ingeniería y Calidad de Software** — UTN FRSR, 2026.
+
+Este archivo es el punto de entrada. Lo lee cualquier integrante del equipo y cualquier
+Claude Code que se abra sobre el repositorio. Si estás empezando una sesión, leelo entero
+antes de tocar nada: acá está **qué hay que construir, cómo se trabaja y cómo seguir**.
+
+Las convenciones técnicas (comandos, estructura, estilo de código, git) están en
+[AGENTS.md](AGENTS.md).
+
+---
+
+## Cómo sigo desde acá
+
+Siempre, al empezar una sesión:
+
+1. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
+   estimadas. Si tenés `gh`, regeneralo primero con `scripts/estado.sh`.
+2. Elegir la historia a trabajar: la de más arriba en **Sprint Backlog**, o seguir la que
+   ya está empezada.
+3. Mirar en qué estado del tablero está y hacer lo que corresponde:
+
+| Si la historia está en... | Lo que sigue es... |
+|---|---|
+| Product Backlog | No se toca: entra al sprint en la planning. Si no está estimada, se estima con Planning Poker. |
+| Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
+| Especificación SDD | Completar Diseño y Tareas con sus puertas. Cuando pasa la Puerta 3, mover a *En progreso*. |
+| En progreso | Implementar con TDD, tarea por tarea. Cuando está lista, abrir el pull request y mover a *En review*. |
+| En review | Esperar la revisión de otro integrante. Si hay correcciones, volver a *En progreso*. |
+| Hecho | Nada. Elegir otra historia. |
+
+**Regla de oro: no se escribe código de una historia que no tiene su spec aprobada.**
+
+Si no hay ninguna historia en Sprint Backlog, el sprint no está planificado: eso es una
+reunión del equipo, no algo que se resuelva en una sesión de código.
+
+---
+
+## Qué hay que construir
+
+Una aplicación para **estimar, seguir y medir proyectos de software**. Puede ser web, de
+escritorio o de consola, pero **el núcleo y todas las reglas de negocio van en Go**.
+
+Los nueve requerimientos mínimos de la consigna, cada uno con sus historias en el tablero:
+
+| # | Requerimiento | Historias |
+|---|---|---|
+| 1 | Gestión de proyectos | #3, #4, #5 |
+| 2 | Product Backlog | #6, #7 |
+| 3 | Gestión de Sprints | #8, #9, #10, #11 |
+| 4 | Estimación y Planning Poker | #12, #13 |
+| 5 | Registro de esfuerzo | #14 |
+| 6 | Gestión de defectos | #15 |
+| 7 | Métricas | #16 |
+| 8 | Dashboard | #17 |
+| 9 | Reportes (PDF en el Sprint 4) | #18, #19 |
+
+La consigna completa está en el campus. **Ninguna funcionalidad nueva se agrega sin que
+exista su historia en el tablero.**
+
+## Cómo se evalúa
+
+| Peso | Qué |
+|---|---|
+| 25% | Producto funcional |
+| 25% | Aplicación de SDD, BDD y TDD |
+| 20% | Calidad del software |
+| 20% | Gestión del proyecto |
+| 10% | Equipo y presentación |
+
+La mitad de la nota es **proceso**, no producto. Por eso el tablero, las specs, las actas y
+el historial de commits se cuidan igual que el código.
+
+## Roles
+
+| Rol | Quién | Qué hace |
+|---|---|---|
+| Product Architect | los profesores | definen qué se construye y revisan el producto |
+| Agile Enabler | Emiliano Sorato | facilita los eventos y las **puertas de aprobación**, cuida que el proceso se cumpla |
+| Product Builders | Agustín Salinas, Juliana Bustos, Maximiliano Eula | construyen el producto |
+
+El Agile Enabler **no** es el jefe: no asigna tareas ni decide por el equipo. El equipo se
+autogestiona. También programa como el resto.
+
+---
+
+## El tablero
+
+El **GitHub Project es la fuente de verdad** del estado del proyecto:
+https://github.com/users/emisorato1/projects/3
+
+`ESTADO.md` es una copia generada del tablero, para poder leer el estado sin `gh`. Nunca se
+edita a mano: se regenera con `scripts/estado.sh` y se commitea.
+
+### Estados
+
+```
+Product Backlog → Sprint Backlog → Especificacion SDD → En progreso → En review → Hecho
+```
+
+### Campos
+
+| Campo | Para qué |
+|---|---|
+| Story Points | la estimación acordada en Planning Poker (Fibonacci) |
+| Prioridad | Alta / Media / Baja, la define el equipo con los profes |
+| Sprint | Sprint 0 a 4 |
+| Horas estimadas / Horas reales | para medir la desviación |
+
+### Mantenerlo al día
+
+**La historia se mueve en el momento en que cambia, no al final del día.** Un tablero que no
+refleja la realidad es peor que no tener tablero.
+
+```bash
+scripts/tablero.sh ver                          # estado de todas las historias
+scripts/tablero.sh estado 3 "En progreso"       # mover una historia
+scripts/tablero.sh puntos 3 5                   # cargar story points
+scripts/tablero.sh sprint 3 "Sprint 1"          # asignarla a un sprint
+scripts/tablero.sh prioridad 3 Alta
+scripts/estado.sh                               # regenerar ESTADO.md y commitearlo
+```
+
+---
+
+## Sprints
+
+Plan de la cátedra:
+
+| Sprint | Objetivo |
+|---|---|
+| 0 | preparación: repositorio, tablero, backlog inicial |
+| 1 | MVP |
+| 2 | interfaz usable |
+| 3 | funcionalidad y calidad (visualización) |
+| 4 | cierre, informe en PDF y review final |
+
+### Eventos
+
+| Evento | Cuándo | Qué queda documentado |
+|---|---|---|
+| Planning | al empezar el sprint | acta en `docs/actas/sprint-N-planning.md`: Sprint Goal, estimaciones y Sprint Backlog |
+| Daily | acordado por el equipo, aunque sea por chat | no se documenta |
+| Review | al cerrar el sprint | acta con qué se completó y qué no |
+| Retrospectiva | después de la review | acta con qué salió bien, qué no y los acuerdos |
+
+Las actas de retrospectiva son **entregable final**, así que ninguna se saltea.
+
+### Reglas de sprint
+
+- Un solo sprint abierto a la vez.
+- Lo que no se termina vuelve al Product Backlog; no se arrastra en silencio.
+- El alcance del sprint no se amplía a mitad de camino.
+- Al cerrar, se registran los story points completados: esa es la **velocidad**, y es lo que
+  se usa para planificar el sprint siguiente.
+
+---
+
+## Historias y story points
+
+### Formato de una historia
+
+Toda historia del tablero tiene:
+
+```
+**Como** [rol]
+**quiero** [qué]
+**para** [para qué]
+
+## Criterios de aceptación
+- [ ] ...
+```
+
+Los criterios de aceptación son la base de los escenarios BDD y de los tests. Una historia
+sin criterios de aceptación no entra a un sprint.
+
+### Estimación
+
+- Se estima en **Story Points**, que miden tamaño y complejidad, no horas.
+- La escala es Fibonacci: **1, 2, 3, 5, 8, 13, 21**. No existe el 4 ni el 7.
+- Se estima con **Planning Poker**, con el equipo junto y los votos ocultos hasta que votan
+  todos. El procedimiento está en [docs/guia-planning-poker.md](docs/guia-planning-poker.md).
+- Una historia de 21 casi seguro hay que partirla.
+- **Nadie estima solo, y nadie cambia una estimación fuera de una planning.**
+
+### Lista para entrar al sprint
+
+Una historia puede entrar a un sprint solo si: tiene criterios de aceptación, está estimada,
+y el equipo entiende qué hay que hacer.
+
+---
+
+## El flujo de una historia, de punta a punta
+
+```
+Historia (issue) → Spec SDD → Criterios de aceptación → Escenarios BDD → Tests → Código Go
+```
+
+### SDD — cuatro fases con puertas
+
+```
+Requisitos → [P1] → Diseño → [P2] → Tareas → [P3] → Implementación
+```
+
+Cada fase produce un documento que se revisa **antes** de avanzar. La plantilla está en
+[docs/specs/PLANTILLA.md](docs/specs/PLANTILLA.md) y la spec de cada historia va en
+`docs/specs/NN-nombre-de-la-funcionalidad.md`, versionada junto al código.
+
+Reglas de las puertas:
+
+- **La puerta la aprueba alguien distinto del que escribió la fase**, y queda registrado
+  quién y cuándo en la propia spec.
+- Puede ser un comentario en el pull request: no hace falta reunión.
+- Se revisa en las puertas, no durante la implementación.
+- El Agile Enabler es responsable de que las puertas efectivamente ocurran.
+
+Calibrar el esfuerzo al tamaño del problema: una historia chica puede tener un diseño de
+tres líneas. Escribir specs enormes para cosas simples es un anti-patrón, igual que escribir
+specs que nadie revisa de verdad.
+
+### BDD
+
+Los criterios de aceptación se escriben como escenarios **Given-When-Then** dentro de la
+Fase 1 de la spec, cubriendo casos normales, alternativos, límite y de error. Cada escenario
+tiene que terminar en al menos un test.
+
+### TDD
+
+Ciclo **RED → GREEN → REFACTOR**, siempre el test primero.
+
+**El test va en un commit y la implementación en otro.** El historial de commits es la
+evidencia del TDD que evalúa la cátedra: no se aplasta la historia, no se hace `push --force`
+sobre `main`, y no se sube un test junto con la implementación ya terminada.
+
+### Trazabilidad
+
+En la defensa eligen una funcionalidad al azar y piden el recorrido completo: historia →
+spec → criterios → escenario BDD → test → código. Cada spec cierra con esa tabla, y
+**cualquiera del equipo tiene que poder recorrerla**, no solo quien la escribió.
+
+---
+
+## Documentación
+
+| Dónde | Qué |
+|---|---|
+| `README.md` | qué es el proyecto y quiénes lo hacen |
+| `CLAUDE.md` | este archivo: las reglas de trabajo |
+| `AGENTS.md` | convenciones técnicas: comandos, estructura, estilo, git, límites |
+| `ESTADO.md` | estado del tablero (generado, no editar) |
+| `docs/specs/` | una spec por funcionalidad |
+| `docs/actas/` | plannings, reviews y retrospectivas |
+| `docs/guia-planning-poker.md` | cómo estimamos |
+
+Simple y al día vale más que extenso. Si un documento dejó de ser cierto, se corrige en el
+mismo pull request que lo volvió falso.
+
+---
+
+## Uso de IA
+
+La cátedra permite usar IA para análisis, especificaciones, código, tests, refactor, review
+y documentación. La condición es que **todo lo generado quede entendido y validado por el
+equipo**: respondemos por el código igual que si lo hubiéramos escrito a mano.
+
+En la práctica: nadie mergea algo que no sabe explicar. Si en la defensa te preguntan por
+una línea, la tenés que poder justificar.
+
+### Reglas para Claude Code
+
+**Siempre:**
+
+- Leer `ESTADO.md` y este archivo al empezar una sesión.
+- Trabajar sobre una historia del tablero, y mover la historia cuando cambia de estado.
+- Respetar el orden: spec aprobada antes que código, test antes que implementación.
+- Regenerar `ESTADO.md` y commitearlo cuando se toca el tablero.
+
+**Preguntar antes de:**
+
+- Crear historias nuevas, cambiar prioridades o mover algo a *Hecho*.
+- Cambiar una decisión que ya está escrita en una spec aprobada.
+- Agregar dependencias o cambiar la estructura del proyecto.
+
+**Nunca:**
+
+- Escribir código de una historia sin spec aprobada.
+- Completar actas o retrospectivas con contenido inventado: lo que dijo el equipo lo escribe
+  el equipo.
+- Aprobar una puerta. Las puertas las aprueban personas.
+- Cargar story points que no salieron de una planning.
