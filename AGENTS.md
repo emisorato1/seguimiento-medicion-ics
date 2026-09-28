@@ -40,7 +40,7 @@ gofmt -l .               # listar archivos mal formateados
 ```
 cmd/            punto de entrada de la aplicación
 internal/       nucleo de la solución y reglas de negocio (Go)
-docs/specs/     especificaciones SDD, una por funcionalidad
+docs/specs/     especificaciones SDD, una carpeta por sprint
 docs/actas/     actas de plannings, reviews y retrospectivas
 scripts/        utilidades del tablero y del estado
 ```

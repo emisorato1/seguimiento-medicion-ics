@@ -33,7 +33,7 @@ Siempre, al empezar una sesión:
 | Si la historia está en... | Lo que sigue es... |
 |---|---|
 | Product Backlog | No se toca: entra al sprint en la planning. Si no está estimada, se estima con Planning Poker. |
-| Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
+| Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/sprint-N/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
 | Especificación SDD | Completar Diseño y Tareas con sus puertas. Cuando pasa la Puerta 3, mover a *En progreso*. |
 | En progreso | Implementar con TDD, tarea por tarea. Cuando está lista, abrir el pull request y mover a *En review*. |
 | En review | Esperar la revisión de otro integrante. Si hay correcciones, volver a *En progreso*. |
@@ -214,7 +214,8 @@ Requisitos → [P1] → Diseño → [P2] → Tareas → [P3] → Implementación
 
 Cada fase produce un documento que se revisa **antes** de avanzar. La plantilla está en
 [docs/specs/PLANTILLA.md](docs/specs/PLANTILLA.md) y la spec de cada historia va en
-`docs/specs/NN-nombre-de-la-funcionalidad.md`, versionada junto al código.
+`docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md`, versionada junto al código: una
+carpeta por sprint, como explica [docs/specs/README.md](docs/specs/README.md).
 
 Reglas de las puertas:
 
@@ -391,7 +392,7 @@ Para tenerlas hay que ir cargando los datos mientras se trabaja:
 | `CLAUDE.md` | este archivo: las reglas de trabajo |
 | `AGENTS.md` | convenciones técnicas: comandos, estructura, estilo, git, límites |
 | `ESTADO.md` | estado del tablero (generado, no editar) |
-| `docs/specs/` | una spec por funcionalidad |
+| `docs/specs/sprint-N/` | una spec por funcionalidad, agrupadas por sprint |
 | `docs/actas/` | plannings, reviews y retrospectivas |
 | `docs/guia-planning-poker.md` | cómo estimamos |
 
