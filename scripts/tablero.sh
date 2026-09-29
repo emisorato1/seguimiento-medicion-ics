@@ -57,8 +57,16 @@ editar_opcion() {  # $1 campo  $2 opcion  $3 item
     --field-id "$fid" --single-select-option-id "$oid" >/dev/null
 }
 
+es_numero() {
+  case "$1" in
+    ''|*[!0-9]*) return 1 ;;
+    *) return 0 ;;
+  esac
+}
+
 resolver_item() {  # $1 numero de issue
   local item
+  es_numero "$1" || { echo "'$1' no es un numero de issue valido."; exit 1; }
   item=$(item_id "$1")
   [ -n "$item" ] || { echo "La issue #$1 no esta en el tablero."; exit 1; }
   echo "$item"
@@ -71,7 +79,7 @@ case "$1" in
   ver)
     gh project item-list "$NUMERO" --owner "$OWNER" --limit 200 --format json \
       | jq -r '.items[]
-          | "#\(.content.number)\t\(.status // "sin estado")\t\(.["story points"] // "-") SP\t\(.title)"' \
+          | "#\(.content.number)\t\(.status // "sin estado")\t\((to_entries | map(select(.key | ascii_downcase == "story points")) | .[0].value) // "-") SP\t\(.title)"' \
       | sort -t'#' -k2 -n
     ;;
   estado)
@@ -91,6 +99,7 @@ case "$1" in
     ;;
   puntos)
     [ $# -eq 3 ] || uso
+    es_numero "$3" || { echo "Los story points tienen que ser un numero. Recibi: '$3'"; exit 1; }
     gh project item-edit --id "$(resolver_item "$2")" --project-id "$(proyecto_id)" \
       --field-id "$(campo_id "Story Points")" --number "$3" >/dev/null
     echo "Issue #$2 -> $3 story points"
