@@ -374,7 +374,21 @@ es parte de la documentación que se evalúa, no un trámite.
   escenarios BDD, y que se entienda. Si no se entiende, se pide que se aclare.
 - Plazo: si a las 48 h nadie revisó, el Agile Enabler busca revisor. Un PR parado frena a todos.
 - No se mergea con el CI en rojo. Nunca.
+- **Mergea el autor**, una vez que tiene la aprobación y el CI en verde. Es quien resuelve
+  los conflictos, mueve la tarjeta y regenera `ESTADO.md`.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
+
+### Quién aprueba
+
+| Pull request de… | Lo aprueba… |
+|---|---|
+| Un Product Builder | Emiliano Sorato (Agile Enabler) |
+| Emiliano Sorato | cualquiera de los otros tres |
+| `dev` → `main` (cierre de sprint) | el equipo en la review |
+
+Además, **todos pueden comentar en cualquier PR aunque no sean el aprobador**, y conviene
+que lo hagan: es la forma más barata de que los cuatro conozcan todo el proyecto, y en la
+defensa pueden preguntarle a cualquiera por cualquier parte del código.
 
 ### De `dev` a `main`
 
