@@ -67,6 +67,19 @@ conservador: se eligieron las historias que no dependen de ninguna otra, una por
   exista el Product Backlog, y las de métricas, dashboard y reportes (#16 a #19) dependen de
   que haya datos cargados. Entran en los sprints siguientes.
 
+## Ajustes posteriores a la planning
+
+**2026-09-29.** El equipo sumó al Sprint 1 la historia **#24 — Operar el sistema desde una
+interfaz de consola (3 SP, prioridad Media)**.
+
+Motivo: el plan de la cátedra pone "interfaz usable" recién en el Sprint 2, así que sin una
+consola mínima lo único que se podría mostrar en la review del Sprint 1 serían tests
+pasando. La consola no tiene reglas de negocio propias: solo llama al núcleo en Go.
+
+Depende de #3, #4, #6 y #12, así que se hace al final del sprint.
+
+**Total comprometido actualizado: 16 story points.**
+
 ## Acuerdos del equipo
 
 - **Definición de Terminado:** una historia está terminada cuando tiene su especificación SDD
