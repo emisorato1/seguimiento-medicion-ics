@@ -24,7 +24,7 @@ tabla() {  # $1 = estado a filtrar
     | if length == 0 then "_No hay historias en este estado._"
       else (["| # | Historia | SP | Prioridad | Sprint |", "|---|---|---|---|---|"]
             + (sort_by(.content.number)
-               | map("| #\(.content.number) | \(.title) | \(.["story points"] // "-") | \(.prioridad // "-") | \(.sprint // "-") |")))
+               | map("| #\(.content.number) | \(.title) | \((to_entries | map(select(.key | ascii_downcase == "story points")) | .[0].value) // "-") | \(.prioridad // "-") | \(.sprint // "-") |")))
            | join("\n")
       end'
 }
@@ -42,8 +42,8 @@ tabla() {  # $1 = estado a filtrar
   echo "$ITEMS" | jq -r '
     .items as $i
     | "- Historias en el tablero: \($i | length)"
-    + "\n- Sin estimar: \([$i[] | select((.["story points"] // 0) == 0)] | length)"
-    + "\n- Story points cargados: \([$i[] | .["story points"] // 0] | add)"
+    + "\n- Sin estimar: \([$i[] | select(((to_entries | map(select(.key | ascii_downcase == "story points")) | .[0].value) // 0) == 0)] | length)"
+    + "\n- Story points cargados: \([$i[] | (to_entries | map(select(.key | ascii_downcase == "story points")) | .[0].value) // 0] | add)"
     + "\n- Terminadas: \([$i[] | select(.status == "Hecho")] | length)"'
   echo
   for estado in "En review" "En progreso" "Especificacion SDD" "Sprint Backlog" "Product Backlog" "Hecho"; do
