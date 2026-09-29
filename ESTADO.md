@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-09-29 18:49. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-09-29 19:16. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -63,6 +63,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+4d3cf2d 2026-09-29 feat: agregar historia de interfaz de consola y chequeo de revisiones pendientes
 a8325f4 2026-09-29 docs: definir quien aprueba cada pull request y quien mergea
 3e38673 2026-09-29 chore: actualizar estado con los story points y las historias en especificacion
 6aec1c4 2026-09-29 docs: specs del sprint 0 y fase 1 de las cuatro historias del sprint 1
@@ -70,5 +71,4 @@ a8325f4 2026-09-29 docs: definir quien aprueba cada pull request y quien mergea
 8b80327 2026-09-28 docs: organizar las specs por sprint
 4bbfd52 2026-09-28 docs: aclarar que una historia es una rama y que las tareas son commits
 d8ff2c7 2026-09-28 docs: documentar la proteccion de ramas main y dev
-1af3d5b 2026-09-28 chore: inicializar el proyecto en go y definir el flujo de ramas con ci y cd
 ```
