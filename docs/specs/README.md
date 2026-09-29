@@ -30,6 +30,7 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 | [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | 📝 Requisitos — pendiente de Puerta 1 |
 | [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 📝 Requisitos — pendiente de Puerta 1 |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 📝 Requisitos — pendiente de Puerta 1 |
+| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | a definir | 📝 Requisitos — pendiente de Puerta 1 |
 
 Las cuatro tienen la Fase 1 redactada como **borrador** con asistencia de IA, a partir de la
 consigna y de los criterios de aceptación de cada issue. Cada responsable la revisa, la
@@ -41,13 +42,15 @@ todavía no se puede escribir código de estas historias.
 Las historias tienen dependencias, así que el orden importa:
 
 ```
-#3 Crear proyectos  ──┬── #4 Registrar integrantes
-                      └── #6 Administrar Product Backlog ── #12 Estimar con Story Points
+#3 Crear proyectos  ──┬── #4 Registrar integrantes ───────────┐
+                      └── #6 Administrar Product Backlog ──┬──┴── #24 Interfaz de consola
+                                                           └── #12 Estimar con Story Points
 ```
 
 - **#3 va primero.** Sin proyecto no hay dónde cargar integrantes ni historias.
 - #4 y #6 pueden hacerse en paralelo una vez que #3 esté en `dev`.
 - #12 necesita que #6 esté en `dev`.
+- **#24 va última**: necesita las cuatro anteriores en `dev`. La toma quien termine antes.
 
 En la práctica: Agustín arranca primero, y los demás pueden ir escribiendo y aprobando sus
 specs mientras esperan.
