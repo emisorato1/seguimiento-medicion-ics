@@ -1,15 +1,15 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-09-28 18:08. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-09-29 19:16. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 19
+- Historias en el tablero: 20
 - Sin estimar: 2
-- Story points cargados: 80
+- Story points cargados: 83
 - Terminadas: 2
 
 ## En review
@@ -22,16 +22,18 @@ _No hay historias en este estado._
 
 ## Especificacion SDD
 
-_No hay historias en este estado._
-
-## Sprint Backlog
-
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
+
+## Sprint Backlog
+
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Product Backlog
 
@@ -61,12 +63,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-fbffee9 2026-09-28 docs: acta de planning del sprint 1 y validacion de argumentos en tablero.sh
+4d3cf2d 2026-09-29 feat: agregar historia de interfaz de consola y chequeo de revisiones pendientes
+a8325f4 2026-09-29 docs: definir quien aprueba cada pull request y quien mergea
+3e38673 2026-09-29 chore: actualizar estado con los story points y las historias en especificacion
+6aec1c4 2026-09-29 docs: specs del sprint 0 y fase 1 de las cuatro historias del sprint 1
 32cb6c3 2026-09-28 Merge pull request #20 from emisorato1/docs-proteccion-de-ramas
 8b80327 2026-09-28 docs: organizar las specs por sprint
 4bbfd52 2026-09-28 docs: aclarar que una historia es una rama y que las tareas son commits
 d8ff2c7 2026-09-28 docs: documentar la proteccion de ramas main y dev
-1af3d5b 2026-09-28 chore: inicializar el proyecto en go y definir el flujo de ramas con ci y cd
-5e23152 2026-09-28 docs: definir las reglas de trabajo del proyecto y automatizar el estado del tablero
-d0f90df 2026-09-28 docs: agregar plantilla de spec sdd, guia para agentes y acta de cierre del sprint 0
 ```

@@ -24,11 +24,23 @@ Siempre, al empezar una sesión:
    Nunca empezar a trabajar sobre una copia vieja. Si ya estabas en una rama de trabajo,
    traé `dev` primero: `git pull origin dev`.
 
-1. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
+1. **Mirar si hay pull requests esperando tu revisión:**
+
+   ```bash
+   scripts/revisiones.sh
+   ```
+
+   Si hay alguno, **eso va antes que ponerte a programar**: un PR parado frena al que lo
+   abrió y a todos los que dependen de esa historia. Claude prepara la revisión (muestra el
+   diff, señala lo que no cierra con la spec), pero **la aprobación la da una persona**.
+
+2. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
    estimadas. Si tenés `gh`, regeneralo primero con `scripts/estado.sh`.
-2. Elegir la historia a trabajar: la de más arriba en **Sprint Backlog**, o seguir la que
-   ya está empezada.
-3. Mirar en qué estado del tablero está y hacer lo que corresponde:
+3. Elegir la historia a trabajar: la que te toca según
+   [docs/specs/README.md](docs/specs/README.md), respetando el orden de dependencias que ahí
+   se indica. Si la historia que te toca depende de otra que todavía no está en `dev`,
+   podés avanzar con su spec pero no con su código.
+4. Mirar en qué estado del tablero está y hacer lo que corresponde:
 
 | Si la historia está en... | Lo que sigue es... |
 |---|---|
@@ -123,6 +135,7 @@ Product Backlog → Sprint Backlog → Especificacion SDD → En progreso → En
 refleja la realidad es peor que no tener tablero.
 
 ```bash
+scripts/revisiones.sh                           # PRs esperando tu revision
 scripts/tablero.sh ver                          # estado de todas las historias
 scripts/tablero.sh estado 3 "En progreso"       # mover una historia
 scripts/tablero.sh puntos 3 5                   # cargar story points
@@ -214,8 +227,14 @@ Requisitos → [P1] → Diseño → [P2] → Tareas → [P3] → Implementación
 
 Cada fase produce un documento que se revisa **antes** de avanzar. La plantilla está en
 [docs/specs/PLANTILLA.md](docs/specs/PLANTILLA.md) y la spec de cada historia va en
-`docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md`, versionada junto al código: una
-carpeta por sprint, como explica [docs/specs/README.md](docs/specs/README.md).
+`docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md`, versionada junto al código.
+
+**El índice de specs, con el estado de cada una, quién la tiene y en qué orden hay que
+hacerlas, está en [docs/specs/README.md](docs/specs/README.md).** Es lo primero que hay que
+mirar para saber si una historia se puede empezar o está esperando otra.
+
+No todo lleva el flujo completo: las tareas de configuración y los bugs chicos se resuelven
+directo. SDD se reserva para funcionalidad de complejidad media o alta.
 
 Reglas de las puertas:
 
@@ -228,6 +247,27 @@ Reglas de las puertas:
 Calibrar el esfuerzo al tamaño del problema: una historia chica puede tener un diseño de
 tres líneas. Escribir specs enormes para cosas simples es un anti-patrón, igual que escribir
 specs que nadie revisa de verdad.
+
+### Qué va y qué no va en una spec
+
+Las dos reglas que más se incumplen, y que el apunte de la cátedra marca como
+anti-patrones:
+
+- **En Requisitos no va nada técnico.** Ni base de datos, ni estructuras, ni nombres de
+  funciones: solo comportamiento. La prueba es si alguien que conoce el dominio pero no
+  programa puede entender y validar el requisito. Si solo lo entiende un programador,
+  tiene decisiones técnicas disfrazadas.
+- **En Diseño van decisiones, no código.** Nada de structs, firmas ni pseudocódigo: si el
+  diseño se vuelve código en prosa, el agente lo traduce mecánicamente y se pierde el valor
+  de trabajar con IA. La heurística: *si dos personas con experiencia tomarían la misma
+  decisión sin discutirla, no va en el diseño; si podrían elegir distinto y las
+  consecuencias cambian, sí va.*
+
+Si la spec termina más larga que el código que genera, está sobreespecificada.
+
+Las reglas de negocio se escriben con la notación **EARS**, que es la que recomienda el
+apunte: *Cuando [evento], el sistema debe…* / *Mientras [condición], el sistema debe…* /
+*Si [situación de error], el sistema debe…*. La plantilla tiene los cinco patrones.
 
 ### BDD
 
@@ -345,7 +385,21 @@ es parte de la documentación que se evalúa, no un trámite.
   escenarios BDD, y que se entienda. Si no se entiende, se pide que se aclare.
 - Plazo: si a las 48 h nadie revisó, el Agile Enabler busca revisor. Un PR parado frena a todos.
 - No se mergea con el CI en rojo. Nunca.
+- **Mergea el autor**, una vez que tiene la aprobación y el CI en verde. Es quien resuelve
+  los conflictos, mueve la tarjeta y regenera `ESTADO.md`.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
+
+### Quién aprueba
+
+| Pull request de… | Lo aprueba… |
+|---|---|
+| Un Product Builder | Emiliano Sorato (Agile Enabler) |
+| Emiliano Sorato | cualquiera de los otros tres |
+| `dev` → `main` (cierre de sprint) | el equipo en la review |
+
+Además, **todos pueden comentar en cualquier PR aunque no sean el aprobador**, y conviene
+que lo hagan: es la forma más barata de que los cuatro conozcan todo el proyecto, y en la
+defensa pueden preguntarle a cualquiera por cualquier parte del código.
 
 ### De `dev` a `main`
 
@@ -415,6 +469,8 @@ una línea, la tenés que poder justificar.
 **Siempre:**
 
 - Hacer `git pull` sobre `dev` al empezar la sesión, antes de leer nada más.
+- Correr `scripts/revisiones.sh` al empezar y avisar si hay PRs esperando revisión, antes de
+  proponer cualquier otra cosa.
 - Leer `ESTADO.md` y este archivo al empezar una sesión.
 - Trabajar sobre una historia del tablero, y mover la historia cuando cambia de estado.
 - Trabajar siempre en una rama de historia sacada de `dev`.

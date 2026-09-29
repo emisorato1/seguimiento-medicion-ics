@@ -1,43 +1,55 @@
 # Plantilla de especificación SDD
 
-Copiar este archivo a `docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md` —la carpeta del
-sprint en el que se comprometió la historia, y el NN es el número de la issue— y completarlo
-**antes** de escribir código.
-
-El flujo tiene cuatro fases con una puerta de aprobación entre cada una:
+Copiar a `docs/specs/sprint-N/NN-nombre-corto.md` (N el sprint donde se comprometió la
+historia, NN el número de la issue) y completar **antes** de escribir código.
 
 ```
 Requisitos → [Puerta 1] → Diseño → [Puerta 2] → Tareas → [Puerta 3] → Implementación
 ```
 
-La regla es **revisar en las puertas, no durante la implementación**. Cada puerta la aprueba
-un integrante distinto del que escribió la fase, y se registra abajo quién aprobó y cuándo.
-La aprobación puede ser un comentario en el pull request de la spec: no hace falta reunión.
+Se revisa **en las puertas, no durante la implementación**. Cada puerta la aprueba alguien
+distinto del que escribió la fase, y queda registrado quién y cuándo.
 
-**No todas las funcionalidades necesitan las cuatro fases con la misma profundidad.** Una
-historia chica puede tener requisitos y tareas con un diseño de tres líneas. Inflar la spec
-de algo simple es un anti-patrón, no una virtud.
+## Las dos reglas que más se incumplen
+
+**1. En Requisitos no va nada técnico.** Ni base de datos, ni estructuras, ni nombres de
+funciones. Solo comportamiento. La prueba: si un requisito solo lo entiende un
+programador, tiene decisiones técnicas disfrazadas y hay que reescribirlo.
+
+**2. En Diseño van decisiones, no código.** Nada de structs, firmas ni pseudocódigo: si el
+diseño se vuelve código en prosa, el agente lo traduce mecánicamente y se pierde todo el
+valor. La heurística: *si dos personas con experiencia tomarían la misma decisión sin
+discutirla, no va en el diseño; si podrían elegir distinto y las consecuencias cambian, sí va.*
+
+Si la spec termina siendo más larga que el código que genera, está sobreespecificada.
 
 ---
 
 # Spec: [título de la funcionalidad]
 
-- **Historia:** #[número de la issue]
-- **Autor de la spec:** [quién]
+- **Historia:** #[N]
+- **Sprint:** [N]
+- **Responsable:** [quién]
 - **Estado:** Requisitos | Diseño | Tareas | Implementación | Terminada
+- **Depende de:** [#N, o "nada"]
+- **La necesitan:** [#N, #M, o "nadie todavía"]
 
 ## Fase 1 — Requisitos
 
-Qué se va a construir, desde el punto de vista del usuario. Acá **no** se habla de
-tecnología ni de cómo está estructurado el código.
+Qué tiene que hacer el sistema, desde el punto de vista de quien lo usa.
 
 ### Objetivo
 
 [Una o dos frases: qué problema resuelve y para quién.]
 
+### Qué queda afuera
+
+[Lo que alguien podría suponer que entra y no entra. Evita discusiones en la puerta.]
+
 ### Entradas
 
-[Qué datos recibe, con su tipo y de dónde vienen.]
+| Dato | Obligatorio | Descripción |
+|---|---|---|
 
 ### Salidas
 
@@ -45,100 +57,100 @@ tecnología ni de cómo está estructurado el código.
 
 ### Reglas de negocio
 
-[Numeradas, una por línea, de forma que cada una se pueda testear por separado.]
+Se escriben con la notación **EARS**, que es la que recomienda el apunte de la cátedra
+porque elimina ambigüedad sin dejar de ser legible. Cinco patrones:
 
-1.
-2.
+| Patrón | Forma | Para qué |
+|---|---|---|
+| Ubicuo | El sistema debe… | propiedad permanente |
+| Dirigido por evento | Cuando [evento], el sistema debe… | se dispara con algo |
+| Dirigido por estado | Mientras [condición], el sistema debe… | vale mientras dure algo |
+| No deseado | Si [situación], el sistema debe… | errores y excepciones |
+| Opcional | Donde [configuración], el sistema debe… | depende de una opción |
 
-### Restricciones
-
-[Límites técnicos o de alcance: qué queda explícitamente afuera.]
+1. [RN-1] …
+2. [RN-2] …
 
 ### Casos límite
 
-[Valores en el borde: cero, vacío, el máximo, el primero, el último.]
+[Los bordes: cero, vacío, el máximo, el primero, el último, el duplicado.]
 
 ### Condiciones de error
 
 | Situación | Qué hace el sistema |
 |---|---|
-| | |
 
 ### Criterios de aceptación
 
-[Los mismos que están en la issue. Si acá aparecen criterios nuevos, actualizar la issue.]
+Tienen que ser **verificables**: mirando el resultado se tiene que poder decir si se cumplen
+o no. "Es rápido" no sirve; "responde en menos de 2 segundos" sí.
 
 - [ ]
 
 ### Escenarios BDD
 
 ```gherkin
-Escenario: [nombre del caso normal]
-  Dado [contexto]
-  Cuando [acción]
-  Entonces [resultado esperado]
-
-Escenario: [nombre de un caso de error]
+Escenario: [caso normal]
   Dado [contexto]
   Cuando [acción]
   Entonces [resultado esperado]
 ```
 
-Cubrir casos normales, alternativos, límite y de error.
+Cubrir casos normales, alternativos, límite y de error. Cada escenario termina en al menos
+un test.
 
-> **Puerta 1** — ¿los requisitos son los correctos y están completos?
-> Aprobó: [quién] — Fecha: [dd/mm] — Comentarios: [si hubo cambios, cuáles]
+> **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
+> Aprobó: [quién] — Fecha: [dd/mm] — Comentarios:
 
 ## Fase 2 — Diseño
 
-Cómo se va a construir. Acá sí se habla de código.
+Solo se escribe **después** de que la Puerta 1 esté aprobada.
 
-### Tipos y funciones
+### Enfoque
 
-[Structs, interfaces y firmas de las funciones principales en Go.]
+[Cómo se va a resolver, en prosa. Qué patrón o convención del proyecto se sigue. Si es la
+primera funcionalidad que hace algo de este tipo, qué convención se está estableciendo.]
 
-### Decisiones de diseño
+### Archivos afectados
 
-[Qué se decidió y por qué. Si se descartó una alternativa, dejar dicho cuál y el motivo:
-esto es lo que se pregunta en la defensa.]
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
 
-### Qué se toca
+### Decisiones
 
-[Archivos y paquetes que se crean o se modifican.]
+Solo las que podrían haberse resuelto de otra forma razonable.
 
-> **Puerta 2** — ¿el diseño es viable y coherente con el resto?
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+
+### Dependencias y restricciones
+
+[Qué tiene que estar listo antes. Qué **no** hay que tocar para no romper otra cosa.]
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: [quién] — Fecha: [dd/mm] — Comentarios:
 
 ## Fase 3 — Tareas
 
-Descomposición en unidades chicas. Cada tarea tiene que poder resolverse en un ciclo de TDD
-(un test que falla, el código que lo hace pasar, refactor) y terminar en un commit.
+Cada tarea tiene que poder resolverse en un ciclo de TDD y terminar en commits.
 
-| # | Tarea | Test que la cubre | Estado |
+| # | Tarea | Regla o criterio que cubre | Estado |
 |---|---|---|---|
-| 1 | | | |
-| 2 | | | |
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [quién] — Fecha: [dd/mm] — Comentarios:
 
 ## Fase 4 — Implementación
 
-Se ejecutan las tareas con el ciclo RED → GREEN → REFACTOR. El historial de commits es la
-evidencia del TDD, así que **el test va en un commit y la implementación en otro**.
-
-### Commits
-
-[Se completa a medida que se avanza.]
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.**
 
 | Tarea | Commit del test | Commit de la implementación |
 |---|---|---|
-| | | |
 
 ### Desvíos respecto de la spec
 
-[Si durante la implementación hubo que cambiar algo de lo especificado, anotarlo acá y
-actualizar la fase correspondiente. Una spec que no se actualiza deja de servir.]
+[Si hubo que cambiar algo de lo especificado, anotarlo acá y actualizar la fase que
+corresponda, en el mismo pull request.]
 
 ## Trazabilidad
 
