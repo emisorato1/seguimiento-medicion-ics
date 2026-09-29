@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-09-28 16:43. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-09-29 18:28. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -22,7 +22,12 @@ _No hay historias en este estado._
 
 ## Especificacion SDD
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #3 | Crear y modificar proyectos | - | Alta | Sprint 1 |
+| #4 | Registrar integrantes de un proyecto | - | Alta | Sprint 1 |
+| #6 | Administrar el Product Backlog | - | Alta | Sprint 1 |
+| #12 | Estimar historias con Story Points | - | Alta | Sprint 1 |
 
 ## Sprint Backlog
 
@@ -32,16 +37,12 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #3 | Crear y modificar proyectos | - | Alta | - |
-| #4 | Registrar integrantes de un proyecto | - | Alta | - |
 | #5 | Consultar el estado de un proyecto | - | Media | - |
-| #6 | Administrar el Product Backlog | - | Alta | - |
 | #7 | Priorizar el Product Backlog | - | Media | - |
 | #8 | Crear un sprint con su Sprint Goal | - | Alta | - |
 | #9 | Asignar historias a un sprint | - | Alta | - |
 | #10 | Cerrar un sprint | - | Alta | - |
 | #11 | Consultar sprints anteriores | - | Media | - |
-| #12 | Estimar historias con Story Points | - | Alta | - |
 | #13 | Estimar con Planning Poker | - | Alta | - |
 | #14 | Registrar el esfuerzo real | - | Alta | - |
 | #15 | Gestionar defectos | - | Media | - |
@@ -60,10 +61,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+32cb6c3 2026-09-28 Merge pull request #20 from emisorato1/docs-proteccion-de-ramas
+8b80327 2026-09-28 docs: organizar las specs por sprint
+4bbfd52 2026-09-28 docs: aclarar que una historia es una rama y que las tareas son commits
+d8ff2c7 2026-09-28 docs: documentar la proteccion de ramas main y dev
+1af3d5b 2026-09-28 chore: inicializar el proyecto en go y definir el flujo de ramas con ci y cd
 5e23152 2026-09-28 docs: definir las reglas de trabajo del proyecto y automatizar el estado del tablero
 d0f90df 2026-09-28 docs: agregar plantilla de spec sdd, guia para agentes y acta de cierre del sprint 0
 43caf9c 2026-09-14 docs: agregar guia de planning poker y acta de la planning del sprint 1
-1d8ec0c 2026-09-14 docs: asignar roles de Scrum a los integrantes
-3417b65 2026-09-14 docs: agregar README con descripcion del proyecto e integrantes
-92b54f6 2026-09-07 Initial commit
 ```

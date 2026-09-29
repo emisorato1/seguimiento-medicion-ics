@@ -26,8 +26,10 @@ Siempre, al empezar una sesión:
 
 1. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
    estimadas. Si tenés `gh`, regeneralo primero con `scripts/estado.sh`.
-2. Elegir la historia a trabajar: la de más arriba en **Sprint Backlog**, o seguir la que
-   ya está empezada.
+2. Elegir la historia a trabajar: la que te toca según
+   [docs/specs/README.md](docs/specs/README.md), respetando el orden de dependencias que ahí
+   se indica. Si la historia que te toca depende de otra que todavía no está en `dev`,
+   podés avanzar con su spec pero no con su código.
 3. Mirar en qué estado del tablero está y hacer lo que corresponde:
 
 | Si la historia está en... | Lo que sigue es... |
@@ -214,8 +216,14 @@ Requisitos → [P1] → Diseño → [P2] → Tareas → [P3] → Implementación
 
 Cada fase produce un documento que se revisa **antes** de avanzar. La plantilla está en
 [docs/specs/PLANTILLA.md](docs/specs/PLANTILLA.md) y la spec de cada historia va en
-`docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md`, versionada junto al código: una
-carpeta por sprint, como explica [docs/specs/README.md](docs/specs/README.md).
+`docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md`, versionada junto al código.
+
+**El índice de specs, con el estado de cada una, quién la tiene y en qué orden hay que
+hacerlas, está en [docs/specs/README.md](docs/specs/README.md).** Es lo primero que hay que
+mirar para saber si una historia se puede empezar o está esperando otra.
+
+No todo lleva el flujo completo: las tareas de configuración y los bugs chicos se resuelven
+directo. SDD se reserva para funcionalidad de complejidad media o alta.
 
 Reglas de las puertas:
 
@@ -228,6 +236,27 @@ Reglas de las puertas:
 Calibrar el esfuerzo al tamaño del problema: una historia chica puede tener un diseño de
 tres líneas. Escribir specs enormes para cosas simples es un anti-patrón, igual que escribir
 specs que nadie revisa de verdad.
+
+### Qué va y qué no va en una spec
+
+Las dos reglas que más se incumplen, y que el apunte de la cátedra marca como
+anti-patrones:
+
+- **En Requisitos no va nada técnico.** Ni base de datos, ni estructuras, ni nombres de
+  funciones: solo comportamiento. La prueba es si alguien que conoce el dominio pero no
+  programa puede entender y validar el requisito. Si solo lo entiende un programador,
+  tiene decisiones técnicas disfrazadas.
+- **En Diseño van decisiones, no código.** Nada de structs, firmas ni pseudocódigo: si el
+  diseño se vuelve código en prosa, el agente lo traduce mecánicamente y se pierde el valor
+  de trabajar con IA. La heurística: *si dos personas con experiencia tomarían la misma
+  decisión sin discutirla, no va en el diseño; si podrían elegir distinto y las
+  consecuencias cambian, sí va.*
+
+Si la spec termina más larga que el código que genera, está sobreespecificada.
+
+Las reglas de negocio se escriben con la notación **EARS**, que es la que recomienda el
+apunte: *Cuando [evento], el sistema debe…* / *Mientras [condición], el sistema debe…* /
+*Si [situación de error], el sistema debe…*. La plantilla tiene los cinco patrones.
 
 ### BDD
 
