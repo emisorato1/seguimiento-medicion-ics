@@ -3,10 +3,11 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Estado:** Requisitos — **corregido, pendiente de Puerta 1**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
-  revisa, lo corrige si hace falta y lo presenta a la Puerta 1
+  revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
+  responsable y presentado a la Puerta 1 por pull request
 - **Depende de:** nada. Es la base del Sprint 1.
 - **La necesitan:** #4 (integrantes), #6 (Product Backlog), #8 (sprints)
 
