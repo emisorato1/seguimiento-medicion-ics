@@ -3,10 +3,11 @@
 - **Historia:** #12
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Estado:** Puerta 1 aprobada — **sigue la Fase 2 (Diseño)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
-  revisa, lo corrige si hace falta y lo presenta a la Puerta 1
+  revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
+  responsable y presentado en el PR #25
 - **Depende de:** #6 (tiene que existir la historia a estimar)
 - **La necesitan:** #9 (solo entran al sprint las historias estimadas), #13 (Planning Poker
   registra la estimación acordada), #16 (métricas de story points y velocidad)
@@ -169,7 +170,9 @@ Escenario: Estimar una historia que no existe
 ```
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-09-29 — Comentarios: aprobado en el PR #25, sin
+> observaciones. El PR planteaba dos decisiones para la puerta: quitar la estimación a una
+> historia sin estimar no es error, y una historia En curso se puede reestimar.
 
 ## Fase 2 — Diseño
 
