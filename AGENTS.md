@@ -46,6 +46,23 @@ docs/actas/     actas de plannings, reviews y retrospectivas
 scripts/        utilidades del tablero y del estado
 ```
 
+## Decisiones de arquitectura
+
+Estas valen para **todo el proyecto**. Cada spec las da por hechas y no las vuelve a
+discutir en su Fase 2: ahí solo van las decisiones propias de esa funcionalidad. Si alguna
+de estas hay que cambiarla, se cambia acá y se avisa al equipo.
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| El núcleo vive en un solo paquete `internal/domain`, con **un archivo por entidad** (`project.go`, `member.go`, `story.go`, …) | un paquete por entidad | con paquetes separados aparecen ciclos de importación en cuanto una historia referencia a un proyecto; un archivo por entidad evita además que cuatro personas toquen el mismo archivo |
+| Durante el Sprint 1 los datos viven **en memoria**: al cerrar el programa se pierden | archivo o base de datos | ningún requerimiento mínimo pide persistencia todavía, y meterla ahora obligaría a decidir el formato antes de saber qué se guarda. Se revisa en el Sprint 2 |
+| Los errores se devuelven como **valores de error del dominio**, declarados en el paquete y comparables con `errors.Is` | devolver strings, o `panic` | permite que los tests verifiquen *qué* error salió y no el texto del mensaje, que va a cambiar |
+| Los **mensajes** de error son para el usuario y van en español; los **nombres** de los errores en inglés, como el resto del código | todo en inglés | el mensaje lo lee quien usa el sistema, y varias reglas de negocio dicen literalmente qué se le informa |
+| Los identificadores los asigna el dominio: enteros que arrancan en 1 y son **únicos dentro de cada proyecto** | UUID, o únicos globales | es lo que esperan las specs (#6 RN-16) y lo que espera el usuario: la primera historia de un proyecto es la 1 |
+| El núcleo **no sabe nada de la interfaz**: no imprime, no lee del teclado, no formatea | que el dominio imprima directamente | es lo que permite testearlo, y lo que hace que la consola de la #24 sea reemplazable en el Sprint 2 |
+| **Sin dependencias externas**: solo la biblioteca estándar de Go | usar un framework o una librería de tests | el proyecto es chico y la cátedra evalúa el código propio. Agregar una dependencia se acuerda con el equipo |
+| Las validaciones viven **en el dominio**, nunca en la interfaz | validar en la consola para dar mejor respuesta | si la validación está en la interfaz, cambiar de interfaz la pierde, y los tests no la cubren |
+
 ## Estilo de código
 
 - Formatear siempre con `gofmt`. Sin excepciones.
