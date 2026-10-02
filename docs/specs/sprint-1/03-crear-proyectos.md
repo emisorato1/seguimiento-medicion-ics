@@ -64,8 +64,8 @@ Al consultarlo se devuelven sus datos y ese identificador.
    de un proyecto, el sistema debe dejarlo sin ese dato y conservar el resto. Quitar un dato
    es un pedido distinto de no indicarlo (RN-8). El nombre y la fecha de inicio no se pueden
    quitar (RN-2 y RN-3).
-10. **[RN-10]** Cuando se registra el nombre de un proyecto, el sistema debe guardarlo sin los
-    espacios del principio y del final.
+10. **[RN-10]** Cuando se crea o se modifica un proyecto, el sistema debe guardar su nombre
+    sin los espacios del principio y del final.
 
 ### Casos límite
 
@@ -162,6 +162,11 @@ Escenario: Modificar solo el nombre conserva los demas datos
   Entonces el proyecto pasa a llamarse "Seguimiento y medicion"
   Y conserva la descripcion "TP de ICS", el inicio 01/10/2026 y el fin 30/11/2026
 
+Escenario: Guardar sin espacios en los extremos el nombre modificado
+  Dado un proyecto registrado con nombre "Sistema de metricas"
+  Cuando modifico su nombre a "  Seguimiento y medicion  "
+  Entonces el proyecto pasa a llamarse "Seguimiento y medicion"
+
 Escenario: Modificar un proyecto sin cambiar nada
   Dado un proyecto registrado con nombre "Sistema de metricas", descripcion "TP de ICS",
     inicio 01/10/2026 y fin 30/11/2026
@@ -188,6 +193,13 @@ Escenario: Quitar la fecha de finalizacion
   Cuando pido explicitamente quitarle la fecha de finalizacion
   Entonces el proyecto queda sin fecha de finalizacion
   Y conserva su nombre y su fecha de inicio
+
+Escenario: Quitar la descripcion
+  Dado un proyecto registrado con nombre "Sistema de metricas", descripcion "TP de ICS",
+    inicio 01/10/2026 y fin 30/11/2026
+  Cuando pido explicitamente quitarle la descripcion
+  Entonces el proyecto queda sin descripcion
+  Y conserva su nombre, su fecha de inicio y su fecha de finalizacion
 
 Escenario: Modificar un proyecto que no existe
   Dado que no existe ningun proyecto con identificador 99
