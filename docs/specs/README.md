@@ -30,7 +30,7 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 | [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | ✅ Puerta 1 aprobada — sigue Diseño |
 | [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 🎨 Diseño — pendiente de Puerta 2 |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Puerta 1 aprobada — sigue Diseño |
-| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | a definir | 📝 Requisitos — pendiente de Puerta 1 |
+| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | 📝 Requisitos — pendiente de Puerta 1 |
 
 Las cuatro tienen la Fase 1 redactada como **borrador** con asistencia de IA, a partir de la
 consigna y de los criterios de aceptación de cada issue. Cada responsable la revisa, la
