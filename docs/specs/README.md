@@ -29,13 +29,13 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 | [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | 📝 Requisitos — pendiente de Puerta 1 |
 | [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | 📝 Requisitos — pendiente de Puerta 1 |
 | [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 📝 Requisitos — pendiente de Puerta 1 |
-| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 📝 Requisitos — pendiente de Puerta 1 |
+| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Puerta 1 aprobada — sigue Diseño |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | a definir | 📝 Requisitos — pendiente de Puerta 1 |
 
 Las cuatro tienen la Fase 1 redactada como **borrador** con asistencia de IA, a partir de la
 consigna y de los criterios de aceptación de cada issue. Cada responsable la revisa, la
-corrige si hace falta y la presenta a la Puerta 1. **Ninguna está aprobada todavía**, así que
-todavía no se puede escribir código de estas historias.
+corrige si hace falta y la presenta a la Puerta 1. Ninguna tiene todavía las tres puertas
+aprobadas, así que todavía no se puede escribir código de estas historias.
 
 ## Orden de trabajo del Sprint 1
 
