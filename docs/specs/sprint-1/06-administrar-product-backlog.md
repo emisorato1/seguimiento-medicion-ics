@@ -3,7 +3,7 @@
 - **Historia:** #6
 - **Sprint:** 1
 - **Responsable:** Emiliano Sorato
-- **Estado:** Requisitos — **corregido, pendiente de Puerta 1**
+- **Estado:** Puerta 1 aprobada — **sigue la Fase 2 (Diseño)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
