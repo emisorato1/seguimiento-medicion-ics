@@ -271,7 +271,8 @@ Esquema del escenario: Operar sobre un proyecto que no existe
    operación (RN-6), salvo que no quede ninguno.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-02 — Comentarios: aprobada en el PR #28, con
+> los ajustes de la revisión aplicados y las tres decisiones que planteaba el PR.
 
 ## Fase 2 — Diseño
 
