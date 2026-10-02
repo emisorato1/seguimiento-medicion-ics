@@ -3,10 +3,11 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Estado:** Requisitos — **corregido, pendiente de Puerta 1**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
-  revisa, lo corrige si hace falta y lo presenta a la Puerta 1
+  revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
+  responsable y presentado a la Puerta 1 por pull request
 - **Depende de:** nada. Es la base del Sprint 1.
 - **La necesitan:** #4 (integrantes), #6 (Product Backlog), #8 (sprints)
 
@@ -51,13 +52,20 @@ Al consultarlo se devuelven sus datos y ese identificador.
 4. **[RN-4]** Si se indica una fecha de finalización anterior a la fecha de inicio, el sistema
    debe rechazar la operación e informar que las fechas son incoherentes.
 5. **[RN-5]** Cuando se modifica un proyecto existente, el sistema debe aplicar las mismas
-   validaciones que al crearlo.
+   validaciones que al crearlo. Si alguna falla, el proyecto debe quedar como estaba antes.
 6. **[RN-6]** Si se intenta modificar un proyecto que no existe, el sistema debe informar que
-   no se encontró el proyecto y no modificar nada.
+   no se encontró el proyecto y no modificar ni crear nada.
 7. **[RN-7]** El sistema debe permitir que dos proyectos distintos tengan el mismo nombre:
    lo que los distingue es el identificador.
-8. **[RN-8]** Cuando se modifica un proyecto, el sistema debe conservar los datos que no se
-   enviaron en la modificación.
+8. **[RN-8]** Cuando se modifica un proyecto, el sistema debe cambiar solo los datos que se
+   indicaron en esa modificación y dejar el resto como estaba. Un dato que no se indica
+   nunca se borra.
+9. **[RN-9]** Cuando se pide explícitamente quitar la descripción o la fecha de finalización
+   de un proyecto, el sistema debe dejarlo sin ese dato y conservar el resto. Quitar un dato
+   es un pedido distinto de no indicarlo (RN-8). El nombre y la fecha de inicio no se pueden
+   quitar (RN-2 y RN-3).
+10. **[RN-10]** Cuando se crea o se modifica un proyecto, el sistema debe guardar su nombre
+    sin los espacios del principio y del final.
 
 ### Casos límite
 
@@ -66,6 +74,9 @@ Al consultarlo se devuelven sus datos y ese identificador.
 - Nombre con espacios al principio y al final: se guarda sin esos espacios.
 - Nombre de un solo carácter: es válido.
 - Modificar un proyecto sin cambiar nada: es válido y no da error.
+- Modificar solo la fecha de inicio de un proyecto que ya tiene fecha de finalización: si la
+  nueva fecha de inicio queda después de la de finalización, se rechaza por fechas
+  incoherentes, aunque la fecha de finalización no se haya tocado.
 
 ### Condiciones de error
 
@@ -82,8 +93,13 @@ Al consultarlo se devuelven sus datos y ese identificador.
       queda registrado con un identificador propio.
 - [ ] Se puede crear un proyecto con solo nombre y fecha de inicio.
 - [ ] No se puede crear ni modificar un proyecto sin nombre.
+- [ ] No se puede crear ni modificar un proyecto sin fecha de inicio.
 - [ ] No se puede crear ni modificar un proyecto con fecha de fin anterior a la de inicio.
 - [ ] Se pueden modificar los datos de un proyecto ya creado y los cambios quedan guardados.
+- [ ] Una modificación rechazada deja el proyecto como estaba.
+- [ ] Modificar un proyecto sin indicar un dato no borra ese dato.
+- [ ] Se le puede quitar la descripción o la fecha de finalización a un proyecto pidiéndolo
+      explícitamente.
 - [ ] Dos proyectos creados con el mismo nombre reciben identificadores distintos.
 - [ ] Modificar un proyecto inexistente informa el error y no crea nada.
 
@@ -101,10 +117,34 @@ Escenario: Crear un proyecto solo con los datos obligatorios
   Cuando creo un proyecto con nombre "Sistema de metricas" e inicio 01/10/2026
   Entonces el proyecto queda registrado sin descripcion y sin fecha de finalizacion
 
-Escenario: Rechazar un proyecto sin nombre
-  Cuando intento crear un proyecto con nombre vacio e inicio 01/10/2026
+Esquema del escenario: Rechazar un proyecto sin nombre
+  Cuando intento crear un proyecto con nombre <nombre> e inicio 01/10/2026
   Entonces la operacion se rechaza
   Y se informa que el nombre es obligatorio
+
+  Ejemplos:
+    | nombre      |
+    | ""          |
+    | "   "       |
+
+Escenario: Rechazar un proyecto sin fecha de inicio
+  Cuando intento crear un proyecto con nombre "Sistema de metricas" y sin fecha de inicio
+  Entonces la operacion se rechaza
+  Y se informa que la fecha de inicio es obligatoria
+
+Escenario: Guardar el nombre sin espacios en los extremos
+  Cuando creo un proyecto con nombre "  Sistema de metricas  " e inicio 01/10/2026
+  Entonces el proyecto queda registrado con nombre "Sistema de metricas"
+
+Escenario: Aceptar un nombre de un solo caracter
+  Cuando creo un proyecto con nombre "X" e inicio 01/10/2026
+  Entonces el proyecto queda registrado con nombre "X"
+
+Escenario: Dos proyectos con el mismo nombre
+  Dado un proyecto registrado con nombre "Sistema de metricas"
+  Cuando creo otro proyecto con nombre "Sistema de metricas" e inicio 01/10/2026
+  Entonces el proyecto queda registrado
+  Y su identificador es distinto del identificador del primero
 
 Escenario: Rechazar fechas incoherentes
   Cuando intento crear un proyecto con inicio 01/10/2026 y fin 30/09/2026
@@ -115,17 +155,64 @@ Escenario: Aceptar un proyecto que empieza y termina el mismo dia
   Cuando creo un proyecto con inicio 01/10/2026 y fin 01/10/2026
   Entonces el proyecto queda registrado
 
-Escenario: Modificar el nombre de un proyecto existente
-  Dado un proyecto registrado con nombre "Sistema de metricas"
-  Cuando modifico su nombre a "Seguimiento y medicion"
+Escenario: Modificar solo el nombre conserva los demas datos
+  Dado un proyecto registrado con nombre "Sistema de metricas", descripcion "TP de ICS",
+    inicio 01/10/2026 y fin 30/11/2026
+  Cuando modifico solo su nombre a "Seguimiento y medicion"
   Entonces el proyecto pasa a llamarse "Seguimiento y medicion"
-  Y conserva sus fechas
+  Y conserva la descripcion "TP de ICS", el inicio 01/10/2026 y el fin 30/11/2026
+
+Escenario: Guardar sin espacios en los extremos el nombre modificado
+  Dado un proyecto registrado con nombre "Sistema de metricas"
+  Cuando modifico su nombre a "  Seguimiento y medicion  "
+  Entonces el proyecto pasa a llamarse "Seguimiento y medicion"
+
+Escenario: Modificar un proyecto sin cambiar nada
+  Dado un proyecto registrado con nombre "Sistema de metricas", descripcion "TP de ICS",
+    inicio 01/10/2026 y fin 30/11/2026
+  Cuando lo modifico indicando el mismo nombre que ya tiene y ningun otro dato
+  Entonces la operacion no da error
+  Y el proyecto conserva todos sus datos, incluidas la descripcion y la fecha de finalizacion
+
+Escenario: Rechazar una modificacion que deja el proyecto sin nombre
+  Dado un proyecto registrado con nombre "Sistema de metricas"
+  Cuando intento modificar su nombre a "   "
+  Entonces la operacion se rechaza
+  Y se informa que el nombre es obligatorio
+  Y el proyecto sigue llamandose "Sistema de metricas"
+
+Escenario: Rechazar una fecha de inicio posterior a la de finalizacion al modificar
+  Dado un proyecto registrado con inicio 01/10/2026 y fin 30/11/2026
+  Cuando intento modificar su fecha de inicio a 01/12/2026
+  Entonces la operacion se rechaza
+  Y se informa que las fechas son incoherentes
+  Y el proyecto conserva inicio 01/10/2026 y fin 30/11/2026
+
+Escenario: Quitar la fecha de finalizacion
+  Dado un proyecto registrado con nombre "Sistema de metricas", inicio 01/10/2026 y fin 30/11/2026
+  Cuando pido explicitamente quitarle la fecha de finalizacion
+  Entonces el proyecto queda sin fecha de finalizacion
+  Y conserva su nombre y su fecha de inicio
+
+Escenario: Quitar la descripcion
+  Dado un proyecto registrado con nombre "Sistema de metricas", descripcion "TP de ICS",
+    inicio 01/10/2026 y fin 30/11/2026
+  Cuando pido explicitamente quitarle la descripcion
+  Entonces el proyecto queda sin descripcion
+  Y conserva su nombre, su fecha de inicio y su fecha de finalizacion
 
 Escenario: Modificar un proyecto que no existe
   Dado que no existe ningun proyecto con identificador 99
   Cuando intento modificar el proyecto 99
   Entonces se informa que no se encontro el proyecto
+  Y no se crea ningun proyecto
 ```
+
+**Decidido en la revisión de la Puerta 1 (PR #26):** al modificar se indica solo lo que
+cambia, y para quitar la descripción o la fecha de finalización hay que pedirlo
+explícitamente (opción 2 de las que planteó Emiliano Sorato). Así "no tocar un dato" y
+"borrar un dato" son pedidos distintos (RN-8 y RN-9). Se permite quitar esos datos porque son
+opcionales y un proyecto puede no tener fecha de fin estimada todavía.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
