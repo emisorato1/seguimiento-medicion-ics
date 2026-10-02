@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Requisitos — **corregido, pendiente de Puerta 1**
+- **Estado:** Puerta 1 aprobada — **sigue la Fase 2 (Diseño)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -218,7 +218,9 @@ Escenario: Operar sobre un proyecto que no existe
 5. Modificar un integrante ya cargado queda afuera de esta historia (Qué queda afuera).
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-02 — Comentarios: aprobada en el PR #27, con las
+> cinco decisiones que planteaba el PR. Observación menor registrada: "nombre y apellido es
+> un solo dato de texto" es una decisión de modelado y su lugar natural es la Fase 2.
 
 ## Fase 2 — Diseño
 

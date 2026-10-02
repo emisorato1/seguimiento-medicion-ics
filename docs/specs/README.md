@@ -26,9 +26,9 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | 📝 Requisitos — pendiente de Puerta 1 |
-| [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | 📝 Requisitos — pendiente de Puerta 1 |
-| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 📝 Requisitos — pendiente de Puerta 1 |
+| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | 🔄 Requisitos — cambios pedidos en la Puerta 1 (PR #26) |
+| [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | ✅ Puerta 1 aprobada — sigue Diseño |
+| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 📝 Requisitos — pendiente de Puerta 1 (PR #28) |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Puerta 1 aprobada — sigue Diseño |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | a definir | 📝 Requisitos — pendiente de Puerta 1 |
 
