@@ -3,10 +3,11 @@
 - **Historia:** #6
 - **Sprint:** 1
 - **Responsable:** Emiliano Sorato
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Estado:** Requisitos — **corregido, pendiente de Puerta 1**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
-  revisa, lo corrige si hace falta y lo presenta a la Puerta 1
+  revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
+  responsable y presentado a la Puerta 1 por pull request
 - **Depende de:** #3 (el backlog pertenece a un proyecto)
 - **La necesitan:** #7 (priorizar), #9 (asignar a sprint), #12 (estimar), #16 (métricas)
 
@@ -50,19 +51,33 @@ Se puede pedir el backlog completo de un proyecto.
 4. **[RN-4]** El sistema debe aceptar únicamente las prioridades **Alta**, **Media** y **Baja**.
 5. **[RN-5]** Si se intenta crear o modificar una historia sin título, sin descripción o sin
    al menos un criterio de aceptación, el sistema debe rechazar la operación e informar qué
-   falta.
-6. **[RN-6]** Una historia recién creada debe quedar **sin estimar**: los story points son
+   falta. Un texto compuesto solo por espacios cuenta como vacío.
+6. **[RN-6]** Cuando se registran el título, la descripción y los criterios de aceptación, el
+   sistema debe guardarlos sin los espacios del principio y del final, y debe descartar los
+   criterios de aceptación que queden vacíos.
+7. **[RN-7]** Una historia recién creada debe quedar **sin estimar**: los story points son
    opcionales en esta historia.
-7. **[RN-7]** Mientras una historia esté en estado Pendiente o En curso, el sistema debe
+8. **[RN-8]** Mientras una historia esté en estado Pendiente o En curso, el sistema debe
    permitir modificar su título, descripción, prioridad y criterios de aceptación.
-8. **[RN-8]** Si se intenta modificar una historia que ya está Terminada, el sistema debe
-   rechazar la operación e informar que una historia terminada no se modifica.
-9. **[RN-9]** Si se intenta agregar una historia a un proyecto que no existe, el sistema debe
-   informar que no se encontró el proyecto.
-10. **[RN-10]** El sistema debe permitir que dos historias del mismo proyecto tengan el mismo
+9. **[RN-9]** Cuando se modifica una historia, el sistema debe cambiar solo los datos que se
+   indicaron en esa modificación y dejar el resto como estaba. Los cuatro datos modificables
+   son obligatorios, así que ninguno se puede dejar vacío: para cambiar los criterios de
+   aceptación se envía la lista completa que reemplaza a la anterior.
+10. **[RN-10]** Si se intenta modificar una historia que ya está Terminada, el sistema debe
+    rechazar la operación e informar que una historia terminada no se modifica.
+11. **[RN-11]** Si una operación se rechaza, el sistema debe dejar la historia y el backlog
+    como estaban antes.
+12. **[RN-12]** Si se intenta agregar, modificar o listar historias de un proyecto que no
+    existe, el sistema debe informar que no se encontró el proyecto.
+13. **[RN-13]** Si se intenta modificar una historia que no existe en ese proyecto, el sistema
+    debe informar que no se encontró la historia y no crear ninguna.
+14. **[RN-14]** El sistema debe permitir que dos historias del mismo proyecto tengan el mismo
     título: lo que las distingue es el identificador.
-11. **[RN-11]** Mientras un proyecto tenga historias cargadas, el sistema debe poder devolver
-    el backlog completo de ese proyecto.
+15. **[RN-15]** Cuando se pide el backlog de un proyecto, el sistema debe devolver todas sus
+    historias. Si el proyecto no tiene ninguna, debe devolver una lista vacía, y eso no es un
+    error.
+16. **[RN-16]** Los identificadores de las historias deben ser únicos dentro de cada proyecto:
+    dos proyectos distintos pueden tener cada uno una historia con el mismo identificador.
 
 ### Estados de una historia
 
@@ -82,6 +97,11 @@ En esta historia solo se crea en **Pendiente**. Los cambios de estado los hacen 
 - Historia sin story points: es válida y queda marcada como sin estimar.
 - Título o descripción con espacios al principio y al final: se guardan sin esos espacios.
 - Primera historia de un proyecto: recibe el primer identificador.
+- Criterios de aceptación donde alguno viene vacío: se descartan los vacíos; si no queda
+  ninguno, la operación se rechaza.
+- Modificar una historia sin cambiar nada: es válido y no da error.
+- Dos proyectos distintos, cada uno con su primera historia: los identificadores pueden
+  coincidir entre proyectos, porque son únicos dentro de cada proyecto.
 
 ### Condiciones de error
 
@@ -91,9 +111,10 @@ En esta historia solo se crea en **Pendiente**. Los cambios de estado los hacen 
 | Descripción vacía | rechaza e informa que la descripción es obligatoria |
 | Sin criterios de aceptación | rechaza e informa que hace falta al menos uno |
 | Prioridad distinta de las tres permitidas | rechaza e informa cuáles son válidas |
+| Todos los criterios de aceptación vienen vacíos | rechaza e informa que hace falta al menos uno |
 | Modificar una historia Terminada | rechaza e informa que no se puede modificar |
 | Proyecto inexistente | informa que no se encontró el proyecto |
-| Historia inexistente al modificar | informa que no se encontró la historia |
+| Historia inexistente al modificar | informa que no se encontró la historia y no crea ninguna |
 
 ### Criterios de aceptación
 
@@ -107,6 +128,11 @@ En esta historia solo se crea en **Pendiente**. Los cambios de estado los hacen 
 - [ ] No se puede modificar una historia Terminada.
 - [ ] Se puede pedir el backlog completo de un proyecto.
 - [ ] El backlog de un proyecto sin historias se devuelve vacío.
+- [ ] Un criterio de aceptación vacío se descarta, y si no queda ninguno la operación se
+      rechaza.
+- [ ] Una operación rechazada deja la historia y el backlog como estaban.
+- [ ] Modificar una historia inexistente informa el error y no crea ninguna.
+- [ ] Operar sobre un proyecto inexistente informa que no se encontró.
 
 ### Escenarios BDD
 
@@ -150,7 +176,75 @@ Escenario: Backlog de un proyecto sin historias
   Dado un proyecto registrado sin historias
   Cuando pido el backlog
   Entonces recibo una lista vacia
+
+Esquema del escenario: Rechazar una historia sin los datos obligatorios
+  Dado un proyecto registrado
+  Cuando intento crear una historia sin <dato>
+  Entonces la operacion se rechaza
+  Y se informa que falta <dato>
+  Y el backlog sigue vacio
+
+  Ejemplos:
+    | dato                    |
+    | "titulo"                |
+    | "descripcion"           |
+    | "criterios de aceptacion" |
+
+Escenario: Un texto con solo espacios cuenta como vacio
+  Dado un proyecto registrado
+  Cuando intento crear una historia con titulo "   "
+  Entonces la operacion se rechaza
+  Y se informa que el titulo es obligatorio
+
+Escenario: Descartar los criterios de aceptacion vacios
+  Dado un proyecto registrado
+  Cuando creo una historia con los criterios "El sistema valida el nombre", "" y "   "
+  Entonces la historia queda registrada con 1 criterio de aceptacion
+
+Escenario: Rechazar si todos los criterios quedan vacios
+  Dado un proyecto registrado
+  Cuando intento crear una historia con los criterios "" y "   "
+  Entonces la operacion se rechaza
+  Y se informa que hace falta al menos un criterio
+
+Escenario: Guardar el titulo sin espacios en los extremos
+  Dado un proyecto registrado
+  Cuando creo una historia con titulo "  Registrar esfuerzo  "
+  Entonces la historia queda registrada con titulo "Registrar esfuerzo"
+
+Escenario: Una modificacion rechazada no cambia nada
+  Dado una historia en estado "Pendiente" con titulo "Registrar esfuerzo"
+  Cuando intento modificar su titulo a "   "
+  Entonces la operacion se rechaza
+  Y la historia sigue teniendo titulo "Registrar esfuerzo"
+
+Escenario: Modificar una historia que no existe
+  Dado un proyecto registrado con una historia
+  Cuando intento modificar la historia 99
+  Entonces se informa que no se encontro la historia
+  Y el backlog sigue teniendo 1 historia
+
+Escenario: Reemplazar los criterios de aceptacion
+  Dado una historia en estado "Pendiente" con 2 criterios de aceptacion
+  Cuando la modifico enviando una lista con 3 criterios
+  Entonces la historia queda con esos 3 criterios
+
+Escenario: Los identificadores son unicos dentro de cada proyecto
+  Dado un proyecto A y un proyecto B, los dos sin historias
+  Cuando creo una historia en cada uno
+  Entonces las dos historias pueden tener el mismo identificador
 ```
+
+**Para decidir en la puerta:**
+
+1. **RN-9** — los criterios de aceptación se reemplazan enviando la lista completa, no se
+   agregan ni se quitan de a uno. Es la opción más simple y evita el problema de distinguir
+   "no mandé el dato" de "mandé el dato vacío", que es el mismo tema que quedó abierto en la
+   spec de la #3.
+2. **RN-16** — los identificadores son únicos *por proyecto*, no globales. Así el primer
+   ítem de cada proyecto es el 1, que es lo que espera el usuario.
+3. Los criterios de aceptación vacíos **se descartan en silencio** en vez de rechazar toda la
+   operación (RN-6), salvo que no quede ninguno.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
