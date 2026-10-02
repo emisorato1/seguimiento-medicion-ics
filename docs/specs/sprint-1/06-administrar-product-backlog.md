@@ -34,7 +34,10 @@ lugar, con todo lo necesario para después estimarlas, planificarlas y medirlas.
 | Descripción | sí | qué se quiere y para qué |
 | Prioridad | sí | Alta, Media o Baja |
 | Criterios de aceptación | sí | al menos uno |
-| Story points | no | los carga la historia #12 |
+
+Los **story points** no son una entrada de esta historia: la historia nace sin estimar
+(RN-7) y el valor lo carga la historia #12. Siguen siendo uno de los datos que se registran
+por la RN-2.
 
 ### Salidas
 
@@ -49,9 +52,9 @@ Se puede pedir el backlog completo de un proyecto.
    descripción, prioridad, estado, story points y criterios de aceptación.
 3. **[RN-3]** Cuando se crea una historia, el sistema debe dejarla en estado **Pendiente**.
 4. **[RN-4]** El sistema debe aceptar únicamente las prioridades **Alta**, **Media** y **Baja**.
-5. **[RN-5]** Si se intenta crear o modificar una historia sin título, sin descripción o sin
-   al menos un criterio de aceptación, el sistema debe rechazar la operación e informar qué
-   falta. Un texto compuesto solo por espacios cuenta como vacío.
+5. **[RN-5]** Si se intenta crear o modificar una historia sin título, sin descripción, sin
+   prioridad o sin al menos un criterio de aceptación, el sistema debe rechazar la operación
+   e informar qué falta. Un texto compuesto solo por espacios cuenta como vacío.
 6. **[RN-6]** Cuando se registran el título, la descripción y los criterios de aceptación, el
    sistema debe guardarlos sin los espacios del principio y del final, y debe descartar los
    criterios de aceptación que queden vacíos.
@@ -121,7 +124,8 @@ En esta historia solo se crea en **Pendiente**. Los cambios de estado los hacen 
 - [ ] Se puede crear una historia con título, descripción, prioridad y criterios de
       aceptación, y queda con identificador propio y estado Pendiente.
 - [ ] El identificador no se repite dentro del mismo proyecto.
-- [ ] No se puede crear una historia sin título, sin descripción o sin criterios de aceptación.
+- [ ] No se puede crear una historia sin título, sin descripción, sin prioridad o sin
+      criterios de aceptación.
 - [ ] No se puede crear una historia con una prioridad que no sea Alta, Media o Baja.
 - [ ] Una historia recién creada queda sin estimar.
 - [ ] Se puede modificar una historia mientras no esté Terminada.
@@ -185,9 +189,10 @@ Esquema del escenario: Rechazar una historia sin los datos obligatorios
   Y el backlog sigue vacio
 
   Ejemplos:
-    | dato                    |
-    | "titulo"                |
-    | "descripcion"           |
+    | dato                      |
+    | "titulo"                  |
+    | "descripcion"             |
+    | "prioridad"               |
     | "criterios de aceptacion" |
 
 Escenario: Un texto con solo espacios cuenta como vacio
@@ -232,7 +237,26 @@ Escenario: Reemplazar los criterios de aceptacion
 Escenario: Los identificadores son unicos dentro de cada proyecto
   Dado un proyecto A y un proyecto B, los dos sin historias
   Cuando creo una historia en cada uno
-  Entonces las dos historias pueden tener el mismo identificador
+  Entonces la historia del proyecto A tiene identificador 1
+  Y la historia del proyecto B tiene identificador 1
+
+Escenario: Pedir el backlog de un proyecto con historias
+  Dado un proyecto con 3 historias cargadas
+  Cuando pido el backlog
+  Entonces recibo las 3 historias
+  Y cada una con su identificador, titulo, descripcion, prioridad, estado, story points y
+  criterios de aceptacion
+
+Esquema del escenario: Operar sobre un proyecto que no existe
+  Dado que no existe ningun proyecto con identificador 99
+  Cuando intento <operacion> en el proyecto 99
+  Entonces se informa que no se encontro el proyecto
+
+  Ejemplos:
+    | operacion            |
+    | "crear una historia" |
+    | "modificar una historia" |
+    | "pedir el backlog"   |
 ```
 
 **Para decidir en la puerta:**
