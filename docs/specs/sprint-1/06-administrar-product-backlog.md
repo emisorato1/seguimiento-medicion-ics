@@ -3,7 +3,7 @@
 - **Historia:** #6
 - **Sprint:** 1
 - **Responsable:** Emiliano Sorato
-- **Estado:** Requisitos — **corregido, pendiente de Puerta 1**
+- **Estado:** Diseño — **pendiente de Puerta 2**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -276,7 +276,67 @@ Esquema del escenario: Operar sobre un proyecto que no existe
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto —un solo paquete `internal/domain` con un archivo
+por entidad, datos en memoria, errores como valores del dominio, identificadores enteros por
+proyecto— están en [AGENTS.md](../../../AGENTS.md) y no se repiten acá. Esta fase registra
+solo lo propio de esta historia.
+
+### Enfoque
+
+El Product Backlog no es una entidad aparte: **es la colección de historias que vive dentro
+del proyecto**. No hay forma de tener una historia sin proyecto, y guardarlas adentro hace
+que el identificador único por proyecto (RN-16) salga solo, sin tener que llevar un índice
+separado.
+
+Las operaciones de crear y modificar comparten el mismo trabajo en el mismo orden:
+
+1. **Normalizar** lo que llegó (RN-6): sacar espacios de los extremos, descartar criterios
+   de aceptación vacíos.
+2. **Validar** sobre lo ya normalizado (RN-5, RN-4, RN-10).
+3. **Aplicar** el cambio recién si todo validó.
+
+Ese orden es lo que garantiza la RN-11: si algo falla, nunca se llegó a tocar nada, así que
+la historia y el backlog quedan como estaban sin necesidad de deshacer.
+
+Validar después de normalizar y no antes es lo que hace que `"   "` cuente como vacío y que
+una lista de criterios que vienen todos en blanco se rechace en vez de guardarse.
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `internal/domain/story.go` | se crea | la historia, su estado, y las operaciones de alta y modificación |
+| `internal/domain/story_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
+| `internal/domain/project.go` | se modifica | el proyecto pasa a contener su backlog y el contador de identificadores |
+| `internal/domain/errors.go` | se crea si no existe | los errores de dominio compartidos |
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| El backlog vive dentro del proyecto | una colección de historias aparte, indexada por proyecto | una historia no existe sin proyecto, y adentro el identificador único por proyecto sale gratis |
+| El contador de identificadores es del proyecto y **nunca retrocede** | calcular el próximo identificador como "cantidad de historias + 1" | contar rompe apenas exista borrado: dos historias terminarían con el mismo identificador. Esta historia no borra, pero la decisión se toma ahora para no tener que rehacerlo |
+| Crear y modificar usan **la misma validación** | una validación para cada una | la RN-5 pide exactamente las mismas reglas en los dos casos; duplicarlas garantiza que se desincronicen |
+| Normalizar primero, validar después, aplicar al final | validar sobre lo que llegó y normalizar al guardar | es lo que hace que `"   "` cuente como vacío (RN-5) y lo que garantiza la atomicidad de la RN-11 |
+| Los criterios de aceptación se reemplazan completos | agregar y quitar de a uno | ya está decidido en la RN-9; el diseño solo lo refleja |
+| El estado de la historia es un tipo propio con los tres valores (Pendiente, En curso, Terminada) | un texto libre | las historias #9 y #10 van a cambiar ese estado, y un texto libre deja pasar valores que no existen |
+
+### Dependencias y restricciones
+
+- **Depende de la #3.** Esta historia modifica `project.go`, que crea la #3. No se puede
+  empezar a implementar hasta que la #3 esté en `dev`, o los dos pull requests van a chocar
+  en el mismo archivo.
+- **`errors.go` es compartido.** Lo crea la primera historia que llegue; el resto agrega sus
+  errores ahí. Si dos lo crean a la vez, hay conflicto. Conviene que lo cree la #3 junto con
+  sus propios errores.
+- **No se toca nada de estimación.** Los story points son un dato de la historia (RN-2) pero
+  quien los carga y los valida es la #12. Esta historia solo garantiza que una historia nueva
+  nazca sin estimar (RN-7).
+- **No se tocan los estados más allá de crear en Pendiente.** Las transiciones las hacen la
+  #9 y la #10.
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 3 — Tareas
 
