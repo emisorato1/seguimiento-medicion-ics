@@ -3,7 +3,7 @@
 - **Historia:** #6
 - **Sprint:** 1
 - **Responsable:** Emiliano Sorato
-- **Estado:** Diseño — **pendiente de Puerta 2**
+- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -336,7 +336,12 @@ una lista de criterios que vienen todos en blanco se rechace en vez de guardarse
   #9 y la #10.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-03 — Comentarios: aprobado sobre la versión del
+> diseño que está en `dev` (PR #32). Dos comentarios que no bloquean: (1) la Fase 2 de la #12
+> va a proponer que "sin estimar" sea el valor 0, que nunca es una estimación válida (RN-3 de
+> la #12); con eso la historia nace sin estimar sin trabajo extra de esta historia. (2) El
+> estado es un tipo propio para no dejar pasar valores inválidos; la prioridad (RN-4) tiene el
+> mismo problema y podría recibir el mismo trato.
 
 ## Fase 3 — Tareas
 
