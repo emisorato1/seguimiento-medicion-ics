@@ -90,6 +90,38 @@ Depende de #3, #4, #6 y #12, así que se hace al final del sprint.
 - **Daily:** a definir por el equipo.
 - **Fecha de review y retrospectiva del Sprint 1:** a definir.
 
+## Horas estimadas
+
+Cargadas en el tablero el **02/10** por el Agile Enabler. La consigna pide comparar el
+esfuerzo estimado con el real, y el estimado deja de poder registrarse de forma honesta en
+cuanto alguien empieza a trabajar: por eso se cargan antes y no después.
+
+Como es el primer sprint y no hay histórico, se usó una conversión plana de **3 horas por
+story point**, que incluye todo el trabajo de la historia: escribir la spec, los tests, el
+código, la revisión y las correcciones.
+
+| # | Historia | SP | Horas estimadas | Responsable |
+|---|---|---|---|---|
+| 3 | Crear y modificar proyectos | 3 | 9 | Agustín Salinas |
+| 4 | Registrar integrantes | 3 | 9 | Juliana Bustos |
+| 6 | Administrar el Product Backlog | 5 | 15 | Emiliano Sorato |
+| 12 | Estimar con Story Points | 2 | 6 | Maximiliano Eula |
+| 24 | Interfaz de consola | 3 | 9 | Maximiliano Eula |
+
+**Total: 48 horas** entre los cuatro, en tres semanas. Son unas 4 horas por persona por
+semana, que es lo que razonablemente le podemos dedicar.
+
+Esto es una **estimación inicial para tener contra qué comparar**, no un compromiso: cada
+responsable puede corregir la de su historia en la daily del lunes 05/10. Lo que importa es
+que el número esté cargado antes de empezar.
+
+**Cada uno carga sus horas reales en el campo "Horas reales" del tablero a medida que
+trabaja.** Sin eso no hay desviación que calcular, y la desviación es una de las métricas
+que pide la consigna.
+
+Al cerrar el sprint se compara estimado contra real y se recalibra la conversión para el
+Sprint 2.
+
 ## Pendientes
 
 - [ ] Definir día y horario de la daily, y la fecha de la review.
