@@ -3,7 +3,7 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Requisitos — **corregido, pendiente de Puerta 1**
+- **Estado:** Puerta 1 aprobada — **sigue la Fase 2 (Diseño)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -215,7 +215,11 @@ explícitamente (opción 2 de las que planteó Emiliano Sorato). Así "no tocar 
 opcionales y un proyecto puede no tener fecha de fin estimada todavía.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-02 — Comentarios: en la primera revisión (PR #26)
+> se pidieron cambios porque la RN-8 y la RN-9 se pisaban: no se distinguía "no mandé el dato"
+> de "mandé el dato vacío para borrarlo". El responsable eligió resolverlo con un pedido
+> explícito de quitar el dato, y actualizó la RN-8, la RN-9, el criterio de aceptación y los
+> escenarios de quitar la descripción y la fecha de finalización. Verificado y aprobado.
 
 ## Fase 2 — Diseño
 
