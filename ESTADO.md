@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-09-29 19:16. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-02 20:49. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -63,12 +63,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-4d3cf2d 2026-09-29 feat: agregar historia de interfaz de consola y chequeo de revisiones pendientes
-a8325f4 2026-09-29 docs: definir quien aprueba cada pull request y quien mergea
-3e38673 2026-09-29 chore: actualizar estado con los story points y las historias en especificacion
-6aec1c4 2026-09-29 docs: specs del sprint 0 y fase 1 de las cuatro historias del sprint 1
-32cb6c3 2026-09-28 Merge pull request #20 from emisorato1/docs-proteccion-de-ramas
-8b80327 2026-09-28 docs: organizar las specs por sprint
-4bbfd52 2026-09-28 docs: aclarar que una historia es una rama y que las tareas son commits
-d8ff2c7 2026-09-28 docs: documentar la proteccion de ramas main y dev
+be0dfae 2026-10-02 Merge pull request #32 from emisorato1/historia-6-diseno
+722fcde 2026-10-02 Merge branch 'dev' into historia-6-diseno
+2c7066e 2026-10-02 Merge pull request #31 from emisorato1/docs-decisiones-de-arquitectura
+29ffb92 2026-10-02 Merge branch 'dev' into docs-decisiones-de-arquitectura
+241efab 2026-10-02 Merge pull request #26 from emisorato1/historia-3-crear-proyectos
+9b3aa83 2026-10-02 Merge branch 'dev' into historia-3-crear-proyectos
+a9f1fd6 2026-10-02 docs: fase 2 de la spec de la historia 6 (pedido de Puerta 2)
+e3acfeb 2026-10-02 docs: fijar las decisiones de arquitectura transversales del proyecto
 ```
