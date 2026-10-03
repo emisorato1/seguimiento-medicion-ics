@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-02 22:59. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-03 09:23. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -62,6 +62,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+369c064 2026-10-02 chore: mover la historia 24 a especificacion sdd
 c0abe97 2026-10-02 docs: corregir la fase 1 de la spec de la historia 24
 be0dfae 2026-10-02 Merge pull request #32 from emisorato1/historia-6-diseno
 722fcde 2026-10-02 Merge branch 'dev' into historia-6-diseno
@@ -69,5 +70,4 @@ be0dfae 2026-10-02 Merge pull request #32 from emisorato1/historia-6-diseno
 29ffb92 2026-10-02 Merge branch 'dev' into docs-decisiones-de-arquitectura
 241efab 2026-10-02 Merge pull request #26 from emisorato1/historia-3-crear-proyectos
 9b3aa83 2026-10-02 Merge branch 'dev' into historia-3-crear-proyectos
-a9f1fd6 2026-10-02 docs: fase 2 de la spec de la historia 6 (pedido de Puerta 2)
 ```

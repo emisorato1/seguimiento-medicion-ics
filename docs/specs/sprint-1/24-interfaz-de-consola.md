@@ -2,7 +2,8 @@
 
 - **Historia:** #24
 - **Sprint:** 1
-- **Responsable:** a definir — la toma quien termine antes su historia
+- **Responsable:** Maximiliano Eula — asignada por el Agile Enabler el 02/10 por carga
+  de trabajo (era quien tenía menos story points)
 - **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
