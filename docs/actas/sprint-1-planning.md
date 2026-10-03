@@ -108,6 +108,15 @@ El sprint arrancó el 28/09, así que son tres semanas en vez de dos. Es más de
 durar, pero la primera semana se fue íntegra en specs y es el primer sprint del equipo. El
 Sprint 2 vuelve a dos semanas.
 
+**Se evaluó acortarlo a dos semanas (cierre el 09/10) y se descartó.** De los diez días
+hábiles, siete ya se habían ido en specs y todavía faltaban las Puertas 2 y 3 de cuatro
+historias: quedaban cuatro días de código, unas 32 horas entre los cuatro, que a 3 horas por
+story point dan unos 10 de los 16 comprometidos. Como en Scrum el sprint es una caja de
+tiempo fija y lo que se ajusta es el alcance, la alternativa real era sacar dos historias.
+Se eligió mantener las cinco y estirar el cierre una semana para que **los cuatro integrantes
+tengan su historia en este sprint**, que era uno de los acuerdos de la retrospectiva del
+Sprint 0. El Sprint 2 vuelve a dos semanas, y ahí el alcance se ajusta a la velocidad medida.
+
 **Si alguien no está de acuerdo con estas fechas, se habla en la daily del lunes 05/10.**
 Pasada esa fecha quedan firmes.
 
