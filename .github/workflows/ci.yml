@@ -18,6 +18,9 @@ jobs:
           go-version: '1.27'
           cache: true
 
+      - name: Coherencia de las specs
+        run: scripts/coherencia.sh
+
       - name: Formato (gofmt)
         run: |
           sin_formato=$(gofmt -l .)
