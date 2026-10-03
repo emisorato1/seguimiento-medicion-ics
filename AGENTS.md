@@ -15,6 +15,7 @@ las reglas de negocio van en **Go**. Ver el [README](README.md).
 
 ```bash
 scripts/revisiones.sh    # PRs esperando mi revision
+scripts/coherencia.sh    # specs, indice y puertas dicen lo mismo (corre en CI)
 scripts/estado.sh        # regenerar ESTADO.md desde el tablero
 scripts/tablero.sh ver   # ver el estado de las historias
 go test ./...            # correr todos los tests
