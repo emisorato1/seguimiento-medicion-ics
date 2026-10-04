@@ -242,7 +242,8 @@ trabajan.
 Crear y modificar siguen el mismo orden que la #6:
 
 1. **Armar el proyecto resultante.** Al crear, son los datos que llegaron. Al modificar, es
-   el proyecto actual con los cambios pedidos aplicados sobre una copia.
+   el proyecto actual con los cambios pedidos aplicados sobre una copia. Si el proyecto a
+   modificar no existe, se informa que no se encontró y no se arma ni se guarda nada (RN-6).
 2. **Normalizar:** sacar los espacios de los extremos del nombre (RN-10).
 3. **Validar el resultado completo** (RN-2, RN-3, RN-4).
 4. **Guardarlo** recién si todo validó.
@@ -282,6 +283,18 @@ de la Fase 1).
 - **No se toca `cmd/`.** Pedir los datos por teclado, el formato en que se escriben las
   fechas y cómo se muestran los errores es de la consola (#24).
 - La #24 depende de esta fase para saber dónde se guardan los proyectos: es el registro.
+  Lo crea quien arranca el programa (la consola), y hay uno solo mientras el programa corre.
+
+**Para decidir en la puerta:** cuando alguien busca un proyecto en el registro, ¿recibe el
+proyecto guardado o una copia?
+
+- **El proyecto guardado:** la consola o cualquier otra historia podría cambiarle, por
+  ejemplo, el nombre a uno vacío sin pasar por las validaciones, y se rompería la RN-2 y la
+  decisión de AGENTS.md de que las validaciones viven en el dominio.
+- **Una copia (propuesta):** nadie puede saltearse las validaciones, porque el único camino
+  para cambiar un proyecto es el registro. La contra es que la #4 y la #6 también van a tener
+  que guardar sus cambios (integrantes, backlog) a través del registro, así que esto condiciona
+  sus diseños. Por eso se plantea acá y no se decide solo en esta historia.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
