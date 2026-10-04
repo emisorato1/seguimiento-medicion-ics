@@ -4,7 +4,7 @@
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula — asignada por el Agile Enabler el 02/10 por carga
   de trabajo (era quien tenía menos story points)
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Estado:** Diseño — **pendiente de Puerta 2**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a la Puerta 1
@@ -175,11 +175,70 @@ Escenario: Salir del programa
 ```
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-03 — Comentarios: aprobada en el PR #38. Destacó
+> la separación entre la RN-5 (errores de forma, los informa la consola) y la RN-7 (reglas de
+> negocio, las rechaza el núcleo), y que quede escrito que modificar y quitar la estimación se
+> prueban con los tests y se suman a la interfaz en el Sprint 2.
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto están en [AGENTS.md](../../../AGENTS.md) y no se
+repiten acá. Las dos que más pesan en esta historia: el núcleo **no sabe nada de la
+interfaz**, y las validaciones viven **en el dominio**, nunca en la consola.
+
+### Enfoque
+
+La consola es una capa delgada: **pide datos, llama al núcleo y muestra lo que responde**.
+No tiene reglas de negocio ni guarda datos propios.
+
+Cada operación sigue el mismo recorrido:
+
+1. El usuario escribe el nombre de la operación.
+2. La consola pide cada dato en su propia línea.
+3. Si falta un dato sin el cual la operación no se puede ejecutar, o un dato no tiene la
+   forma esperada, la consola lo informa y no llama al núcleo (RN-5).
+4. Si no, llama al núcleo y muestra el resultado o el motivo del rechazo, tal cual (RN-2).
+
+La pregunta que separa el paso 3 del 4 es **si la operación se puede ejecutar**: si falta a
+qué historia se aplica, no hay operación posible y avisa la consola; si el valor está pero no
+es válido —un nombre vacío, 4 story points—, la operación se ejecuta y la rechaza el núcleo
+(RN-7).
+
+La consola trabaja sobre una entrada y una salida genéricas. El arranque del programa le
+conecta el teclado y la pantalla; los tests le pasan líneas de texto y leen lo que escribió.
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `cmd/app/main.go` | se modifica | arranca la consola conectada al teclado y la pantalla |
+| `cmd/app/console.go` | se crea | las operaciones: pedir los datos, llamar al núcleo y mostrar el resultado |
+| `cmd/app/console_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| El código vive en `cmd/app`, repartido en arranque y operaciones | un paquete nuevo `internal/console` | respeta la estructura actual y la consola sigue siendo reemplazable desde `cmd/` |
+| La consola trabaja sobre una entrada y una salida genéricas | leer y escribir directo del teclado y la pantalla | es lo que permite que cada escenario BDD sea un test automatizado |
+| Se escribe el nombre de la operación y la consola pide cada dato en su propia línea | toda la operación en una sola línea | los nombres con espacios se leen sin comillas ni reglas de separación |
+| La consola no guarda datos: usa el registro de proyectos que define la #3 | que la consola arme su propia lista | guardar datos es responsabilidad del núcleo y no se pierde al cambiar de interfaz |
+| Los errores se muestran con el mensaje del núcleo, tal cual | textos propios de la consola para cada error | lo pide la RN-2, y evita duplicar los mensajes que viven en el dominio |
+| Una historia con 0 story points se muestra como "sin estimar" | mostrar el número | la #12 representa "sin estimar" con 0 y deja en quien muestra el dato cumplir su RN-4 |
+
+### Dependencias y restricciones
+
+- **Depende de la #3, la #4, la #6 y la #12**: el código no se empieza hasta que las cuatro
+  estén en `dev`.
+- **Depende de que la Fase 2 de la #3 defina dónde se guardan los proyectos** mientras corre
+  el programa. Hoy no está definido en ninguna spec ni en AGENTS.md.
+- **No se modifica nada de `internal/domain`.** Si a la consola le falta algo del núcleo, se
+  pide en la historia que corresponde, no se agrega desde acá.
+- **Ninguna validación de negocio en la consola** (RN-7): solo se controla la forma de los
+  datos sin los cuales la operación no se puede ejecutar (RN-5).
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 3 — Tareas
 
