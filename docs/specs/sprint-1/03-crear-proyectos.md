@@ -3,7 +3,7 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 1 aprobada — **sigue la Fase 2 (Diseño)**
+- **Estado:** Diseño — **pendiente de Puerta 2**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -223,7 +223,81 @@ opcionales y un proyecto puede no tener fecha de fin estimada todavía.
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto —un solo paquete `internal/domain` con un archivo
+por entidad, datos en memoria, errores como valores del dominio, mensajes en español,
+validaciones en el dominio— están en [AGENTS.md](../../../AGENTS.md) y no se repiten acá.
+Esta fase registra solo lo propio de esta historia.
+
+### Enfoque
+
+Es la primera historia con código de dominio, así que además de resolver el proyecto deja
+dos cosas que usan las demás: **el registro de proyectos**, que es donde viven los proyectos
+mientras corre el programa, y **`errors.go`**, donde se declaran los errores del dominio.
+
+El registro es el único que guarda proyectos y el único que les asigna identificador. Crear,
+modificar y buscar un proyecto se hace siempre a través de él. La consola (#24) y las
+historias que cuelgan de un proyecto (#4, #6) lo usan para encontrar el proyecto con el que
+trabajan.
+
+Crear y modificar siguen el mismo orden que la #6:
+
+1. **Armar el proyecto resultante.** Al crear, son los datos que llegaron. Al modificar, es
+   el proyecto actual con los cambios pedidos aplicados sobre una copia. Si el proyecto a
+   modificar no existe, se informa que no se encontró y no se arma ni se guarda nada (RN-6).
+2. **Normalizar:** sacar los espacios de los extremos del nombre (RN-10).
+3. **Validar el resultado completo** (RN-2, RN-3, RN-4).
+4. **Guardarlo** recién si todo validó.
+
+Como el cambio se arma sobre una copia y se guarda al final, una modificación rechazada nunca
+llegó a tocar el proyecto (RN-5). Y como se valida el resultado y no solo lo que llegó, una
+fecha de inicio nueva se compara contra la fecha de finalización que ya estaba (caso límite
+de la Fase 1).
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `internal/domain/project.go` | se crea | el proyecto, sus validaciones y el pedido de modificación |
+| `internal/domain/project_registry.go` | se crea | el registro de proyectos: alta, modificación, búsqueda e identificadores |
+| `internal/domain/project_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
+| `internal/domain/errors.go` | se crea | los errores de esta historia; las demás agregan los suyos acá |
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| Los proyectos se numeran desde 1, **únicos en todo el sistema**, con un contador del registro que **nunca retrocede** | calcular el próximo como "cantidad de proyectos + 1" | AGENTS.md fija la numeración de lo que está *dentro* de un proyecto, pero no la de los proyectos. Es el mismo criterio que la #6 usa para las historias: contar se rompe en cuanto exista borrado |
+| Los proyectos viven en un **registro que se crea explícitamente** y se pasa a quien lo necesita | una lista global del paquete | con una lista global los tests comparten datos y dependen del orden en que corren; con un registro por test, cada escenario arranca de cero ("no existe ningún proyecto registrado") |
+| El registro está **en un archivo propio**, separado del proyecto | todo en `project.go` | la #4 y la #6 van a modificar `project.go` para agregar integrantes y backlog; separar el registro reduce los choques en ese archivo |
+| El pedido de modificación indica, para cada dato, si **no se toca**, si **cambia a un valor nuevo** o, solo para la descripción y la fecha de finalización, si **se quita** | usar un valor vacío para decir "quitar" | un valor vacío vuelve a mezclar "no lo mandé" con "lo quiero borrar", que es justo lo que se separó en la Puerta 1 (RN-8 y RN-9) |
+| Para el nombre y la fecha de inicio **no existe la opción de quitar** | aceptar el pedido y rechazarlo con un error | si no se puede pedir, no hace falta un error ni un escenario para eso. Dejar el nombre vacío o en blanco sigue cubierto por la RN-2 |
+| Las fechas son **días**, sin hora | fecha y hora | la Fase 1 compara días: un proyecto que empieza y termina el mismo día es válido. Con hora, dos fechas del mismo día podrían salir distintas |
+
+### Dependencias y restricciones
+
+- **No depende de nada**, pero la #4, la #6 y la #12 dependen de esta: modifican
+  `project.go` o agregan errores a `errors.go`. Mientras la #3 no esté en `dev`, no pueden
+  escribir código sin chocar.
+- **`project.go` tiene solo lo de esta historia.** Los integrantes los agrega la #4 y el
+  backlog la #6; esta historia no les deja lugares reservados.
+- **No se toca `cmd/`.** Pedir los datos por teclado, el formato en que se escriben las
+  fechas y cómo se muestran los errores es de la consola (#24).
+- La #24 depende de esta fase para saber dónde se guardan los proyectos: es el registro.
+  Lo crea quien arranca el programa (la consola), y hay uno solo mientras el programa corre.
+
+**Para decidir en la puerta:** cuando alguien busca un proyecto en el registro, ¿recibe el
+proyecto guardado o una copia?
+
+- **El proyecto guardado:** la consola o cualquier otra historia podría cambiarle, por
+  ejemplo, el nombre a uno vacío sin pasar por las validaciones, y se rompería la RN-2 y la
+  decisión de AGENTS.md de que las validaciones viven en el dominio.
+- **Una copia (propuesta):** nadie puede saltearse las validaciones, porque el único camino
+  para cambiar un proyecto es el registro. La contra es que la #4 y la #6 también van a tener
+  que guardar sus cambios (integrantes, backlog) a través del registro, así que esto condiciona
+  sus diseños. Por eso se plantea acá y no se decide solo en esta historia.
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 3 — Tareas
 
