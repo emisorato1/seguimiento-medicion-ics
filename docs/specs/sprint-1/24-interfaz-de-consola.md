@@ -4,7 +4,7 @@
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula — asignada por el Agile Enabler el 02/10 por carga
   de trabajo (era quien tenía menos story points)
-- **Estado:** Diseño — **pendiente de Puerta 2**
+- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a la Puerta 1
@@ -239,7 +239,7 @@ conecta el teclado y la pantalla; los tests le pasan líneas de texto y leen lo 
   datos sin los cuales la operación no se puede ejecutar (RN-5).
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-05 — Comentarios: aprobada en el PR #40. La entrada y salida genericas son lo que convierte cada escenario BDD de la consola en un test automatizado.
 
 ## Fase 3 — Tareas
 

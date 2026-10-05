@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Diseño — **pendiente de Puerta 2**
+- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -292,7 +292,7 @@ el mismo error de "no se encontró el proyecto" que declara la #3 (RN-10), no un
   esfuerzo. Esta historia no les deja nada preparado: ver la decisión sobre el identificador.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-05 — Comentarios: aprobada en el PR #42. Su analisis sobre que con la copia los cambios se perderian en silencio fue el que definio la decision transversal de encapsulamiento.
 
 ## Fase 3 — Tareas
 
