@@ -3,7 +3,7 @@
 - **Historia:** #6
 - **Sprint:** 1
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
+- **Estado:** Tareas — **pendiente de Puerta 3**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -345,7 +345,56 @@ una lista de criterios que vienen todos en blanco se rechace en vez de guardarse
 
 ## Fase 3 — Tareas
 
-_Se escribe después de que la Puerta 2 esté aprobada._
+Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
+lo hace pasar en otro. Están en el orden en que hay que hacerlas, y cada una deja el código
+compilando y los tests en verde.
+
+El orden sigue el del Enfoque —normalizar, validar, aplicar— y agrega las reglas de a una,
+para que cada test que se agrega falle por una sola razón.
+
+| # | Tarea | Reglas y criterios que cubre | Estado |
+|---|---|---|---|
+| 1 | La historia existe como dato con sus campos, y el estado es un tipo propio con los tres valores | RN-2 | pendiente |
+| 2 | La prioridad es un tipo propio con los tres valores, y el dominio rechaza cualquier otro | RN-4 | pendiente |
+| 3 | El proyecto contiene su backlog y su contador de identificadores; pedir el backlog de un proyecto sin historias devuelve una lista vacía | RN-15 | pendiente |
+| 4 | Agregar una historia al backlog con los datos válidos: queda en Pendiente, sin estimar y con identificador propio | RN-1, RN-3, RN-7 | pendiente |
+| 5 | El contador no retrocede: dos historias seguidas reciben identificadores distintos, y dos proyectos distintos arrancan los dos en 1 | RN-1, RN-16 | pendiente |
+| 6 | Normalizar: título, descripción y criterios se guardan sin los espacios de los extremos, y los criterios vacíos se descartan | RN-6 | pendiente |
+| 7 | Validar lo obligatorio sobre lo ya normalizado: título, descripción, prioridad y al menos un criterio; un texto de solo espacios cuenta como vacío | RN-5 | pendiente |
+| 8 | Dos historias del mismo proyecto pueden tener el mismo título | RN-14 | pendiente |
+| 9 | Modificar una historia: cambia solo lo indicado y los criterios se reemplazan con la lista completa | RN-8, RN-9 | pendiente |
+| 10 | Modificar usa la misma validación que crear, y una operación rechazada deja la historia y el backlog como estaban | RN-5, RN-11 | pendiente |
+| 11 | Una historia Terminada no se modifica | RN-10 | pendiente |
+| 12 | Modificar una historia que no existe informa el error y no crea ninguna | RN-13 | pendiente |
+| 13 | Agregar, modificar o listar historias de un proyecto inexistente informa que no se encontró el proyecto | RN-12 | pendiente |
+| 14 | Pedir el backlog de un proyecto con historias las devuelve todas con sus datos | RN-15 | pendiente |
+
+### Por qué este orden
+
+- **Las tareas 1 a 3 no tienen reglas que validar**: son el dato y dónde vive. Sin eso no hay
+  nada contra lo que escribir un test de las demás.
+- **La 4 es el camino feliz**, y recién después entran las validaciones. Al revés, el primer
+  test de validación obligaría a inventar la historia entera para poder fallar.
+- **La 6 va antes que la 7** porque la validación corre sobre lo normalizado: es lo que hace
+  que un título de solo espacios cuente como vacío. Si se hicieran al revés, el test de la 7
+  pasaría por el motivo equivocado y volvería a fallar al agregar la 6.
+- **La 9 y la 10 están separadas** porque son dos cosas distintas: una es que la modificación
+  haga lo que tiene que hacer, y la otra que no rompa nada cuando se rechaza. Juntas, un test
+  en rojo no diría cuál de las dos falló.
+- **Las tareas 11 a 13 son los caminos de error**, que se agregan una por una, cada una con su
+  escenario de la Fase 1.
+
+### Cobertura
+
+Las dieciséis reglas de negocio quedan cubiertas: RN-1 (4, 5), RN-2 (1), RN-3 (4), RN-4 (2),
+RN-5 (7, 10), RN-6 (6), RN-7 (4), RN-8 (9), RN-9 (9), RN-10 (11), RN-11 (10), RN-12 (13),
+RN-13 (12), RN-14 (8), RN-15 (3, 14), RN-16 (5).
+
+Cada escenario BDD de la Fase 1 tiene al menos una tarea que lo cubre, y el test lleva el
+nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
+
+> **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 4 — Implementación
 
