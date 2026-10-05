@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 1 aprobada — **sigue la Fase 2 (Diseño)**
+- **Estado:** Diseño — **pendiente de Puerta 2**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -224,7 +224,75 @@ Escenario: Operar sobre un proyecto que no existe
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto —un solo paquete `internal/domain` con un archivo
+por entidad, datos en memoria, errores como valores del dominio, mensajes en español,
+validaciones en el dominio— están en [AGENTS.md](../../../AGENTS.md) y no se repiten acá.
+Esta fase registra solo lo propio de esta historia.
+
+### Enfoque
+
+Los integrantes **no son una colección aparte: viven dentro del proyecto**, igual que el
+backlog de la #6. Un integrante no existe sin proyecto, y guardarlo adentro hace que la
+RN-6 salga sola: el duplicado se busca solo entre los integrantes de ese proyecto, así que
+el mismo nombre en otro proyecto nunca choca.
+
+Agregar y quitar son operaciones del proyecto, y siguen el mismo orden que la #3 y la #6:
+
+1. **Normalizar** el nombre y apellido: sacar los espacios de los extremos (RN-3).
+2. **Validar** sobre lo ya normalizado, en este orden: nombre y apellido obligatorio (RN-2),
+   rol válido (RN-4), duplicado (RN-5) y Agile Enabler único (RN-7). Para quitar, que el
+   integrante exista (RN-11).
+3. **Aplicar** el cambio recién si todo validó.
+
+Como nada se toca antes de validar todo, una operación rechazada deja los integrantes como
+estaban sin tener que deshacer nada (RN-12).
+
+Encontrar el proyecto es del registro de la #3. Si el proyecto no existe, esta historia usa
+el mismo error de "no se encontró el proyecto" que declara la #3 (RN-10), no uno propio.
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `internal/domain/member.go` | se crea | el integrante, su rol, la comparación de nombres y las operaciones de agregar, quitar y listar integrantes del proyecto |
+| `internal/domain/member_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
+| `internal/domain/project.go` | se modifica | el proyecto pasa a contener su lista de integrantes; nada más |
+| `internal/domain/errors.go` | se modifica | los errores de esta historia |
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| Los integrantes viven **dentro del proyecto** | una colección de integrantes aparte, indexada por proyecto | un integrante no existe sin proyecto, y adentro la RN-6 (mismo nombre en otro proyecto) no necesita ningún código especial. Es el mismo criterio que la #6 usa para el backlog |
+| Las operaciones sobre integrantes van en `member.go`, aunque sean del proyecto; `project.go` solo gana el dato | escribirlas en `project.go` | la #6 también modifica `project.go`. Dejarle a ese archivo un solo cambio chico reduce los conflictos entre las dos historias, con el mismo criterio con que la #3 separó el registro |
+| El nombre y apellido es **un solo dato de texto** | dos datos, nombre por un lado y apellido por el otro | lo decidió la Puerta 1. Con dos datos aparecen preguntas que la Fase 1 no tiene: si se puede cargar solo el nombre, o cómo se compara un duplicado con un apellido compuesto |
+| El integrante se identifica por su **nombre y apellido**, sin un número propio | asignarle un identificador entero, como a las historias | la Fase 1 lo identifica por su nombre (RN-9), que es único dentro del proyecto, y modificar un integrante quedó afuera, así que el nombre no cambia. Si la #13 o la #14 necesitan referirse a un integrante de otra forma, lo agregan ellas |
+| Se guarda el nombre **como se escribió** (sin los espacios de los extremos); las mayúsculas solo se ignoran **al comparar** | guardarlo todo en minúsculas | la lista tiene que mostrar "Juliana Bustos", no "juliana bustos". Normalizar para comparar y no para guardar cumple la RN-5 sin perder cómo lo escribió el usuario |
+| La comparación ignora mayúsculas también en **letras con tilde y la ñ**, pero **no ignora las tildes** ni junta los espacios del medio | ignorar también las tildes ("Agustin" igual a "Agustín") o juntar espacios repetidos | la Puerta 1 decidió ignorar solo las mayúsculas. "ÍÑIGO" e "íñigo" son el mismo nombre; "Agustin" y "Agustín" pueden ser dos personas, y decidir que no lo son sería agregar una regla que nadie aprobó |
+| El rol es un **tipo propio con dos valores**, y el dominio rechaza cualquier otro valor aunque la consola solo ofrezca esos dos | un texto libre, o confiar en que la consola manda siempre un rol válido | AGENTS.md pone las validaciones en el dominio, y la RN-4 tiene escenario propio. Es el mismo trato que la #6 le da al estado de una historia |
+| Si una operación tiene varios errores, se informa **el primero** del orden del Enfoque | informar todos los errores juntos | cada escenario de la Fase 1 espera un solo mensaje. Fijar el orden hace que el resultado sea predecible: un nombre vacío con un rol inválido informa el nombre |
+| La lista de integrantes sale **en el orden en que se agregaron**, y es una copia que no permite cambiar los integrantes del proyecto | orden alfabético, o entregar la lista guardada | el orden de alta es predecible para los tests, y ordenar para mostrar es de la consola. Entregar la lista guardada permitiría agregar o quitar integrantes sin pasar por las validaciones |
+
+### Dependencias y restricciones
+
+- **Depende de la #3.** Necesita `project.go`, el registro de proyectos y `errors.go`, que
+  crea la #3. No se puede empezar a implementar hasta que la #3 esté en `dev`.
+- **Depende de lo que se decida en la Puerta 2 de la #3** (PR #41): si al buscar un
+  proyecto se recibe **el proyecto guardado** o **una copia**. Este diseño supone la opción 3
+  que se está discutiendo ahí: se recibe el proyecto guardado, con sus datos ocultos fuera del
+  paquete, así que agregar o quitar un integrante se hace directamente sobre el proyecto. Si
+  la #3 elige la copia, esta historia tiene que guardar cada cambio a través del registro, y
+  esta fase se ajusta antes de la Puerta 2.
+- **Choca con la #6 en `project.go`.** Las dos historias le agregan un dato al proyecto. El
+  cambio de esta historia en ese archivo se limita a la lista de integrantes; quien mergee
+  segundo trae `dev` y resuelve el conflicto.
+- **No se toca `cmd/`.** Pedir los datos por teclado, traducir lo que escribe el usuario a uno
+  de los dos roles y mostrar la lista es de la consola (#24).
+- **La #13 y la #14 se van a apoyar en esta historia** para saber quiénes votan y quién carga
+  esfuerzo. Esta historia no les deja nada preparado: ver la decisión sobre el identificador.
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 3 — Tareas
 

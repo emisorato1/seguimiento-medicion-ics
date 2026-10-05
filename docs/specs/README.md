@@ -26,16 +26,19 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | 🔄 Requisitos — cambios pedidos en la Puerta 1 (PR #26) |
-| [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | ✅ Puerta 1 aprobada — sigue Diseño |
-| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 🎨 Diseño — pendiente de Puerta 2 |
-| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Puerta 1 aprobada — sigue Diseño |
-| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | a definir | 📝 Requisitos — pendiente de Puerta 1 |
+| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | 🎨 Diseño — pendiente de Puerta 2 |
+| [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | 🎨 Diseño — pendiente de Puerta 2 |
+| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ✅ Puerta 2 aprobada — sigue Tareas |
+| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🎨 Diseño — pendiente de Puerta 2 |
+| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | 🎨 Diseño — pendiente de Puerta 2 |
 
-Las cuatro tienen la Fase 1 redactada como **borrador** con asistencia de IA, a partir de la
-consigna y de los criterios de aceptación de cada issue. Cada responsable la revisa, la
-corrige si hace falta y la presenta a la Puerta 1. Ninguna tiene todavía las tres puertas
-aprobadas, así que todavía no se puede escribir código de estas historias.
+Las Fases 1 se redactaron como borrador con asistencia de IA a partir de la consigna y de los
+criterios de aceptación de cada issue, y cada responsable las revisó y corrigió antes de
+presentarlas a la Puerta 1.
+
+**Ninguna historia tiene todavía las tres puertas aprobadas, así que no se puede escribir
+código de ninguna.** El orden es Puerta 1 (requisitos) → Fase 2 y Puerta 2 (diseño) →
+Fase 3 y Puerta 3 (tareas) → recién ahí la implementación.
 
 ## Orden de trabajo del Sprint 1
 

@@ -87,8 +87,53 @@ Depende de #3, #4, #6 y #12, así que se hace al final del sprint.
   otro integrante en un pull request y está mergeada a `dev`.
 - **Revisión cruzada:** ningún pull request se mergea sin la aprobación de otro integrante.
   No se usa el bypass de administrador.
-- **Daily:** a definir por el equipo.
-- **Fecha de review y retrospectiva del Sprint 1:** a definir.
+- **Daily:** asincrónica por el grupo de chat, de lunes a viernes. Cada uno responde antes de
+  las 22:00 qué hizo, qué va a hacer y qué lo está trabando. Además, una sincrónica corta los
+  **miércoles 21:00**, de 15 minutos.
+- **Cierre del Sprint 1, review y retrospectiva:** **viernes 16/10/2026**.
+
+## Calendario del sprint
+
+Definido por el Agile Enabler el **02/10** porque había quedado pendiente desde la planning.
+Sin fecha de cierre no hay velocidad, y sin velocidad no se puede planificar el Sprint 2.
+
+| Fecha | Qué |
+|---|---|
+| lunes 05/10 | todas las Fases 2 escritas y presentadas a la Puerta 2 |
+| miércoles 07/10 | todas las Puertas 2 aprobadas y las Fases 3 presentadas a la Puerta 3 |
+| jueves 08/10 | todas las Puertas 3 aprobadas — **a partir de acá se programa** |
+| viernes 16/10 | cierre del sprint, review y retrospectiva |
+
+El sprint arrancó el 28/09, así que son tres semanas en vez de dos. Es más de lo que debería
+durar, pero la primera semana se fue íntegra en specs y es el primer sprint del equipo. El
+Sprint 2 vuelve a dos semanas.
+
+**Se evaluó acortarlo a dos semanas (cierre el 09/10) y se descartó.** De los diez días
+hábiles, siete ya se habían ido en specs y todavía faltaban las Puertas 2 y 3 de cuatro
+historias: quedaban cuatro días de código, unas 32 horas entre los cuatro, que a 3 horas por
+story point dan unos 10 de los 16 comprometidos. Como en Scrum el sprint es una caja de
+tiempo fija y lo que se ajusta es el alcance, la alternativa real era sacar dos historias.
+Se eligió mantener las cinco y estirar el cierre una semana para que **los cuatro integrantes
+tengan su historia en este sprint**, que era uno de los acuerdos de la retrospectiva del
+Sprint 0. El Sprint 2 vuelve a dos semanas, y ahí el alcance se ajusta a la velocidad medida.
+
+**Si alguien no está de acuerdo con estas fechas, se habla en la daily del lunes 05/10.**
+Pasada esa fecha quedan firmes.
+
+## Asignación de la historia #24
+
+La **#24 (Interfaz de consola, 3 SP)** había quedado "a definir" para quien terminara antes.
+Como nadie terminó, la asigna el Agile Enabler el 02/10 por carga de trabajo:
+
+| Integrante | Story points antes | Con la #24 |
+|---|---|---|
+| Emiliano Sorato | 5 | 5 |
+| Agustín Salinas | 3 | 3 |
+| Juliana Bustos | 3 | 3 |
+| **Maximiliano Eula** | **2** | **5** |
+
+Queda para **Maximiliano Eula**, que es quien tiene la carga más baja. La #24 depende de las
+otras cuatro, así que la arranca cuando las demás estén en `dev`.
 
 ## Horas estimadas
 
@@ -124,5 +169,7 @@ Sprint 2.
 
 ## Pendientes
 
-- [ ] Definir día y horario de la daily, y la fecha de la review.
-- [ ] Cada integrante escribe la Fase 1 (Requisitos) de la spec de su historia.
+- [x] Definir día y horario de la daily, y la fecha de la review.
+- [x] Asignar responsable a la historia #24.
+- [x] Cada integrante escribe la Fase 1 (Requisitos) de la spec de su historia.
+- [ ] Cada integrante escribe la Fase 2 (Diseño) y la presenta a la Puerta 2.

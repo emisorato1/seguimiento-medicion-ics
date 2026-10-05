@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-02 21:06. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-05 15:57. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -28,12 +28,11 @@ _No hay historias en este estado._
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Sprint Backlog
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
+_No hay historias en este estado._
 
 ## Product Backlog
 
@@ -63,6 +62,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+236a753 2026-10-02 docs: cargar las horas estimadas del sprint 1
 2bd9027 2026-10-02 chore: chequear en ci que las specs, el indice y las puertas digan lo mismo
 be0dfae 2026-10-02 Merge pull request #32 from emisorato1/historia-6-diseno
 722fcde 2026-10-02 Merge branch 'dev' into historia-6-diseno
@@ -70,5 +70,4 @@ be0dfae 2026-10-02 Merge pull request #32 from emisorato1/historia-6-diseno
 29ffb92 2026-10-02 Merge branch 'dev' into docs-decisiones-de-arquitectura
 241efab 2026-10-02 Merge pull request #26 from emisorato1/historia-3-crear-proyectos
 9b3aa83 2026-10-02 Merge branch 'dev' into historia-3-crear-proyectos
-a9f1fd6 2026-10-02 docs: fase 2 de la spec de la historia 6 (pedido de Puerta 2)
 ```
