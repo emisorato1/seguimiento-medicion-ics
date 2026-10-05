@@ -26,11 +26,11 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | 🎨 Diseño — pendiente de Puerta 2 |
-| [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | 🎨 Diseño — pendiente de Puerta 2 |
-| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ✅ Puerta 2 aprobada — sigue Tareas |
-| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🎨 Diseño — pendiente de Puerta 2 |
-| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | 🎨 Diseño — pendiente de Puerta 2 |
+| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | ✅ Puerta 2 aprobada — sigue Tareas |
+| [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | ✅ Puerta 2 aprobada — sigue Tareas |
+| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 🔨 Tareas — pendiente de Puerta 3 |
+| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Puerta 2 aprobada — sigue Tareas |
+| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ✅ Puerta 2 aprobada — sigue Tareas |
 
 Las Fases 1 se redactaron como borrador con asistencia de IA a partir de la consigna y de los
 criterios de aceptación de cada issue, y cada responsable las revisó y corrigió antes de

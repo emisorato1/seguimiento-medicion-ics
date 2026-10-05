@@ -3,7 +3,7 @@
 - **Historia:** #12
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula
-- **Estado:** Diseño — **pendiente de Puerta 2**
+- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -243,7 +243,7 @@ lugar de un cero.
   la operación de estimar de esta historia, sin duplicarla; y la #24 la expone en la consola.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-05 — Comentarios: aprobada en el PR #39. Se acepto separar story_estimation.go: la regla de AGENTS.md de un archivo por entidad existia para evitar que varias historias editen el mismo archivo, y la separacion sirve mejor a ese objetivo. Se corrigio AGENTS.md en consecuencia.
 
 ## Fase 3 — Tareas
 

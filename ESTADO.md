@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-05 15:57. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-05 17:42. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -62,12 +62,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-236a753 2026-10-02 docs: cargar las horas estimadas del sprint 1
-2bd9027 2026-10-02 chore: chequear en ci que las specs, el indice y las puertas digan lo mismo
-be0dfae 2026-10-02 Merge pull request #32 from emisorato1/historia-6-diseno
-722fcde 2026-10-02 Merge branch 'dev' into historia-6-diseno
-2c7066e 2026-10-02 Merge pull request #31 from emisorato1/docs-decisiones-de-arquitectura
-29ffb92 2026-10-02 Merge branch 'dev' into docs-decisiones-de-arquitectura
-241efab 2026-10-02 Merge pull request #26 from emisorato1/historia-3-crear-proyectos
-9b3aa83 2026-10-02 Merge branch 'dev' into historia-3-crear-proyectos
+d59946f 2026-10-05 Merge remote-tracking branch 'origin/dev' into docs-horas-estimadas
+b0077fe 2026-10-05 Merge pull request #35 from emisorato1/chore-chequeo-de-coherencia
+c0df9a2 2026-10-05 Merge remote-tracking branch 'origin/dev' into chore-chequeo-de-coherencia
+054dc0c 2026-10-05 Merge pull request #42 from emisorato1/historia-4-diseno
+610566a 2026-10-05 Merge remote-tracking branch 'origin/dev' into historia-4-diseno
+75f2607 2026-10-05 Merge pull request #40 from emisorato1/historia-24-interfaz-consola
+55f0691 2026-10-05 Merge remote-tracking branch 'origin/dev' into historia-24-interfaz-consola
+a2e7350 2026-10-05 Merge pull request #39 from emisorato1/historia-12-estimar-story-points
 ```
