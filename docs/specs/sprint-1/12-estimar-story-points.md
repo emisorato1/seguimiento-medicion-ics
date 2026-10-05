@@ -3,7 +3,7 @@
 - **Historia:** #12
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula
-- **Estado:** Puerta 1 aprobada — **sigue la Fase 2 (Diseño)**
+- **Estado:** Diseño — **pendiente de Puerta 2**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -45,7 +45,7 @@ La historia queda con sus story points registrados y pasa a estar estimada.
 3. **[RN-3]** Si se intenta estimar con cero o con un valor negativo, el sistema debe
    rechazar la operación e informar cuáles son los valores válidos.
 4. **[RN-4]** Una historia sin story points debe considerarse **no estimada**, y eso no es un
-   error. Que una historia recién creada quede sin estimar lo define la historia #6 (RN-6);
+   error. Que una historia recién creada quede sin estimar lo define la historia #6 (RN-7);
    acá solo se garantiza que al consultarla figure como "sin estimar" y no con un cero.
 5. **[RN-5]** Mientras la historia no esté Terminada, el sistema debe permitir estimarla, y
    volver a estimarla con otro valor o con el mismo.
@@ -176,7 +176,74 @@ Escenario: Estimar una historia que no existe
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto —un solo paquete `internal/domain`, datos en
+memoria, errores como valores del dominio comparables y mensajes en español— están en
+[AGENTS.md](../../../AGENTS.md) y no se repiten acá. El diseño se apoya además en la Fase 2
+de la historia #6: la historia, su estado como tipo propio y el backlog dentro del proyecto.
+Esta fase registra solo lo propio de la estimación.
+
+### Enfoque
+
+Estimar no crea nada nuevo: **agrega comportamiento a la historia que define la #6**. El dato
+de story points ya existe en la historia (RN-2 de la #6), y esta historia define cómo se
+carga, se cambia y se quita.
+
+Hay dos operaciones:
+
+- **Estimar**, que sirve tanto para la primera estimación como para reestimar (RN-5, RN-6).
+- **Quitar la estimación** (RN-7), que es un pedido explícito y separado.
+
+Las dos siguen el mismo orden, de lo más general a lo más particular:
+
+1. **Encontrar la historia** dentro de su proyecto. Si no existe, se informa que no se
+   encontró (RN-9).
+2. **Controlar el estado.** Si está Terminada, se rechaza cualquier cambio en la estimación
+   (RN-8).
+3. **Validar el valor**, solo al estimar: tiene que estar en la escala (RN-1 a RN-3).
+4. **Aplicar** el cambio recién si todo lo anterior pasó.
+
+Como en la #6, aplicar al final es lo que garantiza que una operación rechazada deje la
+historia como estaba.
+
+**"Sin estimar" se representa con el valor 0.** El 0 nunca es una estimación válida (RN-3),
+así que no hay ambigüedad. Para cumplir la RN-4, el sistema ofrece una forma explícita de
+consultar si la historia está estimada, y quien muestra el dato informa "sin estimar" en
+lugar de un cero.
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `internal/domain/story_estimation.go` | se crea | la escala válida, las operaciones de estimar y quitar la estimación, y la consulta de si la historia está estimada |
+| `internal/domain/story_estimation_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
+| `internal/domain/errors.go` | se modifica | los errores de esta historia: valor fuera de la escala e historia terminada |
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| "Sin estimar" se representa con el valor 0 | un dato aparte que indique si está estimada | el 0 nunca es válido (RN-3), y un solo dato no puede quedar en un estado contradictorio |
+| Quitar la estimación es una operación propia | estimar con 0 para quitar | estimar con 0 está prohibido por la RN-3 |
+| La escala válida es una lista fija, usada por la validación y por el mensaje de error | calcular la sucesión de Fibonacci | la escala es una lista cerrada, y con una sola fuente el mensaje de la RN-2 nunca miente |
+| Un solo error para cualquier valor inválido | un error para fuera de la escala y otro para cero o negativo | la Fase 1 da la misma respuesta en los dos casos (RN-2, RN-3) |
+| Orden de los controles: existencia → estado → valor | validar el valor primero | no tiene sentido validar el valor de una historia que no existe o no se puede tocar |
+| La estimación va en `story_estimation.go` y sus tests en `story_estimation_test.go`; el dato sigue en `story.go` | ponerlo todo en `story.go` | evita que varias historias toquen el mismo archivo y deja la trazabilidad directa; **se aparta de la letra de AGENTS.md: para decidir en la puerta** |
+
+### Dependencias y restricciones
+
+- **Depende de la #6** (y por ella, de la #3): necesita la historia, su estado y el backlog
+  dentro del proyecto. El código no se empieza hasta que la #6 esté en `dev`.
+- **No se modifica `story.go`.** El dato de story points lo define la #6, con 0 como valor
+  inicial (su RN-7): la historia nace sin estimar sin trabajo extra. Esta historia solo le
+  agrega comportamiento.
+- **El estado de la historia solo se lee**, no se cambia: las transiciones son de la #9 y
+  la #10.
+- **`errors.go` es compartido** (Fase 2 de la #6): los errores de esta historia se agregan ahí.
+- **La usan otras historias:** la #13 (Planning Poker) registra la estimación acordada usando
+  la operación de estimar de esta historia, sin duplicarla; y la #24 la expone en la consola.
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 3 — Tareas
 

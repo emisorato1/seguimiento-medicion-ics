@@ -2,8 +2,9 @@
 
 - **Historia:** #24
 - **Sprint:** 1
-- **Responsable:** a definir — la toma quien termine antes su historia
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Responsable:** Maximiliano Eula — asignada por el Agile Enabler el 02/10 por carga
+  de trabajo (era quien tenía menos story points)
+- **Estado:** Diseño — **pendiente de Puerta 2**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a la Puerta 1
@@ -22,15 +23,18 @@ para poder probarlas y mostrarlas en la review del sprint.
 
 - **Cualquier regla de negocio.** La consola solo pide datos, llama al núcleo y muestra el
   resultado. Si una validación aparece en la consola, está en el lugar equivocado.
+- **Modificar un proyecto, quitar un integrante, modificar una historia y quitar la
+  estimación.** Están en las historias #3, #4, #6 y #12, pero la issue no las pide para la
+  consola y no entran en su estimación. Se pueden probar con los tests, y se suman a la
+  interfaz en el Sprint 2.
 - Sprints, defectos, métricas, dashboard y reportes: no existen todavía.
 - Guardar los datos entre ejecuciones: al cerrar el programa se pierde todo.
 - Colores, menús gráficos o cualquier adorno.
 
 ### Entradas
 
-Comandos tipeados por el usuario, con sus datos. Las operaciones disponibles son las cuatro
-historias del sprint: crear proyecto, agregar integrante, cargar historia y estimar historia,
-más las consultas para listar lo cargado.
+Comandos tipeados por el usuario, con sus datos. Las operaciones disponibles son las de la
+RN-1.
 
 ### Salidas
 
@@ -39,20 +43,27 @@ pedida, o el mensaje de error si la operación se rechazó.
 
 ### Reglas de negocio
 
-1. **[RN-1]** El sistema debe ofrecer una operación por cada funcionalidad del Sprint 1:
-   crear proyecto, agregar integrante, listar integrantes, cargar historia, listar el
-   backlog y estimar una historia.
+1. **[RN-1]** El sistema debe ofrecer estas operaciones: crear proyecto, agregar integrante,
+   listar integrantes, cargar historia, listar el backlog, estimar una historia y salir.
 2. **[RN-2]** Cuando el usuario ejecuta una operación que el núcleo rechaza, el sistema debe
    mostrar el motivo del rechazo tal como lo informa el núcleo, y seguir funcionando.
 3. **[RN-3]** El sistema debe mostrar el identificador de todo lo que se crea, porque es lo
    que hace falta para las operaciones siguientes.
 4. **[RN-4]** Si el usuario escribe una operación que no existe, el sistema debe informarlo
    y mostrar las operaciones disponibles.
-5. **[RN-5]** Si el usuario ejecuta una operación sin los datos obligatorios, el sistema debe
-   indicar qué dato falta y no llamar al núcleo.
+5. **[RN-5]** Si a una operación le falta un dato sin el cual no se puede ejecutar —por
+   ejemplo, a qué proyecto o a qué historia se aplica—, o un dato no tiene la forma esperada
+   —por ejemplo, letras donde va un número—, el sistema debe indicar qué dato falta o está
+   mal escrito y no ejecutar la operación.
 6. **[RN-6]** El sistema debe permitir salir en cualquier momento.
-7. **[RN-7]** La consola no debe validar reglas de negocio por su cuenta: las validaciones
-   las hace el núcleo y la consola solo muestra el resultado.
+7. **[RN-7]** La consola no debe validar reglas de negocio por su cuenta. Si un dato está y
+   tiene la forma esperada pero no cumple una regla —un nombre vacío, un valor de story
+   points fuera de la escala—, lo rechaza el núcleo y la consola solo muestra el motivo
+   (RN-2).
+
+La diferencia entre la RN-5 y la RN-7 es si la operación **se puede ejecutar**: si falta a
+qué historia se aplica, no hay operación posible y avisa la consola; si el valor está pero
+no es válido, la operación se ejecuta y la rechaza el núcleo.
 
 ### Casos límite
 
@@ -60,13 +71,18 @@ pedida, o el mensaje de error si la operación se rechazó.
   un error.
 - Operar sobre un identificador que no existe: muestra el error del núcleo y sigue.
 - Entrada vacía: no hace nada y vuelve a pedir.
+- Letras donde va un número, como un identificador o los story points: lo informa la
+  consola, sin ejecutar la operación (RN-5).
+- Un número válido que no cumple una regla, como 4 story points: lo rechaza el núcleo
+  (RN-7).
 
 ### Condiciones de error
 
 | Situación | Qué hace el sistema |
 |---|---|
 | Operación inexistente | informa y lista las operaciones disponibles |
-| Falta un dato obligatorio | indica cuál falta y no llama al núcleo |
+| Falta un dato sin el cual la operación no se puede ejecutar | indica cuál falta y no la ejecuta |
+| Un dato no tiene la forma esperada | indica cuál está mal escrito y no ejecuta la operación |
 | El núcleo rechaza la operación | muestra el motivo y sigue funcionando |
 
 ### Criterios de aceptación
@@ -77,6 +93,7 @@ pedida, o el mensaje de error si la operación se rechazó.
 - [ ] Se le pueden asignar story points a una historia.
 - [ ] Cuando una operación se rechaza, se ve el motivo y el programa sigue andando.
 - [ ] Listar algo vacío no es un error.
+- [ ] Una operación incompleta o con un dato mal escrito se informa sin ejecutarla.
 - [ ] Se puede salir del programa.
 - [ ] La consola no contiene ninguna validación de negocio propia.
 
@@ -95,28 +112,134 @@ Escenario: Mostrar el motivo de un rechazo
   Entonces veo el mensaje que informa que el nombre es obligatorio
   Y el programa sigue funcionando
 
+Escenario: Agregar y listar integrantes
+  Dado un proyecto creado desde la consola
+  Cuando le agrego un integrante
+  Y pido la lista de integrantes del proyecto
+  Entonces veo al integrante en la lista
+
 Escenario: Listar un backlog vacio
   Dado un proyecto recien creado
   Cuando pido el backlog
   Entonces veo que no hay historias cargadas
+
+Escenario: Cargar una historia y listar el backlog
+  Dado un proyecto creado desde la consola
+  Cuando cargo una historia con titulo "Registrar esfuerzo"
+  Y pido el backlog
+  Entonces veo la historia "Registrar esfuerzo" con su identificador
+
+Escenario: Estimar una historia desde la consola
+  Dado un proyecto con una historia cargada
+  Cuando le asigno 5 story points
+  Entonces veo que la historia quedo estimada en 5
+
+Escenario: El nucleo rechaza un valor fuera de la escala
+  Dado un proyecto con una historia cargada
+  Cuando intento asignarle 4 story points
+  Entonces veo el mensaje del nucleo con los valores validos
+  Y el programa sigue funcionando
+
+Escenario: Operacion incompleta
+  Dado que el programa esta abierto
+  Cuando ejecuto la operacion de estimar sin indicar la historia
+  Entonces veo que falta indicar la historia
+  Y la operacion no se ejecuta
+
+Escenario: Dato con forma invalida
+  Dado un proyecto con una historia cargada
+  Cuando intento asignarle "cinco" story points
+  Entonces veo que los story points tienen que ser un numero
+  Y la operacion no se ejecuta
+
+Escenario: Operar sobre un identificador que no existe
+  Dado que el programa esta abierto
+  Cuando intento pedir el backlog del proyecto 99, que no existe
+  Entonces veo el mensaje del nucleo que informa que no se encontro el proyecto
+  Y el programa sigue funcionando
 
 Escenario: Operacion inexistente
   Dado que el programa esta abierto
   Cuando escribo una operacion que no existe
   Entonces veo la lista de operaciones disponibles
 
-Escenario: Estimar una historia desde la consola
-  Dado un proyecto con una historia cargada
-  Cuando le asigno 5 story points
-  Entonces veo que la historia quedo estimada en 5
+Escenario: Entrada vacia
+  Dado que el programa esta abierto
+  Cuando envio una linea vacia
+  Entonces no pasa nada
+  Y el programa vuelve a pedir una operacion
+
+Escenario: Salir del programa
+  Dado que el programa esta abierto
+  Cuando ejecuto la operacion de salir
+  Entonces el programa termina
 ```
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-03 — Comentarios: aprobada en el PR #38. Destacó
+> la separación entre la RN-5 (errores de forma, los informa la consola) y la RN-7 (reglas de
+> negocio, las rechaza el núcleo), y que quede escrito que modificar y quitar la estimación se
+> prueban con los tests y se suman a la interfaz en el Sprint 2.
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto están en [AGENTS.md](../../../AGENTS.md) y no se
+repiten acá. Las dos que más pesan en esta historia: el núcleo **no sabe nada de la
+interfaz**, y las validaciones viven **en el dominio**, nunca en la consola.
+
+### Enfoque
+
+La consola es una capa delgada: **pide datos, llama al núcleo y muestra lo que responde**.
+No tiene reglas de negocio ni guarda datos propios.
+
+Cada operación sigue el mismo recorrido:
+
+1. El usuario escribe el nombre de la operación.
+2. La consola pide cada dato en su propia línea.
+3. Si falta un dato sin el cual la operación no se puede ejecutar, o un dato no tiene la
+   forma esperada, la consola lo informa y no llama al núcleo (RN-5).
+4. Si no, llama al núcleo y muestra el resultado o el motivo del rechazo, tal cual (RN-2).
+
+La pregunta que separa el paso 3 del 4 es **si la operación se puede ejecutar**: si falta a
+qué historia se aplica, no hay operación posible y avisa la consola; si el valor está pero no
+es válido —un nombre vacío, 4 story points—, la operación se ejecuta y la rechaza el núcleo
+(RN-7).
+
+La consola trabaja sobre una entrada y una salida genéricas. El arranque del programa le
+conecta el teclado y la pantalla; los tests le pasan líneas de texto y leen lo que escribió.
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `cmd/app/main.go` | se modifica | arranca la consola conectada al teclado y la pantalla |
+| `cmd/app/console.go` | se crea | las operaciones: pedir los datos, llamar al núcleo y mostrar el resultado |
+| `cmd/app/console_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| El código vive en `cmd/app`, repartido en arranque y operaciones | un paquete nuevo `internal/console` | respeta la estructura actual y la consola sigue siendo reemplazable desde `cmd/` |
+| La consola trabaja sobre una entrada y una salida genéricas | leer y escribir directo del teclado y la pantalla | es lo que permite que cada escenario BDD sea un test automatizado |
+| Se escribe el nombre de la operación y la consola pide cada dato en su propia línea | toda la operación en una sola línea | los nombres con espacios se leen sin comillas ni reglas de separación |
+| La consola no guarda datos: usa el registro de proyectos que define la #3 | que la consola arme su propia lista | guardar datos es responsabilidad del núcleo y no se pierde al cambiar de interfaz |
+| Los errores se muestran con el mensaje del núcleo, tal cual | textos propios de la consola para cada error | lo pide la RN-2, y evita duplicar los mensajes que viven en el dominio |
+| Una historia con 0 story points se muestra como "sin estimar" | mostrar el número | la #12 representa "sin estimar" con 0 y deja en quien muestra el dato cumplir su RN-4 |
+
+### Dependencias y restricciones
+
+- **Depende de la #3, la #4, la #6 y la #12**: el código no se empieza hasta que las cuatro
+  estén en `dev`.
+- **Depende de que la Fase 2 de la #3 defina dónde se guardan los proyectos** mientras corre
+  el programa. Hoy no está definido en ninguna spec ni en AGENTS.md.
+- **No se modifica nada de `internal/domain`.** Si a la consola le falta algo del núcleo, se
+  pide en la historia que corresponde, no se agrega desde acá.
+- **Ninguna validación de negocio en la consola** (RN-7): solo se controla la forma de los
+  datos sin los cuales la operación no se puede ejecutar (RN-5).
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 3 — Tareas
 
