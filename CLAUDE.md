@@ -136,6 +136,7 @@ refleja la realidad es peor que no tener tablero.
 
 ```bash
 scripts/revisiones.sh                           # PRs esperando tu revision
+scripts/coherencia.sh                           # specs, indice y puertas coherentes
 scripts/tablero.sh ver                          # estado de todas las historias
 scripts/tablero.sh estado 3 "En progreso"       # mover una historia
 scripts/tablero.sh puntos 3 5                   # cargar story points
@@ -417,7 +418,7 @@ Cada tag es la evidencia de un incremento entregado.
 
 | Workflow | Cuándo corre | Qué hace |
 |---|---|---|
-| [CI](.github/workflows/ci.yml) | en cada PR y push a `dev` o `main` | `gofmt`, `go vet` y `go test ./... -cover` |
+| [CI](.github/workflows/ci.yml) | en cada PR y push a `dev` o `main` | coherencia de las specs, `gofmt`, `go vet` y `go test ./... -cover` |
 | [CD](.github/workflows/cd.yml) | al entrar algo a `main` | corre los tests, compila y publica los binarios |
 
 Si el CI se pone en rojo en `dev` o `main`, **arreglarlo es la prioridad número uno** del
