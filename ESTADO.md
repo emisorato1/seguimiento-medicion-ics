@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-05 15:59. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-05 17:42. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -62,6 +62,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+d59946f 2026-10-05 Merge remote-tracking branch 'origin/dev' into docs-horas-estimadas
 b0077fe 2026-10-05 Merge pull request #35 from emisorato1/chore-chequeo-de-coherencia
 c0df9a2 2026-10-05 Merge remote-tracking branch 'origin/dev' into chore-chequeo-de-coherencia
 054dc0c 2026-10-05 Merge pull request #42 from emisorato1/historia-4-diseno
@@ -69,5 +70,4 @@ c0df9a2 2026-10-05 Merge remote-tracking branch 'origin/dev' into chore-chequeo-
 75f2607 2026-10-05 Merge pull request #40 from emisorato1/historia-24-interfaz-consola
 55f0691 2026-10-05 Merge remote-tracking branch 'origin/dev' into historia-24-interfaz-consola
 a2e7350 2026-10-05 Merge pull request #39 from emisorato1/historia-12-estimar-story-points
-a04030d 2026-10-05 Merge branch 'dev' into historia-24-interfaz-consola
 ```
