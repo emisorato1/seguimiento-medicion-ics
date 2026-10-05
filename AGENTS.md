@@ -36,6 +36,45 @@ gofmt -l .               # listar archivos mal formateados
   evidencia del TDD que se evalúa, así que no aplastar la historia ni subir el test junto
   con la implementación ya terminada.
 - Todo lo que sea regla de negocio, métrica, estimación o validación tiene que tener test.
+- Cómo se nombran y se escriben, en la sección "Cómo se escriben los tests" de este archivo.
+
+## Cómo se escriben los tests
+
+La trazabilidad que se evalúa va **escenario BDD → test**, así que el test tiene que poder
+encontrarse desde el escenario sin buscar.
+
+**Un test por escenario**, con el nombre del escenario en PascalCase, sin tildes ni ñ para
+que se escriba siempre igual, y un comentario arriba que diga a qué escenario corresponde y
+qué reglas cubre:
+
+```go
+// Escenario: Rechazar un proyecto sin nombre
+// Cubre: RN-2
+func TestRechazarUnProyectoSinNombre(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	_, err := registry.Create("", date(2026, 10, 1), nil)
+
+	if !errors.Is(err, ErrProjectNameRequired) {
+		t.Fatalf("se esperaba ErrProjectNameRequired, salio: %v", err)
+	}
+}
+```
+
+Las reglas:
+
+- **Un "Esquema del escenario" se escribe como un solo test con tabla de casos**, un caso por
+  fila de los Ejemplos. El nombre de cada caso es el valor de la fila.
+- **Los errores se verifican con `errors.Is` contra el error del dominio, nunca comparando el
+  texto del mensaje.** El mensaje es para el usuario y va a cambiar; el error no.
+- **Cada test arranca de cero.** Nada de estado compartido entre tests: si un escenario dice
+  "Dado un proyecto registrado", el test lo crea.
+- **El mensaje de fallo dice qué se esperaba y qué salió.** Un `t.Fatal("fallo")` no sirve
+  para nada cuando el CI se pone en rojo.
+- Los tests van en `archivo_test.go`, al lado del archivo que prueban.
+- Sin librerías de testing: solo `testing` de la biblioteca estándar.
+
+Si un escenario de la Fase 1 no tiene test, la historia no está terminada.
 
 ## Estructura del proyecto
 
