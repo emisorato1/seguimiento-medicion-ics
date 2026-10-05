@@ -23,9 +23,10 @@ para poder probarlas y mostrarlas en la review del sprint.
 
 - **Cualquier regla de negocio.** La consola solo pide datos, llama al núcleo y muestra el
   resultado. Si una validación aparece en la consola, está en el lugar equivocado.
-- **Modificar un proyecto, modificar una historia y quitar la estimación.** Están en las
-  historias #3, #6 y #12, pero la issue no las pide para la consola y no entran en su
-  estimación. Se pueden probar con los tests, y se suman a la interfaz en el Sprint 2.
+- **Modificar un proyecto, quitar un integrante, modificar una historia y quitar la
+  estimación.** Están en las historias #3, #4, #6 y #12, pero la issue no las pide para la
+  consola y no entran en su estimación. Se pueden probar con los tests, y se suman a la
+  interfaz en el Sprint 2.
 - Sprints, defectos, métricas, dashboard y reportes: no existen todavía.
 - Guardar los datos entre ejecuciones: al cerrar el programa se pierde todo.
 - Colores, menús gráficos o cualquier adorno.
