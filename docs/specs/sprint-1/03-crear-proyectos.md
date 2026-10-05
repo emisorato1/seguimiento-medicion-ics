@@ -3,7 +3,7 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Diseño — **pendiente de Puerta 2**
+- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -285,19 +285,27 @@ de la Fase 1).
 - La #24 depende de esta fase para saber dónde se guardan los proyectos: es el registro.
   Lo crea quien arranca el programa (la consola), y hay uno solo mientras el programa corre.
 
-**Para decidir en la puerta:** cuando alguien busca un proyecto en el registro, ¿recibe el
-proyecto guardado o una copia?
+**Decidido en la Puerta 2:** cuando alguien busca un proyecto en el registro, **recibe el
+proyecto guardado**, no una copia, y los datos del proyecto están ocultos fuera del paquete:
+solo se cambian con operaciones que validan.
 
-- **El proyecto guardado:** la consola o cualquier otra historia podría cambiarle, por
-  ejemplo, el nombre a uno vacío sin pasar por las validaciones, y se rompería la RN-2 y la
-  decisión de AGENTS.md de que las validaciones viven en el dominio.
-- **Una copia (propuesta):** nadie puede saltearse las validaciones, porque el único camino
-  para cambiar un proyecto es el registro. La contra es que la #4 y la #6 también van a tener
-  que guardar sus cambios (integrantes, backlog) a través del registro, así que esto condiciona
-  sus diseños. Por eso se plantea acá y no se decide solo en esta historia.
+La opción la propuso Maximiliano Eula y la respaldó Juliana Bustos en este PR. El argumento
+que la define: la consola vive en `cmd/`, así que no puede tocar datos ocultos de
+`internal/domain` y no tiene forma de saltear las validaciones; y dentro del paquete la copia
+no protege nada, porque es el mismo paquete. O sea que la copia paga el costo —obligar a la
+#4, la #6 y la #12 a guardar cada cambio por el registro— sin comprar la protección. Peor
+aún, si alguna de esas historias se olvida de guardar, el cambio se pierde en silencio, sin
+error y sin que ningún escenario BDD lo muestre.
+
+Va con una condición, que forma parte de la decisión: como se trabaja sobre el proyecto
+guardado, **cada operación valida todo antes de cambiar cualquier dato**. Eso es lo que
+sostiene la RN-5 de esta historia, la RN-12 de la #4 y la RN-11 de la #6.
+
+Las dos quedaron registradas en [AGENTS.md](../../../AGENTS.md) porque valen para todo el
+proyecto.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-05 — Comentarios: aprobada con la decision de la pregunta abierta: el registro entrega el proyecto guardado, con sus datos ocultos fuera del paquete (opcion propuesta por Maximiliano Eula y respaldada por Juliana Bustos en el PR #41). Queda registrada en AGENTS.md porque vale para todo el proyecto.
 
 ## Fase 3 — Tareas
 

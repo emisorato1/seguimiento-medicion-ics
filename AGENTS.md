@@ -55,7 +55,7 @@ de estas hay que cambiarla, se cambia acá y se avisa al equipo.
 
 | Decisión | Alternativa descartada | Por qué |
 |---|---|---|
-| El núcleo vive en un solo paquete `internal/domain`, con **un archivo por entidad** (`project.go`, `member.go`, `story.go`, …) | un paquete por entidad | con paquetes separados aparecen ciclos de importación en cuanto una historia referencia a un proyecto; un archivo por entidad evita además que cuatro personas toquen el mismo archivo |
+| El núcleo vive en un solo paquete `internal/domain`, con **un archivo por entidad** (`project.go`, `member.go`, `story.go`, …), y se puede **separar en más archivos por funcionalidad** cuando varias historias tocan la misma entidad (`story_estimation.go`, `project_registry.go`) | un paquete por entidad | con paquetes separados aparecen ciclos de importación en cuanto una historia referencia a un proyecto. La regla existe para que varias personas no editen el mismo archivo: cuando separar por funcionalidad sirve mejor a ese objetivo, se separa |
 | Durante el Sprint 1 los datos viven **en memoria**: al cerrar el programa se pierden | archivo o base de datos | ningún requerimiento mínimo pide persistencia todavía, y meterla ahora obligaría a decidir el formato antes de saber qué se guarda. Se revisa en el Sprint 2 |
 | Los errores se devuelven como **valores de error del dominio**, declarados en el paquete y comparables con `errors.Is` | devolver strings, o `panic` | permite que los tests verifiquen *qué* error salió y no el texto del mensaje, que va a cambiar |
 | Los **mensajes** de error son para el usuario y van en español; los **nombres** de los errores en inglés, como el resto del código | todo en inglés | el mensaje lo lee quien usa el sistema, y varias reglas de negocio dicen literalmente qué se le informa |
@@ -63,6 +63,8 @@ de estas hay que cambiarla, se cambia acá y se avisa al equipo.
 | El núcleo **no sabe nada de la interfaz**: no imprime, no lee del teclado, no formatea | que el dominio imprima directamente | es lo que permite testearlo, y lo que hace que la consola de la #24 sea reemplazable en el Sprint 2 |
 | **Sin dependencias externas**: solo la biblioteca estándar de Go | usar un framework o una librería de tests | el proyecto es chico y la cátedra evalúa el código propio. Agregar una dependencia se acuerda con el equipo |
 | Las validaciones viven **en el dominio**, nunca en la interfaz | validar en la consola para dar mejor respuesta | si la validación está en la interfaz, cambiar de interfaz la pierde, y los tests no la cubren |
+| Quien guarda una entidad **entrega la entidad guardada, no una copia**, y sus datos están **ocultos fuera del paquete**: solo se cambian con operaciones que validan | entregar una copia y obligar a guardar cada cambio | la consola vive en `cmd/`, así que no puede tocar datos ocultos de `internal/domain` y no tiene forma de saltear las validaciones. Dentro del paquete la copia no protege nada, porque es el mismo paquete: paga el costo sin comprar la protección. Además, con copias cada historia tendría que acordarse de guardar, y un olvido pierde el cambio en silencio, sin error y sin que ningún escenario BDD lo muestre |
+| Toda operación **valida todo antes de cambiar cualquier dato** | validar y aplicar a medida que se avanza | es la condición que hace que una operación rechazada deje la entidad como estaba, sin tener que deshacer. Lo pide la RN-5 de la #3, la RN-12 de la #4 y la RN-11 de la #6 |
 
 ## Estilo de código
 
