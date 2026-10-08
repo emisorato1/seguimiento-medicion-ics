@@ -67,3 +67,25 @@ func TestCrearUnProyectoSoloConLosDatosObligatorios(t *testing.T) {
 		t.Errorf("se esperaba el proyecto sin fecha de finalizacion, salio: %v", project.End())
 	}
 }
+
+// Escenario: Dos proyectos con el mismo nombre
+// Cubre: RN-1, RN-7
+func TestDosProyectosConElMismoNombre(t *testing.T) {
+	registry := NewProjectRegistry()
+	first, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba crear el primer proyecto sin error, salio: %v", err)
+	}
+
+	second, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el segundo proyecto con el mismo nombre sin error, salio: %v", err)
+	}
+	if second.ID() == first.ID() {
+		t.Fatalf("se esperaban identificadores distintos, los dos salieron: %d", first.ID())
+	}
+	if _, err := registry.Get(first.ID()); err != nil {
+		t.Errorf("se esperaba seguir encontrando el primer proyecto, salio: %v", err)
+	}
+}
