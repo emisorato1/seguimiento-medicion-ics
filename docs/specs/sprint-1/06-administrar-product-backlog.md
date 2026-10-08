@@ -421,7 +421,10 @@ Cada escenario BDD de la Fase 1 tiene al menos una tarea que lo cubre, y el test
 nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-08 — Comentarios: aprobada en el PR #53, con los
+> ajustes pedidos en el #44: la prioridad se convierte desde texto en el dominio (tarea 2), la
+> RN-11 vale también al crear (tarea 7), la RN-8 cubre historias En curso (tarea 9) y está la
+> tabla de criterios de aceptación.
 
 ## Fase 4 — Implementación
 
