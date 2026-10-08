@@ -4,7 +4,7 @@
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula — asignada por el Agile Enabler el 02/10 por carga
   de trabajo (era quien tenía menos story points)
-- **Estado:** Tareas — **pendiente de Puerta 3**
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a la Puerta 1
@@ -319,7 +319,7 @@ RN-3 (4, 8), RN-4 (3), RN-5 (11, 12, 14), RN-6 (1), RN-7 (5, 10).
 Los trece escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario BDD".
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-08 — Comentarios: aprobada en el PR #49. La columna 'Necesita en dev' de la tabla de tareas indica que historia tiene que estar mergeada antes de cada tarea: las tareas 1 a 3 no dependen de ninguna.
 
 ## Fase 4 — Implementación
 

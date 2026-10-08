@@ -3,7 +3,7 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Tareas — **pendiente de Puerta 3**
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -381,7 +381,7 @@ tarea propia: no es un comportamiento que se pruebe con un escenario, sino una r
 que el compilador hace cumplir.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-08 — Comentarios: aprobada en el PR #48. Se acepto no separar la tarea 10 en 'valida' y 'no cambia nada si se rechaza': con la decision de AGENTS.md de validar todo antes de cambiar cualquier dato, las dos cosas salen del mismo codigo y el segundo test pasaria en verde sin escribir nada, que no es un ciclo de TDD. El criterio corrige al que se habia usado en la #6.
 
 ## Fase 4 — Implementación
 

@@ -46,7 +46,7 @@ tabla() {  # $1 = estado a filtrar
     + "\n- Story points cargados: \([$i[] | (to_entries | map(select(.key | ascii_downcase == "story points")) | .[0].value) // 0] | add)"
     + "\n- Terminadas: \([$i[] | select(.status == "Hecho")] | length)"'
   echo
-  for estado in "En review" "En progreso" "Especificacion SDD" "Sprint Backlog" "Product Backlog" "Hecho"; do
+  for estado in "En review" "En progreso" "Lista para implementar" "Especificacion SDD" "Sprint Backlog" "Product Backlog" "Hecho"; do
     echo "## $estado"
     echo
     tabla "$estado"
