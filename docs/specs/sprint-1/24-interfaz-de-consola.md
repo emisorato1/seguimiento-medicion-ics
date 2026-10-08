@@ -253,9 +253,9 @@ verifica lo que escribió como salida.
 
 | # | Tarea | Escenario BDD | Reglas | Necesita en `dev` | Estado |
 |---|---|---|---|---|---|
-| 1 | La consola pide una operación sobre una entrada y una salida genéricas, y termina con la operación de salir | Salir del programa | RN-6 | nada | pendiente |
-| 2 | Una línea vacía no hace nada y vuelve a pedir una operación | Entrada vacia | caso límite | nada | pendiente |
-| 3 | Una operación que no existe se informa y se listan las disponibles | Operacion inexistente | RN-4 | nada | pendiente |
+| 1 | La consola pide una operación sobre una entrada y una salida genéricas, y termina con la operación de salir | Salir del programa | RN-6 | nada | hecha |
+| 2 | Una línea vacía no hace nada y vuelve a pedir una operación | Entrada vacia | caso límite | nada | hecha |
+| 3 | Una operación que no existe se informa y se listan las disponibles | Operacion inexistente | RN-4 | nada | hecha |
 | 4 | Crear un proyecto: pide los datos, lo crea en el registro y muestra su identificador | Crear un proyecto desde la consola | RN-1, RN-3 | #3 | pendiente |
 | 5 | Si el núcleo rechaza la operación, se muestra su mensaje tal cual y la consola sigue | Mostrar el motivo de un rechazo | RN-2, RN-7 | #3 | pendiente |
 | 6 | Agregar un integrante y listar los del proyecto; el rol se pasa al dominio como texto | Agregar y listar integrantes | RN-1 | #4 | pendiente |
@@ -323,7 +323,17 @@ Los trece escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario 
 
 ## Fase 4 — Implementación
 
-_Se completa a medida que se avanza._
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `7d31b89` | `cd3c73b` |
+| 2 | `44eaaf7` | `d9e27a8` |
+| 3 | `35173b0` | `69fbd58` |
+
+### Desvíos respecto de la spec
+
+Ninguno por ahora.
 
 ## Trazabilidad
 
@@ -333,5 +343,5 @@ _Se completa a medida que se avanza._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | pendiente |
-| Código Go | pendiente |
+| Tests | `cmd/app/console_test.go` |
+| Código Go | `cmd/app/console.go` |
