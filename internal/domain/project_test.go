@@ -89,3 +89,33 @@ func TestDosProyectosConElMismoNombre(t *testing.T) {
 		t.Errorf("se esperaba seguir encontrando el primer proyecto, salio: %v", err)
 	}
 }
+
+// Escenario: Guardar el nombre sin espacios en los extremos
+// Cubre: RN-10
+func TestGuardarElNombreSinEspaciosEnLosExtremos(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	project, err := registry.Create(ProjectData{Name: "  Sistema de metricas  ", Start: date(2026, 10, 1)})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el proyecto sin error, salio: %v", err)
+	}
+	if project.Name() != "Sistema de metricas" {
+		t.Errorf("se esperaba el nombre %q, salio: %q", "Sistema de metricas", project.Name())
+	}
+}
+
+// Escenario: Aceptar un nombre de un solo caracter
+// Cubre: RN-10
+func TestAceptarUnNombreDeUnSoloCaracter(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	project, err := registry.Create(ProjectData{Name: "X", Start: date(2026, 10, 1)})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el proyecto sin error, salio: %v", err)
+	}
+	if project.Name() != "X" {
+		t.Errorf("se esperaba el nombre %q, salio: %q", "X", project.Name())
+	}
+}
