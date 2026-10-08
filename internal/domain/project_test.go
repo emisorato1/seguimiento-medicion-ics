@@ -46,3 +46,24 @@ func TestCrearUnProyectoConTodosLosDatos(t *testing.T) {
 		t.Errorf("se esperaba el fin 30/11/2026, salio: %v", found.End())
 	}
 }
+
+// Escenario: Crear un proyecto solo con los datos obligatorios
+// Cubre: datos opcionales de la Fase 1 (descripcion y fecha de finalizacion)
+func TestCrearUnProyectoSoloConLosDatosObligatorios(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	project, err := registry.Create(ProjectData{
+		Name:  "Sistema de metricas",
+		Start: date(2026, 10, 1),
+	})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el proyecto sin error, salio: %v", err)
+	}
+	if project.Description() != "" {
+		t.Errorf("se esperaba el proyecto sin descripcion, salio: %q", project.Description())
+	}
+	if project.HasEnd() {
+		t.Errorf("se esperaba el proyecto sin fecha de finalizacion, salio: %v", project.End())
+	}
+}
