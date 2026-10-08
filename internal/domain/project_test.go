@@ -165,3 +165,38 @@ func TestRechazarUnProyectoSinFechaDeInicio(t *testing.T) {
 		t.Fatalf("se esperaba ErrProjectStartRequired, salio: %v", err)
 	}
 }
+
+// Escenario: Rechazar fechas incoherentes
+// Cubre: RN-4
+func TestRechazarFechasIncoherentes(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	_, err := registry.Create(ProjectData{
+		Name:  "Sistema de metricas",
+		Start: date(2026, 10, 1),
+		End:   date(2026, 9, 30),
+	})
+
+	if !errors.Is(err, ErrProjectDatesInconsistent) {
+		t.Fatalf("se esperaba ErrProjectDatesInconsistent, salio: %v", err)
+	}
+}
+
+// Escenario: Aceptar un proyecto que empieza y termina el mismo dia
+// Cubre: RN-4
+func TestAceptarUnProyectoQueEmpiezaYTerminaElMismoDia(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	project, err := registry.Create(ProjectData{
+		Name:  "Sistema de metricas",
+		Start: date(2026, 10, 1),
+		End:   date(2026, 10, 1),
+	})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el proyecto sin error, salio: %v", err)
+	}
+	if !project.End().Equal(date(2026, 10, 1)) {
+		t.Errorf("se esperaba el fin 01/10/2026, salio: %v", project.End())
+	}
+}
