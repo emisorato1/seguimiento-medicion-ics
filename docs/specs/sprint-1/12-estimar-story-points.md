@@ -3,7 +3,7 @@
 - **Historia:** #12
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula
-- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
+- **Estado:** Tareas — **pendiente de Puerta 3**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -247,7 +247,80 @@ lugar de un cero.
 
 ## Fase 3 — Tareas
 
-_Se escribe después de que la Puerta 2 esté aprobada._
+Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
+lo hace pasar en otro. Están en el orden en que hay que hacerlas, y cada una deja el código
+compilando y los tests en verde.
+
+Los tests siguen la convención de [AGENTS.md](../../../AGENTS.md): un test por escenario, con
+el nombre del escenario. Cada tarea de rechazo verifica, además del error, que la historia
+quedó como estaba: es la condición de "validar todo antes de cambiar cualquier dato".
+
+| # | Tarea | Escenario BDD | Reglas | Estado |
+|---|---|---|---|---|
+| 1 | Una historia recién creada figura como no estimada al consultarla | Consultar una historia sin estimar | RN-4 | pendiente |
+| 2 | Estimar con cada valor de la escala: la historia queda estimada en ese valor | Estimar con cada valor de la escala | RN-1, RN-5 | pendiente |
+| 3 | Rechazar los valores fuera de la escala con un único error que informa los valores válidos; la historia sigue sin estimar | Rechazar valores fuera de la escala | RN-1, RN-2, RN-3 | pendiente |
+| 4 | Reestimar reemplaza el valor anterior | Reestimar una historia | RN-5, RN-6 | pendiente |
+| 5 | Reestimar con el mismo valor no es error | Reestimar con el mismo valor | RN-5 | pendiente |
+| 6 | Una historia En curso se puede reestimar | Reestimar una historia en curso | RN-5 | pendiente |
+| 7 | Quitar la estimación deja la historia sin estimar | Quitar la estimacion | RN-7 | pendiente |
+| 8 | Quitarle la estimación a una historia ya sin estimar no es error | — (caso límite) | RN-7 | pendiente |
+| 9 | Una historia Terminada no se estima ni se reestima, y conserva su valor | No reestimar una historia terminada | RN-8 | pendiente |
+| 10 | A una historia Terminada no se le quita la estimación, y conserva su valor | No quitar la estimacion de una historia terminada | RN-8 | pendiente |
+| 11 | Estimar una historia que no existe informa que no se encontró | Estimar una historia que no existe | RN-9 | pendiente |
+| 12 | Quitarle la estimación a una historia que no existe informa que no se encontró | — (RN-9) | RN-9 | pendiente |
+| 13 | Con más de un problema se informa el primero, en el orden existencia → estado → valor | — (decisión de la Fase 2) | RN-8, RN-9 | pendiente |
+
+**Tareas sin escenario.** La 8, la 12 y la 13 cubren un caso límite, la segunda mitad de la
+RN-9 y el orden de los controles decidido en la Fase 2, que no tienen escenario propio en la
+Fase 1. Sus tests se nombran por lo que verifican (`TestQuitarLaEstimacionDeUnaHistoriaYaSinEstimar`,
+`TestQuitarLaEstimacionDeUnaHistoriaInexistente`, `TestConMasDeUnProblemaSeInformaElPrimero`),
+y el comentario de arriba dice qué regla o decisión cubren en lugar de qué escenario.
+
+**Cómo se verifica la RN-2.** El error se verifica con `errors.Is`, como pide la convención.
+Además, el test de la tarea 3 verifica que el mensaje **incluya cada valor de la escala**, sin
+comparar el texto completo: la redacción puede cambiar, pero la RN-2 exige que los valores
+válidos estén.
+
+### Por qué este orden
+
+- **La 1 va primero** porque es la consulta de si la historia está estimada, que usan todas
+  las demás para verificar el resultado.
+- **La 2 es el camino feliz**, y la 3 agrega la validación. Al revés, el primer test de
+  validación no tendría contra qué comparar.
+- **De la 4 a la 8** son reestimar y quitar sobre historias que se pueden modificar.
+- **De la 9 a la 12** son los rechazos, que se agregan uno por uno.
+- **La 13 va al final** porque solo tiene sentido cuando ya existen los tres errores que hay
+  que ordenar.
+
+### Cobertura
+
+Las nueve reglas de negocio quedan cubiertas: RN-1 (2, 3), RN-2 (3), RN-3 (3), RN-4 (1),
+RN-5 (2, 4, 5, 6), RN-6 (4), RN-7 (7, 8), RN-8 (9, 10, 13), RN-9 (11, 12, 13).
+
+| Criterio de aceptación | Tareas |
+|---|---|
+| Se puede asignar story points con cualquiera de los valores 1, 2, 3, 5, 8, 13 o 21 | 2 |
+| No se puede asignar un valor fuera de esa escala, por ejemplo 4 o 7 | 3 |
+| No se puede asignar cero ni un valor negativo | 3 |
+| Una historia sin estimar figura como no estimada, y eso no es un error | 1 |
+| Se puede reestimar una historia mientras no esté Terminada, y queda el último valor | 4, 5, 6 |
+| No se puede cambiar la estimación de una historia Terminada | 9, 10 |
+| Se le puede quitar la estimación a una historia no terminada | 7 |
+| Estimar una historia que no existe informa que no se encontró | 11 |
+
+Los diez escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario BDD".
+
+### Dependencias
+
+- **Todas las tareas necesitan las de la #6** en `dev`: la historia, su estado y el backlog
+  dentro del proyecto.
+- **Las tareas 6, 9 y 10 necesitan historias En curso o Terminada**, y los cambios de estado
+  son de la #9 y la #10, que todavía no existen. Los tests las preparan desde dentro del
+  paquete, que puede fijar el estado directamente.
+
+> **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 4 — Implementación
 
