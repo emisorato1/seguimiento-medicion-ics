@@ -355,19 +355,28 @@ para que cada test que se agrega falle por una sola razón.
 | # | Tarea | Reglas y criterios que cubre | Estado |
 |---|---|---|---|
 | 1 | La historia existe como dato con sus campos, y el estado es un tipo propio con los tres valores | RN-2 | pendiente |
-| 2 | La prioridad es un tipo propio con los tres valores, y el dominio rechaza cualquier otro | RN-4 | pendiente |
+| 2 | La prioridad es un tipo propio con los tres valores, y **el dominio convierte el texto que escribe el usuario en una prioridad**, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | pendiente |
 | 3 | El proyecto contiene su backlog y su contador de identificadores; pedir el backlog de un proyecto sin historias devuelve una lista vacía | RN-15 | pendiente |
 | 4 | Agregar una historia al backlog con los datos válidos: queda en Pendiente, sin estimar y con identificador propio | RN-1, RN-3, RN-7 | pendiente |
 | 5 | El contador no retrocede: dos historias seguidas reciben identificadores distintos, y dos proyectos distintos arrancan los dos en 1 | RN-1, RN-16 | pendiente |
 | 6 | Normalizar: título, descripción y criterios se guardan sin los espacios de los extremos, y los criterios vacíos se descartan | RN-6 | pendiente |
-| 7 | Validar lo obligatorio sobre lo ya normalizado: título, descripción, prioridad y al menos un criterio; un texto de solo espacios cuenta como vacío | RN-5 | pendiente |
+| 7 | Validar lo obligatorio sobre lo ya normalizado: título, descripción, prioridad y al menos un criterio; un texto de solo espacios cuenta como vacío. Cada rechazo verifica además que **el backlog quedó como estaba** | RN-5, RN-11 | pendiente |
 | 8 | Dos historias del mismo proyecto pueden tener el mismo título | RN-14 | pendiente |
-| 9 | Modificar una historia: cambia solo lo indicado y los criterios se reemplazan con la lista completa | RN-8, RN-9 | pendiente |
+| 9 | Modificar una historia **Pendiente y una En curso**: en las dos cambia solo lo indicado y los criterios se reemplazan con la lista completa. Modificar sin cambiar nada no da error | RN-8, RN-9 | pendiente |
 | 10 | Modificar usa la misma validación que crear, y una operación rechazada deja la historia y el backlog como estaban | RN-5, RN-11 | pendiente |
-| 11 | Una historia Terminada no se modifica | RN-10 | pendiente |
+| 11 | Una historia Terminada no se modifica. El test arma la historia en ese estado directamente, porque vive en el mismo paquete: las transiciones de estado son de la #9 y la #10 y todavía no existen | RN-10 | pendiente |
 | 12 | Modificar una historia que no existe informa el error y no crea ninguna | RN-13 | pendiente |
 | 13 | Agregar, modificar o listar historias de un proyecto inexistente informa que no se encontró el proyecto | RN-12 | pendiente |
 | 14 | Pedir el backlog de un proyecto con historias las devuelve todas con sus datos | RN-15 | pendiente |
+
+**Ajustes pedidos en la Puerta 3.** Maximiliano Eula señaló que la prioridad tenía el mismo
+problema que el rol en la #4: si el dominio recibe una prioridad ya convertida, el escenario
+"Rechazar una prioridad invalida" —que pasa el texto "Urgente"— no se puede testear, y la
+consola termina duplicando la RN-4. Se adopta: el dominio convierte el texto. Juliana Bustos
+encontró que la RN-8 no estaba cubierta para el estado **En curso** (la tarea 9 solo probaba
+Pendiente, así que una implementación que permitiera modificar únicamente las Pendientes
+habría pasado todos los tests) y que la **RN-11 también vale al crear**, no solo al modificar.
+Los tres cambios están aplicados.
 
 ### Por qué este orden
 
@@ -386,9 +395,27 @@ para que cada test que se agrega falle por una sola razón.
 
 ### Cobertura
 
-Las dieciséis reglas de negocio quedan cubiertas: RN-1 (4, 5), RN-2 (1), RN-3 (4), RN-4 (2),
-RN-5 (7, 10), RN-6 (6), RN-7 (4), RN-8 (9), RN-9 (9), RN-10 (11), RN-11 (10), RN-12 (13),
-RN-13 (12), RN-14 (8), RN-15 (3, 14), RN-16 (5).
+**Reglas de negocio:** RN-1 (4, 5), RN-2 (1), RN-3 (4), RN-4 (2), RN-5 (7, 10), RN-6 (6),
+RN-7 (4), RN-8 (9), RN-9 (9), RN-10 (11), RN-11 (7, 10), RN-12 (13), RN-13 (12), RN-14 (8),
+RN-15 (3, 14), RN-16 (5).
+
+**Criterios de aceptación:**
+
+| Criterio | Tarea |
+|---|---|
+| Crear una historia con sus datos: queda Pendiente, sin estimar y con identificador propio | 4 |
+| El identificador no se repite dentro del mismo proyecto | 5 |
+| No se puede crear sin título, descripción, prioridad o criterios de aceptación | 7 |
+| No se puede crear con una prioridad que no sea Alta, Media o Baja | 2 |
+| Una historia recién creada queda sin estimar | 4 |
+| Se puede modificar mientras no esté Terminada | 9 |
+| No se puede modificar una historia Terminada | 11 |
+| Se puede pedir el backlog completo de un proyecto | 14 |
+| El backlog de un proyecto sin historias se devuelve vacío | 3 |
+| Un criterio de aceptación vacío se descarta, y si no queda ninguno se rechaza | 6, 7 |
+| Una operación rechazada deja la historia y el backlog como estaban | 7, 10 |
+| Modificar una historia inexistente informa el error y no crea ninguna | 12 |
+| Operar sobre un proyecto inexistente informa que no se encontró | 13 |
 
 Cada escenario BDD de la Fase 1 tiene al menos una tarea que lo cubre, y el test lleva el
 nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
