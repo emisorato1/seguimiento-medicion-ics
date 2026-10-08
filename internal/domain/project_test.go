@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"testing"
 	"time"
 )
@@ -117,5 +118,38 @@ func TestAceptarUnNombreDeUnSoloCaracter(t *testing.T) {
 	}
 	if project.Name() != "X" {
 		t.Errorf("se esperaba el nombre %q, salio: %q", "X", project.Name())
+	}
+}
+
+// Escenario: Rechazar un proyecto sin nombre
+// Cubre: RN-2
+func TestRechazarUnProyectoSinNombre(t *testing.T) {
+	cases := []struct {
+		name        string
+		projectName string
+	}{
+		{name: "vacio", projectName: ""},
+		{name: "solo espacios", projectName: "   "},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			registry := NewProjectRegistry()
+
+			_, err := registry.Create(ProjectData{Name: c.projectName, Start: date(2026, 10, 1)})
+
+			if !errors.Is(err, ErrProjectNameRequired) {
+				t.Fatalf("se esperaba ErrProjectNameRequired, salio: %v", err)
+			}
+
+			// La creacion rechazada no registro nada: el proximo proyecto sigue siendo el 1.
+			next, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba crear el proyecto valido sin error, salio: %v", err)
+			}
+			if next.ID() != 1 {
+				t.Errorf("se esperaba que el rechazo no registrara nada y el proximo fuera el 1, salio: %d", next.ID())
+			}
+		})
 	}
 }
