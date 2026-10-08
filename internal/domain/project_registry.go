@@ -18,10 +18,16 @@ func NewProjectRegistry() *ProjectRegistry {
 }
 
 // Create registra un proyecto nuevo con los datos indicados y le asigna su identificador.
+// Normaliza y valida todo antes de registrar: si algo falla, no se registra nada.
 func (r *ProjectRegistry) Create(data ProjectData) (*Project, error) {
+	name := strings.TrimSpace(data.Name)
+	if name == "" {
+		return nil, ErrProjectNameRequired
+	}
+
 	project := &Project{
 		id:          r.nextID,
-		name:        strings.TrimSpace(data.Name),
+		name:        name,
 		description: data.Description,
 		start:       data.Start,
 		end:         data.End,
