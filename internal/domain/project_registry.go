@@ -27,6 +27,9 @@ func (r *ProjectRegistry) Create(data ProjectData) (*Project, error) {
 	if data.Start.IsZero() {
 		return nil, ErrProjectStartRequired
 	}
+	if !data.End.IsZero() && data.End.Before(data.Start) {
+		return nil, ErrProjectDatesInconsistent
+	}
 
 	project := &Project{
 		id:          r.nextID,
