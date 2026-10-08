@@ -3,7 +3,7 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
+- **Estado:** Tareas — **pendiente de Puerta 3**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -53,8 +53,8 @@ Al consultarlo se devuelven sus datos y ese identificador.
    debe rechazar la operación e informar que las fechas son incoherentes.
 5. **[RN-5]** Cuando se modifica un proyecto existente, el sistema debe aplicar las mismas
    validaciones que al crearlo. Si alguna falla, el proyecto debe quedar como estaba antes.
-6. **[RN-6]** Si se intenta modificar un proyecto que no existe, el sistema debe informar que
-   no se encontró el proyecto y no modificar ni crear nada.
+6. **[RN-6]** Si se intenta consultar o modificar un proyecto que no existe, el sistema debe
+   informar que no se encontró el proyecto y no modificar ni crear nada.
 7. **[RN-7]** El sistema debe permitir que dos proyectos distintos tengan el mismo nombre:
    lo que los distingue es el identificador.
 8. **[RN-8]** Cuando se modifica un proyecto, el sistema debe cambiar solo los datos que se
@@ -85,7 +85,7 @@ Al consultarlo se devuelven sus datos y ese identificador.
 | Nombre vacío o solo espacios | rechaza e informa que el nombre es obligatorio |
 | Falta la fecha de inicio | rechaza e informa que la fecha de inicio es obligatoria |
 | Fecha de fin anterior a la de inicio | rechaza e informa que las fechas son incoherentes |
-| Identificador inexistente al modificar | informa que no se encontró el proyecto |
+| Identificador inexistente al consultar o modificar | informa que no se encontró el proyecto |
 
 ### Criterios de aceptación
 
@@ -102,6 +102,7 @@ Al consultarlo se devuelven sus datos y ese identificador.
       explícitamente.
 - [ ] Dos proyectos creados con el mismo nombre reciben identificadores distintos.
 - [ ] Modificar un proyecto inexistente informa el error y no crea nada.
+- [ ] Consultar un proyecto inexistente informa que no se encontró.
 
 ### Escenarios BDD
 
@@ -206,6 +207,11 @@ Escenario: Modificar un proyecto que no existe
   Cuando intento modificar el proyecto 99
   Entonces se informa que no se encontro el proyecto
   Y no se crea ningun proyecto
+
+Escenario: Consultar un proyecto que no existe
+  Dado que no existe ningun proyecto con identificador 99
+  Cuando consulto el proyecto 99
+  Entonces se informa que no se encontro el proyecto
 ```
 
 **Decidido en la revisión de la Puerta 1 (PR #26):** al modificar se indica solo lo que
@@ -241,17 +247,18 @@ trabajan.
 
 Crear y modificar siguen el mismo orden que la #6:
 
-1. **Armar el proyecto resultante.** Al crear, son los datos que llegaron. Al modificar, es
-   el proyecto actual con los cambios pedidos aplicados sobre una copia. Si el proyecto a
-   modificar no existe, se informa que no se encontró y no se arma ni se guarda nada (RN-6).
+1. **Armar los datos resultantes, aparte del proyecto.** Al crear, son los datos que
+   llegaron. Al modificar, son los datos actuales del proyecto con los cambios pedidos
+   aplicados. Si el proyecto a modificar no existe, se informa que no se encontró y no se
+   arma ni se guarda nada (RN-6).
 2. **Normalizar:** sacar los espacios de los extremos del nombre (RN-10).
 3. **Validar el resultado completo** (RN-2, RN-3, RN-4).
-4. **Guardarlo** recién si todo validó.
+4. **Aplicarlo** al proyecto recién si todo validó.
 
-Como el cambio se arma sobre una copia y se guarda al final, una modificación rechazada nunca
-llegó a tocar el proyecto (RN-5). Y como se valida el resultado y no solo lo que llegó, una
-fecha de inicio nueva se compara contra la fecha de finalización que ya estaba (caso límite
-de la Fase 1).
+Como el resultado se arma aparte y se aplica al final, una modificación rechazada nunca llegó
+a tocar el proyecto (RN-5). Y como se valida el resultado y no solo lo que llegó, una fecha de
+inicio nueva se compara contra la fecha de finalización que ya estaba (caso límite de la
+Fase 1).
 
 ### Archivos afectados
 
@@ -309,7 +316,72 @@ proyecto.
 
 ## Fase 3 — Tareas
 
-_Se escribe después de que la Puerta 2 esté aprobada._
+Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
+lo hace pasar en otro. Están en el orden en que hay que hacerlas, y cada una deja el código
+compilando y los tests en verde. Los tests siguen la convención de
+[AGENTS.md](../../../AGENTS.md): uno por escenario, con el nombre del escenario.
+
+| # | Tarea | Reglas que cubre | Escenarios | Estado |
+|---|---|---|---|---|
+| 1 | Crear un proyecto con todos los datos en un registro vacío: queda registrado, recibe el identificador 1 y se puede consultar por ese identificador | RN-1 | Crear un proyecto con todos los datos | pendiente |
+| 2 | Crear un proyecto solo con nombre y fecha de inicio: queda sin descripción y sin fecha de finalización | — (datos opcionales de la Fase 1) | Crear un proyecto solo con los datos obligatorios | pendiente |
+| 3 | Dos proyectos, aunque tengan el mismo nombre, reciben identificadores distintos; el contador nunca retrocede | RN-1, RN-7 | Dos proyectos con el mismo nombre | pendiente |
+| 4 | El nombre se guarda sin los espacios de los extremos; un nombre de un solo carácter es válido | RN-10 | Guardar el nombre sin espacios en los extremos; Aceptar un nombre de un solo caracter | pendiente |
+| 5 | Rechazar el nombre vacío o de solo espacios, y que la creación rechazada no registre nada. Crea `errors.go` con su primer error | RN-2 | Rechazar un proyecto sin nombre | pendiente |
+| 6 | Rechazar la creación sin fecha de inicio | RN-3 | Rechazar un proyecto sin fecha de inicio | pendiente |
+| 7 | Rechazar la fecha de finalización anterior a la de inicio; la misma fecha en las dos es válida | RN-4 | Rechazar fechas incoherentes; Aceptar un proyecto que empieza y termina el mismo dia | pendiente |
+| 8 | Consultar o modificar un proyecto que no existe informa que no se encontró; al modificar, no crea ninguno | RN-6 | Consultar un proyecto que no existe; Modificar un proyecto que no existe | pendiente |
+| 9 | Modificar indicando solo lo que cambia: el resto se conserva, y modificar sin cambiar nada no da error | RN-8 | Modificar solo el nombre conserva los demas datos; Modificar un proyecto sin cambiar nada | pendiente |
+| 10 | Modificar normaliza y valida el resultado completo con las mismas reglas que crear, todo antes de cambiar cualquier dato: una modificación rechazada deja el proyecto como estaba | RN-2, RN-3, RN-4, RN-5, RN-10 | Guardar sin espacios en los extremos el nombre modificado; Rechazar una modificacion que deja el proyecto sin nombre; Rechazar una fecha de inicio posterior a la de finalizacion al modificar | pendiente |
+| 11 | Quitar la descripción o la fecha de finalización con un pedido explícito, conservando el resto | RN-9 | Quitar la fecha de finalizacion; Quitar la descripcion | pendiente |
+
+### Por qué este orden
+
+- **La 1 es el camino feliz** y arma lo mínimo para todo lo demás: el registro, el proyecto y
+  la consulta por identificador. Sin eso no hay contra qué escribir ningún otro test.
+- **La 4 va antes que la 5** porque la validación corre sobre el nombre ya normalizado: es lo
+  que hace que `"   "` cuente como vacío. Al revés, el test de la 5 pasaría por el motivo
+  equivocado. Es el mismo criterio que la #6.
+- **Las validaciones (5 a 7) van de a una**, para que cada test nuevo falle por una sola razón.
+- **La 8 abre la modificación por el camino más corto**: encontrar el proyecto o informar que
+  no existe. Es lo primero que hace cualquier modificación. Se prueba también al consultar
+  porque la #4, la #6 y la #24 buscan proyectos en el registro y dependen de ese error.
+- **La 10 no se separa en "valida" y "no cambia nada si se rechaza"**, a diferencia de la #6.
+  Con la decisión de AGENTS.md de validar todo antes de cambiar cualquier dato, las dos cosas
+  salen del mismo código: un segundo test pasaría en verde sin escribir nada, y eso no es un
+  ciclo de TDD.
+
+### Cobertura
+
+**Reglas de negocio:** RN-1 (1, 3), RN-2 (5, 10), RN-3 (6, 10), RN-4 (7, 10), RN-5 (10),
+RN-6 (8), RN-7 (3), RN-8 (9), RN-9 (11), RN-10 (4, 10).
+
+**Criterios de aceptación:**
+
+| Criterio | Tareas |
+|---|---|
+| Crear con todos los datos y un identificador propio | 1 |
+| Crear solo con nombre y fecha de inicio | 2 |
+| No crear ni modificar sin nombre | 5, 10 |
+| No crear ni modificar sin fecha de inicio | 6, 10 |
+| No crear ni modificar con fecha de fin anterior a la de inicio | 7, 10 |
+| Modificar y que los cambios queden guardados | 9 |
+| Una modificación rechazada deja el proyecto como estaba | 10 |
+| Modificar sin indicar un dato no lo borra | 9 |
+| Quitar la descripción o la fecha de fin pidiéndolo explícitamente | 11 |
+| Dos proyectos con el mismo nombre reciben identificadores distintos | 3 |
+| Modificar un proyecto inexistente informa el error y no crea nada | 8 |
+| Consultar un proyecto inexistente informa que no se encontró | 8 |
+
+**Escenarios BDD:** los 18 escenarios de la Fase 1 tienen tarea, como muestra la columna
+*Escenarios* de la tabla.
+
+Que los datos del proyecto estén ocultos fuera del paquete (decisión de la Puerta 2) no lleva
+tarea propia: no es un comportamiento que se pruebe con un escenario, sino una restricción
+que el compilador hace cumplir.
+
+> **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 4 — Implementación
 
