@@ -345,3 +345,34 @@ func TestRechazarUnaFechaDeInicioPosteriorALaDeFinalizacionAlModificar(t *testin
 	}
 	assertProject(t, project, "Sistema de metricas", "TP de ICS", date(2026, 10, 1), date(2026, 11, 30))
 }
+
+// Escenario: Quitar la fecha de finalizacion
+// Cubre: RN-9
+func TestQuitarLaFechaDeFinalizacion(t *testing.T) {
+	registry := NewProjectRegistry()
+	project := fullProject(t, registry)
+
+	err := registry.Update(project.ID(), ProjectChanges{End: Remove[time.Time]()})
+
+	if err != nil {
+		t.Fatalf("se esperaba quitar la fecha de finalizacion sin error, salio: %v", err)
+	}
+	if project.HasEnd() {
+		t.Errorf("se esperaba el proyecto sin fecha de finalizacion, salio: %v", project.End())
+	}
+	assertProject(t, project, "Sistema de metricas", "TP de ICS", date(2026, 10, 1), time.Time{})
+}
+
+// Escenario: Quitar la descripcion
+// Cubre: RN-9
+func TestQuitarLaDescripcion(t *testing.T) {
+	registry := NewProjectRegistry()
+	project := fullProject(t, registry)
+
+	err := registry.Update(project.ID(), ProjectChanges{Description: Remove[string]()})
+
+	if err != nil {
+		t.Fatalf("se esperaba quitar la descripcion sin error, salio: %v", err)
+	}
+	assertProject(t, project, "Sistema de metricas", "", date(2026, 10, 1), date(2026, 11, 30))
+}
