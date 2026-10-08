@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"strings"
 )
 
 // prompt es el indicador con el que la consola pide una operación.
@@ -24,8 +25,15 @@ func runConsole(in io.Reader, out io.Writer) error {
 		if !scanner.Scan() {
 			return scanner.Err()
 		}
-		if scanner.Text() == "salir" {
+		line := scanner.Text()
+		switch {
+		case line == "":
+			// una línea vacía no hace nada y vuelve a pedir una operación
+		case line == "salir":
 			return nil
+		default:
+			fmt.Fprintf(out, "La operación %q no existe. Operaciones disponibles: %s\n",
+				line, strings.Join(operationNames(), ", "))
 		}
 	}
 }
