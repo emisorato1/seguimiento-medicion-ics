@@ -376,3 +376,20 @@ func TestQuitarLaDescripcion(t *testing.T) {
 	}
 	assertProject(t, project, "Sistema de metricas", "", date(2026, 10, 1), date(2026, 11, 30))
 }
+
+// Escenario: Modificar la descripcion y la fecha de finalizacion
+// Cubre: RN-8
+func TestModificarLaDescripcionYLaFechaDeFinalizacion(t *testing.T) {
+	registry := NewProjectRegistry()
+	project := fullProject(t, registry)
+
+	err := registry.Update(project.ID(), ProjectChanges{
+		Description: SetTo("Proyecto integrador"),
+		End:         SetTo(date(2026, 12, 15)),
+	})
+
+	if err != nil {
+		t.Fatalf("se esperaba modificar el proyecto sin error, salio: %v", err)
+	}
+	assertProject(t, project, "Sistema de metricas", "Proyecto integrador", date(2026, 10, 1), date(2026, 12, 15))
+}
