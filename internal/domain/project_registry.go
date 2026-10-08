@@ -1,7 +1,5 @@
 package domain
 
-import "time"
-
 // ProjectRegistry guarda los proyectos mientras corre el programa y es el unico que
 // les asigna identificador.
 type ProjectRegistry struct {
@@ -67,12 +65,8 @@ func (r *ProjectRegistry) Update(id int, changes ProjectChanges) error {
 	if changes.Start != nil {
 		result.Start = *changes.Start
 	}
-	if changes.Description.remove {
-		result.Description = ""
-	}
-	if changes.End.remove {
-		result.End = time.Time{}
-	}
+	result.Description = changes.Description.apply(result.Description)
+	result.End = changes.End.apply(result.End)
 
 	result, err = prepare(result)
 	if err != nil {

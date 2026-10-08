@@ -26,16 +26,36 @@ type ProjectChanges struct {
 	End         OptionalChange[time.Time]
 }
 
-// OptionalChange es lo que se pide sobre un dato opcional al modificar un proyecto. Su
-// valor cero no toca el dato, y Remove pide quitarlo. Como es un solo valor, un pedido
-// no puede decir dos cosas a la vez sobre el mismo dato.
+// OptionalChange es lo que se pide sobre un dato opcional al modificar un proyecto: su
+// valor cero no toca el dato, SetTo lo cambia y Remove lo quita. Como es un solo valor,
+// un pedido no puede decir dos cosas a la vez sobre el mismo dato.
 type OptionalChange[T any] struct {
+	set    bool
+	value  T
 	remove bool
+}
+
+// SetTo pide cambiar un dato opcional por un valor nuevo.
+func SetTo[T any](value T) OptionalChange[T] {
+	return OptionalChange[T]{set: true, value: value}
 }
 
 // Remove pide quitar un dato opcional.
 func Remove[T any]() OptionalChange[T] {
 	return OptionalChange[T]{remove: true}
+}
+
+// apply devuelve el dato despues de aplicar el pedido: el mismo, el valor nuevo o vacio.
+func (c OptionalChange[T]) apply(current T) T {
+	switch {
+	case c.set:
+		return c.value
+	case c.remove:
+		var empty T
+		return empty
+	default:
+		return current
+	}
 }
 
 // prepare normaliza y valida los datos de un proyecto, en ese orden, sin tocar ningun
