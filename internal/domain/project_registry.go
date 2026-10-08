@@ -54,8 +54,12 @@ func (r *ProjectRegistry) Get(id int) (*Project, error) {
 
 // Update modifica el proyecto con ese identificador segun el pedido de cambios.
 func (r *ProjectRegistry) Update(id int, changes ProjectChanges) error {
-	if _, err := r.Get(id); err != nil {
+	project, err := r.Get(id)
+	if err != nil {
 		return err
+	}
+	if changes.Name != nil {
+		project.name = *changes.Name
 	}
 	return nil
 }

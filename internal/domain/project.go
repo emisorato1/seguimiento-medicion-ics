@@ -12,8 +12,11 @@ type ProjectData struct {
 	End         time.Time
 }
 
-// ProjectChanges es el pedido de modificacion de un proyecto.
-type ProjectChanges struct{}
+// ProjectChanges es el pedido de modificacion de un proyecto. Un dato en nil no se toca;
+// uno con valor cambia a ese valor. Un dato que no se indica nunca se borra (RN-8).
+type ProjectChanges struct {
+	Name *string
+}
 
 // Project es un proyecto de software registrado. Sus datos estan ocultos fuera del
 // paquete: solo se cambian con operaciones que validan.
