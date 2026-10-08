@@ -301,3 +301,47 @@ func TestModificarUnProyectoSinCambiarNada(t *testing.T) {
 	}
 	assertProject(t, project, "Sistema de metricas", "TP de ICS", date(2026, 10, 1), date(2026, 11, 30))
 }
+
+// Escenario: Guardar sin espacios en los extremos el nombre modificado
+// Cubre: RN-5, RN-10
+func TestGuardarSinEspaciosEnLosExtremosElNombreModificado(t *testing.T) {
+	registry := NewProjectRegistry()
+	project := fullProject(t, registry)
+
+	err := registry.Update(project.ID(), ProjectChanges{Name: ptr("  Seguimiento y medicion  ")})
+
+	if err != nil {
+		t.Fatalf("se esperaba modificar el proyecto sin error, salio: %v", err)
+	}
+	if project.Name() != "Seguimiento y medicion" {
+		t.Errorf("se esperaba el nombre %q, salio: %q", "Seguimiento y medicion", project.Name())
+	}
+}
+
+// Escenario: Rechazar una modificacion que deja el proyecto sin nombre
+// Cubre: RN-2, RN-5
+func TestRechazarUnaModificacionQueDejaElProyectoSinNombre(t *testing.T) {
+	registry := NewProjectRegistry()
+	project := fullProject(t, registry)
+
+	err := registry.Update(project.ID(), ProjectChanges{Name: ptr("   ")})
+
+	if !errors.Is(err, ErrProjectNameRequired) {
+		t.Fatalf("se esperaba ErrProjectNameRequired, salio: %v", err)
+	}
+	assertProject(t, project, "Sistema de metricas", "TP de ICS", date(2026, 10, 1), date(2026, 11, 30))
+}
+
+// Escenario: Rechazar una fecha de inicio posterior a la de finalizacion al modificar
+// Cubre: RN-4, RN-5
+func TestRechazarUnaFechaDeInicioPosteriorALaDeFinalizacionAlModificar(t *testing.T) {
+	registry := NewProjectRegistry()
+	project := fullProject(t, registry)
+
+	err := registry.Update(project.ID(), ProjectChanges{Start: ptr(date(2026, 12, 1))})
+
+	if !errors.Is(err, ErrProjectDatesInconsistent) {
+		t.Fatalf("se esperaba ErrProjectDatesInconsistent, salio: %v", err)
+	}
+	assertProject(t, project, "Sistema de metricas", "TP de ICS", date(2026, 10, 1), date(2026, 11, 30))
+}
