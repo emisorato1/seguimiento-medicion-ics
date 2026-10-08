@@ -12,4 +12,6 @@ var (
 	ErrProjectStartRequired = errors.New("la fecha de inicio del proyecto es obligatoria")
 	// ErrProjectDatesInconsistent: fecha de finalizacion anterior a la de inicio (historia #3, RN-4).
 	ErrProjectDatesInconsistent = errors.New("las fechas son incoherentes: la fecha de finalizacion es anterior a la de inicio")
+	// ErrProjectNotFound: consultar o modificar un proyecto que no existe (historia #3, RN-6).
+	ErrProjectNotFound = errors.New("no se encontro el proyecto")
 )

@@ -43,7 +43,19 @@ func (r *ProjectRegistry) Create(data ProjectData) (*Project, error) {
 	return project, nil
 }
 
-// Get devuelve el proyecto guardado con ese identificador.
+// Get devuelve el proyecto guardado con ese identificador, no una copia.
 func (r *ProjectRegistry) Get(id int) (*Project, error) {
-	return r.projects[id], nil
+	project, ok := r.projects[id]
+	if !ok {
+		return nil, ErrProjectNotFound
+	}
+	return project, nil
+}
+
+// Update modifica el proyecto con ese identificador segun el pedido de cambios.
+func (r *ProjectRegistry) Update(id int, changes ProjectChanges) error {
+	if _, err := r.Get(id); err != nil {
+		return err
+	}
+	return nil
 }
