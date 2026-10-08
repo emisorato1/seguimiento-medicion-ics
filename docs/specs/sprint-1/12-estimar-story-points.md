@@ -3,7 +3,7 @@
 - **Historia:** #12
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula
-- **Estado:** Tareas — **pendiente de Puerta 3**
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -320,7 +320,7 @@ Los diez escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario B
   paquete, que puede fijar el estado directamente.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-08 — Comentarios: aprobada en el PR #47. Las tareas 9 y 10 quedan separadas porque son dos caminos distintos de la RN-8 y, juntas, uno podria quedar sin cubrir sin que se note.
 
 ## Fase 4 — Implementación
 

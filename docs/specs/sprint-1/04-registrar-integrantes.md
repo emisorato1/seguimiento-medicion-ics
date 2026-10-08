@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Tareas — **pendiente de Puerta 3**
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -378,7 +378,7 @@ Cada escenario BDD de la Fase 1 tiene al menos una tarea que lo cubre, y el test
 nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-08 — Comentarios: aprobada en el PR #46, con el ajuste adoptado de la Puerta 2: la conversion del texto a un rol la hace el dominio y no la consola, para no duplicar la RN-4 fuera del dominio. Cada tarea de rechazo verifica ademas que la lista quedo como estaba, asi la RN-12 se prueba en cada camino de error.
 
 ## Fase 4 — Implementación
 
