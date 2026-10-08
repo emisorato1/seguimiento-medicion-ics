@@ -46,3 +46,8 @@ func (p *Project) Start() time.Time {
 func (p *Project) End() time.Time {
 	return p.end
 }
+
+// HasEnd indica si el proyecto tiene fecha de finalizacion, que es opcional.
+func (p *Project) HasEnd() bool {
+	return !p.end.IsZero()
+}
