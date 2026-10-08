@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
+- **Estado:** Tareas — **pendiente de Puerta 3**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -286,8 +286,9 @@ el mismo error de "no se encontró el proyecto" que declara la #3 (RN-10), no un
 - **Choca con la #6 en `project.go`.** Las dos historias le agregan un dato al proyecto. El
   cambio de esta historia en ese archivo se limita a la lista de integrantes; quien mergee
   segundo trae `dev` y resuelve el conflicto.
-- **No se toca `cmd/`.** Pedir los datos por teclado, traducir lo que escribe el usuario a uno
-  de los dos roles y mostrar la lista es de la consola (#24).
+- **No se toca `cmd/`.** Pedir los datos por teclado y mostrar la lista es de la consola
+  (#24). Traducir lo que escribe el usuario a uno de los dos roles lo ofrece el dominio (ver
+  el ajuste registrado al principio de la Fase 3).
 - **La #13 y la #14 se van a apoyar en esta historia** para saber quiénes votan y quién carga
   esfuerzo. Esta historia no les deja nada preparado: ver la decisión sobre el identificador.
 
@@ -296,7 +297,88 @@ el mismo error de "no se encontró el proyecto" que declara la #3 (RN-10), no un
 
 ## Fase 3 — Tareas
 
-_Se escribe después de que la Puerta 2 esté aprobada._
+Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
+lo hace pasar en otro. Están en el orden en que hay que hacerlas, y cada una deja el código
+compilando y los tests en verde.
+
+El orden sigue el del Enfoque —normalizar, validar, aplicar— y agrega las reglas de a una,
+para que cada test que se agrega falle por una sola razón.
+
+**Ajuste respecto de la Fase 2.** En la revisión de la Puerta 2 (PR #42), Maximiliano Eula
+propuso que la conversión del texto que escribe el usuario a un rol la ofrezca el dominio y
+no la consola: si la consola rechazara un rol inexistente con un mensaje propio, la RN-4
+quedaría duplicada fuera del dominio. Se adopta: el dominio convierte el texto en un rol y,
+si no corresponde a ninguno de los dos, rechaza con el mismo error de la RN-4. La consola
+solo pasa el texto y muestra el mensaje del núcleo. Al convertir se ignoran las mayúsculas y
+los espacios de los extremos, con el mismo criterio que la RN-5 usa para los nombres. La
+restricción sobre `cmd/` de la Fase 2 quedó actualizada en este mismo cambio.
+
+**Validar todo antes de cambiar cualquier dato.** Es una decisión transversal de
+[AGENTS.md](../../../AGENTS.md), y en esta historia se prueba así: **cada tarea de rechazo
+verifica, además del error, que la lista de integrantes quedó exactamente como estaba**. Es
+lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
+
+| # | Tarea | Reglas y criterios que cubre | Estado |
+|---|---|---|---|
+| 1 | El rol es un tipo propio con los dos valores, y el dominio convierte el texto que escribe el usuario en un rol, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | pendiente |
+| 2 | El integrante existe como dato con su nombre y apellido y su rol | RN-1 | pendiente |
+| 3 | El proyecto contiene su lista de integrantes; pedir la lista de un proyecto sin integrantes devuelve una lista vacía, sin error | RN-8 | pendiente |
+| 4 | Agregar un integrante con datos válidos: queda en la lista con su nombre y apellido y su rol | RN-1, RN-8 | pendiente |
+| 5 | Normalizar: el nombre y apellido se guarda sin los espacios de los extremos | RN-3 | pendiente |
+| 6 | Validar el nombre y apellido sobre lo ya normalizado: vacío o solo espacios se rechaza, y la lista queda igual | RN-2, RN-12 | pendiente |
+| 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | pendiente |
+| 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | pendiente |
+| 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | pendiente |
+| 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | pendiente |
+| 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | pendiente |
+| 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | pendiente |
+| 13 | Quitar un integrante que no pertenece al proyecto informa que no se encontró, y la lista queda igual | RN-11, RN-12 | pendiente |
+| 14 | Pedir la lista de un proyecto con integrantes los devuelve a todos, en el orden en que se agregaron y con su rol; cambiar la lista recibida no cambia los integrantes del proyecto | RN-8 | pendiente |
+| 15 | Agregar, quitar o listar integrantes de un proyecto inexistente informa que no se encontró el proyecto, con el error que declara la #3 | RN-10 | pendiente |
+
+### Por qué este orden
+
+- **Las tareas 1 a 3 no tienen reglas de alta que validar**: son el rol, el dato y dónde vive.
+  El rol va primero porque el integrante lo necesita para existir.
+- **La 4 es el camino feliz**, y recién después entran las validaciones. Al revés, el primer
+  test de validación obligaría a inventar el integrante entero para poder fallar.
+- **La 5 va antes que la 6** porque la validación corre sobre lo normalizado: es lo que hace
+  que un nombre de solo espacios cuente como vacío. Por el mismo motivo, la 8 va después de
+  la 5: el duplicado se compara sobre el nombre ya limpio.
+- **La 1 y la 7 están separadas**: una es convertir el texto en un rol, la otra que agregar no
+  acepte un rol que no existe aunque no haya pasado por la conversión. Juntas, un test en
+  rojo no diría cuál de las dos falló.
+- **La 11 va después de todas las validaciones** porque solo tiene sentido cuando ya existen
+  los cuatro errores que hay que ordenar.
+- **Las tareas 12 a 15 son quitar, listar y los caminos de error**, que se agregan una por
+  una, cada una con su escenario de la Fase 1.
+
+### Cobertura
+
+Las doce reglas de negocio quedan cubiertas: RN-1 (2, 4), RN-2 (6, 11), RN-3 (5),
+RN-4 (1, 7, 11), RN-5 (8, 11), RN-6 (9), RN-7 (10, 11, 12), RN-8 (3, 4, 14), RN-9 (12),
+RN-10 (15), RN-11 (13), RN-12 (6, 7, 8, 10, 13).
+
+| Criterio de aceptación | Tareas |
+|---|---|
+| Se puede agregar un integrante indicando su nombre y apellido y su rol | 4 |
+| No se puede agregar un integrante sin nombre y apellido | 6 |
+| No se puede agregar un integrante con un rol distinto de Agile Enabler o Product Builder | 1, 7 |
+| Se pueden listar los integrantes de un proyecto, con su rol | 14 |
+| Listar los integrantes de un proyecto sin integrantes devuelve una lista vacía | 3 |
+| No se puede cargar dos veces el mismo integrante, aunque cambien las mayúsculas o los espacios | 8 |
+| El mismo integrante se puede cargar en dos proyectos distintos | 9 |
+| No se puede cargar un segundo Agile Enabler en el mismo proyecto | 10 |
+| Se puede quitar un integrante del proyecto | 12 |
+| Quitar un integrante que no está en el proyecto informa el error | 13 |
+| Operar sobre un proyecto inexistente informa que no se encontró | 15 |
+| Una operación rechazada deja los integrantes del proyecto como estaban | 6, 7, 8, 10, 13 |
+
+Cada escenario BDD de la Fase 1 tiene al menos una tarea que lo cubre, y el test lleva el
+nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
+
+> **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 4 — Implementación
 
