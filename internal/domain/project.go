@@ -15,11 +15,27 @@ type ProjectData struct {
 	End         time.Time
 }
 
-// ProjectChanges es el pedido de modificacion de un proyecto. Un dato en nil no se toca;
-// uno con valor cambia a ese valor. Un dato que no se indica nunca se borra (RN-8).
+// ProjectChanges es el pedido de modificacion de un proyecto. Un dato que no se indica
+// nunca se borra (RN-8). El nombre y la fecha de inicio son obligatorios: en nil no se
+// tocan y con valor cambian, pero no existe la opcion de quitarlos. La descripcion y la
+// fecha de finalizacion son opcionales y se pueden quitar con un pedido explicito (RN-9).
 type ProjectChanges struct {
-	Name  *string
-	Start *time.Time
+	Name        *string
+	Start       *time.Time
+	Description OptionalChange[string]
+	End         OptionalChange[time.Time]
+}
+
+// OptionalChange es lo que se pide sobre un dato opcional al modificar un proyecto. Su
+// valor cero no toca el dato, y Remove pide quitarlo. Como es un solo valor, un pedido
+// no puede decir dos cosas a la vez sobre el mismo dato.
+type OptionalChange[T any] struct {
+	remove bool
+}
+
+// Remove pide quitar un dato opcional.
+func Remove[T any]() OptionalChange[T] {
+	return OptionalChange[T]{remove: true}
 }
 
 // prepare normaliza y valida los datos de un proyecto, en ese orden, sin tocar ningun
