@@ -1,5 +1,7 @@
 package domain
 
+import "strings"
+
 // ProjectRegistry guarda los proyectos mientras corre el programa y es el unico que
 // les asigna identificador.
 type ProjectRegistry struct {
@@ -19,7 +21,7 @@ func NewProjectRegistry() *ProjectRegistry {
 func (r *ProjectRegistry) Create(data ProjectData) (*Project, error) {
 	project := &Project{
 		id:          r.nextID,
-		name:        data.Name,
+		name:        strings.TrimSpace(data.Name),
 		description: data.Description,
 		start:       data.Start,
 		end:         data.End,
