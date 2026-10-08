@@ -9,6 +9,11 @@ import (
 // prompt es el indicador con el que la consola pide una operación.
 const prompt = "> "
 
+// operationNames devuelve las operaciones disponibles, en el orden en que se muestran.
+func operationNames() []string {
+	return []string{"salir"}
+}
+
 // runConsole lee operaciones de in, una por línea, y escribe los resultados en out.
 // Antes de cada línea muestra el indicador. Termina cuando el usuario ejecuta la
 // operación de salir (RN-6).

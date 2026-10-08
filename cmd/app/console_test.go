@@ -44,3 +44,23 @@ func TestEntradaVacia(t *testing.T) {
 		t.Fatalf("se esperaba que la consola volviera a pedir una operacion sin mostrar nada mas (%q), salio: %q", want, out.String())
 	}
 }
+
+// Escenario: Operacion inexistente
+// Cubre: RN-4
+func TestOperacionInexistente(t *testing.T) {
+	var out strings.Builder
+
+	err := runConsole(strings.NewReader("volar\nsalir\n"), &out)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), "volar") {
+		t.Fatalf("se esperaba que la consola informara que la operacion \"volar\" no existe, salio: %q", out.String())
+	}
+	for _, name := range operationNames() {
+		if !strings.Contains(out.String(), name) {
+			t.Fatalf("se esperaba que la consola listara la operacion %q, salio: %q", name, out.String())
+		}
+	}
+}
