@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"strings"
 	"testing"
 	"time"
 )
@@ -25,5 +26,21 @@ func TestSalirDelPrograma(t *testing.T) {
 		}
 	case <-time.After(time.Second):
 		t.Fatal("se esperaba que la consola terminara al recibir \"salir\", pero siguio esperando entrada")
+	}
+}
+
+// Escenario: Entrada vacia
+// Cubre: caso límite de la Fase 1
+func TestEntradaVacia(t *testing.T) {
+	var out strings.Builder
+
+	err := runConsole(strings.NewReader("\nsalir\n"), &out)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	want := prompt + prompt
+	if out.String() != want {
+		t.Fatalf("se esperaba que la consola volviera a pedir una operacion sin mostrar nada mas (%q), salio: %q", want, out.String())
 	}
 }
