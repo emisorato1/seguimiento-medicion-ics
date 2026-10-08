@@ -153,3 +153,15 @@ func TestRechazarUnProyectoSinNombre(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Rechazar un proyecto sin fecha de inicio
+// Cubre: RN-3
+func TestRechazarUnProyectoSinFechaDeInicio(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	_, err := registry.Create(ProjectData{Name: "Sistema de metricas"})
+
+	if !errors.Is(err, ErrProjectStartRequired) {
+		t.Fatalf("se esperaba ErrProjectStartRequired, salio: %v", err)
+	}
+}
