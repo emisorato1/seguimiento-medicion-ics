@@ -202,6 +202,13 @@ Escenario: Quitar la descripcion
   Entonces el proyecto queda sin descripcion
   Y conserva su nombre, su fecha de inicio y su fecha de finalizacion
 
+Escenario: Modificar la descripcion y la fecha de finalizacion
+  Dado un proyecto registrado con nombre "Sistema de metricas", descripcion "TP de ICS",
+    inicio 01/10/2026 y fin 30/11/2026
+  Cuando modifico su descripcion a "Proyecto integrador" y su fin a 15/12/2026
+  Entonces el proyecto queda con descripcion "Proyecto integrador" y fin 15/12/2026
+  Y conserva su nombre y su fecha de inicio
+
 Escenario: Modificar un proyecto que no existe
   Dado que no existe ningun proyecto con identificador 99
   Cuando intento modificar el proyecto 99
@@ -334,6 +341,12 @@ compilando y los tests en verde. Los tests siguen la convención de
 | 9 | Modificar indicando solo lo que cambia: el resto se conserva, y modificar sin cambiar nada no da error | RN-8 | Modificar solo el nombre conserva los demas datos; Modificar un proyecto sin cambiar nada | pendiente |
 | 10 | Modificar normaliza y valida el resultado completo con las mismas reglas que crear, todo antes de cambiar cualquier dato: una modificación rechazada deja el proyecto como estaba | RN-2, RN-3, RN-4, RN-5, RN-10 | Guardar sin espacios en los extremos el nombre modificado; Rechazar una modificacion que deja el proyecto sin nombre; Rechazar una fecha de inicio posterior a la de finalizacion al modificar | pendiente |
 | 11 | Quitar la descripción o la fecha de finalización con un pedido explícito, conservando el resto | RN-9 | Quitar la fecha de finalizacion; Quitar la descripcion | pendiente |
+| 12 | Cambiar la descripción y la fecha de finalización por valores nuevos, conservando el resto | RN-8 | Modificar la descripcion y la fecha de finalizacion | pendiente |
+
+La tarea 12 se agregó durante la implementación: ningún escenario pedía cambiar la
+descripción o la fecha de finalización por un valor nuevo, solo quitarlas, así que con TDD
+el sistema podía quitarlas pero no corregirlas. Se agregó el escenario a la Fase 1 y su tarea,
+porque el objetivo de la historia es poder corregir los datos de un proyecto.
 
 ### Por qué este orden
 
@@ -354,7 +367,7 @@ compilando y los tests en verde. Los tests siguen la convención de
 ### Cobertura
 
 **Reglas de negocio:** RN-1 (1, 3), RN-2 (5, 10), RN-3 (6, 10), RN-4 (7, 10), RN-5 (10),
-RN-6 (8), RN-7 (3), RN-8 (9), RN-9 (11), RN-10 (4, 10).
+RN-6 (8), RN-7 (3), RN-8 (9, 12), RN-9 (11), RN-10 (4, 10).
 
 **Criterios de aceptación:**
 
@@ -365,7 +378,7 @@ RN-6 (8), RN-7 (3), RN-8 (9), RN-9 (11), RN-10 (4, 10).
 | No crear ni modificar sin nombre | 5, 10 |
 | No crear ni modificar sin fecha de inicio | 6, 10 |
 | No crear ni modificar con fecha de fin anterior a la de inicio | 7, 10 |
-| Modificar y que los cambios queden guardados | 9 |
+| Modificar y que los cambios queden guardados | 9, 12 |
 | Una modificación rechazada deja el proyecto como estaba | 10 |
 | Modificar sin indicar un dato no lo borra | 9 |
 | Quitar la descripción o la fecha de fin pidiéndolo explícitamente | 11 |
@@ -373,7 +386,7 @@ RN-6 (8), RN-7 (3), RN-8 (9), RN-9 (11), RN-10 (4, 10).
 | Modificar un proyecto inexistente informa el error y no crea nada | 8 |
 | Consultar un proyecto inexistente informa que no se encontró | 8 |
 
-**Escenarios BDD:** los 18 escenarios de la Fase 1 tienen tarea, como muestra la columna
+**Escenarios BDD:** los 19 escenarios de la Fase 1 tienen tarea, como muestra la columna
 *Escenarios* de la tabla.
 
 Que los datos del proyecto estén ocultos fuera del paquete (decisión de la Puerta 2) no lleva
