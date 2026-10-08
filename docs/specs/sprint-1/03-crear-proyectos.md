@@ -3,7 +3,7 @@
 - **Historia:** #3
 - **Sprint:** 1
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -330,18 +330,18 @@ compilando y los tests en verde. Los tests siguen la convención de
 
 | # | Tarea | Reglas que cubre | Escenarios | Estado |
 |---|---|---|---|---|
-| 1 | Crear un proyecto con todos los datos en un registro vacío: queda registrado, recibe el identificador 1 y se puede consultar por ese identificador | RN-1 | Crear un proyecto con todos los datos | pendiente |
-| 2 | Crear un proyecto solo con nombre y fecha de inicio: queda sin descripción y sin fecha de finalización | — (datos opcionales de la Fase 1) | Crear un proyecto solo con los datos obligatorios | pendiente |
-| 3 | Dos proyectos, aunque tengan el mismo nombre, reciben identificadores distintos; el contador nunca retrocede | RN-1, RN-7 | Dos proyectos con el mismo nombre | pendiente |
-| 4 | El nombre se guarda sin los espacios de los extremos; un nombre de un solo carácter es válido | RN-10 | Guardar el nombre sin espacios en los extremos; Aceptar un nombre de un solo caracter | pendiente |
-| 5 | Rechazar el nombre vacío o de solo espacios, y que la creación rechazada no registre nada. Crea `errors.go` con su primer error | RN-2 | Rechazar un proyecto sin nombre | pendiente |
-| 6 | Rechazar la creación sin fecha de inicio | RN-3 | Rechazar un proyecto sin fecha de inicio | pendiente |
-| 7 | Rechazar la fecha de finalización anterior a la de inicio; la misma fecha en las dos es válida | RN-4 | Rechazar fechas incoherentes; Aceptar un proyecto que empieza y termina el mismo dia | pendiente |
-| 8 | Consultar o modificar un proyecto que no existe informa que no se encontró; al modificar, no crea ninguno | RN-6 | Consultar un proyecto que no existe; Modificar un proyecto que no existe | pendiente |
-| 9 | Modificar indicando solo lo que cambia: el resto se conserva, y modificar sin cambiar nada no da error | RN-8 | Modificar solo el nombre conserva los demas datos; Modificar un proyecto sin cambiar nada | pendiente |
-| 10 | Modificar normaliza y valida el resultado completo con las mismas reglas que crear, todo antes de cambiar cualquier dato: una modificación rechazada deja el proyecto como estaba | RN-2, RN-3, RN-4, RN-5, RN-10 | Guardar sin espacios en los extremos el nombre modificado; Rechazar una modificacion que deja el proyecto sin nombre; Rechazar una fecha de inicio posterior a la de finalizacion al modificar | pendiente |
-| 11 | Quitar la descripción o la fecha de finalización con un pedido explícito, conservando el resto | RN-9 | Quitar la fecha de finalizacion; Quitar la descripcion | pendiente |
-| 12 | Cambiar la descripción y la fecha de finalización por valores nuevos, conservando el resto | RN-8 | Modificar la descripcion y la fecha de finalizacion | pendiente |
+| 1 | Crear un proyecto con todos los datos en un registro vacío: queda registrado, recibe el identificador 1 y se puede consultar por ese identificador | RN-1 | Crear un proyecto con todos los datos | hecha |
+| 2 | Crear un proyecto solo con nombre y fecha de inicio: queda sin descripción y sin fecha de finalización | — (datos opcionales de la Fase 1) | Crear un proyecto solo con los datos obligatorios | hecha |
+| 3 | Dos proyectos, aunque tengan el mismo nombre, reciben identificadores distintos; el contador nunca retrocede | RN-1, RN-7 | Dos proyectos con el mismo nombre | hecha |
+| 4 | El nombre se guarda sin los espacios de los extremos; un nombre de un solo carácter es válido | RN-10 | Guardar el nombre sin espacios en los extremos; Aceptar un nombre de un solo caracter | hecha |
+| 5 | Rechazar el nombre vacío o de solo espacios, y que la creación rechazada no registre nada. Crea `errors.go` con su primer error | RN-2 | Rechazar un proyecto sin nombre | hecha |
+| 6 | Rechazar la creación sin fecha de inicio | RN-3 | Rechazar un proyecto sin fecha de inicio | hecha |
+| 7 | Rechazar la fecha de finalización anterior a la de inicio; la misma fecha en las dos es válida | RN-4 | Rechazar fechas incoherentes; Aceptar un proyecto que empieza y termina el mismo dia | hecha |
+| 8 | Consultar o modificar un proyecto que no existe informa que no se encontró; al modificar, no crea ninguno | RN-6 | Consultar un proyecto que no existe; Modificar un proyecto que no existe | hecha |
+| 9 | Modificar indicando solo lo que cambia: el resto se conserva, y modificar sin cambiar nada no da error | RN-8 | Modificar solo el nombre conserva los demas datos; Modificar un proyecto sin cambiar nada | hecha |
+| 10 | Modificar normaliza y valida el resultado completo con las mismas reglas que crear, todo antes de cambiar cualquier dato: una modificación rechazada deja el proyecto como estaba | RN-2, RN-3, RN-4, RN-5, RN-10 | Guardar sin espacios en los extremos el nombre modificado; Rechazar una modificacion que deja el proyecto sin nombre; Rechazar una fecha de inicio posterior a la de finalizacion al modificar | hecha |
+| 11 | Quitar la descripción o la fecha de finalización con un pedido explícito, conservando el resto | RN-9 | Quitar la fecha de finalizacion; Quitar la descripcion | hecha |
+| 12 | Cambiar la descripción y la fecha de finalización por valores nuevos, conservando el resto | RN-8 | Modificar la descripcion y la fecha de finalizacion | hecha |
 
 La tarea 12 se agregó durante la implementación: ningún escenario pedía cambiar la
 descripción o la fecha de finalización por un valor nuevo, solo quitarlas, así que con TDD
@@ -398,7 +398,40 @@ que el compilador hace cumplir.
 
 ## Fase 4 — Implementación
 
-_Se completa a medida que se avanza._
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.**
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `37e4f2f` | `0fecae8` |
+| 2 | `11c7ed0` | `110c654` |
+| 3 | `239e570` | — (ver desvíos) |
+| 4 | `e9c0d69` | `2d6f386` |
+| 5 | `1e45818` | `13e9e68` |
+| 6 | `b03aa4a` | `2c40255` |
+| 7 | `da19160` | `f6a0ffb` |
+| 8 | `bcf6cb1` | `45d17a8` |
+| 9 | `3bdd1c3` | `3c85a8c` |
+| 10 | `732ebf0` | `66d9474` |
+| 11 | `9e21841` | `587028c` |
+| 12 | `d35d276` | `9e5f78b` |
+
+### Desvíos respecto de la spec
+
+- **Tarea 2:** tal como estaba escrita, su test pasaba en verde sin código nuevo, porque la
+  tarea 1 ya dejaba vacíos los datos opcionales. Para que el ciclo fuera real, el test
+  pregunta explícitamente si el proyecto tiene fecha de finalización, y eso agregó ese
+  comportamiento, que la consola va a necesitar.
+- **Tarea 3:** su test pasó en verde al escribirlo: el contador de la tarea 1 ya asignaba
+  identificadores distintos y nada impedía repetir nombres. No había comportamiento nuevo
+  que implementar, así que queda solo el commit del test, explicado en su mensaje. Forzar
+  un RED habría sido simular TDD.
+- **Tarea 12:** se agregó durante la implementación, con su escenario en la Fase 1 (commit
+  `17e8729`). Ningún escenario pedía cambiar la descripción o la fecha de finalización por
+  un valor nuevo, solo quitarlas.
+- **Pedido de modificación:** la descripción y la fecha de finalización se piden con un solo
+  valor por dato que puede ser "no tocar", "cambiar" o "quitar". Así un pedido contradictorio
+  (cambiar y quitar el mismo dato) no se puede escribir, sin necesidad de un error nuevo. Es
+  la decisión de la Fase 2 llevada al código.
 
 ## Trazabilidad
 
@@ -407,6 +440,6 @@ _Se completa a medida que se avanza._
 | Historia de usuario | issue #3 |
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
-| Escenarios BDD | Fase 1 |
-| Tests | pendiente |
-| Código Go | pendiente |
+| Escenarios BDD | Fase 1 (19 escenarios) |
+| Tests | `internal/domain/project_test.go`: un test por escenario, con el nombre del escenario |
+| Código Go | `internal/domain/project.go`, `internal/domain/project_registry.go`, `internal/domain/errors.go` |
