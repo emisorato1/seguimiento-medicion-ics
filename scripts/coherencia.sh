@@ -15,6 +15,15 @@ fallo() {
   FALLAS=$((FALLAS + 1))
 }
 
+# Lo primero: marcas de conflicto sin resolver. Un merge mal resuelto puede dejarlas
+# commiteadas, y el resto de los chequeos no las ve porque el archivo "parece" correcto.
+con_marcas=$(grep -rl '^<<<<<<< \|^>>>>>>> \|^======= *$' --include='*.md' --include='*.go' --include='*.sh' --include='*.yml' . 2>/dev/null | grep -v '^./.git/' || true)
+if [ -n "$con_marcas" ]; then
+  echo "Hay marcas de conflicto sin resolver en:"
+  echo "$con_marcas" | sed 's/^/  /'
+  exit 1
+fi
+
 echo "Chequeando coherencia de las specs..."
 
 # El Sprint 0 queda afuera a proposito: sus documentos registran decisiones de
