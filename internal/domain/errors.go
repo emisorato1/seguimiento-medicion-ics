@@ -8,4 +8,6 @@ import "errors"
 var (
 	// ErrProjectNameRequired: crear o modificar un proyecto sin nombre (historia #3, RN-2).
 	ErrProjectNameRequired = errors.New("el nombre del proyecto es obligatorio")
+	// ErrProjectStartRequired: crear o modificar un proyecto sin fecha de inicio (historia #3, RN-3).
+	ErrProjectStartRequired = errors.New("la fecha de inicio del proyecto es obligatoria")
 )

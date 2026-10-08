@@ -24,6 +24,9 @@ func (r *ProjectRegistry) Create(data ProjectData) (*Project, error) {
 	if name == "" {
 		return nil, ErrProjectNameRequired
 	}
+	if data.Start.IsZero() {
+		return nil, ErrProjectStartRequired
+	}
 
 	project := &Project{
 		id:          r.nextID,
