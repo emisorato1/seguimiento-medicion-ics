@@ -46,7 +46,8 @@ Siempre, al empezar una sesión:
 |---|---|
 | Product Backlog | No se toca: entra al sprint en la planning. Si no está estimada, se estima con Planning Poker. |
 | Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/sprint-N/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
-| Especificación SDD | Completar Diseño y Tareas con sus puertas. Cuando pasa la Puerta 3, mover a *En progreso*. |
+| Especificación SDD | Completar Diseño y Tareas con sus puertas. Cuando pasa la Puerta 3, mover a *Lista para implementar*. |
+| Lista para implementar | Las tres puertas están aprobadas. Si lo que necesita ya está en `dev`, empezar el ciclo TDD y mover a *En progreso*. Si todavía depende de otra historia, no se toca. |
 | En progreso | Implementar con TDD, tarea por tarea. Cuando está lista, abrir el pull request y mover a *En review*. |
 | En review | Esperar la revisión de otro integrante. Si hay correcciones, volver a *En progreso*. |
 | Hecho | Nada. Elegir otra historia. |
@@ -117,7 +118,8 @@ edita a mano: se regenera con `scripts/estado.sh` y se commitea.
 ### Estados
 
 ```
-Product Backlog → Sprint Backlog → Especificacion SDD → En progreso → En review → Hecho
+Product Backlog → Sprint Backlog → Especificacion SDD → Lista para implementar
+  → En progreso → En review → Hecho
 ```
 
 ### Campos
