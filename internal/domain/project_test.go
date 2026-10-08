@@ -200,3 +200,38 @@ func TestAceptarUnProyectoQueEmpiezaYTerminaElMismoDia(t *testing.T) {
 		t.Errorf("se esperaba el fin 01/10/2026, salio: %v", project.End())
 	}
 }
+
+// Escenario: Consultar un proyecto que no existe
+// Cubre: RN-6
+func TestConsultarUnProyectoQueNoExiste(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	_, err := registry.Get(99)
+
+	if !errors.Is(err, ErrProjectNotFound) {
+		t.Fatalf("se esperaba ErrProjectNotFound, salio: %v", err)
+	}
+}
+
+// Escenario: Modificar un proyecto que no existe
+// Cubre: RN-6
+func TestModificarUnProyectoQueNoExiste(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	err := registry.Update(99, ProjectChanges{})
+
+	if !errors.Is(err, ErrProjectNotFound) {
+		t.Fatalf("se esperaba ErrProjectNotFound, salio: %v", err)
+	}
+	if _, err := registry.Get(99); !errors.Is(err, ErrProjectNotFound) {
+		t.Errorf("se esperaba que no se creara el proyecto 99, salio: %v", err)
+	}
+	// Tampoco se creo ningun otro: el proximo proyecto sigue siendo el 1.
+	next, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba crear el proyecto valido sin error, salio: %v", err)
+	}
+	if next.ID() != 1 {
+		t.Errorf("se esperaba que no se hubiera creado ningun proyecto y el proximo fuera el 1, salio: %d", next.ID())
+	}
+}
