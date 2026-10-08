@@ -4,7 +4,7 @@
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula — asignada por el Agile Enabler el 02/10 por carga
   de trabajo (era quien tenía menos story points)
-- **Estado:** Puerta 2 aprobada — **sigue la Fase 3 (Tareas)**
+- **Estado:** Tareas — **pendiente de Puerta 3**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a la Puerta 1
@@ -243,7 +243,83 @@ conecta el teclado y la pantalla; los tests le pasan líneas de texto y leen lo 
 
 ## Fase 3 — Tareas
 
-_Se escribe después de que la Puerta 2 esté aprobada._
+Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
+lo hace pasar en otro. Están en el orden en que hay que hacerlas, y cada una deja el código
+compilando y los tests en verde. La única excepción es la 15, que se explica abajo.
+
+Los tests siguen la convención de [AGENTS.md](../../../AGENTS.md): un test por escenario, con
+el nombre del escenario. Cada test le pasa a la consola líneas de texto como entrada y
+verifica lo que escribió como salida.
+
+| # | Tarea | Escenario BDD | Reglas | Necesita en `dev` | Estado |
+|---|---|---|---|---|---|
+| 1 | La consola pide una operación sobre una entrada y una salida genéricas, y termina con la operación de salir | Salir del programa | RN-6 | nada | pendiente |
+| 2 | Una línea vacía no hace nada y vuelve a pedir una operación | Entrada vacia | caso límite | nada | pendiente |
+| 3 | Una operación que no existe se informa y se listan las disponibles | Operacion inexistente | RN-4 | nada | pendiente |
+| 4 | Crear un proyecto: pide los datos, lo crea en el registro y muestra su identificador | Crear un proyecto desde la consola | RN-1, RN-3 | #3 | pendiente |
+| 5 | Si el núcleo rechaza la operación, se muestra su mensaje tal cual y la consola sigue | Mostrar el motivo de un rechazo | RN-2, RN-7 | #3 | pendiente |
+| 6 | Agregar un integrante y listar los del proyecto; el rol se pasa al dominio como texto | Agregar y listar integrantes | RN-1 | #4 | pendiente |
+| 7 | Listar el backlog de un proyecto sin historias muestra que está vacío | Listar un backlog vacio | RN-1 | #6 | pendiente |
+| 8 | Cargar una historia y listar el backlog con su identificador; una historia con 0 story points se muestra "sin estimar" | Cargar una historia y listar el backlog | RN-1, RN-3 | #6, #12 | pendiente |
+| 9 | Estimar una historia y ver su nuevo valor | Estimar una historia desde la consola | RN-1 | #12 | pendiente |
+| 10 | Si el núcleo rechaza un valor fuera de la escala, se muestra su mensaje y la consola sigue | El nucleo rechaza un valor fuera de la escala | RN-2, RN-7 | #12 | pendiente |
+| 11 | Si falta indicar a qué historia se aplica, se informa y la operación no se ejecuta | Operacion incompleta | RN-5 | #12 | pendiente |
+| 12 | Letras donde va un número se informan y la operación no se ejecuta | Dato con forma invalida | RN-5 | #12 | pendiente |
+| 13 | Operar sobre un identificador que no existe muestra el mensaje del núcleo y la consola sigue | Operar sobre un identificador que no existe | RN-2 | #6 | pendiente |
+| 14 | Una fecha mal escrita se informa y la operación no se ejecuta | — (RN-5, sin escenario) | RN-5 | #3 | pendiente |
+| 15 | El programa arranca la consola conectada al teclado y la pantalla, con un registro de proyectos nuevo | — (arranque) | — | todas | pendiente |
+
+### Decisiones de esta fase
+
+Bajar el diseño a tareas dejó cuatro puntos que la Fase 2 no resolvía:
+
+- **Los criterios de aceptación de una historia se ingresan uno por línea**, y una línea vacía
+  termina la lista. Es el mismo criterio de pedir cada dato en su propia línea, y no choca con
+  ningún carácter que pueda aparecer en un criterio.
+- **Las fechas se escriben `dd/mm/aaaa`**, que es el formato de todos los escenarios. La Fase 2
+  de la #3 deja en la consola el formato de las fechas, así que una fecha mal escrita es un
+  error de forma (RN-5) y la informa la consola: es la tarea 14.
+- **La prioridad y el rol se pasan al dominio como texto.** La #4 ya adoptó que el dominio
+  convierta el texto en un rol y rechace con su RN-4. Para la prioridad, la tarea 8 supone lo
+  mismo, que está propuesto en la revisión de la Fase 3 de la #6 (PR #44). Si la #6 no lo
+  adopta, la tarea 8 se ajusta antes de la Puerta 3.
+- **La tarea 15 no tiene test unitario.** Solo conecta el teclado, la pantalla y el registro, y
+  todo lo que hace la consola ya está probado por las tareas 1 a 14 sobre la entrada y la
+  salida genéricas. Se verifica corriendo el programa con `go run ./cmd/app`.
+
+### Por qué este orden
+
+- **Las tareas 1 a 3 no dependen de ninguna otra historia**: son el ciclo de pedir una
+  operación, la entrada vacía y la operación inexistente. Se pueden programar apenas pase la
+  Puerta 3, mientras las demás historias llegan a `dev`.
+- **De la 4 a la 13**, cada operación entra cuando su historia está en `dev`, en el orden de
+  dependencias del sprint: #3, #4, #6 y #12. En cada una, primero el camino feliz y después
+  los rechazos.
+- **La 14 va después de la 4**, porque necesita la operación de crear proyecto para tener una
+  fecha que escribir mal.
+- **La 15 va al final**, cuando todas las operaciones existen.
+
+### Cobertura
+
+Las siete reglas de negocio quedan cubiertas: RN-1 (4, 6, 7, 8, 9), RN-2 (5, 10, 13),
+RN-3 (4, 8), RN-4 (3), RN-5 (11, 12, 14), RN-6 (1), RN-7 (5, 10).
+
+| Criterio de aceptación | Tareas |
+|---|---|
+| Se puede crear un proyecto desde la consola y se ve su identificador | 4 |
+| Se pueden agregar integrantes a un proyecto y listarlos | 6 |
+| Se pueden cargar historias en el backlog y listarlas | 8 |
+| Se le pueden asignar story points a una historia | 9 |
+| Cuando una operación se rechaza, se ve el motivo y el programa sigue andando | 5, 10, 13 |
+| Listar algo vacío no es un error | 7 |
+| Una operación incompleta o con un dato mal escrito se informa sin ejecutarla | 11, 12, 14 |
+| Se puede salir del programa | 1 |
+| La consola no contiene ninguna validación de negocio propia | 5, 10 |
+
+Los trece escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario BDD".
+
+> **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
 
 ## Fase 4 — Implementación
 
