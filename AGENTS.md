@@ -21,6 +21,8 @@ scripts/tablero.sh ver   # ver el estado de las historias
 go test ./...            # correr todos los tests
 go test ./internal/...   # solo los tests del dominio
 go test -run TestX ./... # correr un test puntual
+go test ./... -coverprofile=cobertura.out && go tool cover -func=cobertura.out | tail -1
+                         # cobertura total, igual que en CI
 go build ./...           # compilar
 go vet ./...             # analisis estatico
 gofmt -l .               # listar archivos mal formateados

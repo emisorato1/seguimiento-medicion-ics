@@ -33,5 +33,29 @@ jobs:
       - name: Analisis estatico (go vet)
         run: go vet ./...
 
-      - name: Tests
-        run: go test ./... -cover
+      - name: Tests y cobertura
+        run: |
+          go test ./... -coverprofile=cobertura.out -covermode=count
+          total=$(go tool cover -func=cobertura.out | tail -1 | awk '{print $3}')
+          {
+            echo "## Cobertura de tests"
+            echo
+            echo "**Total: $total**"
+            echo
+            echo '| Paquete | Cobertura |'
+            echo '|---|---|'
+            go tool cover -func=cobertura.out | grep -v '^total:' \
+              | awk '{print $1}' | xargs -n1 dirname | sort -u \
+              | while read -r paquete; do
+                  pct=$(go tool cover -func=cobertura.out | grep "^$paquete/" \
+                        | awk '{gsub("%","",$3); s+=$3; n++} END {if (n>0) printf "%.1f%%", s/n; else print "-"}')
+                  echo "| $paquete | $pct |"
+                done
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Cobertura total: $total"
+
+      - name: Guardar el reporte de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: cobertura.out
