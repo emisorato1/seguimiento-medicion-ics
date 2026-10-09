@@ -122,6 +122,11 @@ Product Backlog → Sprint Backlog → Especificacion SDD → Lista para impleme
   → En progreso → En review → Hecho
 ```
 
+**Para agregar o renombrar un estado, hacelo desde la web del Project, no por la API.**
+Reescribir las opciones del campo por la API les cambia el identificador y deja sin estado a
+todas las tarjetas que lo tenían. Pasó una vez: 16 tarjetas quedaron en blanco y hubo que
+restaurarlas a mano.
+
 ### Campos
 
 | Campo | Para qué |
