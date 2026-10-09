@@ -11,7 +11,12 @@
 #   scripts/tablero.sh prioridad <issue> <Alta|Media|Baja>
 #
 # Estados validos: Product Backlog, Sprint Backlog, Especificacion SDD,
-#                  En progreso, En review, Hecho
+#                  Lista para implementar, En progreso, En review, Hecho
+#
+# OJO: no agregues ni renombres estados editando las opciones del campo Status
+# por la API. GitHub les cambia el identificador y TODAS las tarjetas que lo
+# tenian quedan sin estado. Hacelo desde la web del Project, que conserva los
+# identificadores.
 
 set -e
 

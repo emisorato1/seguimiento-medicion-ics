@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-08 15:34. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-09 16:55. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -69,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-aab7da2 2026-10-08 docs: registrar la implementacion de la historia 3 y actualizar el indice
-9e5f78b 2026-10-08 feat: cambiar la descripcion y la fecha de finalizacion por valores nuevos (tarea 12, historia 3)
-d35d276 2026-10-08 test: modificar la descripcion y la fecha de finalizacion (tarea 12, historia 3)
-17e8729 2026-10-08 docs: agregar el escenario de modificar la descripcion y la fecha de fin (historia 3)
-587028c 2026-10-08 feat: quitar la descripcion o la fecha de finalizacion con un pedido explicito (tarea 11, historia 3)
-9e21841 2026-10-08 test: quitar la descripcion o la fecha de finalizacion (tarea 11, historia 3)
-66d9474 2026-10-08 feat: modificar con la misma validacion que crear y sin cambios parciales (tarea 10, historia 3)
-732ebf0 2026-10-08 test: modificar normaliza y valida antes de cambiar (tarea 10, historia 3)
+0282c77 2026-10-08 docs: registrar la aprobacion de la puerta 3 de la historia 6
+9e3a63b 2026-10-08 docs: avisar que los estados del tablero no se editan por la api
+bd0442c 2026-10-08 docs: aplicar los ajustes pedidos en la puerta 3 de la historia 6
+3869b09 2026-10-08 Merge pull request #51 from emisorato1/docs-cierre-sprint-1
+7e2f033 2026-10-08 docs: preparar el cierre del sprint 1 y las candidatas del sprint 2
+2d6941c 2026-10-08 Merge pull request #50 from emisorato1/fix-indice-de-specs
+9cc2c40 2026-10-08 chore: agregar el estado lista para implementar y alinear el tablero
+7d09831 2026-10-08 docs: registrar las puertas 3 de las historias 3, 4, 12 y 24
 ```
