@@ -1,6 +1,10 @@
 package domain
 
-import "testing"
+import (
+	"errors"
+	"strings"
+	"testing"
+)
 
 // Tarea 1 de la Fase 3 de la historia #6. No tiene escenario BDD propio: los escenarios
 // empiezan en la tarea 4, cuando ya se puede crear una historia en un backlog.
@@ -74,5 +78,64 @@ func TestLosTresEstadosDeUnaHistoriaSeDistinguen(t *testing.T) {
 			t.Fatalf("dos estados distintos se muestran igual: %q", texto)
 		}
 		vistos[texto] = true
+	}
+}
+
+// Tarea 2 de la Fase 3: el dominio convierte el texto que escribe el usuario en una
+// prioridad, ignorando mayusculas y espacios de los extremos. Asi la consola (#24) no
+// duplica la RN-4: solo pasa el texto.
+// Cubre: RN-4
+func TestConvertirElTextoEnUnaPrioridad(t *testing.T) {
+	casos := []struct {
+		texto    string
+		esperada Priority
+	}{
+		{"Alta", PriorityHigh},
+		{"Media", PriorityMedium},
+		{"Baja", PriorityLow},
+		{"alta", PriorityHigh},
+		{"MEDIA", PriorityMedium},
+		{"  Baja  ", PriorityLow},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.texto, func(t *testing.T) {
+			prioridad, err := ParsePriority(caso.texto)
+			if err != nil {
+				t.Fatalf("se esperaba que %q fuera una prioridad valida, salio: %v", caso.texto, err)
+			}
+			if prioridad != caso.esperada {
+				t.Fatalf("se esperaba la prioridad %v para %q, salio: %v", caso.esperada, caso.texto, prioridad)
+			}
+		})
+	}
+}
+
+// Escenario: Rechazar una prioridad invalida
+// Cubre: RN-4
+func TestRechazarUnaPrioridadInvalida(t *testing.T) {
+	casos := []string{"Urgente", "", "   ", "altisima"}
+
+	for _, texto := range casos {
+		t.Run(texto, func(t *testing.T) {
+			_, err := ParsePriority(texto)
+
+			if !errors.Is(err, ErrStoryPriorityInvalid) {
+				t.Fatalf("se esperaba ErrStoryPriorityInvalid para %q, salio: %v", texto, err)
+			}
+		})
+	}
+}
+
+// Tarea 2: el mensaje del error nombra las tres prioridades validas, asi la consola solo
+// tiene que mostrarlo (RN-2 de la #24).
+// Cubre: RN-4
+func TestElErrorDePrioridadNombraLasValidas(t *testing.T) {
+	_, err := ParsePriority("Urgente")
+
+	for _, esperada := range []string{"Alta", "Media", "Baja"} {
+		if !strings.Contains(err.Error(), esperada) {
+			t.Fatalf("se esperaba que el mensaje nombrara la prioridad %q, salio: %q", esperada, err.Error())
+		}
 	}
 }
