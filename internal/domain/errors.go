@@ -16,4 +16,10 @@ var (
 	ErrProjectNotFound = errors.New("no se encontro el proyecto")
 	// ErrStoryPriorityInvalid: prioridad que no es Alta, Media ni Baja (historia #6, RN-4).
 	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
+	// ErrStoryTitleRequired: crear o modificar una historia sin titulo (historia #6, RN-5).
+	ErrStoryTitleRequired = errors.New("el titulo de la historia es obligatorio")
+	// ErrStoryDescriptionRequired: crear o modificar una historia sin descripcion (historia #6, RN-5).
+	ErrStoryDescriptionRequired = errors.New("la descripcion de la historia es obligatoria")
+	// ErrStoryCriteriaRequired: historia sin ningun criterio de aceptacion (historia #6, RN-5).
+	ErrStoryCriteriaRequired = errors.New("la historia necesita al menos un criterio de aceptacion")
 )

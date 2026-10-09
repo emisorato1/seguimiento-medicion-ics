@@ -133,6 +133,33 @@ type StoryData struct {
 	AcceptanceCriteria []string
 }
 
+// prepareStory normaliza y valida los datos de una historia, en ese orden, sin tocar
+// ninguna historia ni el backlog. Crear y modificar usan esta misma funcion, asi aplican
+// las mismas reglas (RN-5). Normalizar antes de validar es lo que hace que un texto de solo
+// espacios cuente como vacio y que una lista de criterios todos en blanco se rechace.
+func prepareStory(data StoryData) (StoryData, error) {
+	data.Title = strings.TrimSpace(data.Title)
+	data.Description = strings.TrimSpace(data.Description)
+
+	criterios := make([]string, 0, len(data.AcceptanceCriteria))
+	for _, criterio := range data.AcceptanceCriteria {
+		if limpio := strings.TrimSpace(criterio); limpio != "" {
+			criterios = append(criterios, limpio)
+		}
+	}
+	data.AcceptanceCriteria = criterios
+
+	switch {
+	case data.Title == "":
+		return StoryData{}, ErrStoryTitleRequired
+	case data.Description == "":
+		return StoryData{}, ErrStoryDescriptionRequired
+	case len(data.AcceptanceCriteria) == 0:
+		return StoryData{}, ErrStoryCriteriaRequired
+	}
+	return data, nil
+}
+
 // Backlog devuelve el Product Backlog del proyecto. Si no tiene historias devuelve una
 // lista vacia, que no es un error (RN-15). Es una copia: agregar o quitar historias de lo
 // que se recibe no cambia el backlog del proyecto.
@@ -147,6 +174,11 @@ func (p *Project) Backlog() []*Story {
 // estimar (RN-7). El contador nunca retrocede: calcularlo contando historias se rompe en
 // cuanto exista borrado.
 func (p *Project) AddStory(data StoryData) (*Story, error) {
+	data, err := prepareStory(data)
+	if err != nil {
+		return nil, err
+	}
+
 	story := &Story{
 		id:                 p.nextStoryID,
 		title:              data.Title,
