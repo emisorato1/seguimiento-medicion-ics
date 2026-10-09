@@ -14,4 +14,6 @@ var (
 	ErrProjectDatesInconsistent = errors.New("las fechas son incoherentes: la fecha de finalizacion es anterior a la de inicio")
 	// ErrProjectNotFound: consultar o modificar un proyecto que no existe (historia #3, RN-6).
 	ErrProjectNotFound = errors.New("no se encontro el proyecto")
+	// ErrStoryPriorityInvalid: prioridad que no es Alta, Media ni Baja (historia #6, RN-4).
+	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
 )

@@ -52,6 +52,11 @@ for spec in docs/specs/sprint-[1-9]*/[0-9]*.md; do
         [ "$aprobada_en_linea" = "si" ] || \
           fallo "$nombre dice 'Puerta $n aprobada' en el encabezado pero la linea de la Puerta $n sigue en [pendiente]"
         ;;
+      *"pendiente de Puerta $n"*)
+        # y al reves: la puerta quedo registrada pero el encabezado no se actualizo
+        [ "$aprobada_en_linea" = "no" ] || \
+          fallo "$nombre tiene la Puerta $n registrada como aprobada pero el encabezado sigue diciendo 'pendiente de Puerta $n'"
+        ;;
     esac
   done
 

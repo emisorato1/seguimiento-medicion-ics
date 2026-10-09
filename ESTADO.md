@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-09 16:55. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-09 17:22. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -22,6 +22,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Lista para implementar
@@ -33,9 +34,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Especificacion SDD
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
+_No hay historias en este estado._
 
 ## Sprint Backlog
 
@@ -69,12 +68,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-0282c77 2026-10-08 docs: registrar la aprobacion de la puerta 3 de la historia 6
-9e3a63b 2026-10-08 docs: avisar que los estados del tablero no se editan por la api
-bd0442c 2026-10-08 docs: aplicar los ajustes pedidos en la puerta 3 de la historia 6
-3869b09 2026-10-08 Merge pull request #51 from emisorato1/docs-cierre-sprint-1
-7e2f033 2026-10-08 docs: preparar el cierre del sprint 1 y las candidatas del sprint 2
-2d6941c 2026-10-08 Merge pull request #50 from emisorato1/fix-indice-de-specs
-9cc2c40 2026-10-08 chore: agregar el estado lista para implementar y alinear el tablero
-7d09831 2026-10-08 docs: registrar las puertas 3 de las historias 3, 4, 12 y 24
+1d7326d 2026-10-09 test: cubrir la prioridad mostrada y los story points (tareas 1 y 2, historia 6)
+400a285 2026-10-09 feat: convertir el texto en una prioridad en el dominio (tarea 2, historia 6)
+4dc7d45 2026-10-09 test: convertir el texto en una prioridad y rechazar las invalidas (tarea 2, historia 6)
+aded90a 2026-10-09 feat: la historia expone sus datos y el estado es un tipo propio (tarea 1, historia 6)
+bde9c51 2026-10-09 test: la historia expone sus datos y el estado es un tipo propio (tarea 1, historia 6)
+a4efc94 2026-10-09 docs: actualizar el estado de las specs y chequear la puerta al reves
+8c367b4 2026-10-09 Merge pull request #55 from emisorato1/chore-cobertura-en-ci
+a6dddf2 2026-10-09 Merge branch 'dev' into chore-cobertura-en-ci
 ```
