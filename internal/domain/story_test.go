@@ -471,3 +471,94 @@ func TestNoModificarUnaHistoriaTerminada(t *testing.T) {
 		t.Fatalf("se esperaba que la historia terminada conservara su titulo, salio: %q", story.Title())
 	}
 }
+
+// Escenario: Modificar una historia que no existe
+// Cubre: RN-13
+func TestModificarUnaHistoriaQueNoExiste(t *testing.T) {
+	project := unProyecto(t)
+	project.AddStory(unosDatos())
+	nuevoTitulo := "Otro titulo"
+
+	err := project.UpdateStory(99, StoryChanges{Title: &nuevoTitulo})
+
+	if !errors.Is(err, ErrStoryNotFound) {
+		t.Fatalf("se esperaba ErrStoryNotFound, salio: %v", err)
+	}
+	if len(project.Backlog()) != 1 {
+		t.Fatalf("se esperaba que el backlog siguiera con 1 historia, salieron: %d", len(project.Backlog()))
+	}
+}
+
+// Esquema del escenario: Operar sobre un proyecto que no existe
+// Cubre: RN-12
+func TestOperarSobreUnProyectoQueNoExiste(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	_, err := registry.Get(99)
+
+	if !errors.Is(err, ErrProjectNotFound) {
+		t.Fatalf("se esperaba ErrProjectNotFound al buscar el proyecto 99, salio: %v", err)
+	}
+}
+
+// Escenario: Pedir el backlog de un proyecto con historias
+// Cubre: RN-15
+func TestPedirElBacklogDeUnProyectoConHistorias(t *testing.T) {
+	project := unProyecto(t)
+	project.AddStory(unosDatos())
+	project.AddStory(StoryData{
+		Title:              "Gestionar defectos",
+		Description:        "Poder registrar los defectos encontrados",
+		Priority:           PriorityMedium,
+		AcceptanceCriteria: []string{"El sistema registra la severidad"},
+	})
+	project.AddStory(unosDatos())
+
+	backlog := project.Backlog()
+
+	if len(backlog) != 3 {
+		t.Fatalf("se esperaban 3 historias, salieron: %d", len(backlog))
+	}
+	segunda := backlog[1]
+	if segunda.Title() != "Gestionar defectos" || segunda.Priority() != PriorityMedium {
+		t.Fatalf("se esperaba la segunda historia con sus datos, salio: %q con prioridad %v",
+			segunda.Title(), segunda.Priority())
+	}
+	if segunda.State() != StoryPending || segunda.IsEstimated() {
+		t.Fatalf("se esperaba Pendiente y sin estimar, salio: %v estimada=%v",
+			segunda.State(), segunda.IsEstimated())
+	}
+	if len(segunda.AcceptanceCriteria()) != 1 {
+		t.Fatalf("se esperaba 1 criterio de aceptacion, salieron: %d", len(segunda.AcceptanceCriteria()))
+	}
+}
+
+// Escenario: Pedir el backlog de un proyecto con historias
+// Cubre: RN-15 — cambiar la lista recibida no cambia el backlog del proyecto.
+func TestCambiarElBacklogRecibidoNoCambiaElDelProyecto(t *testing.T) {
+	project := unProyecto(t)
+	project.AddStory(unosDatos())
+
+	recibido := project.Backlog()
+	recibido[0] = nil
+
+	if project.Backlog()[0] == nil {
+		t.Fatalf("se esperaba que el backlog del proyecto conservara su historia")
+	}
+}
+
+// Escenario: Buscar una historia del backlog
+// Cubre: RN-13
+func TestBuscarUnaHistoriaDelBacklog(t *testing.T) {
+	project := unProyecto(t)
+	creada, _ := project.AddStory(unosDatos())
+
+	encontrada, err := project.Story(creada.ID())
+
+	if err != nil {
+		t.Fatalf("se esperaba encontrar la historia %d, salio: %v", creada.ID(), err)
+	}
+	if encontrada.ID() != creada.ID() {
+		t.Fatalf("se esperaba la historia %d, salio la %d", creada.ID(), encontrada.ID())
+	}
+}
