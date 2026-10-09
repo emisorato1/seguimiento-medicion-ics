@@ -123,3 +123,39 @@ func (s *Story) AcceptanceCriteria() []string {
 	copy(criterios, s.acceptanceCriteria)
 	return criterios
 }
+
+// StoryData son los datos con los que se crea una historia. Los story points no estan: la
+// historia nace sin estimar (RN-7) y el valor lo carga la historia #12.
+type StoryData struct {
+	Title              string
+	Description        string
+	Priority           Priority
+	AcceptanceCriteria []string
+}
+
+// Backlog devuelve el Product Backlog del proyecto. Si no tiene historias devuelve una
+// lista vacia, que no es un error (RN-15). Es una copia: agregar o quitar historias de lo
+// que se recibe no cambia el backlog del proyecto.
+func (p *Project) Backlog() []*Story {
+	stories := make([]*Story, len(p.backlog))
+	copy(stories, p.backlog)
+	return stories
+}
+
+// AddStory agrega una historia al Product Backlog del proyecto y le asigna su identificador,
+// unico dentro del proyecto (RN-1, RN-16). La historia queda en Pendiente (RN-3) y sin
+// estimar (RN-7). El contador nunca retrocede: calcularlo contando historias se rompe en
+// cuanto exista borrado.
+func (p *Project) AddStory(data StoryData) (*Story, error) {
+	story := &Story{
+		id:                 p.nextStoryID,
+		title:              data.Title,
+		description:        data.Description,
+		priority:           data.Priority,
+		state:              StoryPending,
+		acceptanceCriteria: data.AcceptanceCriteria,
+	}
+	p.backlog = append(p.backlog, story)
+	p.nextStoryID++
+	return story, nil
+}
