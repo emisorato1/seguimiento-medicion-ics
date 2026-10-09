@@ -562,3 +562,23 @@ func TestBuscarUnaHistoriaDelBacklog(t *testing.T) {
 		t.Fatalf("se esperaba la historia %d, salio la %d", creada.ID(), encontrada.ID())
 	}
 }
+
+// Escenario: Modificar una historia pendiente — cambiar la descripcion.
+// Cubre: RN-9 — el camino de la descripcion, que los demas tests no recorren.
+func TestModificarLaDescripcionDeUnaHistoria(t *testing.T) {
+	project := unProyecto(t)
+	story, _ := project.AddStory(unosDatos())
+	nuevaDescripcion := "Poder cargar las horas por integrante y por fecha"
+
+	err := project.UpdateStory(story.ID(), StoryChanges{Description: &nuevaDescripcion})
+
+	if err != nil {
+		t.Fatalf("se esperaba que la descripcion se modificara, salio: %v", err)
+	}
+	if story.Description() != nuevaDescripcion {
+		t.Fatalf("se esperaba la descripcion nueva, salio: %q", story.Description())
+	}
+	if story.Title() != "Registrar esfuerzo" {
+		t.Fatalf("se esperaba que el titulo quedara como estaba, salio: %q", story.Title())
+	}
+}
