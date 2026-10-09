@@ -1,5 +1,7 @@
 package domain
 
+import "strings"
+
 // StoryState es el estado de una historia dentro de su proyecto. Es un tipo propio y no un
 // texto libre, para que no se pueda guardar un estado que no existe. Las transiciones entre
 // estados son de las historias #9 y #10; esta historia solo crea en Pendiente.
@@ -46,6 +48,23 @@ func (p Priority) String() string {
 		return "Baja"
 	default:
 		return "Alta"
+	}
+}
+
+// ParsePriority convierte el texto que escribe el usuario en una prioridad, ignorando
+// mayusculas y los espacios de los extremos. Cualquier otro texto se rechaza con el error
+// de la RN-4. La conversion vive en el dominio y no en la consola: si la consola rechazara
+// un texto invalido por su cuenta, la RN-4 quedaria duplicada fuera del dominio.
+func ParsePriority(text string) (Priority, error) {
+	switch strings.ToLower(strings.TrimSpace(text)) {
+	case "alta":
+		return PriorityHigh, nil
+	case "media":
+		return PriorityMedium, nil
+	case "baja":
+		return PriorityLow, nil
+	default:
+		return PriorityHigh, ErrStoryPriorityInvalid
 	}
 }
 
