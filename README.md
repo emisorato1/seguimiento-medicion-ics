@@ -63,9 +63,11 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [CLAUDE.md](CLAUDE.md) — **las reglas de trabajo del proyecto**. Es el punto de entrada: qué construimos, cómo trabajamos y cómo seguir.
 - [ESTADO.md](ESTADO.md) — estado actual del tablero (generado, no se edita a mano).
 - [AGENTS.md](AGENTS.md) — comandos, estructura, estilo, flujo de git y límites del proyecto.
+- [Índice de especificaciones](docs/specs/README.md) — **qué historia le toca a cada uno, en qué estado está y en qué orden**. Es por donde se empieza para trabajar.
 - [Plantilla de especificación SDD](docs/specs/PLANTILLA.md) — el flujo de cuatro fases con sus puertas de aprobación.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
+- [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — lo que queda del backlog con sus dependencias.
 
 ## Tablero
 

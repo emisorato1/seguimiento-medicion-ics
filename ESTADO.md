@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-08 14:33. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-09 16:55. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,7 +14,9 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 
 ## En progreso
 
@@ -26,7 +28,6 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
 
@@ -68,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+0282c77 2026-10-08 docs: registrar la aprobacion de la puerta 3 de la historia 6
+9e3a63b 2026-10-08 docs: avisar que los estados del tablero no se editan por la api
 bd0442c 2026-10-08 docs: aplicar los ajustes pedidos en la puerta 3 de la historia 6
 3869b09 2026-10-08 Merge pull request #51 from emisorato1/docs-cierre-sprint-1
 7e2f033 2026-10-08 docs: preparar el cierre del sprint 1 y las candidatas del sprint 2
 2d6941c 2026-10-08 Merge pull request #50 from emisorato1/fix-indice-de-specs
 9cc2c40 2026-10-08 chore: agregar el estado lista para implementar y alinear el tablero
 7d09831 2026-10-08 docs: registrar las puertas 3 de las historias 3, 4, 12 y 24
-af11328 2026-10-08 fix: reparar el indice de specs y detectar marcas de conflicto en el chequeo
-b41cb57 2026-10-08 Merge pull request #49 from emisorato1/historia-24-interfaz-consola
 ```
