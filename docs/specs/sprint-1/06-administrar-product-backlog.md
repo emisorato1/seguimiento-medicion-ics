@@ -356,18 +356,18 @@ para que cada test que se agrega falle por una sola razón.
 |---|---|---|---|
 | 1 | La historia existe como dato con sus campos, y el estado es un tipo propio con los tres valores | RN-2 | **hecha** |
 | 2 | La prioridad es un tipo propio con los tres valores, y **el dominio convierte el texto que escribe el usuario en una prioridad**, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | **hecha** |
-| 3 | El proyecto contiene su backlog y su contador de identificadores; pedir el backlog de un proyecto sin historias devuelve una lista vacía | RN-15 | pendiente |
-| 4 | Agregar una historia al backlog con los datos válidos: queda en Pendiente, sin estimar y con identificador propio | RN-1, RN-3, RN-7 | pendiente |
-| 5 | El contador no retrocede: dos historias seguidas reciben identificadores distintos, y dos proyectos distintos arrancan los dos en 1 | RN-1, RN-16 | pendiente |
-| 6 | Normalizar: título, descripción y criterios se guardan sin los espacios de los extremos, y los criterios vacíos se descartan | RN-6 | pendiente |
-| 7 | Validar lo obligatorio sobre lo ya normalizado: título, descripción, prioridad y al menos un criterio; un texto de solo espacios cuenta como vacío. Cada rechazo verifica además que **el backlog quedó como estaba** | RN-5, RN-11 | pendiente |
-| 8 | Dos historias del mismo proyecto pueden tener el mismo título | RN-14 | pendiente |
-| 9 | Modificar una historia **Pendiente y una En curso**: en las dos cambia solo lo indicado y los criterios se reemplazan con la lista completa. Modificar sin cambiar nada no da error | RN-8, RN-9 | pendiente |
-| 10 | Modificar usa la misma validación que crear, y una operación rechazada deja la historia y el backlog como estaban | RN-5, RN-11 | pendiente |
-| 11 | Una historia Terminada no se modifica. El test arma la historia en ese estado directamente, porque vive en el mismo paquete: las transiciones de estado son de la #9 y la #10 y todavía no existen | RN-10 | pendiente |
-| 12 | Modificar una historia que no existe informa el error y no crea ninguna | RN-13 | pendiente |
-| 13 | Agregar, modificar o listar historias de un proyecto inexistente informa que no se encontró el proyecto | RN-12 | pendiente |
-| 14 | Pedir el backlog de un proyecto con historias las devuelve todas con sus datos | RN-15 | pendiente |
+| 3 | El proyecto contiene su backlog y su contador de identificadores; pedir el backlog de un proyecto sin historias devuelve una lista vacía | RN-15 | **hecha** |
+| 4 | Agregar una historia al backlog con los datos válidos: queda en Pendiente, sin estimar y con identificador propio | RN-1, RN-3, RN-7 | **hecha** |
+| 5 | El contador no retrocede: dos historias seguidas reciben identificadores distintos, y dos proyectos distintos arrancan los dos en 1 | RN-1, RN-16 | **hecha** |
+| 6 | Normalizar: título, descripción y criterios se guardan sin los espacios de los extremos, y los criterios vacíos se descartan | RN-6 | **hecha** |
+| 7 | Validar lo obligatorio sobre lo ya normalizado: título, descripción, prioridad y al menos un criterio; un texto de solo espacios cuenta como vacío. Cada rechazo verifica además que **el backlog quedó como estaba** | RN-5, RN-11 | **hecha** |
+| 8 | Dos historias del mismo proyecto pueden tener el mismo título | RN-14 | **hecha** |
+| 9 | Modificar una historia **Pendiente y una En curso**: en las dos cambia solo lo indicado y los criterios se reemplazan con la lista completa. Modificar sin cambiar nada no da error | RN-8, RN-9 | **hecha** |
+| 10 | Modificar usa la misma validación que crear, y una operación rechazada deja la historia y el backlog como estaban | RN-5, RN-11 | **hecha** |
+| 11 | Una historia Terminada no se modifica. El test arma la historia en ese estado directamente, porque vive en el mismo paquete: las transiciones de estado son de la #9 y la #10 y todavía no existen | RN-10 | **hecha** |
+| 12 | Modificar una historia que no existe informa el error y no crea ninguna | RN-13 | **hecha** |
+| 13 | Agregar, modificar o listar historias de un proyecto inexistente informa que no se encontró el proyecto | RN-12 | **hecha** |
+| 14 | Pedir el backlog de un proyecto con historias las devuelve todas con sus datos | RN-15 | **hecha** |
 
 **Ajustes pedidos en la Puerta 3.** Maximiliano Eula señaló que la prioridad tenía el mismo
 problema que el rol en la #4: si el dominio recibe una prioridad ya convertida, el escenario
@@ -434,11 +434,22 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 |---|---|---|
 | 1 | `test: la historia expone sus datos y el estado es un tipo propio` | `feat: la historia expone sus datos y el estado es un tipo propio` |
 | 2 | `test: convertir el texto en una prioridad y rechazar las invalidas` | `feat: convertir el texto en una prioridad en el dominio` |
+| 3 a 5 | `test: crear historias en el backlog con identificador por proyecto` | `feat: el proyecto contiene su backlog y agrega historias` |
+| 6 a 8 | `test: normalizar y validar los datos de una historia` | `feat: normalizar y validar los datos de una historia` |
+| 9 a 11 | `test: modificar una historia con las mismas validaciones que crear` | `feat: modificar una historia validando todo antes de cambiar nada` |
+| 12 a 14 | `test: operar sobre historias y proyectos que no existen` | — ya cubierto por la implementación de las tareas 9 a 11 |
 
-Las tareas 3 en adelante necesitan `project.go`, que crea la historia #3, y esperan a que
-esté en `dev`.
+**Las tareas 1 y 2 fueron a un pull request aparte** porque eran las únicas que no dependían
+de `project.go`, que todavía no existía. El resto va en un solo PR, como quedó escrito
+después en el criterio de CLAUDE.md.
 
 ### Desvíos respecto de la spec
+
+**Las tareas 12 a 14 no tuvieron ciclo rojo.** Al implementar las tareas 9 a 11 escribí
+`Story(id)` con su `ErrStoryNotFound`, que correspondía a la tarea 12: cuando llegué a
+escribir su test, ya pasaba. La tarea 13 tampoco agregó código, porque encontrar el proyecto
+es del registro de la #3. Lo correcto hubiera sido implementar solo lo que pedía cada test.
+Queda anotado porque el historial lo muestra: los commits de esas tareas son solo de test.
 
 `Priority.String()` y `Story.StoryPoints()` quedaron escritas sin que un test las pidiera,
 que es justamente lo que el ciclo TDD evita. Se agregaron sus tests en el commit
