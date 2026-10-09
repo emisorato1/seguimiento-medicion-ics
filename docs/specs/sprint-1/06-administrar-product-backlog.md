@@ -354,8 +354,8 @@ para que cada test que se agrega falle por una sola razón.
 
 | # | Tarea | Reglas y criterios que cubre | Estado |
 |---|---|---|---|
-| 1 | La historia existe como dato con sus campos, y el estado es un tipo propio con los tres valores | RN-2 | pendiente |
-| 2 | La prioridad es un tipo propio con los tres valores, y **el dominio convierte el texto que escribe el usuario en una prioridad**, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | pendiente |
+| 1 | La historia existe como dato con sus campos, y el estado es un tipo propio con los tres valores | RN-2 | **hecha** |
+| 2 | La prioridad es un tipo propio con los tres valores, y **el dominio convierte el texto que escribe el usuario en una prioridad**, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | **hecha** |
 | 3 | El proyecto contiene su backlog y su contador de identificadores; pedir el backlog de un proyecto sin historias devuelve una lista vacía | RN-15 | pendiente |
 | 4 | Agregar una historia al backlog con los datos válidos: queda en Pendiente, sin estimar y con identificador propio | RN-1, RN-3, RN-7 | pendiente |
 | 5 | El contador no retrocede: dos historias seguidas reciben identificadores distintos, y dos proyectos distintos arrancan los dos en 1 | RN-1, RN-16 | pendiente |
@@ -428,7 +428,23 @@ nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
 
 ## Fase 4 — Implementación
 
-_Se completa a medida que se avanza._
+Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `test: la historia expone sus datos y el estado es un tipo propio` | `feat: la historia expone sus datos y el estado es un tipo propio` |
+| 2 | `test: convertir el texto en una prioridad y rechazar las invalidas` | `feat: convertir el texto en una prioridad en el dominio` |
+
+Las tareas 3 en adelante necesitan `project.go`, que crea la historia #3, y esperan a que
+esté en `dev`.
+
+### Desvíos respecto de la spec
+
+`Priority.String()` y `Story.StoryPoints()` quedaron escritas sin que un test las pidiera,
+que es justamente lo que el ciclo TDD evita. Se agregaron sus tests en el commit
+`test: cubrir la prioridad mostrada y los story points` y la cobertura del dominio volvió a
+100%. Queda anotado porque el historial lo muestra igual: es mejor que figure como lo que
+fue.
 
 ## Trazabilidad
 
@@ -438,5 +454,5 @@ _Se completa a medida que se avanza._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | pendiente |
-| Código Go | pendiente |
+| Tests | `internal/domain/story_test.go` |
+| Código Go | `internal/domain/story.go`, `internal/domain/errors.go` |
