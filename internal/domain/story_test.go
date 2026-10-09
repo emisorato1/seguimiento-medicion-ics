@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strings"
 	"testing"
+	"time"
 )
 
 // Tarea 1 de la Fase 3 de la historia #6. No tiene escenario BDD propio: los escenarios
@@ -175,5 +176,106 @@ func TestUnaHistoriaDevuelveSusStoryPoints(t *testing.T) {
 	}
 	if estimada.StoryPoints() != 5 || !estimada.IsEstimated() {
 		t.Fatalf("se esperaban 5 story points y la historia estimada, salio: %d", estimada.StoryPoints())
+	}
+}
+
+// unDia arma una fecha sin hora, que es como las compara el dominio.
+func unDia(anio int, mes time.Month, dia int) time.Time {
+	return time.Date(anio, mes, dia, 0, 0, 0, 0, time.UTC)
+}
+
+// unProyecto devuelve un proyecto registrado y vacio, para los tests que no prueban la
+// creacion del proyecto en si.
+func unProyecto(t *testing.T) *Project {
+	t.Helper()
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+	}
+	return project
+}
+
+// unosDatos devuelve datos validos de historia, para los tests que no prueban la validacion.
+func unosDatos() StoryData {
+	return StoryData{
+		Title:              "Registrar esfuerzo",
+		Description:        "Poder cargar las horas trabajadas",
+		Priority:           PriorityHigh,
+		AcceptanceCriteria: []string{"El sistema valida las horas"},
+	}
+}
+
+// Escenario: Backlog de un proyecto sin historias
+// Cubre: RN-15
+func TestBacklogDeUnProyectoSinHistorias(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+	}
+
+	backlog := project.Backlog()
+
+	if len(backlog) != 0 {
+		t.Fatalf("se esperaba un backlog vacio, salieron %d historias", len(backlog))
+	}
+}
+
+// Escenario: Crear una historia en el backlog
+// Cubre: RN-1, RN-3, RN-7
+func TestCrearUnaHistoriaEnElBacklog(t *testing.T) {
+	project := unProyecto(t)
+
+	story, err := project.AddStory(StoryData{
+		Title:              "Registrar esfuerzo",
+		Description:        "Poder cargar las horas trabajadas",
+		Priority:           PriorityHigh,
+		AcceptanceCriteria: []string{"El sistema valida las horas"},
+	})
+
+	if err != nil {
+		t.Fatalf("se esperaba que la historia se creara, salio: %v", err)
+	}
+	if story.ID() != 1 {
+		t.Fatalf("se esperaba el identificador 1 para la primera historia, salio: %d", story.ID())
+	}
+	if story.State() != StoryPending {
+		t.Fatalf("se esperaba el estado Pendiente, salio: %v", story.State())
+	}
+	if story.IsEstimated() {
+		t.Fatalf("se esperaba que la historia naciera sin estimar")
+	}
+	if len(project.Backlog()) != 1 {
+		t.Fatalf("se esperaba 1 historia en el backlog, salieron: %d", len(project.Backlog()))
+	}
+}
+
+// Escenario: Los identificadores son unicos dentro de cada proyecto
+// Cubre: RN-1, RN-16
+func TestLosIdentificadoresSonUnicosDentroDeCadaProyecto(t *testing.T) {
+	registry := NewProjectRegistry()
+	proyectoA, _ := registry.Create(ProjectData{Name: "Proyecto A", Start: unDia(2026, 10, 1)})
+	proyectoB, _ := registry.Create(ProjectData{Name: "Proyecto B", Start: unDia(2026, 10, 1)})
+
+	primeraDeA, _ := proyectoA.AddStory(unosDatos())
+	primeraDeB, _ := proyectoB.AddStory(unosDatos())
+
+	if primeraDeA.ID() != 1 || primeraDeB.ID() != 1 {
+		t.Fatalf("se esperaba que la primera historia de cada proyecto tuviera el identificador 1, salieron: %d y %d",
+			primeraDeA.ID(), primeraDeB.ID())
+	}
+}
+
+// Escenario: Los identificadores no se repiten
+// Cubre: RN-1
+func TestLosIdentificadoresDeLasHistoriasNoSeRepiten(t *testing.T) {
+	project := unProyecto(t)
+
+	primera, _ := project.AddStory(unosDatos())
+	segunda, _ := project.AddStory(unosDatos())
+
+	if primera.ID() == segunda.ID() {
+		t.Fatalf("se esperaban identificadores distintos, las dos salieron con %d", primera.ID())
 	}
 }
