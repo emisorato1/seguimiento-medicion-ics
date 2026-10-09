@@ -139,3 +139,41 @@ func TestElErrorDePrioridadNombraLasValidas(t *testing.T) {
 		}
 	}
 }
+
+// Tarea 2: las tres prioridades se muestran con el nombre que usa la Fase 1, y es el mismo
+// texto que ParsePriority acepta: lo que se muestra se puede volver a escribir.
+// Cubre: RN-4
+func TestLasTresPrioridadesSeMuestranYSeVuelvenAConvertir(t *testing.T) {
+	casos := map[Priority]string{
+		PriorityHigh:   "Alta",
+		PriorityMedium: "Media",
+		PriorityLow:    "Baja",
+	}
+
+	for prioridad, texto := range casos {
+		if prioridad.String() != texto {
+			t.Fatalf("se esperaba que la prioridad se mostrara como %q, salio: %q", texto, prioridad.String())
+		}
+		vuelta, err := ParsePriority(prioridad.String())
+		if err != nil || vuelta != prioridad {
+			t.Fatalf("se esperaba que %q volviera a convertirse en la misma prioridad, salio: %v (%v)",
+				prioridad.String(), vuelta, err)
+		}
+	}
+}
+
+// Tarea 1: los story points son uno de los datos que se registran por la RN-2. El valor lo
+// carga la historia #12; aca solo se guarda y se lee.
+// Cubre: RN-2
+func TestUnaHistoriaDevuelveSusStoryPoints(t *testing.T) {
+	sinEstimar := &Story{storyPoints: 0}
+	estimada := &Story{storyPoints: 5}
+
+	if sinEstimar.StoryPoints() != 0 || sinEstimar.IsEstimated() {
+		t.Fatalf("se esperaba que una historia con 0 story points figurara sin estimar, salio: %d",
+			sinEstimar.StoryPoints())
+	}
+	if estimada.StoryPoints() != 5 || !estimada.IsEstimated() {
+		t.Fatalf("se esperaban 5 story points y la historia estimada, salio: %d", estimada.StoryPoints())
+	}
+}
