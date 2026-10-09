@@ -67,6 +67,19 @@ for spec in docs/specs/sprint-[1-9]*/[0-9]*.md; do
   grep -q "$nombre" "$INDICE" || fallo "$nombre no aparece en $INDICE"
 done
 
+# documentos de docs/ que nadie enlaza: se vuelven invisibles y quedan sin mantener
+echo "- documentos enlazados"
+for doc in docs/*.md docs/actas/*.md docs/specs/*.md; do
+  [ -e "$doc" ] || continue
+  nombre=$(basename "$doc")
+  carpeta=$(dirname "$doc")/
+  # alcanza con que se enlace el archivo, o la carpeta que lo contiene
+  if ! grep -rq "$nombre" README.md CLAUDE.md AGENTS.md docs/specs/README.md 2>/dev/null &&
+     ! grep -rq "($carpeta)" README.md CLAUDE.md AGENTS.md 2>/dev/null; then
+    fallo "$doc no esta enlazado desde README.md, CLAUDE.md, AGENTS.md ni el indice de specs"
+  fi
+done
+
 # specs mencionadas en el indice que ya no existen
 while read -r referencia; do
   [ -e "docs/specs/$referencia" ] || fallo "$INDICE menciona $referencia, que no existe"
