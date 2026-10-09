@@ -361,3 +361,113 @@ func TestDosHistoriasDelMismoProyectoPuedenTenerElMismoTitulo(t *testing.T) {
 		t.Fatalf("se esperaban identificadores distintos, los dos salieron %d", primera.ID())
 	}
 }
+
+// Escenario: Modificar una historia pendiente
+// Escenario: Modificar una historia sin cambiar nada
+// Escenario: Reemplazar los criterios de aceptacion
+// Cubre: RN-8, RN-9
+func TestModificarUnaHistoria(t *testing.T) {
+	project := unProyecto(t)
+	story, _ := project.AddStory(unosDatos())
+	nuevaPrioridad := PriorityLow
+
+	err := project.UpdateStory(story.ID(), StoryChanges{Priority: &nuevaPrioridad})
+
+	if err != nil {
+		t.Fatalf("se esperaba que la historia se modificara, salio: %v", err)
+	}
+	if story.Priority() != PriorityLow {
+		t.Fatalf("se esperaba la prioridad Baja, salio: %v", story.Priority())
+	}
+	if story.Title() != "Registrar esfuerzo" {
+		t.Fatalf("se esperaba que el titulo quedara como estaba, salio: %q", story.Title())
+	}
+}
+
+// Escenario: Modificar una historia en curso
+// Cubre: RN-8
+func TestModificarUnaHistoriaEnCurso(t *testing.T) {
+	project := unProyecto(t)
+	story, _ := project.AddStory(unosDatos())
+	story.state = StoryInProgress
+	nuevoTitulo := "Registrar esfuerzo por integrante"
+
+	err := project.UpdateStory(story.ID(), StoryChanges{Title: &nuevoTitulo})
+
+	if err != nil {
+		t.Fatalf("se esperaba poder modificar una historia En curso, salio: %v", err)
+	}
+	if story.Title() != nuevoTitulo {
+		t.Fatalf("se esperaba el titulo nuevo, salio: %q", story.Title())
+	}
+}
+
+// Escenario: Modificar una historia sin cambiar nada
+// Cubre: RN-9
+func TestModificarUnaHistoriaSinCambiarNada(t *testing.T) {
+	project := unProyecto(t)
+	story, _ := project.AddStory(unosDatos())
+
+	err := project.UpdateStory(story.ID(), StoryChanges{})
+
+	if err != nil {
+		t.Fatalf("se esperaba que modificar sin cambios no diera error, salio: %v", err)
+	}
+	if story.Title() != "Registrar esfuerzo" || story.Priority() != PriorityHigh {
+		t.Fatalf("se esperaba que la historia conservara sus datos")
+	}
+}
+
+// Escenario: Reemplazar los criterios de aceptacion
+// Cubre: RN-9
+func TestReemplazarLosCriteriosDeAceptacion(t *testing.T) {
+	project := unProyecto(t)
+	story, _ := project.AddStory(unosDatos())
+	nuevos := []string{"Primero", "Segundo", "Tercero"}
+
+	err := project.UpdateStory(story.ID(), StoryChanges{AcceptanceCriteria: &nuevos})
+
+	if err != nil {
+		t.Fatalf("se esperaba que los criterios se reemplazaran, salio: %v", err)
+	}
+	if len(story.AcceptanceCriteria()) != 3 {
+		t.Fatalf("se esperaban 3 criterios, salieron: %d", len(story.AcceptanceCriteria()))
+	}
+}
+
+// Escenario: Una modificacion rechazada no cambia nada
+// Cubre: RN-5, RN-11
+func TestUnaModificacionRechazadaNoCambiaNada(t *testing.T) {
+	project := unProyecto(t)
+	story, _ := project.AddStory(unosDatos())
+	enBlanco := "   "
+
+	err := project.UpdateStory(story.ID(), StoryChanges{Title: &enBlanco})
+
+	if !errors.Is(err, ErrStoryTitleRequired) {
+		t.Fatalf("se esperaba ErrStoryTitleRequired, salio: %v", err)
+	}
+	if story.Title() != "Registrar esfuerzo" {
+		t.Fatalf("se esperaba que la historia conservara su titulo, salio: %q", story.Title())
+	}
+}
+
+// Escenario: No modificar una historia terminada
+// Cubre: RN-10
+func TestNoModificarUnaHistoriaTerminada(t *testing.T) {
+	project := unProyecto(t)
+	story, _ := project.AddStory(unosDatos())
+	// El test arma el estado directamente: las transiciones son de la #9 y la #10 y
+	// todavia no existen. Es posible porque el test vive en el mismo paquete.
+	story.state = StoryDone
+	nuevoTitulo := "Otro titulo"
+
+	err := project.UpdateStory(story.ID(), StoryChanges{Title: &nuevoTitulo})
+
+	if !errors.Is(err, ErrStoryDone) {
+		t.Fatalf("se esperaba ErrStoryDone, salio: %v", err)
+	}
+	if story.Title() != "Registrar esfuerzo" {
+		t.Fatalf("se esperaba que la historia terminada conservara su titulo, salio: %q", story.Title())
+	}
+}
