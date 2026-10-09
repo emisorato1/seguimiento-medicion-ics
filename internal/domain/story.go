@@ -191,3 +191,68 @@ func (p *Project) AddStory(data StoryData) (*Story, error) {
 	p.nextStoryID++
 	return story, nil
 }
+
+// StoryChanges es el pedido de modificacion de una historia. Un dato que no se indica queda
+// como estaba (RN-9). No existe la opcion de quitar ninguno: los cuatro son obligatorios,
+// asi que no hace falta distinguir "no lo mande" de "lo quiero borrar" como en el proyecto.
+// Los criterios de aceptacion se reemplazan con la lista completa.
+type StoryChanges struct {
+	Title              *string
+	Description        *string
+	Priority           *Priority
+	AcceptanceCriteria *[]string
+}
+
+// Story devuelve la historia guardada con ese identificador dentro del proyecto, no una
+// copia (RN-13 si no existe).
+func (p *Project) Story(id int) (*Story, error) {
+	for _, story := range p.backlog {
+		if story.id == id {
+			return story, nil
+		}
+	}
+	return nil, ErrStoryNotFound
+}
+
+// UpdateStory modifica la historia con ese identificador segun el pedido de cambios. Arma
+// el resultado aparte, lo normaliza y lo valida completo, y recien ahi lo aplica: si algo
+// falla, la historia y el backlog quedan como estaban (RN-11), sin necesidad de deshacer.
+func (p *Project) UpdateStory(id int, changes StoryChanges) error {
+	story, err := p.Story(id)
+	if err != nil {
+		return err
+	}
+	if story.state == StoryDone {
+		return ErrStoryDone
+	}
+
+	result := StoryData{
+		Title:              story.title,
+		Description:        story.description,
+		Priority:           story.priority,
+		AcceptanceCriteria: story.acceptanceCriteria,
+	}
+	if changes.Title != nil {
+		result.Title = *changes.Title
+	}
+	if changes.Description != nil {
+		result.Description = *changes.Description
+	}
+	if changes.Priority != nil {
+		result.Priority = *changes.Priority
+	}
+	if changes.AcceptanceCriteria != nil {
+		result.AcceptanceCriteria = *changes.AcceptanceCriteria
+	}
+
+	result, err = prepareStory(result)
+	if err != nil {
+		return err
+	}
+
+	story.title = result.Title
+	story.description = result.Description
+	story.priority = result.Priority
+	story.acceptanceCriteria = result.AcceptanceCriteria
+	return nil
+}

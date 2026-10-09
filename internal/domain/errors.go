@@ -22,4 +22,8 @@ var (
 	ErrStoryDescriptionRequired = errors.New("la descripcion de la historia es obligatoria")
 	// ErrStoryCriteriaRequired: historia sin ningun criterio de aceptacion (historia #6, RN-5).
 	ErrStoryCriteriaRequired = errors.New("la historia necesita al menos un criterio de aceptacion")
+	// ErrStoryDone: modificar una historia ya terminada (historia #6, RN-10).
+	ErrStoryDone = errors.New("una historia terminada no se modifica")
+	// ErrStoryNotFound: modificar una historia que no existe en el proyecto (historia #6, RN-13).
+	ErrStoryNotFound = errors.New("no se encontro la historia")
 )
