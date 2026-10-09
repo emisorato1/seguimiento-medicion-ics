@@ -279,3 +279,85 @@ func TestLosIdentificadoresDeLasHistoriasNoSeRepiten(t *testing.T) {
 		t.Fatalf("se esperaban identificadores distintos, las dos salieron con %d", primera.ID())
 	}
 }
+
+// Escenario: Guardar el titulo sin espacios en los extremos
+// Escenario: Descartar los criterios de aceptacion vacios
+// Cubre: RN-6
+func TestNormalizarLosDatosDeUnaHistoria(t *testing.T) {
+	project := unProyecto(t)
+
+	story, err := project.AddStory(StoryData{
+		Title:              "  Registrar esfuerzo  ",
+		Description:        "  Poder cargar las horas  ",
+		Priority:           PriorityHigh,
+		AcceptanceCriteria: []string{"  El sistema valida las horas  ", "", "   "},
+	})
+
+	if err != nil {
+		t.Fatalf("se esperaba que la historia se creara, salio: %v", err)
+	}
+	if story.Title() != "Registrar esfuerzo" {
+		t.Fatalf("se esperaba el titulo sin espacios en los extremos, salio: %q", story.Title())
+	}
+	if story.Description() != "Poder cargar las horas" {
+		t.Fatalf("se esperaba la descripcion sin espacios en los extremos, salio: %q", story.Description())
+	}
+	criterios := story.AcceptanceCriteria()
+	if len(criterios) != 1 || criterios[0] != "El sistema valida las horas" {
+		t.Fatalf("se esperaba 1 criterio sin espacios y sin los vacios, salieron: %q", criterios)
+	}
+}
+
+// Esquema del escenario: Rechazar una historia sin los datos obligatorios
+// Escenario: Un texto con solo espacios cuenta como vacio
+// Escenario: Rechazar si todos los criterios quedan vacios
+// Cubre: RN-5, RN-11
+func TestRechazarUnaHistoriaSinLosDatosObligatorios(t *testing.T) {
+	casos := []struct {
+		dato     string
+		datos    StoryData
+		esperado error
+	}{
+		{"titulo", StoryData{Title: "", Description: "d", AcceptanceCriteria: []string{"c"}}, ErrStoryTitleRequired},
+		{"titulo con solo espacios", StoryData{Title: "   ", Description: "d", AcceptanceCriteria: []string{"c"}}, ErrStoryTitleRequired},
+		{"descripcion", StoryData{Title: "t", Description: "", AcceptanceCriteria: []string{"c"}}, ErrStoryDescriptionRequired},
+		{"descripcion con solo espacios", StoryData{Title: "t", Description: "  ", AcceptanceCriteria: []string{"c"}}, ErrStoryDescriptionRequired},
+		{"criterios de aceptacion", StoryData{Title: "t", Description: "d", AcceptanceCriteria: nil}, ErrStoryCriteriaRequired},
+		{"criterios todos vacios", StoryData{Title: "t", Description: "d", AcceptanceCriteria: []string{"", "   "}}, ErrStoryCriteriaRequired},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.dato, func(t *testing.T) {
+			project := unProyecto(t)
+
+			_, err := project.AddStory(caso.datos)
+
+			if !errors.Is(err, caso.esperado) {
+				t.Fatalf("se esperaba %v al faltar %s, salio: %v", caso.esperado, caso.dato, err)
+			}
+			if len(project.Backlog()) != 0 {
+				t.Fatalf("se esperaba que el backlog siguiera vacio tras el rechazo, salieron %d historias",
+					len(project.Backlog()))
+			}
+		})
+	}
+}
+
+// Escenario: Dos historias con el mismo titulo
+// Cubre: RN-14
+func TestDosHistoriasDelMismoProyectoPuedenTenerElMismoTitulo(t *testing.T) {
+	project := unProyecto(t)
+
+	primera, _ := project.AddStory(unosDatos())
+	segunda, err := project.AddStory(unosDatos())
+
+	if err != nil {
+		t.Fatalf("se esperaba que dos historias pudieran tener el mismo titulo, salio: %v", err)
+	}
+	if primera.Title() != segunda.Title() {
+		t.Fatalf("los titulos deberian ser iguales en este caso")
+	}
+	if primera.ID() == segunda.ID() {
+		t.Fatalf("se esperaban identificadores distintos, los dos salieron %d", primera.ID())
+	}
+}
