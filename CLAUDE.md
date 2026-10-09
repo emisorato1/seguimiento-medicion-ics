@@ -321,7 +321,8 @@ main                 rama "de producción": siempre estable, siempre compila, si
 - Nombre de la rama: `historia-<numero>-<descripcion-corta>`. Para un defecto:
   `defecto-<numero>-<descripcion-corta>`.
 - **Una tarjeta del tablero = una historia = una rama = un pull request.** No mezclar dos
-  historias en una rama: hace imposible revisar y rompe la trazabilidad.
+  historias en una rama: hace imposible revisar y rompe la trazabilidad. La historia se parte
+  en más de un PR solo en los dos casos de abajo.
 - Al mergear el PR, **GitHub borra la rama solo**. No hace falta limpiarla a mano. Para
   borrar tu copia local de las ramas que ya no existen en el remoto:
 
@@ -352,6 +353,29 @@ buena memoria de nadie:
 
 El dueño del repositorio puede saltear la protección en una emergencia. Si alguna vez se
 usa, se avisa al equipo y se deja dicho por qué.
+
+### Cuándo se puede partir una historia en varios pull requests
+
+Por defecto **la historia entra en un solo pull request**, con todas sus tareas. Eso es lo
+que hace que el PR cierre la historia con `Closes #N`, que la tarjeta se mueva sola y que
+quien revisa pueda contrastar el código contra la spec entera, tarea por tarea. Un PR
+parcial no cierra nada y deja la historia a medias en el tablero.
+
+Se puede partir en dos casos, y solo en esos:
+
+1. **Alguien está bloqueado esperándote.** Si tu historia es la base de otras —como la #3,
+   que creaba `project.go` y `errors.go`— conviene mergear primero las tareas que destraban
+   y seguir con el resto en otro PR. El costo de partir lo paga el tiempo que ahorran los
+   demás.
+2. **La historia es grande y tiene un corte natural.** De 5 story points para arriba, si hay
+   dos mitades con sentido propio (por ejemplo "crear" y "modificar"), se pueden mandar por
+   separado. Dos PRs, no cinco.
+
+Fuera de esos dos casos, partir solo agrega vueltas: cada PR cuesta actualizar la rama,
+volver a aprobar y resolver el conflicto de `ESTADO.md`.
+
+**Cuando se parte, el último PR es el que cierra la historia** con `Closes #N`. Los
+anteriores usan `Refs #N`.
 
 ### Historias y tareas: qué es una rama y qué no
 
