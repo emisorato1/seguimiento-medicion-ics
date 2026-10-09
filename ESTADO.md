@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-09 17:22. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-09 17:35. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,19 +10,18 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 20
 - Sin estimar: 2
 - Story points cargados: 83
-- Terminadas: 2
+- Terminadas: 3
 
 ## En review
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
+| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Lista para implementar
@@ -64,16 +63,17 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #1 | Configurar el repositorio y el tablero del proyecto | - | - | Sprint 0 |
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
+| #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 
 ## Ultimos commits
 
 ```
-1d7326d 2026-10-09 test: cubrir la prioridad mostrada y los story points (tareas 1 y 2, historia 6)
-400a285 2026-10-09 feat: convertir el texto en una prioridad en el dominio (tarea 2, historia 6)
-4dc7d45 2026-10-09 test: convertir el texto en una prioridad y rechazar las invalidas (tarea 2, historia 6)
-aded90a 2026-10-09 feat: la historia expone sus datos y el estado es un tipo propio (tarea 1, historia 6)
-bde9c51 2026-10-09 test: la historia expone sus datos y el estado es un tipo propio (tarea 1, historia 6)
-a4efc94 2026-10-09 docs: actualizar el estado de las specs y chequear la puerta al reves
-8c367b4 2026-10-09 Merge pull request #55 from emisorato1/chore-cobertura-en-ci
-a6dddf2 2026-10-09 Merge branch 'dev' into chore-cobertura-en-ci
+2a6551a 2026-10-09 docs: registrar la implementacion de las tareas 3 a 14 de la historia 6
+e946fda 2026-10-09 test: modificar la descripcion de una historia (tarea 9, historia 6)
+499eb03 2026-10-09 test: operar sobre historias y proyectos que no existen (tareas 12 a 14, historia 6)
+13f6ad5 2026-10-09 feat: modificar una historia validando todo antes de cambiar nada (tareas 9 a 11, historia 6)
+2bae7e0 2026-10-09 test: modificar una historia con las mismas validaciones que crear (tareas 9 a 11, historia 6)
+de00fc7 2026-10-09 feat: normalizar y validar los datos de una historia (tareas 6 a 8, historia 6)
+d2e8d9f 2026-10-09 test: normalizar y validar los datos de una historia (tareas 6 a 8, historia 6)
+3e5a29c 2026-10-09 feat: el proyecto contiene su backlog y agrega historias (tareas 3 a 5, historia 6)
 ```

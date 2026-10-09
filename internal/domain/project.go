@@ -82,6 +82,12 @@ type Project struct {
 	description string
 	start       time.Time
 	end         time.Time
+
+	// backlog y nextStoryID son el Product Backlog del proyecto (historia #6). Las
+	// historias viven dentro del proyecto: no existen sin el, y asi el identificador
+	// unico por proyecto (RN-16) sale solo, sin llevar un indice aparte.
+	backlog     []*Story
+	nextStoryID int
 }
 
 // ID devuelve el identificador del proyecto, que no cambia nunca.

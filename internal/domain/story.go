@@ -123,3 +123,136 @@ func (s *Story) AcceptanceCriteria() []string {
 	copy(criterios, s.acceptanceCriteria)
 	return criterios
 }
+
+// StoryData son los datos con los que se crea una historia. Los story points no estan: la
+// historia nace sin estimar (RN-7) y el valor lo carga la historia #12.
+type StoryData struct {
+	Title              string
+	Description        string
+	Priority           Priority
+	AcceptanceCriteria []string
+}
+
+// prepareStory normaliza y valida los datos de una historia, en ese orden, sin tocar
+// ninguna historia ni el backlog. Crear y modificar usan esta misma funcion, asi aplican
+// las mismas reglas (RN-5). Normalizar antes de validar es lo que hace que un texto de solo
+// espacios cuente como vacio y que una lista de criterios todos en blanco se rechace.
+func prepareStory(data StoryData) (StoryData, error) {
+	data.Title = strings.TrimSpace(data.Title)
+	data.Description = strings.TrimSpace(data.Description)
+
+	criterios := make([]string, 0, len(data.AcceptanceCriteria))
+	for _, criterio := range data.AcceptanceCriteria {
+		if limpio := strings.TrimSpace(criterio); limpio != "" {
+			criterios = append(criterios, limpio)
+		}
+	}
+	data.AcceptanceCriteria = criterios
+
+	switch {
+	case data.Title == "":
+		return StoryData{}, ErrStoryTitleRequired
+	case data.Description == "":
+		return StoryData{}, ErrStoryDescriptionRequired
+	case len(data.AcceptanceCriteria) == 0:
+		return StoryData{}, ErrStoryCriteriaRequired
+	}
+	return data, nil
+}
+
+// Backlog devuelve el Product Backlog del proyecto. Si no tiene historias devuelve una
+// lista vacia, que no es un error (RN-15). Es una copia: agregar o quitar historias de lo
+// que se recibe no cambia el backlog del proyecto.
+func (p *Project) Backlog() []*Story {
+	stories := make([]*Story, len(p.backlog))
+	copy(stories, p.backlog)
+	return stories
+}
+
+// AddStory agrega una historia al Product Backlog del proyecto y le asigna su identificador,
+// unico dentro del proyecto (RN-1, RN-16). La historia queda en Pendiente (RN-3) y sin
+// estimar (RN-7). El contador nunca retrocede: calcularlo contando historias se rompe en
+// cuanto exista borrado.
+func (p *Project) AddStory(data StoryData) (*Story, error) {
+	data, err := prepareStory(data)
+	if err != nil {
+		return nil, err
+	}
+
+	story := &Story{
+		id:                 p.nextStoryID,
+		title:              data.Title,
+		description:        data.Description,
+		priority:           data.Priority,
+		state:              StoryPending,
+		acceptanceCriteria: data.AcceptanceCriteria,
+	}
+	p.backlog = append(p.backlog, story)
+	p.nextStoryID++
+	return story, nil
+}
+
+// StoryChanges es el pedido de modificacion de una historia. Un dato que no se indica queda
+// como estaba (RN-9). No existe la opcion de quitar ninguno: los cuatro son obligatorios,
+// asi que no hace falta distinguir "no lo mande" de "lo quiero borrar" como en el proyecto.
+// Los criterios de aceptacion se reemplazan con la lista completa.
+type StoryChanges struct {
+	Title              *string
+	Description        *string
+	Priority           *Priority
+	AcceptanceCriteria *[]string
+}
+
+// Story devuelve la historia guardada con ese identificador dentro del proyecto, no una
+// copia (RN-13 si no existe).
+func (p *Project) Story(id int) (*Story, error) {
+	for _, story := range p.backlog {
+		if story.id == id {
+			return story, nil
+		}
+	}
+	return nil, ErrStoryNotFound
+}
+
+// UpdateStory modifica la historia con ese identificador segun el pedido de cambios. Arma
+// el resultado aparte, lo normaliza y lo valida completo, y recien ahi lo aplica: si algo
+// falla, la historia y el backlog quedan como estaban (RN-11), sin necesidad de deshacer.
+func (p *Project) UpdateStory(id int, changes StoryChanges) error {
+	story, err := p.Story(id)
+	if err != nil {
+		return err
+	}
+	if story.state == StoryDone {
+		return ErrStoryDone
+	}
+
+	result := StoryData{
+		Title:              story.title,
+		Description:        story.description,
+		Priority:           story.priority,
+		AcceptanceCriteria: story.acceptanceCriteria,
+	}
+	if changes.Title != nil {
+		result.Title = *changes.Title
+	}
+	if changes.Description != nil {
+		result.Description = *changes.Description
+	}
+	if changes.Priority != nil {
+		result.Priority = *changes.Priority
+	}
+	if changes.AcceptanceCriteria != nil {
+		result.AcceptanceCriteria = *changes.AcceptanceCriteria
+	}
+
+	result, err = prepareStory(result)
+	if err != nil {
+		return err
+	}
+
+	story.title = result.Title
+	story.description = result.Description
+	story.priority = result.Priority
+	story.acceptanceCriteria = result.AcceptanceCriteria
+	return nil
+}

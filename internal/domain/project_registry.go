@@ -29,6 +29,7 @@ func (r *ProjectRegistry) Create(data ProjectData) (*Project, error) {
 		description: data.Description,
 		start:       data.Start,
 		end:         data.End,
+		nextStoryID: 1,
 	}
 	r.projects[project.id] = project
 	r.nextID++
