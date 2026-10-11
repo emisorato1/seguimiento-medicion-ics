@@ -266,7 +266,7 @@ verifica lo que escribió como salida.
 | 11 | Si falta indicar a qué historia se aplica, se informa y la operación no se ejecuta | Operacion incompleta | RN-5 | #12 | pendiente |
 | 12 | Letras donde va un número se informan y la operación no se ejecuta | Dato con forma invalida | RN-5 | #12 | pendiente |
 | 13 | Operar sobre un identificador que no existe muestra el mensaje del núcleo y la consola sigue | Operar sobre un identificador que no existe | RN-2 | #6 | pendiente |
-| 14 | Una fecha mal escrita se informa y la operación no se ejecuta | — (RN-5, sin escenario) | RN-5 | #3 | pendiente |
+| 14 | Una fecha mal escrita se informa y la operación no se ejecuta | — (RN-5, sin escenario) | RN-5 | #3 | hecha |
 | 15 | El programa arranca la consola conectada al teclado y la pantalla, con un registro de proyectos nuevo | — (arranque) | — | todas | pendiente |
 
 ### Decisiones de esta fase
@@ -332,6 +332,7 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 3 | `35173b0` | `69fbd58` |
 | 4 | `799f9e8` | `07c23ff` |
 | 5 | `b1bf255` | `4cd8d97` |
+| 14 | `e48de53` | `42cfe49` |
 
 ### Desvíos respecto de la spec
 
@@ -341,6 +342,9 @@ Ninguno de comportamiento. Dos notas de proceso:
   dependen las tareas 4, 5 y 14.
 - El refactor `479cb07` renombra en inglés una variable del test de la tarea 4, como pide
   AGENTS.md. No cambia comportamiento, así que no tiene ciclo RED.
+- En el RED de la tarea 14 falló solo el caso de la fecha de finalización. El de la fecha de
+  inicio pasaba por casualidad: el núcleo respondía "la fecha de inicio es obligatoria", que
+  también nombra el dato. Se dejaron los dos casos porque los dos son parte de la RN-5.
 
 ## Trazabilidad
 
