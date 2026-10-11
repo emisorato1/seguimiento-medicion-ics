@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"strconv"
 	"strings"
@@ -93,5 +94,33 @@ func TestCrearUnProyectoDesdeLaConsola(t *testing.T) {
 	}
 	if !strings.Contains(out.String(), strconv.Itoa(project.ID())) {
 		t.Fatalf("se esperaba ver el identificador %d en la salida, salio: %q", project.ID(), out.String())
+	}
+}
+
+// Escenario: Mostrar el motivo de un rechazo
+// Cubre: RN-2, RN-7
+//
+// La consola solo se puede observar por lo que escribe, y la RN-2 pide mostrar el motivo
+// tal cual lo informa el nucleo. Por eso el test busca el mensaje del error del dominio:
+// no lo escribe a mano, asi que si cambia la redaccion el test sigue valiendo.
+func TestMostrarElMotivoDeUnRechazo(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := "crear-proyecto\n\n\n01/10/2026\n\nvolar\nsalir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), domain.ErrProjectNameRequired.Error()) {
+		t.Fatalf("se esperaba ver el mensaje del nucleo %q, salio: %q",
+			domain.ErrProjectNameRequired.Error(), out.String())
+	}
+	if !strings.Contains(out.String(), "volar") {
+		t.Fatalf("se esperaba que la consola siguiera funcionando despues del rechazo, salio: %q", out.String())
+	}
+	if _, err := registry.Get(1); !errors.Is(err, domain.ErrProjectNotFound) {
+		t.Fatalf("se esperaba que no se registrara ningun proyecto, salio: %v", err)
 	}
 }
