@@ -59,8 +59,14 @@ func ask(scanner *bufio.Scanner, out io.Writer, label string) string {
 func createProject(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) {
 	name := ask(scanner, out, "Nombre: ")
 	description := ask(scanner, out, "Descripción (opcional): ")
-	start := parseDate(ask(scanner, out, "Fecha de inicio (dd/mm/aaaa): "))
-	end := parseDate(ask(scanner, out, "Fecha de finalización (dd/mm/aaaa, opcional): "))
+	start, ok := askDate(scanner, out, "Fecha de inicio (dd/mm/aaaa): ", "fecha de inicio")
+	if !ok {
+		return
+	}
+	end, ok := askDate(scanner, out, "Fecha de finalización (dd/mm/aaaa, opcional): ", "fecha de finalización")
+	if !ok {
+		return
+	}
 
 	project, err := registry.Create(domain.ProjectData{
 		Name: name, Description: description, Start: start, End: end,
@@ -72,9 +78,23 @@ func createProject(scanner *bufio.Scanner, out io.Writer, registry *domain.Proje
 	fmt.Fprintf(out, "Proyecto creado con identificador %d\n", project.ID())
 }
 
+// askDate pide una fecha. Si no tiene la forma dd/mm/aaaa lo informa nombrando el dato y
+// devuelve false: la operación no se ejecuta (RN-5).
+func askDate(scanner *bufio.Scanner, out io.Writer, label, field string) (time.Time, bool) {
+	date, err := parseDate(ask(scanner, out, label))
+	if err != nil {
+		fmt.Fprintf(out, "La %s no tiene la forma dd/mm/aaaa: la operación no se ejecuta.\n", field)
+		return time.Time{}, false
+	}
+	return date, true
+}
+
 // parseDate convierte una fecha escrita dd/mm/aaaa en un día, sin hora. Una línea vacía
-// es "sin fecha". Una fecha mal escrita todavía no se informa: es la tarea 14.
-func parseDate(text string) time.Time {
-	date, _ := time.Parse(dateLayout, text)
-	return date
+// es "sin fecha" y no es un error: si el dato es obligatorio, lo rechaza el núcleo (RN-7).
+// Cualquier otro texto que no tenga esa forma es un error de forma (RN-5).
+func parseDate(text string) (time.Time, error) {
+	if text == "" {
+		return time.Time{}, nil
+	}
+	return time.Parse(dateLayout, text)
 }
