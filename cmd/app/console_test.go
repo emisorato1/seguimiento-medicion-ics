@@ -124,3 +124,33 @@ func TestMostrarElMotivoDeUnRechazo(t *testing.T) {
 		t.Fatalf("se esperaba que no se registrara ningun proyecto, salio: %v", err)
 	}
 }
+
+// Sin escenario: tarea 14, una fecha mal escrita
+// Cubre: RN-5
+func TestUnaFechaMalEscritaSeInformaYLaOperacionNoSeEjecuta(t *testing.T) {
+	cases := []struct {
+		field string
+		input string
+	}{
+		{"fecha de inicio", "crear-proyecto\nSistema de metricas\n\nprimero de octubre\nsalir\n"},
+		{"fecha de finalización", "crear-proyecto\nSistema de metricas\n\n01/10/2026\n31-12-2026\nsalir\n"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.field, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			var out strings.Builder
+
+			err := runConsole(strings.NewReader(tc.input), &out, registry)
+
+			if err != nil {
+				t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+			}
+			if !strings.Contains(out.String(), tc.field) {
+				t.Fatalf("se esperaba que la consola indicara que la %s esta mal escrita, salio: %q", tc.field, out.String())
+			}
+			if _, err := registry.Get(1); !errors.Is(err, domain.ErrProjectNotFound) {
+				t.Fatalf("se esperaba que no se creara ningun proyecto, salio: %v", err)
+			}
+		})
+	}
+}
