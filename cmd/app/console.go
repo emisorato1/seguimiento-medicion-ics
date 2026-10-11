@@ -65,10 +65,11 @@ func createProject(scanner *bufio.Scanner, out io.Writer, registry *domain.Proje
 	project, err := registry.Create(domain.ProjectData{
 		Name: name, Description: description, Start: start, End: end,
 	})
-	// Mostrar el motivo cuando el núcleo rechaza el proyecto es la tarea 5.
-	if err == nil {
-		fmt.Fprintf(out, "Proyecto creado con identificador %d\n", project.ID())
+	if err != nil {
+		fmt.Fprintln(out, err)
+		return
 	}
+	fmt.Fprintf(out, "Proyecto creado con identificador %d\n", project.ID())
 }
 
 // parseDate convierte una fecha escrita dd/mm/aaaa en un día, sin hora. Una línea vacía
