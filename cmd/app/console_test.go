@@ -2,9 +2,12 @@ package main
 
 import (
 	"io"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
 
 // Escenario: Salir del programa
@@ -15,7 +18,7 @@ func TestSalirDelPrograma(t *testing.T) {
 	done := make(chan error, 1)
 
 	go func() {
-		done <- runConsole(reader, io.Discard)
+		done <- runConsole(reader, io.Discard, domain.NewProjectRegistry())
 	}()
 	go writer.Write([]byte("salir\n"))
 
@@ -34,7 +37,7 @@ func TestSalirDelPrograma(t *testing.T) {
 func TestEntradaVacia(t *testing.T) {
 	var out strings.Builder
 
-	err := runConsole(strings.NewReader("\nsalir\n"), &out)
+	err := runConsole(strings.NewReader("\nsalir\n"), &out, domain.NewProjectRegistry())
 
 	if err != nil {
 		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
@@ -50,7 +53,7 @@ func TestEntradaVacia(t *testing.T) {
 func TestOperacionInexistente(t *testing.T) {
 	var out strings.Builder
 
-	err := runConsole(strings.NewReader("volar\nsalir\n"), &out)
+	err := runConsole(strings.NewReader("volar\nsalir\n"), &out, domain.NewProjectRegistry())
 
 	if err != nil {
 		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
@@ -62,5 +65,33 @@ func TestOperacionInexistente(t *testing.T) {
 		if !strings.Contains(out.String(), name) {
 			t.Fatalf("se esperaba que la consola listara la operacion %q, salio: %q", name, out.String())
 		}
+	}
+}
+
+// Escenario: Crear un proyecto desde la consola
+// Cubre: RN-1, RN-3
+func TestCrearUnProyectoDesdeLaConsola(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := "crear-proyecto\nSistema de metricas\n\n01/10/2026\n\nsalir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	project, err := registry.Get(1)
+	if err != nil {
+		t.Fatalf("se esperaba el proyecto 1 en el registro, salio: %v", err)
+	}
+	if project.Name() != "Sistema de metricas" {
+		t.Fatalf("se esperaba el nombre %q, salio: %q", "Sistema de metricas", project.Name())
+	}
+	inicio := time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)
+	if !project.Start().Equal(inicio) {
+		t.Fatalf("se esperaba el inicio %v, salio: %v", inicio, project.Start())
+	}
+	if !strings.Contains(out.String(), strconv.Itoa(project.ID())) {
+		t.Fatalf("se esperaba ver el identificador %d en la salida, salio: %q", project.ID(), out.String())
 	}
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
 
 // prompt es el indicador con el que la consola pide una operación.
@@ -16,9 +18,10 @@ func operationNames() []string {
 }
 
 // runConsole lee operaciones de in, una por línea, y escribe los resultados en out.
+// Trabaja sobre el registro de proyectos que recibe: no guarda datos propios.
 // Antes de cada línea muestra el indicador. Termina cuando el usuario ejecuta la
 // operación de salir (RN-6).
-func runConsole(in io.Reader, out io.Writer) error {
+func runConsole(in io.Reader, out io.Writer, registry *domain.ProjectRegistry) error {
 	scanner := bufio.NewScanner(in)
 	for {
 		fmt.Fprint(out, prompt)
