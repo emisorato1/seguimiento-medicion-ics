@@ -26,9 +26,9 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | 🟢 Puerta 3 aprobada — lista para implementar |
+| [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | ✅ Terminada — mergeada a `dev` |
 | [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | 🟢 Puerta 3 aprobada — lista para implementar |
-| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 🔨 Tareas — pendiente de Puerta 3 |
+| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ⚙️ En implementación |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🟢 Puerta 3 aprobada — lista para implementar |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | 🟢 Puerta 3 aprobada — lista para implementar |
 
@@ -36,9 +36,9 @@ Las Fases 1 se redactaron como borrador con asistencia de IA a partir de la cons
 criterios de aceptación de cada issue, y cada responsable las revisó y corrigió antes de
 presentarlas a la Puerta 1.
 
-**Ninguna historia tiene todavía las tres puertas aprobadas, así que no se puede escribir
-código de ninguna.** El orden es Puerta 1 (requisitos) → Fase 2 y Puerta 2 (diseño) →
-Fase 3 y Puerta 3 (tareas) → recién ahí la implementación.
+**Solo se escribe código de una historia que tiene las tres puertas aprobadas.** El orden es
+Puerta 1 (requisitos) → Fase 2 y Puerta 2 (diseño) → Fase 3 y Puerta 3 (tareas) → recién ahí
+la implementación.
 
 ## Orden de trabajo del Sprint 1
 
