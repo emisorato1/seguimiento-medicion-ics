@@ -87,9 +87,9 @@ func TestCrearUnProyectoDesdeLaConsola(t *testing.T) {
 	if project.Name() != "Sistema de metricas" {
 		t.Fatalf("se esperaba el nombre %q, salio: %q", "Sistema de metricas", project.Name())
 	}
-	inicio := time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)
-	if !project.Start().Equal(inicio) {
-		t.Fatalf("se esperaba el inicio %v, salio: %v", inicio, project.Start())
+	start := time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)
+	if !project.Start().Equal(start) {
+		t.Fatalf("se esperaba el inicio %v, salio: %v", start, project.Start())
 	}
 	if !strings.Contains(out.String(), strconv.Itoa(project.ID())) {
 		t.Fatalf("se esperaba ver el identificador %d en la salida, salio: %q", project.ID(), out.String())
