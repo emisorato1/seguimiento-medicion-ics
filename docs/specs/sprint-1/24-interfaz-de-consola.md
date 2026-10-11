@@ -256,8 +256,8 @@ verifica lo que escribió como salida.
 | 1 | La consola pide una operación sobre una entrada y una salida genéricas, y termina con la operación de salir | Salir del programa | RN-6 | nada | hecha |
 | 2 | Una línea vacía no hace nada y vuelve a pedir una operación | Entrada vacia | caso límite | nada | hecha |
 | 3 | Una operación que no existe se informa y se listan las disponibles | Operacion inexistente | RN-4 | nada | hecha |
-| 4 | Crear un proyecto: pide los datos, lo crea en el registro y muestra su identificador | Crear un proyecto desde la consola | RN-1, RN-3 | #3 | pendiente |
-| 5 | Si el núcleo rechaza la operación, se muestra su mensaje tal cual y la consola sigue | Mostrar el motivo de un rechazo | RN-2, RN-7 | #3 | pendiente |
+| 4 | Crear un proyecto: pide los datos, lo crea en el registro y muestra su identificador | Crear un proyecto desde la consola | RN-1, RN-3 | #3 | hecha |
+| 5 | Si el núcleo rechaza la operación, se muestra su mensaje tal cual y la consola sigue | Mostrar el motivo de un rechazo | RN-2, RN-7 | #3 | hecha |
 | 6 | Agregar un integrante y listar los del proyecto; el rol se pasa al dominio como texto | Agregar y listar integrantes | RN-1 | #4 | pendiente |
 | 7 | Listar el backlog de un proyecto sin historias muestra que está vacío | Listar un backlog vacio | RN-1 | #6 | pendiente |
 | 8 | Cargar una historia y listar el backlog con su identificador; una historia con 0 story points se muestra "sin estimar" | Cargar una historia y listar el backlog | RN-1, RN-3 | #6, #12 | pendiente |
@@ -330,10 +330,17 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 1 | `7d31b89` | `cd3c73b` |
 | 2 | `44eaaf7` | `d9e27a8` |
 | 3 | `35173b0` | `69fbd58` |
+| 4 | `799f9e8` | `07c23ff` |
+| 5 | `b1bf255` | `4cd8d97` |
 
 ### Desvíos respecto de la spec
 
-Ninguno por ahora.
+Ninguno de comportamiento. Dos notas de proceso:
+
+- Antes de la tarea 4 se trajo `dev` a la rama (merge `006708f`) para tener la #3, de la que
+  dependen las tareas 4, 5 y 14.
+- El refactor `479cb07` renombra en inglés una variable del test de la tarea 4, como pide
+  AGENTS.md. No cambia comportamiento, así que no tiene ciclo RED.
 
 ## Trazabilidad
 
