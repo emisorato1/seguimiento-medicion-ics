@@ -82,6 +82,11 @@ type Project struct {
 	description string
 	start       time.Time
 	end         time.Time
+
+	// members son los integrantes del proyecto (historia #4). Viven dentro del proyecto: no
+	// existen sin el, y asi el mismo nombre en otro proyecto nunca cuenta como duplicado
+	// (RN-6). Las operaciones sobre integrantes estan en member.go.
+	members []*Member
 }
 
 // ID devuelve el identificador del proyecto, que no cambia nunca.

@@ -42,6 +42,15 @@ func (m *Member) Role() Role {
 	return m.role
 }
 
+// Members devuelve los integrantes del proyecto. Si no tiene ninguno devuelve una lista
+// vacia, que no es un error (RN-8). Esta en member.go y no en project.go para que la #4 y
+// la #6 choquen lo menos posible en ese archivo (Fase 2).
+func (p *Project) Members() []*Member {
+	members := make([]*Member, len(p.members))
+	copy(members, p.members)
+	return members
+}
+
 // ParseRole convierte el texto que escribe el usuario en un rol, ignorando mayusculas y
 // los espacios de los extremos. Cualquier otro texto se rechaza con el error de la RN-4.
 // La conversion vive en el dominio y no en la consola: si la consola rechazara un texto
