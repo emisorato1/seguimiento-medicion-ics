@@ -22,6 +22,26 @@ func (r Role) String() string {
 	}
 }
 
+// Member es un integrante de un proyecto. Se identifica por su nombre y apellido, que es
+// un solo dato y es unico dentro del proyecto: no tiene un identificador numerico propio
+// (Fase 2). Sus datos estan ocultos fuera del paquete: solo se cambian con operaciones que
+// validan.
+type Member struct {
+	name string
+	role Role
+}
+
+// Name devuelve el nombre y apellido del integrante, tal como se escribio y sin los espacios
+// de los extremos.
+func (m *Member) Name() string {
+	return m.name
+}
+
+// Role devuelve el rol del integrante dentro del proyecto.
+func (m *Member) Role() Role {
+	return m.role
+}
+
 // ParseRole convierte el texto que escribe el usuario en un rol, ignorando mayusculas y
 // los espacios de los extremos. Cualquier otro texto se rechaza con el error de la RN-4.
 // La conversion vive en el dominio y no en la consola: si la consola rechazara un texto
