@@ -23,6 +23,22 @@ func TestUnIntegranteExponeSuNombreYSuRol(t *testing.T) {
 	}
 }
 
+// Escenario: Listar un proyecto sin integrantes
+// Cubre: RN-8
+func TestListarUnProyectoSinIntegrantes(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+
+	members := project.Members()
+
+	if len(members) != 0 {
+		t.Fatalf("se esperaba una lista vacia de integrantes, salieron %d", len(members))
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
