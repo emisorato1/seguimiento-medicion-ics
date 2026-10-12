@@ -320,7 +320,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 
 | # | Tarea | Reglas y criterios que cubre | Estado |
 |---|---|---|---|
-| 1 | El rol es un tipo propio con los dos valores, y el dominio convierte el texto que escribe el usuario en un rol, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | pendiente |
+| 1 | El rol es un tipo propio con los dos valores, y el dominio convierte el texto que escribe el usuario en un rol, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | **hecha** |
 | 2 | El integrante existe como dato con su nombre y apellido y su rol | RN-1 | pendiente |
 | 3 | El proyecto contiene su lista de integrantes; pedir la lista de un proyecto sin integrantes devuelve una lista vacía, sin error | RN-8 | pendiente |
 | 4 | Agregar un integrante con datos válidos: queda en la lista con su nombre y apellido y su rol | RN-1, RN-8 | pendiente |
@@ -382,7 +382,15 @@ nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
 
 ## Fase 4 — Implementación
 
-_Se completa a medida que se avanza._
+Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `test: convertir el texto en un rol y rechazar los invalidos` | `feat: convertir el texto en un rol en el dominio` |
+
+### Desvíos respecto de la spec
+
+Ninguno por ahora.
 
 ## Trazabilidad
 
@@ -392,5 +400,5 @@ _Se completa a medida que se avanza._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | pendiente |
-| Código Go | pendiente |
+| Tests | `internal/domain/member_test.go` |
+| Código Go | `internal/domain/member.go`, `internal/domain/errors.go` |
