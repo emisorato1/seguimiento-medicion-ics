@@ -239,6 +239,28 @@ func TestAceptarUnProyectoQueEmpiezaYTerminaElMismoDia(t *testing.T) {
 	}
 }
 
+// Escenario: Comparar las fechas por dia, sin importar la hora
+// Cubre: RN-4 (defecto #59)
+func TestCompararLasFechasPorDiaSinImportarLaHora(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	project, err := registry.Create(ProjectData{
+		Name:  "Sistema de metricas",
+		Start: time.Date(2026, 10, 1, 15, 0, 0, 0, time.UTC),
+		End:   time.Date(2026, 10, 1, 10, 0, 0, 0, time.UTC),
+	})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el proyecto sin error, salio: %v", err)
+	}
+	if !project.Start().Equal(date(2026, 10, 1)) {
+		t.Errorf("se esperaba el inicio el dia 01/10/2026 sin hora, salio: %v", project.Start())
+	}
+	if !project.End().Equal(date(2026, 10, 1)) {
+		t.Errorf("se esperaba el fin el dia 01/10/2026 sin hora, salio: %v", project.End())
+	}
+}
+
 // Escenario: Consultar un proyecto que no existe
 // Cubre: RN-6
 func TestConsultarUnProyectoQueNoExiste(t *testing.T) {
