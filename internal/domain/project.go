@@ -62,6 +62,8 @@ func (c OptionalChange[T]) apply(current T) T {
 // proyecto. Crear y modificar usan esta misma funcion, asi aplican las mismas reglas (RN-5).
 func prepare(data ProjectData) (ProjectData, error) {
 	data.Name = strings.TrimSpace(data.Name)
+	data.Start = toDay(data.Start)
+	data.End = toDay(data.End)
 	if data.Name == "" {
 		return ProjectData{}, ErrProjectNameRequired
 	}
@@ -72,6 +74,13 @@ func prepare(data ProjectData) (ProjectData, error) {
 		return ProjectData{}, ErrProjectDatesInconsistent
 	}
 	return data, nil
+}
+
+// toDay deja solo el dia de una fecha, sin la hora: las fechas de un proyecto son dias y
+// se comparan como tales (defecto #59). Una fecha en cero sigue en cero.
+func toDay(t time.Time) time.Time {
+	year, month, day := t.Date()
+	return time.Date(year, month, day, 0, 0, 0, 0, t.Location())
 }
 
 // Project es un proyecto de software registrado. Sus datos estan ocultos fuera del
