@@ -6,6 +6,23 @@ import (
 	"testing"
 )
 
+// Tarea 2 de la Fase 3 de la historia #4. No tiene escenario BDD propio: los escenarios
+// empiezan en la tarea 4, cuando ya se puede agregar un integrante a un proyecto.
+// Cubre: RN-1
+func TestUnIntegranteExponeSuNombreYSuRol(t *testing.T) {
+	member := &Member{
+		name: "Juliana Bustos",
+		role: RoleProductBuilder,
+	}
+
+	if member.Name() != "Juliana Bustos" {
+		t.Fatalf("se esperaba el nombre y apellido %q, salio: %q", "Juliana Bustos", member.Name())
+	}
+	if member.Role() != RoleProductBuilder {
+		t.Fatalf("se esperaba el rol %v, salio: %v", RoleProductBuilder, member.Role())
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
