@@ -71,6 +71,7 @@ Al consultarlo se devuelven sus datos y ese identificador.
 
 - Proyecto sin descripción y sin fecha de finalización: es válido, son opcionales.
 - Fecha de finalización **igual** a la de inicio: es válida, un proyecto puede durar un día.
+  Las fechas se comparan por día: si llegan con hora, la hora no cuenta.
 - Nombre con espacios al principio y al final: se guarda sin esos espacios.
 - Nombre de un solo carácter: es válido.
 - Modificar un proyecto sin cambiar nada: es válido y no da error.
@@ -155,6 +156,11 @@ Escenario: Rechazar fechas incoherentes
 Escenario: Aceptar un proyecto que empieza y termina el mismo dia
   Cuando creo un proyecto con inicio 01/10/2026 y fin 01/10/2026
   Entonces el proyecto queda registrado
+
+Escenario: Comparar las fechas por dia, sin importar la hora
+  Cuando creo un proyecto con inicio 01/10/2026 a las 15:00 y fin 01/10/2026 a las 10:00
+  Entonces el proyecto queda registrado
+  Y sus fechas quedan como el dia 01/10/2026, sin hora
 
 Escenario: Modificar solo el nombre conserva los demas datos
   Dado un proyecto registrado con nombre "Sistema de metricas", descripcion "TP de ICS",
@@ -433,6 +439,14 @@ Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en
   (cambiar y quitar el mismo dato) no se puede escribir, sin necesidad de un error nuevo. Es
   la decisión de la Fase 2 llevada al código.
 
+### Defectos
+
+- **#59 — las fechas se comparaban con hora.** La Fase 2 decide que las fechas son días, pero
+  la validación de la RN-4 comparaba fechas completas: un inicio y un fin del mismo día con
+  distinta hora se rechazaban. Lo encontró Maximiliano Eula en la revisión del PR #54
+  (Sprint 1). Se corrigió normalizando las fechas al día, con el escenario "Comparar las
+  fechas por dia, sin importar la hora".
+
 ## Trazabilidad
 
 | Eslabón | Dónde está |
@@ -440,6 +454,6 @@ Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en
 | Historia de usuario | issue #3 |
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
-| Escenarios BDD | Fase 1 (19 escenarios) |
+| Escenarios BDD | Fase 1 (20 escenarios) |
 | Tests | `internal/domain/project_test.go`: un test por escenario, con el nombre del escenario |
 | Código Go | `internal/domain/project.go`, `internal/domain/project_registry.go`, `internal/domain/errors.go` |
