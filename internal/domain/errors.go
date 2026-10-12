@@ -16,4 +16,6 @@ var (
 	ErrProjectNotFound = errors.New("no se encontro el proyecto")
 	// ErrStoryPriorityInvalid: prioridad que no es Alta, Media ni Baja (historia #6, RN-4).
 	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
+	// ErrMemberRoleInvalid: rol que no es Agile Enabler ni Product Builder (historia #4, RN-4).
+	ErrMemberRoleInvalid = errors.New("el rol debe ser Agile Enabler o Product Builder")
 )
