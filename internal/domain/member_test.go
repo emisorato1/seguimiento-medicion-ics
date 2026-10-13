@@ -114,6 +114,54 @@ func TestRechazarUnIntegranteSinNombreYApellido(t *testing.T) {
 	}
 }
 
+// Escenario: Rechazar un rol invalido
+// Cubre: RN-4, RN-12
+//
+// El texto "Product Owner" ya lo rechaza ParseRole (tarea 1). Este test cubre lo que llega
+// a AddMember sin pasar por la conversion: un rol sin inicializar y uno fuera de rango.
+func TestRechazarUnRolInvalido(t *testing.T) {
+	casos := []struct {
+		nombre string
+		rol    Role
+	}{
+		{"sin rol", Role(0)},
+		{"fuera de rango", Role(99)},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+
+			_, err = project.AddMember("Maximiliano Eula", caso.rol)
+
+			if !errors.Is(err, ErrMemberRoleInvalid) {
+				t.Fatalf("se esperaba ErrMemberRoleInvalid con un rol %s, salio: %v", caso.nombre, err)
+			}
+			if len(project.Members()) != 0 {
+				t.Fatalf("se esperaba que el proyecto siguiera sin integrantes, salieron %d", len(project.Members()))
+			}
+		})
+	}
+}
+
+// Tarea 7: el valor cero del rol no es ninguno de los dos roles validos, asi un rol sin
+// inicializar no se confunde con Agile Enabler. Se muestra como "sin rol".
+// Cubre: RN-4
+func TestUnRolSinInicializarNoEsNingunoDeLosValidos(t *testing.T) {
+	var rol Role
+
+	if rol == RoleAgileEnabler || rol == RoleProductBuilder {
+		t.Fatalf("se esperaba que el rol sin inicializar no fuera ninguno de los validos, salio: %v", rol)
+	}
+	if rol.String() != "sin rol" {
+		t.Fatalf("se esperaba que el rol sin inicializar se mostrara como %q, salio: %q", "sin rol", rol.String())
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
