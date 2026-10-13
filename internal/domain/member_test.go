@@ -540,6 +540,57 @@ func TestCambiarLaListaRecibidaNoCambiaLosIntegrantesDelProyecto(t *testing.T) {
 	}
 }
 
+// Escenario: Operar sobre un proyecto que no existe
+// Cubre: RN-10
+//
+// Las operaciones sobre integrantes son del proyecto, asi que el unico camino para
+// llegar a ellas es buscar el proyecto en el registro de la #3. Cada caso sigue ese camino,
+// como lo va a hacer la consola: si el proyecto no existe, el registro informa el error de
+// la #3 y la operacion no llega a correr ni crea nada.
+func TestOperarSobreIntegrantesDeUnProyectoQueNoExiste(t *testing.T) {
+	casos := []struct {
+		operacion string
+		ejecutar  func(*Project) error
+	}{
+		{"agregar un integrante", func(p *Project) error {
+			_, err := p.AddMember("Juliana Bustos", RoleProductBuilder)
+			return err
+		}},
+		{"quitar un integrante", func(p *Project) error {
+			return p.RemoveMember("Juliana Bustos")
+		}},
+		{"listar los integrantes", func(p *Project) error {
+			p.Members()
+			return nil
+		}},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.operacion, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			existente, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+
+			project, err := registry.Get(99)
+			if err == nil {
+				err = caso.ejecutar(project)
+			}
+
+			if !errors.Is(err, ErrProjectNotFound) {
+				t.Fatalf("se esperaba ErrProjectNotFound al %s del proyecto 99, salio: %v", caso.operacion, err)
+			}
+			if _, err := registry.Get(2); !errors.Is(err, ErrProjectNotFound) {
+				t.Fatalf("se esperaba que no se creara ningun proyecto nuevo, salio: %v", err)
+			}
+			if len(existente.Members()) != 0 {
+				t.Fatalf("se esperaba que el proyecto existente siguiera sin integrantes, salieron %d", len(existente.Members()))
+			}
+		})
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
