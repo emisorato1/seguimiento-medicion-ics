@@ -268,6 +268,53 @@ func TestLaMismaPersonaEnDosProyectos(t *testing.T) {
 	}
 }
 
+// Escenario: Rechazar un segundo Agile Enabler
+// Cubre: RN-7, RN-12
+func TestRechazarUnSegundoAgileEnabler(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+	if _, err := project.AddMember("Emiliano Sorato", RoleAgileEnabler); err != nil {
+		t.Fatalf("se esperaba cargar a Emiliano Sorato como Agile Enabler sin error, salio: %v", err)
+	}
+
+	_, err = project.AddMember("Agustin Salinas", RoleAgileEnabler)
+
+	if !errors.Is(err, ErrMemberAgileEnablerTaken) {
+		t.Fatalf("se esperaba ErrMemberAgileEnablerTaken, salio: %v", err)
+	}
+	members := project.Members()
+	if len(members) != 1 || members[0].Name() != "Emiliano Sorato" || members[0].Role() != RoleAgileEnabler {
+		t.Fatalf("se esperaba que el proyecto siguiera teniendo solo a Emiliano Sorato como Agile Enabler, salieron %d integrantes", len(members))
+	}
+}
+
+// Tarea 10: el limite es de un solo Agile Enabler, no de un solo integrante: con un Agile
+// Enabler cargado se pueden seguir agregando Product Builders.
+// Cubre: RN-7
+func TestConUnAgileEnablerSePuedenAgregarProductBuilders(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+	if _, err := project.AddMember("Emiliano Sorato", RoleAgileEnabler); err != nil {
+		t.Fatalf("se esperaba cargar a Emiliano Sorato como Agile Enabler sin error, salio: %v", err)
+	}
+
+	for _, nombre := range []string{"Agustin Salinas", "Juliana Bustos", "Maximiliano Eula"} {
+		if _, err := project.AddMember(nombre, RoleProductBuilder); err != nil {
+			t.Fatalf("se esperaba agregar a %q como Product Builder, salio: %v", nombre, err)
+		}
+	}
+
+	if len(project.Members()) != 4 {
+		t.Fatalf("se esperaban 4 integrantes, salieron %d", len(project.Members()))
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
