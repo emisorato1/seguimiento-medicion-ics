@@ -76,10 +76,26 @@ func (p *Project) AddMember(name string, role Role) (*Member, error) {
 	if !role.valid() {
 		return nil, ErrMemberRoleInvalid
 	}
+	if p.findMember(name) != nil {
+		return nil, ErrMemberDuplicate
+	}
 
 	member := &Member{name: name, role: role}
 	p.members = append(p.members, member)
 	return member, nil
+}
+
+// findMember busca un integrante del proyecto por su nombre y apellido, que ya llega sin los
+// espacios de los extremos. La comparacion ignora las mayusculas, tambien en letras con
+// tilde y la ñ, pero no ignora las tildes ni junta los espacios del medio (RN-5 y Fase 2).
+// Devuelve nil si no lo encuentra.
+func (p *Project) findMember(name string) *Member {
+	for _, member := range p.members {
+		if strings.EqualFold(member.name, name) {
+			return member
+		}
+	}
+	return nil
 }
 
 // ParseRole convierte el texto que escribe el usuario en un rol, ignorando mayusculas y

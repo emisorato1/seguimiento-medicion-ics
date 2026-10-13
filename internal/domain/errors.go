@@ -20,4 +20,6 @@ var (
 	ErrMemberRoleInvalid = errors.New("el rol debe ser Agile Enabler o Product Builder")
 	// ErrMemberNameRequired: agregar un integrante sin nombre y apellido (historia #4, RN-2).
 	ErrMemberNameRequired = errors.New("el nombre y apellido del integrante es obligatorio")
+	// ErrMemberDuplicate: agregar un integrante que ya esta cargado en el proyecto (historia #4, RN-5).
+	ErrMemberDuplicate = errors.New("el integrante ya esta cargado en el proyecto")
 )
