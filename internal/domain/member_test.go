@@ -358,6 +358,87 @@ func TestConVariosErroresSeInformaElPrimero(t *testing.T) {
 	}
 }
 
+// Escenario: Quitar el ultimo integrante
+// Cubre: RN-9
+//
+// Se quita indicando el nombre con otras mayusculas y espacios en los extremos: la busqueda
+// usa la misma comparacion que el duplicado (tarea 8).
+func TestQuitarElUltimoIntegrante(t *testing.T) {
+	casos := []string{"Juliana Bustos", "juliana bustos", "  JULIANA BUSTOS  "}
+
+	for _, nombre := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+			if _, err := project.AddMember("Juliana Bustos", RoleProductBuilder); err != nil {
+				t.Fatalf("se esperaba cargar a Juliana Bustos sin error, salio: %v", err)
+			}
+
+			err = project.RemoveMember(nombre)
+
+			if err != nil {
+				t.Fatalf("se esperaba quitar a %q sin error, salio: %v", nombre, err)
+			}
+			if len(project.Members()) != 0 {
+				t.Fatalf("se esperaba que el proyecto quedara sin integrantes, salieron %d", len(project.Members()))
+			}
+		})
+	}
+}
+
+// Tarea 12: quitar un integrante del medio deja a los demas en la lista, en el mismo orden.
+// Cubre: RN-9
+func TestQuitarUnIntegranteDejaALosDemas(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+	for _, nombre := range []string{"Agustin Salinas", "Juliana Bustos", "Maximiliano Eula"} {
+		if _, err := project.AddMember(nombre, RoleProductBuilder); err != nil {
+			t.Fatalf("se esperaba cargar a %q sin error, salio: %v", nombre, err)
+		}
+	}
+
+	if err := project.RemoveMember("Juliana Bustos"); err != nil {
+		t.Fatalf("se esperaba quitar a Juliana Bustos sin error, salio: %v", err)
+	}
+
+	members := project.Members()
+	if len(members) != 2 || members[0].Name() != "Agustin Salinas" || members[1].Name() != "Maximiliano Eula" {
+		t.Fatalf("se esperaba que quedaran Agustin Salinas y Maximiliano Eula en ese orden, salieron %d integrantes", len(members))
+	}
+}
+
+// Escenario: Agregar un Agile Enabler despues de quitar al anterior
+// Cubre: RN-7, RN-9
+func TestAgregarUnAgileEnablerDespuesDeQuitarAlAnterior(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+	if _, err := project.AddMember("Emiliano Sorato", RoleAgileEnabler); err != nil {
+		t.Fatalf("se esperaba cargar a Emiliano Sorato como Agile Enabler sin error, salio: %v", err)
+	}
+
+	if err := project.RemoveMember("Emiliano Sorato"); err != nil {
+		t.Fatalf("se esperaba quitar a Emiliano Sorato sin error, salio: %v", err)
+	}
+	_, err = project.AddMember("Agustin Salinas", RoleAgileEnabler)
+
+	if err != nil {
+		t.Fatalf("se esperaba agregar a Agustin Salinas como Agile Enabler, salio: %v", err)
+	}
+	members := project.Members()
+	if len(members) != 1 || members[0].Name() != "Agustin Salinas" || members[0].Role() != RoleAgileEnabler {
+		t.Fatalf("se esperaba que la lista incluyera solo a Agustin Salinas como Agile Enabler, salieron %d integrantes", len(members))
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
