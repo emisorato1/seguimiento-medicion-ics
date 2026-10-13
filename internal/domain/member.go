@@ -51,6 +51,15 @@ func (p *Project) Members() []*Member {
 	return members
 }
 
+// AddMember agrega un integrante al proyecto con su nombre y apellido y su rol (RN-1), y
+// queda en la lista de integrantes (RN-8). El rol llega ya convertido: el texto que escribe
+// el usuario se convierte antes con ParseRole.
+func (p *Project) AddMember(name string, role Role) (*Member, error) {
+	member := &Member{name: name, role: role}
+	p.members = append(p.members, member)
+	return member, nil
+}
+
 // ParseRole convierte el texto que escribe el usuario en un rol, ignorando mayusculas y
 // los espacios de los extremos. Cualquier otro texto se rechaza con el error de la RN-4.
 // La conversion vive en el dominio y no en la consola: si la consola rechazara un texto
