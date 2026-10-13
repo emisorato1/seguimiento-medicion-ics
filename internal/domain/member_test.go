@@ -239,6 +239,35 @@ func TestNoSonDuplicadosLosNombresQueDifierenEnTildesOEspaciosDelMedio(t *testin
 	}
 }
 
+// Escenario: La misma persona en dos proyectos
+// Cubre: RN-6
+func TestLaMismaPersonaEnDosProyectos(t *testing.T) {
+	registry := NewProjectRegistry()
+	proyectoA, err := registry.Create(ProjectData{Name: "Proyecto A", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto A sin error, salio: %v", err)
+	}
+	proyectoB, err := registry.Create(ProjectData{Name: "Proyecto B", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto B sin error, salio: %v", err)
+	}
+	if _, err := proyectoA.AddMember("Juliana Bustos", RoleProductBuilder); err != nil {
+		t.Fatalf("se esperaba cargar a Juliana Bustos en el proyecto A sin error, salio: %v", err)
+	}
+
+	_, err = proyectoB.AddMember("Juliana Bustos", RoleProductBuilder)
+
+	if err != nil {
+		t.Fatalf("se esperaba aceptar a Juliana Bustos en el proyecto B, salio: %v", err)
+	}
+	for nombre, project := range map[string]*Project{"A": proyectoA, "B": proyectoB} {
+		members := project.Members()
+		if len(members) != 1 || members[0].Name() != "Juliana Bustos" {
+			t.Fatalf("se esperaba que el proyecto %s incluyera solo a Juliana Bustos, salieron %d integrantes", nombre, len(members))
+		}
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
