@@ -330,7 +330,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | **hecha** |
 | 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | **hecha** |
 | 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | **hecha** |
-| 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | pendiente |
+| 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | **hecha** |
 | 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | pendiente |
 | 13 | Quitar un integrante que no pertenece al proyecto informa que no se encontró, y la lista queda igual | RN-11, RN-12 | pendiente |
 | 14 | Pedir la lista de un proyecto con integrantes los devuelve a todos, en el orden en que se agregaron y con su rol; cambiar la lista recibida no cambia los integrantes del proyecto | RN-8 | pendiente |
@@ -396,6 +396,7 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 8 | `test: rechazar un integrante duplicado sin distinguir mayusculas` | `feat: rechazar un integrante duplicado sin distinguir mayusculas` |
 | 9 | `test: la misma persona en dos proyectos` | sin commit propio: ya lo cumplia la tarea 3 (ver Desvíos) |
 | 10 | `test: rechazar un segundo agile enabler en el mismo proyecto` | `feat: rechazar un segundo agile enabler en el mismo proyecto` |
+| 11 | `test: con varios errores se informa el primero` | sin commit propio: ya lo cumplian las tareas 6, 7, 8 y 10 (ver Desvíos) |
 
 ### Desvíos respecto de la spec
 
@@ -405,6 +406,12 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
   nunca choca. Es la RN-6 saliendo sola, como preveía la primera decisión de la Fase 2. El
   test queda igual, para que la regla no se rompa si algún día la lista de integrantes deja
   de ser propia de cada proyecto.
+- **La tarea 11 tampoco tuvo ciclo rojo.** Las tareas 6, 7, 8 y 10 fueron agregando cada
+  validación al final de la anterior, así que el orden del Enfoque (nombre, rol, duplicado,
+  Agile Enabler) ya quedó armado cuando llegó su test. Para comprobar que el test no pasa
+  por casualidad, se invirtió a mano el orden del rol y el duplicado: el test falló en el
+  caso "rol invalido y duplicado", y después se restauró el código. El test queda para que
+  nadie reordene las validaciones sin darse cuenta.
 
 ## Trazabilidad
 
