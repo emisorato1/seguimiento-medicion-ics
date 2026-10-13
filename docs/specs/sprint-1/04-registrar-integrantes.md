@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -334,7 +334,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | **hecha** |
 | 13 | Quitar un integrante que no pertenece al proyecto informa que no se encontró, y la lista queda igual | RN-11, RN-12 | **hecha** |
 | 14 | Pedir la lista de un proyecto con integrantes los devuelve a todos, en el orden en que se agregaron y con su rol; cambiar la lista recibida no cambia los integrantes del proyecto | RN-8 | **hecha** |
-| 15 | Agregar, quitar o listar integrantes de un proyecto inexistente informa que no se encontró el proyecto, con el error que declara la #3 | RN-10 | pendiente |
+| 15 | Agregar, quitar o listar integrantes de un proyecto inexistente informa que no se encontró el proyecto, con el error que declara la #3 | RN-10 | **hecha** |
 
 ### Por qué este orden
 
@@ -400,6 +400,7 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 12 | `test: quitar un integrante por su nombre y liberar el lugar del agile enabler` | `feat: quitar un integrante por su nombre y apellido` |
 | 13 | `test: quitar un integrante que no pertenece al proyecto` | `feat: informar que no se encontro el integrante al quitarlo` |
 | 14 | `test: listar los integrantes en orden de alta y entregar una copia` | sin commit propio: ya lo cumplian las tareas 3, 4 y 12 (ver Desvíos) |
+| 15 | `test: operar sobre integrantes de un proyecto que no existe` | sin commit propio: lo resuelve el registro de la #3 (ver Desvíos) |
 
 ### Desvíos respecto de la spec
 
@@ -422,6 +423,16 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
   `Members()` devolviera la lista interna en lugar de una copia: el test falló porque el
   integrante agregado a la lista recibida entraba al proyecto, y después se restauró el
   código.
+- **La tarea 15 no necesitó código propio.** Las operaciones sobre integrantes son del
+  proyecto, así que solo se llega a ellas después de buscar el proyecto en el registro de la
+  #3, que ya informa `ErrProjectNotFound`. Es lo que preveía la Fase 2: esta historia usa el
+  error de la #3 y no declara uno propio. El test recorre ese camino para agregar, quitar y
+  listar, como lo va a hacer la consola, y verifica además que no se cree ningún proyecto ni
+  cambie el que existe.
+- **Nombre de un test distinto del escenario.** El escenario "Guardar el nombre sin espacios
+  en los extremos" se llama igual que uno de la #3, y Go no admite dos tests con el mismo
+  nombre en el mismo paquete. Su test es `TestGuardarElNombreDelIntegranteSinEspaciosEnLosExtremos`;
+  el comentario de arriba cita el escenario tal cual, así que la trazabilidad no se corta.
 
 ## Trazabilidad
 
@@ -431,5 +442,5 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/member_test.go` |
-| Código Go | `internal/domain/member.go`, `internal/domain/errors.go` |
+| Tests | `internal/domain/member_test.go`: un test por escenario, con el nombre del escenario |
+| Código Go | `internal/domain/member.go`, `internal/domain/project.go`, `internal/domain/errors.go` |
