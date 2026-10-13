@@ -471,6 +471,75 @@ func TestQuitarUnIntegranteQueNoPerteneceAlProyecto(t *testing.T) {
 	}
 }
 
+// Escenario: Listar los integrantes de un proyecto
+// Cubre: RN-8
+//
+// Ademas de lo que pide el escenario, verifica que la lista sale en el orden en que se
+// agregaron los integrantes (decision de la Fase 2).
+func TestListarLosIntegrantesDeUnProyecto(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+	esperados := []struct {
+		nombre string
+		rol    Role
+	}{
+		{"Juliana Bustos", RoleProductBuilder},
+		{"Emiliano Sorato", RoleAgileEnabler},
+		{"Agustin Salinas", RoleProductBuilder},
+	}
+	for _, e := range esperados {
+		if _, err := project.AddMember(e.nombre, e.rol); err != nil {
+			t.Fatalf("se esperaba cargar a %q sin error, salio: %v", e.nombre, err)
+		}
+	}
+
+	members := project.Members()
+
+	if len(members) != len(esperados) {
+		t.Fatalf("se esperaban %d integrantes, salieron %d", len(esperados), len(members))
+	}
+	for i, e := range esperados {
+		if members[i].Name() != e.nombre || members[i].Role() != e.rol {
+			t.Fatalf("se esperaba en la posicion %d a %q con rol %v, salio: %q con rol %v",
+				i, e.nombre, e.rol, members[i].Name(), members[i].Role())
+		}
+	}
+}
+
+// Tarea 14: la lista que se recibe es una copia. Reemplazar, agregar o quitar elementos de
+// ella no cambia los integrantes del proyecto, que solo cambian con operaciones que validan
+// (decision de encapsulamiento de AGENTS.md).
+// Cubre: RN-8
+func TestCambiarLaListaRecibidaNoCambiaLosIntegrantesDelProyecto(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+	for _, nombre := range []string{"Juliana Bustos", "Agustin Salinas"} {
+		if _, err := project.AddMember(nombre, RoleProductBuilder); err != nil {
+			t.Fatalf("se esperaba cargar a %q sin error, salio: %v", nombre, err)
+		}
+	}
+
+	recibida := project.Members()
+	recibida[0] = &Member{name: "Intruso", role: RoleAgileEnabler}
+	recibida = append(recibida, &Member{name: "Otro intruso", role: RoleProductBuilder})
+	recibida = recibida[1:]
+	_ = recibida
+
+	members := project.Members()
+	if len(members) != 2 || members[0].Name() != "Juliana Bustos" || members[1].Name() != "Agustin Salinas" {
+		t.Fatalf("se esperaba que el proyecto conservara a Juliana Bustos y Agustin Salinas, salieron %d integrantes", len(members))
+	}
+	if project.hasAgileEnabler() {
+		t.Fatalf("se esperaba que el proyecto siguiera sin Agile Enabler")
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
