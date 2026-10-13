@@ -329,7 +329,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | **hecha** |
 | 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | **hecha** |
 | 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | **hecha** |
-| 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | pendiente |
+| 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | **hecha** |
 | 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | pendiente |
 | 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | pendiente |
 | 13 | Quitar un integrante que no pertenece al proyecto informa que no se encontró, y la lista queda igual | RN-11, RN-12 | pendiente |
@@ -395,6 +395,7 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 7 | `test: rechazar un rol invalido y no confundir el rol sin inicializar` | `feat: rechazar un rol invalido y reservar el valor cero como sin rol` |
 | 8 | `test: rechazar un integrante duplicado sin distinguir mayusculas` | `feat: rechazar un integrante duplicado sin distinguir mayusculas` |
 | 9 | `test: la misma persona en dos proyectos` | sin commit propio: ya lo cumplia la tarea 3 (ver Desvíos) |
+| 10 | `test: rechazar un segundo agile enabler en el mismo proyecto` | `feat: rechazar un segundo agile enabler en el mismo proyecto` |
 
 ### Desvíos respecto de la spec
 
