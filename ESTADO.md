@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-12 13:53. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-13 20:47. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,13 +16,13 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Lista para implementar
@@ -68,12 +68,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-0244f63 2026-10-12 feat: convertir el texto en un rol en el dominio (tarea 1, historia 4)
-1d5d160 2026-10-12 test: convertir el texto en un rol y rechazar los invalidos (tarea 1, historia 4)
-8a2ae87 2026-10-09 Merge pull request #57 from emisorato1/docs-criterio-de-pr
-da404f8 2026-10-09 Merge branch 'dev' into docs-criterio-de-pr
-d0b13cc 2026-10-09 Merge pull request #56 from emisorato1/historia-6-implementacion
-ee0cab5 2026-10-09 docs: fijar cuando se puede partir una historia en varios pull requests
-da4f345 2026-10-09 docs: registrar las tareas 1 y 2 de la historia 6
-1d7326d 2026-10-09 test: cubrir la prioridad mostrada y los story points (tareas 1 y 2, historia 6)
+bd4e171 2026-10-13 docs: registrar la tarea 15 y marcar la historia 4 como implementada
+3e3d580 2026-10-13 test: operar sobre integrantes de un proyecto que no existe (tarea 15, historia 4)
+b8b09a5 2026-10-13 docs: registrar la tarea 14 de la historia 4
+5b56329 2026-10-13 test: listar los integrantes en orden de alta y entregar una copia (tarea 14, historia 4)
+ad238df 2026-10-13 docs: registrar la tarea 13 de la historia 4
+102ee66 2026-10-13 feat: informar que no se encontro el integrante al quitarlo (tarea 13, historia 4)
+a29c335 2026-10-13 test: quitar un integrante que no pertenece al proyecto (tarea 13, historia 4)
+6b71a1a 2026-10-13 docs: registrar la tarea 12 de la historia 4
 ```
