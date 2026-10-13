@@ -79,6 +79,9 @@ func (p *Project) AddMember(name string, role Role) (*Member, error) {
 	if p.findMember(name) != nil {
 		return nil, ErrMemberDuplicate
 	}
+	if role == RoleAgileEnabler && p.hasAgileEnabler() {
+		return nil, ErrMemberAgileEnablerTaken
+	}
 
 	member := &Member{name: name, role: role}
 	p.members = append(p.members, member)
@@ -96,6 +99,18 @@ func (p *Project) findMember(name string) *Member {
 		}
 	}
 	return nil
+}
+
+// hasAgileEnabler indica si el proyecto ya tiene un Agile Enabler, que puede ser uno solo
+// (RN-7). Se calcula sobre la lista y no se guarda aparte: asi, cuando la tarea 12 permita
+// quitar al Agile Enabler, el lugar queda libre sin tener que actualizar nada mas.
+func (p *Project) hasAgileEnabler() bool {
+	for _, member := range p.members {
+		if member.role == RoleAgileEnabler {
+			return true
+		}
+	}
+	return false
 }
 
 // ParseRole convierte el texto que escribe el usuario en un rol, ignorando mayusculas y

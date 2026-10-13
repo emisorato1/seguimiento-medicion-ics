@@ -22,4 +22,6 @@ var (
 	ErrMemberNameRequired = errors.New("el nombre y apellido del integrante es obligatorio")
 	// ErrMemberDuplicate: agregar un integrante que ya esta cargado en el proyecto (historia #4, RN-5).
 	ErrMemberDuplicate = errors.New("el integrante ya esta cargado en el proyecto")
+	// ErrMemberAgileEnablerTaken: agregar un segundo Agile Enabler al mismo proyecto (historia #4, RN-7).
+	ErrMemberAgileEnablerTaken = errors.New("el proyecto ya tiene un Agile Enabler")
 )
