@@ -324,7 +324,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 2 | El integrante existe como dato con su nombre y apellido y su rol | RN-1 | **hecha** |
 | 3 | El proyecto contiene su lista de integrantes; pedir la lista de un proyecto sin integrantes devuelve una lista vacía, sin error | RN-8 | **hecha** |
 | 4 | Agregar un integrante con datos válidos: queda en la lista con su nombre y apellido y su rol | RN-1, RN-8 | **hecha** |
-| 5 | Normalizar: el nombre y apellido se guarda sin los espacios de los extremos | RN-3 | pendiente |
+| 5 | Normalizar: el nombre y apellido se guarda sin los espacios de los extremos | RN-3 | **hecha** |
 | 6 | Validar el nombre y apellido sobre lo ya normalizado: vacío o solo espacios se rechaza, y la lista queda igual | RN-2, RN-12 | pendiente |
 | 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | pendiente |
 | 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | pendiente |
@@ -390,6 +390,7 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 2 | `test: el integrante expone su nombre y apellido y su rol` | `feat: el integrante como dato con su nombre y apellido y su rol` |
 | 3 | `test: listar un proyecto sin integrantes devuelve una lista vacia` | `feat: el proyecto contiene su lista de integrantes` |
 | 4 | `test: agregar el primer integrante a un proyecto` | `feat: agregar un integrante al proyecto` |
+| 5 | `test: guardar el nombre del integrante sin espacios en los extremos` | `feat: guardar el nombre del integrante sin espacios en los extremos` |
 
 ### Desvíos respecto de la spec
 
