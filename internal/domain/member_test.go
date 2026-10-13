@@ -439,6 +439,38 @@ func TestAgregarUnAgileEnablerDespuesDeQuitarAlAnterior(t *testing.T) {
 	}
 }
 
+// Escenario: Quitar un integrante que no pertenece al proyecto
+// Cubre: RN-11, RN-12
+//
+// Ademas del caso de la Fase 1, un nombre que solo difiere en una tilde tampoco se
+// encuentra: la busqueda usa la misma comparacion que el duplicado (tarea 8).
+func TestQuitarUnIntegranteQueNoPerteneceAlProyecto(t *testing.T) {
+	casos := []string{"Maximiliano Eula", "Juliana Bustós", ""}
+
+	for _, nombre := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+			if _, err := project.AddMember("Juliana Bustos", RoleProductBuilder); err != nil {
+				t.Fatalf("se esperaba cargar a Juliana Bustos sin error, salio: %v", err)
+			}
+
+			err = project.RemoveMember(nombre)
+
+			if !errors.Is(err, ErrMemberNotFound) {
+				t.Fatalf("se esperaba ErrMemberNotFound al quitar a %q, salio: %v", nombre, err)
+			}
+			members := project.Members()
+			if len(members) != 1 || members[0].Name() != "Juliana Bustos" {
+				t.Fatalf("se esperaba que el proyecto siguiera teniendo solo a Juliana Bustos, salieron %d integrantes", len(members))
+			}
+		})
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
