@@ -76,11 +76,13 @@ func prepare(data ProjectData) (ProjectData, error) {
 	return data, nil
 }
 
-// toDay deja solo el dia de una fecha, sin la hora: las fechas de un proyecto son dias y
-// se comparan como tales (defecto #59). Una fecha en cero sigue en cero.
+// toDay deja solo el dia de una fecha, sin la hora ni la zona horaria: las fechas de un
+// proyecto son dias y se comparan como tales (defecto #59). El dia se toma tal como lo
+// ve quien lo indico y se arma siempre en UTC, asi dos fechas del mismo dia son iguales
+// aunque vengan en zonas distintas. Una fecha en cero sigue en cero.
 func toDay(t time.Time) time.Time {
 	year, month, day := t.Date()
-	return time.Date(year, month, day, 0, 0, 0, 0, t.Location())
+	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 }
 
 // Project es un proyecto de software registrado. Sus datos estan ocultos fuera del

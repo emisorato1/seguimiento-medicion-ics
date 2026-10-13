@@ -445,7 +445,9 @@ Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en
   la validación de la RN-4 comparaba fechas completas: un inicio y un fin del mismo día con
   distinta hora se rechazaban. Lo encontró Maximiliano Eula en la revisión del PR #54
   (Sprint 1). Se corrigió normalizando las fechas al día, con el escenario "Comparar las
-  fechas por dia, sin importar la hora".
+  fechas por dia, sin importar la hora". En la revisión del arreglo (PR #61), Juliana Bustos
+  encontró que dos fechas del mismo día en zonas horarias distintas se seguían comparando
+  como instantes: el día se arma ahora siempre en UTC, y el test cubre los dos casos.
 
 ## Trazabilidad
 
