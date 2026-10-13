@@ -328,7 +328,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 6 | Validar el nombre y apellido sobre lo ya normalizado: vacío o solo espacios se rechaza, y la lista queda igual | RN-2, RN-12 | **hecha** |
 | 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | **hecha** |
 | 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | **hecha** |
-| 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | pendiente |
+| 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | **hecha** |
 | 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | pendiente |
 | 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | pendiente |
 | 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | pendiente |
@@ -394,10 +394,16 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 6 | `test: rechazar un integrante sin nombre y apellido` | `feat: rechazar un integrante sin nombre y apellido` |
 | 7 | `test: rechazar un rol invalido y no confundir el rol sin inicializar` | `feat: rechazar un rol invalido y reservar el valor cero como sin rol` |
 | 8 | `test: rechazar un integrante duplicado sin distinguir mayusculas` | `feat: rechazar un integrante duplicado sin distinguir mayusculas` |
+| 9 | `test: la misma persona en dos proyectos` | sin commit propio: ya lo cumplia la tarea 3 (ver Desvíos) |
 
 ### Desvíos respecto de la spec
 
-Ninguno por ahora.
+- **La tarea 9 no tuvo ciclo rojo.** Su test pasó en verde desde el primer intento, sin
+  código nuevo: como los integrantes viven dentro de cada proyecto (tarea 3) y el duplicado
+  se busca solo en la lista de ese proyecto (tarea 8), el mismo nombre en otro proyecto
+  nunca choca. Es la RN-6 saliendo sola, como preveía la primera decisión de la Fase 2. El
+  test queda igual, para que la regla no se rompa si algún día la lista de integrantes deja
+  de ser propia de cada proyecto.
 
 ## Trazabilidad
 
