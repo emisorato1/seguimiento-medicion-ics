@@ -327,7 +327,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 5 | Normalizar: el nombre y apellido se guarda sin los espacios de los extremos | RN-3 | **hecha** |
 | 6 | Validar el nombre y apellido sobre lo ya normalizado: vacío o solo espacios se rechaza, y la lista queda igual | RN-2, RN-12 | **hecha** |
 | 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | **hecha** |
-| 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | pendiente |
+| 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | **hecha** |
 | 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | pendiente |
 | 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | pendiente |
 | 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | pendiente |
@@ -393,6 +393,7 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 5 | `test: guardar el nombre del integrante sin espacios en los extremos` | `feat: guardar el nombre del integrante sin espacios en los extremos` |
 | 6 | `test: rechazar un integrante sin nombre y apellido` | `feat: rechazar un integrante sin nombre y apellido` |
 | 7 | `test: rechazar un rol invalido y no confundir el rol sin inicializar` | `feat: rechazar un rol invalido y reservar el valor cero como sin rol` |
+| 8 | `test: rechazar un integrante duplicado sin distinguir mayusculas` | `feat: rechazar un integrante duplicado sin distinguir mayusculas` |
 
 ### Desvíos respecto de la spec
 
