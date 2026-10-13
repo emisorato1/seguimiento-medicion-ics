@@ -39,6 +39,34 @@ func TestListarUnProyectoSinIntegrantes(t *testing.T) {
 	}
 }
 
+// Escenario: Agregar el primer integrante
+// Cubre: RN-1, RN-8
+func TestAgregarElPrimerIntegrante(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+
+	member, err := project.AddMember("Juliana Bustos", RoleProductBuilder)
+
+	if err != nil {
+		t.Fatalf("se esperaba que el integrante se agregara, salio: %v", err)
+	}
+	if member.Name() != "Juliana Bustos" || member.Role() != RoleProductBuilder {
+		t.Fatalf("se esperaba a %q con rol %v, salio: %q con rol %v",
+			"Juliana Bustos", RoleProductBuilder, member.Name(), member.Role())
+	}
+	members := project.Members()
+	if len(members) != 1 {
+		t.Fatalf("se esperaba que el proyecto tuviera 1 integrante, salieron %d", len(members))
+	}
+	if members[0].Name() != "Juliana Bustos" || members[0].Role() != RoleProductBuilder {
+		t.Fatalf("se esperaba que la lista incluyera a %q con rol %v, salio: %q con rol %v",
+			"Juliana Bustos", RoleProductBuilder, members[0].Name(), members[0].Role())
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
