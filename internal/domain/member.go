@@ -53,8 +53,11 @@ func (p *Project) Members() []*Member {
 
 // AddMember agrega un integrante al proyecto con su nombre y apellido y su rol (RN-1), y
 // queda en la lista de integrantes (RN-8). El rol llega ya convertido: el texto que escribe
-// el usuario se convierte antes con ParseRole.
+// el usuario se convierte antes con ParseRole. Primero normaliza el nombre, sacando los
+// espacios de los extremos (RN-3); las validaciones corren despues, sobre lo ya normalizado.
 func (p *Project) AddMember(name string, role Role) (*Member, error) {
+	name = strings.TrimSpace(name)
+
 	member := &Member{name: name, role: role}
 	p.members = append(p.members, member)
 	return member, nil
