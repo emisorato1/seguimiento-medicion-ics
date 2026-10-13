@@ -89,6 +89,31 @@ func TestGuardarElNombreDelIntegranteSinEspaciosEnLosExtremos(t *testing.T) {
 	}
 }
 
+// Esquema del escenario: Rechazar un integrante sin nombre y apellido
+// Cubre: RN-2, RN-12
+func TestRechazarUnIntegranteSinNombreYApellido(t *testing.T) {
+	casos := []string{"", "   "}
+
+	for _, nombre := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+
+			_, err = project.AddMember(nombre, RoleProductBuilder)
+
+			if !errors.Is(err, ErrMemberNameRequired) {
+				t.Fatalf("se esperaba ErrMemberNameRequired para %q, salio: %v", nombre, err)
+			}
+			if len(project.Members()) != 0 {
+				t.Fatalf("se esperaba que el proyecto siguiera sin integrantes, salieron %d", len(project.Members()))
+			}
+		})
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
