@@ -67,6 +67,28 @@ func TestAgregarElPrimerIntegrante(t *testing.T) {
 	}
 }
 
+// Escenario: Guardar el nombre sin espacios en los extremos
+// Cubre: RN-3
+func TestGuardarElNombreDelIntegranteSinEspaciosEnLosExtremos(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+	}
+
+	member, err := project.AddMember("  Juliana Bustos  ", RoleProductBuilder)
+
+	if err != nil {
+		t.Fatalf("se esperaba que el integrante se agregara, salio: %v", err)
+	}
+	if member.Name() != "Juliana Bustos" {
+		t.Fatalf("se esperaba el nombre sin espacios en los extremos %q, salio: %q", "Juliana Bustos", member.Name())
+	}
+	if got := project.Members()[0].Name(); got != "Juliana Bustos" {
+		t.Fatalf("se esperaba que la lista incluyera a %q, salio: %q", "Juliana Bustos", got)
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
