@@ -333,7 +333,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | **hecha** |
 | 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | **hecha** |
 | 13 | Quitar un integrante que no pertenece al proyecto informa que no se encontró, y la lista queda igual | RN-11, RN-12 | **hecha** |
-| 14 | Pedir la lista de un proyecto con integrantes los devuelve a todos, en el orden en que se agregaron y con su rol; cambiar la lista recibida no cambia los integrantes del proyecto | RN-8 | pendiente |
+| 14 | Pedir la lista de un proyecto con integrantes los devuelve a todos, en el orden en que se agregaron y con su rol; cambiar la lista recibida no cambia los integrantes del proyecto | RN-8 | **hecha** |
 | 15 | Agregar, quitar o listar integrantes de un proyecto inexistente informa que no se encontró el proyecto, con el error que declara la #3 | RN-10 | pendiente |
 
 ### Por qué este orden
@@ -399,6 +399,7 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 11 | `test: con varios errores se informa el primero` | sin commit propio: ya lo cumplian las tareas 6, 7, 8 y 10 (ver Desvíos) |
 | 12 | `test: quitar un integrante por su nombre y liberar el lugar del agile enabler` | `feat: quitar un integrante por su nombre y apellido` |
 | 13 | `test: quitar un integrante que no pertenece al proyecto` | `feat: informar que no se encontro el integrante al quitarlo` |
+| 14 | `test: listar los integrantes en orden de alta y entregar una copia` | sin commit propio: ya lo cumplian las tareas 3, 4 y 12 (ver Desvíos) |
 
 ### Desvíos respecto de la spec
 
@@ -414,6 +415,13 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
   por casualidad, se invirtió a mano el orden del rol y el duplicado: el test falló en el
   caso "rol invalido y duplicado", y después se restauró el código. El test queda para que
   nadie reordene las validaciones sin darse cuenta.
+- **La tarea 14 tampoco tuvo ciclo rojo.** La copia de la lista ya la entregaba `Members()`
+  desde la tarea 3, siguiendo la decisión de encapsulamiento de AGENTS.md; el orden de alta
+  sale de que agregar suma al final (tarea 4) y quitar conserva el orden de los demás
+  (tarea 12). Para comprobar que el test de la copia no pasa por casualidad, se hizo que
+  `Members()` devolviera la lista interna en lugar de una copia: el test falló porque el
+  integrante agregado a la lista recibida entraba al proyecto, y después se restauró el
+  código.
 
 ## Trazabilidad
 
