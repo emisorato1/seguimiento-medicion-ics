@@ -162,6 +162,83 @@ func TestUnRolSinInicializarNoEsNingunoDeLosValidos(t *testing.T) {
 	}
 }
 
+// Esquema del escenario: Rechazar un integrante duplicado
+// Cubre: RN-5, RN-12
+//
+// Las tres primeras filas son las de los Ejemplos de la Fase 1. Las dos ultimas son la
+// decision de la Fase 2: las mayusculas se ignoran tambien en letras con tilde y la ñ.
+func TestRechazarUnIntegranteDuplicado(t *testing.T) {
+	casos := []struct {
+		cargado string
+		nuevo   string
+	}{
+		{"Juliana Bustos", "Juliana Bustos"},
+		{"Juliana Bustos", "juliana bustos"},
+		{"Juliana Bustos", "  JULIANA BUSTOS  "},
+		{"Íñigo Peña", "íñigo peña"},
+		{"Agustín Salinas", "AGUSTÍN SALINAS"},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.nuevo, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+			if _, err := project.AddMember(caso.cargado, RoleProductBuilder); err != nil {
+				t.Fatalf("se esperaba cargar a %q sin error, salio: %v", caso.cargado, err)
+			}
+
+			_, err = project.AddMember(caso.nuevo, RoleProductBuilder)
+
+			if !errors.Is(err, ErrMemberDuplicate) {
+				t.Fatalf("se esperaba ErrMemberDuplicate al agregar %q con %q cargado, salio: %v", caso.nuevo, caso.cargado, err)
+			}
+			members := project.Members()
+			if len(members) != 1 || members[0].Name() != caso.cargado {
+				t.Fatalf("se esperaba que el proyecto siguiera teniendo solo a %q, salieron %d integrantes", caso.cargado, len(members))
+			}
+		})
+	}
+}
+
+// Tarea 8: no son duplicados los nombres que difieren en una tilde o en los espacios del
+// medio. La Fase 2 decide ignorar solo las mayusculas: "Agustin" y "Agustín" pueden ser dos
+// personas distintas.
+// Cubre: RN-5
+func TestNoSonDuplicadosLosNombresQueDifierenEnTildesOEspaciosDelMedio(t *testing.T) {
+	casos := []struct {
+		cargado string
+		nuevo   string
+	}{
+		{"Agustín Salinas", "Agustin Salinas"},
+		{"Juliana Bustos", "Juliana  Bustos"},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.nuevo, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+			if _, err := project.AddMember(caso.cargado, RoleProductBuilder); err != nil {
+				t.Fatalf("se esperaba cargar a %q sin error, salio: %v", caso.cargado, err)
+			}
+
+			_, err = project.AddMember(caso.nuevo, RoleProductBuilder)
+
+			if err != nil {
+				t.Fatalf("se esperaba que %q no fuera duplicado de %q, salio: %v", caso.nuevo, caso.cargado, err)
+			}
+			if len(project.Members()) != 2 {
+				t.Fatalf("se esperaban 2 integrantes, salieron %d", len(project.Members()))
+			}
+		})
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
