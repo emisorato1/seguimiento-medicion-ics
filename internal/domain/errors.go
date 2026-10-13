@@ -24,4 +24,6 @@ var (
 	ErrMemberDuplicate = errors.New("el integrante ya esta cargado en el proyecto")
 	// ErrMemberAgileEnablerTaken: agregar un segundo Agile Enabler al mismo proyecto (historia #4, RN-7).
 	ErrMemberAgileEnablerTaken = errors.New("el proyecto ya tiene un Agile Enabler")
+	// ErrMemberNotFound: quitar un integrante que no pertenece al proyecto (historia #4, RN-11).
+	ErrMemberNotFound = errors.New("no se encontro el integrante en el proyecto")
 )

@@ -90,9 +90,13 @@ func (p *Project) AddMember(name string, role Role) (*Member, error) {
 
 // RemoveMember quita del proyecto al integrante con ese nombre y apellido, que se busca con
 // la misma comparacion que el duplicado (RN-9). Los demas quedan en la lista, en el mismo
-// orden. Si era el Agile Enabler, el lugar queda libre para otro (RN-7).
+// orden. Si era el Agile Enabler, el lugar queda libre para otro (RN-7). Si no pertenece al
+// proyecto, informa que no se encontro y no cambia nada (RN-11, RN-12).
 func (p *Project) RemoveMember(name string) error {
 	target := p.findMember(strings.TrimSpace(name))
+	if target == nil {
+		return ErrMemberNotFound
+	}
 
 	remaining := make([]*Member, 0, len(p.members))
 	for _, member := range p.members {
