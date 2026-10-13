@@ -315,6 +315,49 @@ func TestConUnAgileEnablerSePuedenAgregarProductBuilders(t *testing.T) {
 	}
 }
 
+// Tarea 11: con varios errores a la vez se informa el primero, en el orden del Enfoque de
+// la Fase 2: nombre, rol, duplicado y Agile Enabler. No tiene escenario propio: fija el
+// orden para que los escenarios que esperan un mensaje puntual no sean indeterminados.
+// Cubre: RN-2, RN-4, RN-5, RN-7, RN-12
+func TestConVariosErroresSeInformaElPrimero(t *testing.T) {
+	casos := []struct {
+		caso     string
+		nombre   string
+		rol      Role
+		esperado error
+	}{
+		{"nombre vacio y rol invalido", "", Role(0), ErrMemberNameRequired},
+		{"nombre en blanco y segundo Agile Enabler", "   ", RoleAgileEnabler, ErrMemberNameRequired},
+		{"rol invalido y duplicado", "Juliana Bustos", Role(99), ErrMemberRoleInvalid},
+		{"duplicado y segundo Agile Enabler", "emiliano sorato", RoleAgileEnabler, ErrMemberDuplicate},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.caso, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("se esperaba registrar el proyecto de prueba sin error, salio: %v", err)
+			}
+			if _, err := project.AddMember("Emiliano Sorato", RoleAgileEnabler); err != nil {
+				t.Fatalf("se esperaba cargar a Emiliano Sorato sin error, salio: %v", err)
+			}
+			if _, err := project.AddMember("Juliana Bustos", RoleProductBuilder); err != nil {
+				t.Fatalf("se esperaba cargar a Juliana Bustos sin error, salio: %v", err)
+			}
+
+			_, err = project.AddMember(caso.nombre, caso.rol)
+
+			if !errors.Is(err, caso.esperado) {
+				t.Fatalf("se esperaba %v con %s, salio: %v", caso.esperado, caso.caso, err)
+			}
+			if len(project.Members()) != 2 {
+				t.Fatalf("se esperaba que el proyecto siguiera con 2 integrantes, salieron %d", len(project.Members()))
+			}
+		})
+	}
+}
+
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
