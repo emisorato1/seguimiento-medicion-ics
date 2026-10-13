@@ -88,6 +88,22 @@ func (p *Project) AddMember(name string, role Role) (*Member, error) {
 	return member, nil
 }
 
+// RemoveMember quita del proyecto al integrante con ese nombre y apellido, que se busca con
+// la misma comparacion que el duplicado (RN-9). Los demas quedan en la lista, en el mismo
+// orden. Si era el Agile Enabler, el lugar queda libre para otro (RN-7).
+func (p *Project) RemoveMember(name string) error {
+	target := p.findMember(strings.TrimSpace(name))
+
+	remaining := make([]*Member, 0, len(p.members))
+	for _, member := range p.members {
+		if member != target {
+			remaining = append(remaining, member)
+		}
+	}
+	p.members = remaining
+	return nil
+}
+
 // findMember busca un integrante del proyecto por su nombre y apellido, que ya llega sin los
 // espacios de los extremos. La comparacion ignora las mayusculas, tambien en letras con
 // tilde y la ñ, pero no ignora las tildes ni junta los espacios del medio (RN-5 y Fase 2).
