@@ -326,7 +326,7 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 | 4 | Agregar un integrante con datos válidos: queda en la lista con su nombre y apellido y su rol | RN-1, RN-8 | **hecha** |
 | 5 | Normalizar: el nombre y apellido se guarda sin los espacios de los extremos | RN-3 | **hecha** |
 | 6 | Validar el nombre y apellido sobre lo ya normalizado: vacío o solo espacios se rechaza, y la lista queda igual | RN-2, RN-12 | **hecha** |
-| 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | pendiente |
+| 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | **hecha** |
 | 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | pendiente |
 | 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | pendiente |
 | 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | pendiente |
@@ -392,6 +392,7 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 | 4 | `test: agregar el primer integrante a un proyecto` | `feat: agregar un integrante al proyecto` |
 | 5 | `test: guardar el nombre del integrante sin espacios en los extremos` | `feat: guardar el nombre del integrante sin espacios en los extremos` |
 | 6 | `test: rechazar un integrante sin nombre y apellido` | `feat: rechazar un integrante sin nombre y apellido` |
+| 7 | `test: rechazar un rol invalido y no confundir el rol sin inicializar` | `feat: rechazar un rol invalido y reservar el valor cero como sin rol` |
 
 ### Desvíos respecto de la spec
 
