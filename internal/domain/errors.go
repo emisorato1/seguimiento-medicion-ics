@@ -18,4 +18,6 @@ var (
 	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
 	// ErrMemberRoleInvalid: rol que no es Agile Enabler ni Product Builder (historia #4, RN-4).
 	ErrMemberRoleInvalid = errors.New("el rol debe ser Agile Enabler o Product Builder")
+	// ErrMemberNameRequired: agregar un integrante sin nombre y apellido (historia #4, RN-2).
+	ErrMemberNameRequired = errors.New("el nombre y apellido del integrante es obligatorio")
 )
