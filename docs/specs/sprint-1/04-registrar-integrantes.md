@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Implementada — **en review**
+- **Estado:** Terminada — **mergeada a `dev`** (PR #62)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la

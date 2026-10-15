@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-13 20:47. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-15 10:56. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,26 +10,24 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 20
 - Sin estimar: 2
 - Story points cargados: 83
-- Terminadas: 3
+- Terminadas: 4
 
 ## En review
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -64,16 +62,17 @@ _No hay historias en este estado._
 | #1 | Configurar el repositorio y el tablero del proyecto | - | - | Sprint 0 |
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
+| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 
 ## Ultimos commits
 
 ```
+4181fbf 2026-10-15 Merge pull request #63 from emisorato1/chore-script-de-metricas
+5659804 2026-10-15 chore: calcular las metricas del sprint desde el tablero
+4099066 2026-10-15 Merge pull request #62 from emisorato1/historia-4-codigo
+fa3fafc 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-4-codigo
+0237b1e 2026-10-15 Merge pull request #61 from emisorato1/defecto-59-fechas-por-dia
+a81f813 2026-10-13 chore: mover la historia 4 a en review
 bd4e171 2026-10-13 docs: registrar la tarea 15 y marcar la historia 4 como implementada
 3e3d580 2026-10-13 test: operar sobre integrantes de un proyecto que no existe (tarea 15, historia 4)
-b8b09a5 2026-10-13 docs: registrar la tarea 14 de la historia 4
-5b56329 2026-10-13 test: listar los integrantes en orden de alta y entregar una copia (tarea 14, historia 4)
-ad238df 2026-10-13 docs: registrar la tarea 13 de la historia 4
-102ee66 2026-10-13 feat: informar que no se encontro el integrante al quitarlo (tarea 13, historia 4)
-a29c335 2026-10-13 test: quitar un integrante que no pertenece al proyecto (tarea 13, historia 4)
-6b71a1a 2026-10-13 docs: registrar la tarea 12 de la historia 4
 ```
