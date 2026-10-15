@@ -89,3 +89,18 @@ func TestReestimarUnaHistoria(t *testing.T) {
 		t.Fatalf("se esperaba la historia estimada en 8, salio %d", story.StoryPoints())
 	}
 }
+
+// Escenario: Reestimar con el mismo valor
+// Cubre: RN-5
+func TestReestimarConElMismoValor(t *testing.T) {
+	story := &Story{state: StoryPending, storyPoints: 5}
+
+	err := story.Estimate(5)
+
+	if err != nil {
+		t.Fatalf("se esperaba reestimar con el mismo valor sin error, salio: %v", err)
+	}
+	if story.StoryPoints() != 5 {
+		t.Fatalf("se esperaba la historia estimada en 5, salio %d", story.StoryPoints())
+	}
+}
