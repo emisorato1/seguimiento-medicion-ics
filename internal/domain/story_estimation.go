@@ -10,9 +10,13 @@ import (
 var storyPointScale = []int{1, 2, 3, 5, 8, 13, 21}
 
 // Estimate asigna story points a la historia. Sirve tanto para la primera estimación
-// como para reestimar (RN-5, RN-6). Valida antes de cambiar: si el valor no está en la
-// escala, la historia queda como estaba (RN-2, RN-3).
+// como para reestimar (RN-5, RN-6). Una historia Terminada no se estima (RN-8). Controla
+// el estado antes que el valor (Fase 2, D5) y valida antes de cambiar: si algo falla, la
+// historia queda como estaba (RN-2, RN-3).
 func (s *Story) Estimate(points int) error {
+	if s.state == StoryDone {
+		return ErrStoryEstimateDone
+	}
 	if !inScale(points) {
 		return ErrStoryPointsInvalid
 	}

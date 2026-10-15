@@ -18,4 +18,7 @@ var (
 	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
 	// ErrStoryPointsInvalid: valor fuera de la escala, cero o negativo (historia #12, RN-2, RN-3).
 	ErrStoryPointsInvalid = errors.New("los story points tienen que ser uno de estos valores: " + scaleText())
+	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
+	// Terminada (historia #12, RN-8).
+	ErrStoryEstimateDone = errors.New("la estimacion de una historia terminada no se modifica")
 )
