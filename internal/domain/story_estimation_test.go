@@ -175,3 +175,18 @@ func TestNoReestimarUnaHistoriaTerminada(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: No quitar la estimacion de una historia terminada
+// Cubre: RN-8
+func TestNoQuitarLaEstimacionDeUnaHistoriaTerminada(t *testing.T) {
+	story := &Story{state: StoryDone, storyPoints: 5}
+
+	err := story.RemoveEstimate()
+
+	if !errors.Is(err, ErrStoryEstimateDone) {
+		t.Fatalf("se esperaba ErrStoryEstimateDone, salio: %v", err)
+	}
+	if story.StoryPoints() != 5 {
+		t.Fatalf("se esperaba que la historia siguiera estimada en 5, salio %d", story.StoryPoints())
+	}
+}
