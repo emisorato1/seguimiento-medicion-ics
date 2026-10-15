@@ -46,8 +46,11 @@ func scaleText() string {
 
 // RemoveEstimate quita la estimación de la historia, que vuelve a quedar sin estimar
 // (RN-7). Es una operación propia y no "estimar con 0", porque el 0 no es un valor válido
-// para estimar (RN-3, Fase 2).
+// para estimar (RN-3, Fase 2). A una historia Terminada no se le quita (RN-8).
 func (s *Story) RemoveEstimate() error {
+	if s.state == StoryDone {
+		return ErrStoryEstimateDone
+	}
 	s.storyPoints = 0
 	return nil
 }
