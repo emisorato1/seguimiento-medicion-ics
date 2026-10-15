@@ -33,21 +33,33 @@ func (s StoryState) String() string {
 type Priority int
 
 const (
+	// priorityUnspecified es el valor cero: una historia a la que no se le indico la
+	// prioridad. Arranca en cero a proposito, para que una StoryData sin prioridad no se
+	// guarde como Alta en silencio (RN-5).
+	priorityUnspecified Priority = iota
 	// PriorityHigh, PriorityMedium y PriorityLow son las tres unicas prioridades validas.
-	PriorityHigh Priority = iota
+	PriorityHigh
 	PriorityMedium
 	PriorityLow
 )
 
+// isValid indica si la prioridad es una de las tres validas. Un valor armado a mano, como
+// Priority(9), no lo es (RN-4).
+func (p Priority) isValid() bool {
+	return p == PriorityHigh || p == PriorityMedium || p == PriorityLow
+}
+
 // String devuelve el nombre de la prioridad tal como la nombra la Fase 1.
 func (p Priority) String() string {
 	switch p {
+	case PriorityHigh:
+		return "Alta"
 	case PriorityMedium:
 		return "Media"
 	case PriorityLow:
 		return "Baja"
 	default:
-		return "Alta"
+		return "sin prioridad"
 	}
 }
 
@@ -64,7 +76,7 @@ func ParsePriority(text string) (Priority, error) {
 	case "baja":
 		return PriorityLow, nil
 	default:
-		return PriorityHigh, ErrStoryPriorityInvalid
+		return priorityUnspecified, ErrStoryPriorityInvalid
 	}
 }
 
@@ -154,6 +166,10 @@ func prepareStory(data StoryData) (StoryData, error) {
 		return StoryData{}, ErrStoryTitleRequired
 	case data.Description == "":
 		return StoryData{}, ErrStoryDescriptionRequired
+	case !data.Priority.isValid():
+		// cubre los dos casos: sin prioridad (el valor cero) y una prioridad armada a
+		// mano que no es ninguna de las tres (RN-4, RN-5).
+		return StoryData{}, ErrStoryPriorityInvalid
 	case len(data.AcceptanceCriteria) == 0:
 		return StoryData{}, ErrStoryCriteriaRequired
 	}

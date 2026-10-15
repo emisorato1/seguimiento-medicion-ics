@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-09 17:35. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-15 10:01. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,20 +16,19 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
-| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -68,12 +67,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-2a6551a 2026-10-09 docs: registrar la implementacion de las tareas 3 a 14 de la historia 6
-e946fda 2026-10-09 test: modificar la descripcion de una historia (tarea 9, historia 6)
-499eb03 2026-10-09 test: operar sobre historias y proyectos que no existen (tareas 12 a 14, historia 6)
-13f6ad5 2026-10-09 feat: modificar una historia validando todo antes de cambiar nada (tareas 9 a 11, historia 6)
-2bae7e0 2026-10-09 test: modificar una historia con las mismas validaciones que crear (tareas 9 a 11, historia 6)
-de00fc7 2026-10-09 feat: normalizar y validar los datos de una historia (tareas 6 a 8, historia 6)
-d2e8d9f 2026-10-09 test: normalizar y validar los datos de una historia (tareas 6 a 8, historia 6)
-3e5a29c 2026-10-09 feat: el proyecto contiene su backlog y agrega historias (tareas 3 a 5, historia 6)
+bb85eb7 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
+0237b1e 2026-10-15 Merge pull request #61 from emisorato1/defecto-59-fechas-por-dia
+770dd85 2026-10-13 fix: armar el dia de las fechas en UTC para ignorar la zona horaria (defecto 59)
+8747d59 2026-10-13 test: comparar las fechas por dia aunque esten en distinta zona horaria (defecto 59)
+9ba417c 2026-10-12 fix: comparar las fechas de un proyecto por dia, sin la hora (defecto 59)
+21325fb 2026-10-12 test: comparar las fechas por dia, sin importar la hora (defecto 59)
+d1cc4ac 2026-10-12 docs: escenario de comparar las fechas por dia en la historia 3 (defecto 59)
+7ca61bd 2026-10-09 docs: alinear el indice y el tablero con el estado real
 ```

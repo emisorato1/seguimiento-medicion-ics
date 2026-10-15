@@ -112,6 +112,22 @@ func TestConvertirElTextoEnUnaPrioridad(t *testing.T) {
 	}
 }
 
+// Tarea 2 de la Fase 3: una prioridad que no es ninguna de las tres —el valor cero, o una
+// armada a mano— se muestra como "sin prioridad" y no como Alta. Es lo que evita que una
+// historia sin prioridad parezca tenerla (RN-5).
+// Cubre: RN-4
+func TestUnaPrioridadQueNoExisteNoSeMuestraComoAlta(t *testing.T) {
+	var sinPrioridad Priority
+
+	if sinPrioridad.String() != "sin prioridad" {
+		t.Fatalf("se esperaba \"sin prioridad\" para el valor cero, salio: %q", sinPrioridad.String())
+	}
+	if Priority(9).String() != "sin prioridad" {
+		t.Fatalf("se esperaba \"sin prioridad\" para una prioridad fuera de rango, salio: %q",
+			Priority(9).String())
+	}
+}
+
 // Escenario: Rechazar una prioridad invalida
 // Cubre: RN-4
 func TestRechazarUnaPrioridadInvalida(t *testing.T) {
@@ -267,7 +283,8 @@ func TestLosIdentificadoresSonUnicosDentroDeCadaProyecto(t *testing.T) {
 	}
 }
 
-// Escenario: Los identificadores no se repiten
+// Tarea 5 de la Fase 3: el contador no retrocede. No tiene escenario propio en la
+// Fase 1, sale de la RN-1.
 // Cubre: RN-1
 func TestLosIdentificadoresDeLasHistoriasNoSeRepiten(t *testing.T) {
 	project := unProyecto(t)
@@ -310,20 +327,24 @@ func TestNormalizarLosDatosDeUnaHistoria(t *testing.T) {
 
 // Esquema del escenario: Rechazar una historia sin los datos obligatorios
 // Escenario: Un texto con solo espacios cuenta como vacio
+// Escenario: Rechazar una historia sin criterios de aceptacion
 // Escenario: Rechazar si todos los criterios quedan vacios
-// Cubre: RN-5, RN-11
+// Escenario: Rechazar una prioridad invalida
+// Cubre: RN-4, RN-5, RN-11
 func TestRechazarUnaHistoriaSinLosDatosObligatorios(t *testing.T) {
 	casos := []struct {
 		dato     string
 		datos    StoryData
 		esperado error
 	}{
-		{"titulo", StoryData{Title: "", Description: "d", AcceptanceCriteria: []string{"c"}}, ErrStoryTitleRequired},
-		{"titulo con solo espacios", StoryData{Title: "   ", Description: "d", AcceptanceCriteria: []string{"c"}}, ErrStoryTitleRequired},
-		{"descripcion", StoryData{Title: "t", Description: "", AcceptanceCriteria: []string{"c"}}, ErrStoryDescriptionRequired},
-		{"descripcion con solo espacios", StoryData{Title: "t", Description: "  ", AcceptanceCriteria: []string{"c"}}, ErrStoryDescriptionRequired},
-		{"criterios de aceptacion", StoryData{Title: "t", Description: "d", AcceptanceCriteria: nil}, ErrStoryCriteriaRequired},
-		{"criterios todos vacios", StoryData{Title: "t", Description: "d", AcceptanceCriteria: []string{"", "   "}}, ErrStoryCriteriaRequired},
+		{"titulo", StoryData{Title: "", Description: "d", Priority: PriorityHigh, AcceptanceCriteria: []string{"c"}}, ErrStoryTitleRequired},
+		{"titulo con solo espacios", StoryData{Title: "   ", Description: "d", Priority: PriorityHigh, AcceptanceCriteria: []string{"c"}}, ErrStoryTitleRequired},
+		{"descripcion", StoryData{Title: "t", Description: "", Priority: PriorityHigh, AcceptanceCriteria: []string{"c"}}, ErrStoryDescriptionRequired},
+		{"descripcion con solo espacios", StoryData{Title: "t", Description: "  ", Priority: PriorityHigh, AcceptanceCriteria: []string{"c"}}, ErrStoryDescriptionRequired},
+		{"prioridad", StoryData{Title: "t", Description: "d", AcceptanceCriteria: []string{"c"}}, ErrStoryPriorityInvalid},
+		{"prioridad fuera de rango", StoryData{Title: "t", Description: "d", Priority: Priority(9), AcceptanceCriteria: []string{"c"}}, ErrStoryPriorityInvalid},
+		{"criterios de aceptacion", StoryData{Title: "t", Description: "d", Priority: PriorityHigh, AcceptanceCriteria: nil}, ErrStoryCriteriaRequired},
+		{"criterios todos vacios", StoryData{Title: "t", Description: "d", Priority: PriorityHigh, AcceptanceCriteria: []string{"", "   "}}, ErrStoryCriteriaRequired},
 	}
 
 	for _, caso := range casos {
@@ -343,7 +364,7 @@ func TestRechazarUnaHistoriaSinLosDatosObligatorios(t *testing.T) {
 	}
 }
 
-// Escenario: Dos historias con el mismo titulo
+// Tarea 8 de la Fase 3: no tiene escenario propio en la Fase 1, sale de la RN-14.
 // Cubre: RN-14
 func TestDosHistoriasDelMismoProyectoPuedenTenerElMismoTitulo(t *testing.T) {
 	project := unProyecto(t)
@@ -384,7 +405,8 @@ func TestModificarUnaHistoria(t *testing.T) {
 	}
 }
 
-// Escenario: Modificar una historia en curso
+// Tarea 9 de la Fase 3: el caso En curso de la RN-8, que se agrego en la Puerta 3 a
+// pedido de Juliana Bustos. No tiene escenario propio en la Fase 1.
 // Cubre: RN-8
 func TestModificarUnaHistoriaEnCurso(t *testing.T) {
 	project := unProyecto(t)
@@ -402,7 +424,7 @@ func TestModificarUnaHistoriaEnCurso(t *testing.T) {
 	}
 }
 
-// Escenario: Modificar una historia sin cambiar nada
+// Caso limite de la Fase 1: modificar una historia sin cambiar nada.
 // Cubre: RN-9
 func TestModificarUnaHistoriaSinCambiarNada(t *testing.T) {
 	project := unProyecto(t)
@@ -490,6 +512,10 @@ func TestModificarUnaHistoriaQueNoExiste(t *testing.T) {
 }
 
 // Esquema del escenario: Operar sobre un proyecto que no existe
+// El esquema tiene tres filas —crear una historia, modificarla y pedir el backlog— y un
+// solo test: por el diseño de la Fase 2, las tres operaciones son metodos del proyecto, y
+// el unico camino para llegar a ellas es buscarlo en el registro. Si el proyecto no existe,
+// ninguna de las tres llega a ejecutarse.
 // Cubre: RN-12
 func TestOperarSobreUnProyectoQueNoExiste(t *testing.T) {
 	registry := NewProjectRegistry()
@@ -547,7 +573,8 @@ func TestCambiarElBacklogRecibidoNoCambiaElDelProyecto(t *testing.T) {
 	}
 }
 
-// Escenario: Buscar una historia del backlog
+// Tarea 12 de la Fase 3: el camino feliz de buscar una historia. No tiene escenario
+// propio en la Fase 1: los escenarios cubren el caso de la historia que no existe.
 // Cubre: RN-13
 func TestBuscarUnaHistoriaDelBacklog(t *testing.T) {
 	project := unProyecto(t)
@@ -563,8 +590,9 @@ func TestBuscarUnaHistoriaDelBacklog(t *testing.T) {
 	}
 }
 
-// Escenario: Modificar una historia pendiente — cambiar la descripcion.
-// Cubre: RN-9 — el camino de la descripcion, que los demas tests no recorren.
+// Tarea 9 de la Fase 3: el camino de la descripcion, que los demas tests no recorren.
+// No tiene escenario propio en la Fase 1.
+// Cubre: RN-9
 func TestModificarLaDescripcionDeUnaHistoria(t *testing.T) {
 	project := unProyecto(t)
 	story, _ := project.AddStory(unosDatos())

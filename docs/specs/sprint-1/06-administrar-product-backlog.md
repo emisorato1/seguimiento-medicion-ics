@@ -443,6 +443,26 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
 de `project.go`, que todavía no existía. El resto va en un solo PR, como quedó escrito
 después en el criterio de CLAUDE.md.
 
+### Correcciones pedidas en la revisión
+
+**La prioridad no se validaba (RN-4 y RN-5).** Lo encontraron Maximiliano Eula y Juliana
+Bustos revisando el PR #58, y era un agujero real: `PriorityHigh` era el valor cero de
+`Priority`, así que una historia **sin prioridad se guardaba como Alta sin error**, y una
+prioridad armada a mano como `Priority(9)` también entraba. El esquema "Rechazar una
+historia sin los datos obligatorios" tiene la fila `prioridad` en la Fase 1 y el test no la
+tenía, así que nada lo detectaba.
+
+Corregido como propuso Maximiliano: el valor cero pasa a significar **sin prioridad**, las
+tres válidas arrancan en 1, y `prepareStory` rechaza cualquier cosa que no sea una de las
+tres. Como `UpdateStory` usa la misma función, cubre también la modificación. Se agregaron
+las filas `prioridad` y `prioridad fuera de rango` al esquema, y un test de que una
+prioridad inexistente se muestra como "sin prioridad" y no como Alta.
+
+**Trazabilidad de los comentarios de los tests.** Juliana marcó que varios tests citaban
+escenarios que no existen en la Fase 1. Los que salen de una tarea y no de un escenario
+ahora se encabezan con `// Tarea N:`, y el escenario "Rechazar una historia sin criterios de
+aceptacion", que no estaba nombrado en ninguno, quedó en el esquema que lo cubre.
+
 ### Desvíos respecto de la spec
 
 **Las tareas 12 a 14 no tuvieron ciclo rojo.** Al implementar las tareas 9 a 11 escribí
