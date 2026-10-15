@@ -149,3 +149,29 @@ func TestQuitarLaEstimacionDeUnaHistoriaYaSinEstimar(t *testing.T) {
 		t.Fatalf("se esperaba que la historia siguiera sin estimar, salio estimada en %d", story.StoryPoints())
 	}
 }
+
+// Escenario: No reestimar una historia terminada
+// Cubre: RN-8
+func TestNoReestimarUnaHistoriaTerminada(t *testing.T) {
+	cases := []struct {
+		name    string
+		initial int
+	}{
+		{"reestimar una terminada estimada en 5", 5},
+		{"estimar una terminada sin estimar", 0},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			story := &Story{state: StoryDone, storyPoints: tc.initial}
+
+			err := story.Estimate(8)
+
+			if !errors.Is(err, ErrStoryEstimateDone) {
+				t.Fatalf("se esperaba ErrStoryEstimateDone, salio: %v", err)
+			}
+			if story.StoryPoints() != tc.initial {
+				t.Fatalf("se esperaba que la historia conservara %d story points, salio %d", tc.initial, story.StoryPoints())
+			}
+		})
+	}
+}
