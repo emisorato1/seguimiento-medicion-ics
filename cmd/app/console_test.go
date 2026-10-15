@@ -154,3 +154,28 @@ func TestUnaFechaMalEscritaSeInformaYLaOperacionNoSeEjecuta(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Agregar y listar integrantes
+// Cubre: RN-1
+func TestAgregarYListarIntegrantes(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := "crear-proyecto\nSistema de metricas\n\n01/10/2026\n\n" +
+		"agregar-integrante\n1\nJuliana Bustos\nproduct builder\n" +
+		"listar-integrantes\n1\n" +
+		"salir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	project, _ := registry.Get(1)
+	members := project.Members()
+	if len(members) != 1 || members[0].Name() != "Juliana Bustos" || members[0].Role() != domain.RoleProductBuilder {
+		t.Fatalf("se esperaba a Juliana Bustos como Product Builder en el proyecto, salio: %v", members)
+	}
+	if !strings.Contains(out.String(), "Juliana Bustos") {
+		t.Fatalf("se esperaba ver a Juliana Bustos en la lista de integrantes, salio: %q", out.String())
+	}
+}
