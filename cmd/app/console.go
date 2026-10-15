@@ -17,9 +17,41 @@ const prompt = "> "
 // dateLayout es el formato en que se escriben las fechas: dd/mm/aaaa.
 const dateLayout = "02/01/2006"
 
+// exitOperation es la operación que termina la consola (RN-6). No está en la tabla
+// porque no ejecuta nada: corta el ciclo.
+const exitOperation = "salir"
+
+// operation es una operación de la consola: su nombre y lo que ejecuta.
+type operation struct {
+	name string
+	run  func(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry)
+}
+
+// operations son las operaciones de la consola, en el orden en que se muestran. Es la
+// única lista: la usan el ciclo para ejecutarlas y el mensaje de operación inexistente.
+var operations = []operation{
+	{"crear-proyecto", createProject},
+	{"agregar-integrante", addMember},
+	{"listar-integrantes", listMembers},
+}
+
 // operationNames devuelve las operaciones disponibles, en el orden en que se muestran.
 func operationNames() []string {
-	return []string{"crear-proyecto", "agregar-integrante", "listar-integrantes", "salir"}
+	names := make([]string, 0, len(operations)+1)
+	for _, op := range operations {
+		names = append(names, op.name)
+	}
+	return append(names, exitOperation)
+}
+
+// findOperation busca una operación de la tabla por su nombre.
+func findOperation(name string) (operation, bool) {
+	for _, op := range operations {
+		if op.name == name {
+			return op, true
+		}
+	}
+	return operation{}, false
 }
 
 // runConsole lee operaciones de in, una por línea, y escribe los resultados en out.
@@ -37,17 +69,15 @@ func runConsole(in io.Reader, out io.Writer, registry *domain.ProjectRegistry) e
 		switch {
 		case line == "":
 			// una línea vacía no hace nada y vuelve a pedir una operación
-		case line == "salir":
+		case line == exitOperation:
 			return nil
-		case line == "crear-proyecto":
-			createProject(scanner, out, registry)
-		case line == "agregar-integrante":
-			addMember(scanner, out, registry)
-		case line == "listar-integrantes":
-			listMembers(scanner, out, registry)
 		default:
-			fmt.Fprintf(out, "La operación %q no existe. Operaciones disponibles: %s\n",
-				line, strings.Join(operationNames(), ", "))
+			if op, ok := findOperation(line); ok {
+				op.run(scanner, out, registry)
+			} else {
+				fmt.Fprintf(out, "La operación %q no existe. Operaciones disponibles: %s\n",
+					line, strings.Join(operationNames(), ", "))
+			}
 		}
 	}
 }
