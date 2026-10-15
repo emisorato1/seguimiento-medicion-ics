@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 	"time"
 
@@ -18,7 +19,7 @@ const dateLayout = "02/01/2006"
 
 // operationNames devuelve las operaciones disponibles, en el orden en que se muestran.
 func operationNames() []string {
-	return []string{"crear-proyecto", "salir"}
+	return []string{"crear-proyecto", "agregar-integrante", "listar-integrantes", "salir"}
 }
 
 // runConsole lee operaciones de in, una por línea, y escribe los resultados en out.
@@ -40,6 +41,10 @@ func runConsole(in io.Reader, out io.Writer, registry *domain.ProjectRegistry) e
 			return nil
 		case line == "crear-proyecto":
 			createProject(scanner, out, registry)
+		case line == "agregar-integrante":
+			addMember(scanner, out, registry)
+		case line == "listar-integrantes":
+			listMembers(scanner, out, registry)
 		default:
 			fmt.Fprintf(out, "La operación %q no existe. Operaciones disponibles: %s\n",
 				line, strings.Join(operationNames(), ", "))
@@ -97,4 +102,48 @@ func parseDate(text string) (time.Time, error) {
 		return time.Time{}, nil
 	}
 	return time.Parse(dateLayout, text)
+}
+
+// askProject pide el identificador de un proyecto y lo busca en el registro. Si no existe,
+// muestra el mensaje del núcleo y devuelve nil (RN-2). Un identificador escrito con letras
+// todavía no se informa como error de forma: es la tarea 12.
+func askProject(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) *domain.Project {
+	id, _ := strconv.Atoi(ask(scanner, out, "Proyecto (identificador): "))
+	project, err := registry.Get(id)
+	if err != nil {
+		fmt.Fprintln(out, err)
+		return nil
+	}
+	return project
+}
+
+// addMember pide un integrante y lo agrega al proyecto (RN-1). El rol se pasa como texto
+// y lo convierte el dominio: la consola no valida roles (RN-7).
+func addMember(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) {
+	project := askProject(scanner, out, registry)
+	if project == nil {
+		return
+	}
+	name := ask(scanner, out, "Nombre y apellido: ")
+	role, err := domain.ParseRole(ask(scanner, out, "Rol (Agile Enabler o Product Builder): "))
+	if err != nil {
+		fmt.Fprintln(out, err)
+		return
+	}
+	if _, err := project.AddMember(name, role); err != nil {
+		fmt.Fprintln(out, err)
+		return
+	}
+	fmt.Fprintf(out, "Integrante agregado al proyecto %d\n", project.ID())
+}
+
+// listMembers muestra los integrantes de un proyecto con su rol (RN-1).
+func listMembers(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) {
+	project := askProject(scanner, out, registry)
+	if project == nil {
+		return
+	}
+	for _, member := range project.Members() {
+		fmt.Fprintf(out, "- %s (%s)\n", member.Name(), member.Role())
+	}
 }
