@@ -144,6 +144,7 @@ refleja la realidad es peor que no tener tablero.
 ```bash
 scripts/revisiones.sh                           # PRs esperando tu revision
 scripts/coherencia.sh                           # specs, indice y puertas coherentes
+scripts/metricas.sh "Sprint 1"                  # metricas del sprint para la review
 scripts/tablero.sh ver                          # estado de todas las historias
 scripts/tablero.sh estado 3 "En progreso"       # mover una historia
 scripts/tablero.sh puntos 3 5                   # cargar story points
@@ -467,6 +468,11 @@ Para tenerlas hay que ir cargando los datos mientras se trabaja:
   resolvió. Sin esto no hay datos de calidad para el informe.
 - **Velocidad**: sale sola de los story points completados al cerrar cada sprint, siempre que
   el tablero esté al día.
+
+Las nueve métricas que pide la consigna se calculan con `scripts/metricas.sh "Sprint N"`, que
+las saca del tablero y de las issues con la etiqueta `defecto`. **Solo cuenta las historias
+en estado Hecho**: una historia a medias no suma story points aunque tenga horas cargadas, y
+contarlas infla la velocidad y arruina la calibración del sprint siguiente.
 
 ---
 

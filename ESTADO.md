@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-15 10:01. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-15 12:20. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,13 +10,12 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 20
 - Sin estimar: 2
 - Story points cargados: 83
-- Terminadas: 3
+- Terminadas: 4
 
 ## En review
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## En progreso
@@ -63,16 +62,17 @@ _No hay historias en este estado._
 | #1 | Configurar el repositorio y el tablero del proyecto | - | - | Sprint 0 |
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
+| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 
 ## Ultimos commits
 
 ```
+5c191ef 2026-10-15 fix: poner las tildes en los mensajes de error de la historia 6 (defecto 60)
+0d22bc7 2026-10-15 fix: rechazar una historia sin prioridad o con una prioridad que no existe (historia 6)
 bb85eb7 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
 0237b1e 2026-10-15 Merge pull request #61 from emisorato1/defecto-59-fechas-por-dia
 770dd85 2026-10-13 fix: armar el dia de las fechas en UTC para ignorar la zona horaria (defecto 59)
 8747d59 2026-10-13 test: comparar las fechas por dia aunque esten en distinta zona horaria (defecto 59)
 9ba417c 2026-10-12 fix: comparar las fechas de un proyecto por dia, sin la hora (defecto 59)
 21325fb 2026-10-12 test: comparar las fechas por dia, sin importar la hora (defecto 59)
-d1cc4ac 2026-10-12 docs: escenario de comparar las fechas por dia en la historia 3 (defecto 59)
-7ca61bd 2026-10-09 docs: alinear el indice y el tablero con el estado real
 ```
