@@ -39,3 +39,11 @@ func scaleText() string {
 	last := len(texts) - 1
 	return strings.Join(texts[:last], ", ") + " y " + texts[last]
 }
+
+// RemoveEstimate quita la estimación de la historia, que vuelve a quedar sin estimar
+// (RN-7). Es una operación propia y no "estimar con 0", porque el 0 no es un valor válido
+// para estimar (RN-3, Fase 2).
+func (s *Story) RemoveEstimate() error {
+	s.storyPoints = 0
+	return nil
+}
