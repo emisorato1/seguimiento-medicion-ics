@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-11 19:42. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-15 10:36. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,7 +10,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 20
 - Sin estimar: 2
 - Story points cargados: 83
-- Terminadas: 3
+- Terminadas: 4
 
 ## En review
 
@@ -22,14 +22,12 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
-| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -64,16 +62,17 @@ _No hay historias en este estado._
 | #1 | Configurar el repositorio y el tablero del proyecto | - | - | Sprint 0 |
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
+| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 
 ## Ultimos commits
 
 ```
-a747743 2026-10-08 docs: registrar las tareas 1 a 3 de la historia 24
-69fbd58 2026-10-08 feat: operacion inexistente (historia 24, tarea 3)
-35173b0 2026-10-08 test: operacion inexistente (historia 24, tarea 3)
-d9e27a8 2026-10-08 feat: entrada vacia (historia 24, tarea 2)
-44eaaf7 2026-10-08 test: entrada vacia (historia 24, tarea 2)
-cd3c73b 2026-10-08 feat: salir del programa (historia 24, tarea 1)
-7d31b89 2026-10-08 test: salir del programa (historia 24, tarea 1)
-9b4f9f5 2026-10-08 chore: mover la historia 24 a en progreso
+8748603 2026-10-11 docs: registrar la tarea 14 de la historia 24
+42cfe49 2026-10-11 feat: informar una fecha mal escrita (historia 24, tarea 14)
+e48de53 2026-10-11 test: informar una fecha mal escrita (historia 24, tarea 14)
+7cb4ceb 2026-10-11 docs: registrar las tareas 4 y 5 de la historia 24
+4cd8d97 2026-10-11 feat: mostrar el motivo de un rechazo (historia 24, tarea 5)
+b1bf255 2026-10-11 test: mostrar el motivo de un rechazo (historia 24, tarea 5)
+479cb07 2026-10-11 refactor: nombrar en ingles una variable del test (historia 24)
+07c23ff 2026-10-11 feat: crear un proyecto desde la consola (historia 24, tarea 4)
 ```

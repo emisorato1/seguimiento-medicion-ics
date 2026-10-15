@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -320,21 +320,21 @@ lo que cubre la RN-12 en cada camino de error, y no una tarea aparte al final.
 
 | # | Tarea | Reglas y criterios que cubre | Estado |
 |---|---|---|---|
-| 1 | El rol es un tipo propio con los dos valores, y el dominio convierte el texto que escribe el usuario en un rol, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | pendiente |
-| 2 | El integrante existe como dato con su nombre y apellido y su rol | RN-1 | pendiente |
-| 3 | El proyecto contiene su lista de integrantes; pedir la lista de un proyecto sin integrantes devuelve una lista vacía, sin error | RN-8 | pendiente |
-| 4 | Agregar un integrante con datos válidos: queda en la lista con su nombre y apellido y su rol | RN-1, RN-8 | pendiente |
-| 5 | Normalizar: el nombre y apellido se guarda sin los espacios de los extremos | RN-3 | pendiente |
-| 6 | Validar el nombre y apellido sobre lo ya normalizado: vacío o solo espacios se rechaza, y la lista queda igual | RN-2, RN-12 | pendiente |
-| 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | pendiente |
-| 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | pendiente |
-| 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | pendiente |
-| 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | pendiente |
-| 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | pendiente |
-| 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | pendiente |
-| 13 | Quitar un integrante que no pertenece al proyecto informa que no se encontró, y la lista queda igual | RN-11, RN-12 | pendiente |
-| 14 | Pedir la lista de un proyecto con integrantes los devuelve a todos, en el orden en que se agregaron y con su rol; cambiar la lista recibida no cambia los integrantes del proyecto | RN-8 | pendiente |
-| 15 | Agregar, quitar o listar integrantes de un proyecto inexistente informa que no se encontró el proyecto, con el error que declara la #3 | RN-10 | pendiente |
+| 1 | El rol es un tipo propio con los dos valores, y el dominio convierte el texto que escribe el usuario en un rol, ignorando mayúsculas y espacios de los extremos; cualquier otro texto se rechaza con el error de la RN-4 | RN-4 | **hecha** |
+| 2 | El integrante existe como dato con su nombre y apellido y su rol | RN-1 | **hecha** |
+| 3 | El proyecto contiene su lista de integrantes; pedir la lista de un proyecto sin integrantes devuelve una lista vacía, sin error | RN-8 | **hecha** |
+| 4 | Agregar un integrante con datos válidos: queda en la lista con su nombre y apellido y su rol | RN-1, RN-8 | **hecha** |
+| 5 | Normalizar: el nombre y apellido se guarda sin los espacios de los extremos | RN-3 | **hecha** |
+| 6 | Validar el nombre y apellido sobre lo ya normalizado: vacío o solo espacios se rechaza, y la lista queda igual | RN-2, RN-12 | **hecha** |
+| 7 | Agregar con un rol que no es uno de los dos se rechaza con el error de la RN-4, y la lista queda igual | RN-4, RN-12 | **hecha** |
+| 8 | Rechazar el duplicado: la comparación ignora mayúsculas (también en letras con tilde y la ñ) y los espacios de los extremos, pero no las tildes; la lista queda igual | RN-5, RN-12 | **hecha** |
+| 9 | El mismo nombre y apellido se puede cargar en dos proyectos distintos | RN-6 | **hecha** |
+| 10 | Rechazar un segundo Agile Enabler en el mismo proyecto, y la lista queda igual | RN-7, RN-12 | **hecha** |
+| 11 | Con varios errores a la vez se informa el primero, en el orden del Enfoque: nombre, rol, duplicado, Agile Enabler | RN-2, RN-4, RN-5, RN-7 | **hecha** |
+| 12 | Quitar un integrante indicándolo por su nombre y apellido, con la misma comparación que el duplicado: deja de estar en la lista. Quitar el último deja la lista vacía, y quitar al Agile Enabler permite agregar otro | RN-9, RN-7 | **hecha** |
+| 13 | Quitar un integrante que no pertenece al proyecto informa que no se encontró, y la lista queda igual | RN-11, RN-12 | **hecha** |
+| 14 | Pedir la lista de un proyecto con integrantes los devuelve a todos, en el orden en que se agregaron y con su rol; cambiar la lista recibida no cambia los integrantes del proyecto | RN-8 | **hecha** |
+| 15 | Agregar, quitar o listar integrantes de un proyecto inexistente informa que no se encontró el proyecto, con el error que declara la #3 | RN-10 | **hecha** |
 
 ### Por qué este orden
 
@@ -382,7 +382,57 @@ nombre del escenario para que la trazabilidad se vea sin tener que buscarla.
 
 ## Fase 4 — Implementación
 
-_Se completa a medida que se avanza._
+Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `test: convertir el texto en un rol y rechazar los invalidos` | `feat: convertir el texto en un rol en el dominio` |
+| 2 | `test: el integrante expone su nombre y apellido y su rol` | `feat: el integrante como dato con su nombre y apellido y su rol` |
+| 3 | `test: listar un proyecto sin integrantes devuelve una lista vacia` | `feat: el proyecto contiene su lista de integrantes` |
+| 4 | `test: agregar el primer integrante a un proyecto` | `feat: agregar un integrante al proyecto` |
+| 5 | `test: guardar el nombre del integrante sin espacios en los extremos` | `feat: guardar el nombre del integrante sin espacios en los extremos` |
+| 6 | `test: rechazar un integrante sin nombre y apellido` | `feat: rechazar un integrante sin nombre y apellido` |
+| 7 | `test: rechazar un rol invalido y no confundir el rol sin inicializar` | `feat: rechazar un rol invalido y reservar el valor cero como sin rol` |
+| 8 | `test: rechazar un integrante duplicado sin distinguir mayusculas` | `feat: rechazar un integrante duplicado sin distinguir mayusculas` |
+| 9 | `test: la misma persona en dos proyectos` | sin commit propio: ya lo cumplia la tarea 3 (ver Desvíos) |
+| 10 | `test: rechazar un segundo agile enabler en el mismo proyecto` | `feat: rechazar un segundo agile enabler en el mismo proyecto` |
+| 11 | `test: con varios errores se informa el primero` | sin commit propio: ya lo cumplian las tareas 6, 7, 8 y 10 (ver Desvíos) |
+| 12 | `test: quitar un integrante por su nombre y liberar el lugar del agile enabler` | `feat: quitar un integrante por su nombre y apellido` |
+| 13 | `test: quitar un integrante que no pertenece al proyecto` | `feat: informar que no se encontro el integrante al quitarlo` |
+| 14 | `test: listar los integrantes en orden de alta y entregar una copia` | sin commit propio: ya lo cumplian las tareas 3, 4 y 12 (ver Desvíos) |
+| 15 | `test: operar sobre integrantes de un proyecto que no existe` | sin commit propio: lo resuelve el registro de la #3 (ver Desvíos) |
+
+### Desvíos respecto de la spec
+
+- **La tarea 9 no tuvo ciclo rojo.** Su test pasó en verde desde el primer intento, sin
+  código nuevo: como los integrantes viven dentro de cada proyecto (tarea 3) y el duplicado
+  se busca solo en la lista de ese proyecto (tarea 8), el mismo nombre en otro proyecto
+  nunca choca. Es la RN-6 saliendo sola, como preveía la primera decisión de la Fase 2. El
+  test queda igual, para que la regla no se rompa si algún día la lista de integrantes deja
+  de ser propia de cada proyecto.
+- **La tarea 11 tampoco tuvo ciclo rojo.** Las tareas 6, 7, 8 y 10 fueron agregando cada
+  validación al final de la anterior, así que el orden del Enfoque (nombre, rol, duplicado,
+  Agile Enabler) ya quedó armado cuando llegó su test. Para comprobar que el test no pasa
+  por casualidad, se invirtió a mano el orden del rol y el duplicado: el test falló en el
+  caso "rol invalido y duplicado", y después se restauró el código. El test queda para que
+  nadie reordene las validaciones sin darse cuenta.
+- **La tarea 14 tampoco tuvo ciclo rojo.** La copia de la lista ya la entregaba `Members()`
+  desde la tarea 3, siguiendo la decisión de encapsulamiento de AGENTS.md; el orden de alta
+  sale de que agregar suma al final (tarea 4) y quitar conserva el orden de los demás
+  (tarea 12). Para comprobar que el test de la copia no pasa por casualidad, se hizo que
+  `Members()` devolviera la lista interna en lugar de una copia: el test falló porque el
+  integrante agregado a la lista recibida entraba al proyecto, y después se restauró el
+  código.
+- **La tarea 15 no necesitó código propio.** Las operaciones sobre integrantes son del
+  proyecto, así que solo se llega a ellas después de buscar el proyecto en el registro de la
+  #3, que ya informa `ErrProjectNotFound`. Es lo que preveía la Fase 2: esta historia usa el
+  error de la #3 y no declara uno propio. El test recorre ese camino para agregar, quitar y
+  listar, como lo va a hacer la consola, y verifica además que no se cree ningún proyecto ni
+  cambie el que existe.
+- **Nombre de un test distinto del escenario.** El escenario "Guardar el nombre sin espacios
+  en los extremos" se llama igual que uno de la #3, y Go no admite dos tests con el mismo
+  nombre en el mismo paquete. Su test es `TestGuardarElNombreDelIntegranteSinEspaciosEnLosExtremos`;
+  el comentario de arriba cita el escenario tal cual, así que la trazabilidad no se corta.
 
 ## Trazabilidad
 
@@ -392,5 +442,5 @@ _Se completa a medida que se avanza._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | pendiente |
-| Código Go | pendiente |
+| Tests | `internal/domain/member_test.go`: un test por escenario, con el nombre del escenario |
+| Código Go | `internal/domain/member.go`, `internal/domain/project.go`, `internal/domain/errors.go` |
