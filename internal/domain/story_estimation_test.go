@@ -74,3 +74,18 @@ func numbersIn(text string) map[int]bool {
 	}
 	return numbers
 }
+
+// Escenario: Reestimar una historia
+// Cubre: RN-5, RN-6
+func TestReestimarUnaHistoria(t *testing.T) {
+	story := &Story{state: StoryPending, storyPoints: 3}
+
+	err := story.Estimate(8)
+
+	if err != nil {
+		t.Fatalf("se esperaba reestimar sin error, salio: %v", err)
+	}
+	if story.StoryPoints() != 8 {
+		t.Fatalf("se esperaba la historia estimada en 8, salio %d", story.StoryPoints())
+	}
+}
