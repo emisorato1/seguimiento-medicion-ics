@@ -1,7 +1,9 @@
 package domain
 
 import (
+	"errors"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -35,4 +37,40 @@ func TestEstimarConCadaValorDeLaEscala(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Escenario: Rechazar valores fuera de la escala
+// Cubre: RN-1, RN-2, RN-3
+func TestRechazarValoresFueraDeLaEscala(t *testing.T) {
+	for _, points := range []int{4, 7, 0, -3} {
+		t.Run(strconv.Itoa(points), func(t *testing.T) {
+			story := &Story{state: StoryPending}
+
+			err := story.Estimate(points)
+
+			if !errors.Is(err, ErrStoryPointsInvalid) {
+				t.Fatalf("se esperaba ErrStoryPointsInvalid al estimar con %d, salio: %v", points, err)
+			}
+			informed := numbersIn(err.Error())
+			for _, valid := range []int{1, 2, 3, 5, 8, 13, 21} {
+				if !informed[valid] {
+					t.Fatalf("se esperaba que el mensaje informara el valor valido %d, salio: %q", valid, err.Error())
+				}
+			}
+			if story.IsEstimated() {
+				t.Fatalf("se esperaba que la historia siguiera sin estimar, salio estimada en %d", story.StoryPoints())
+			}
+		})
+	}
+}
+
+// numbersIn devuelve los números enteros que aparecen en un texto.
+func numbersIn(text string) map[int]bool {
+	numbers := map[int]bool{}
+	for _, field := range strings.FieldsFunc(text, func(r rune) bool { return r < '0' || r > '9' }) {
+		if n, err := strconv.Atoi(field); err == nil {
+			numbers[n] = true
+		}
+	}
+	return numbers
 }
