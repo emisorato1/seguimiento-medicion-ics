@@ -258,7 +258,7 @@ verifica lo que escribió como salida.
 | 3 | Una operación que no existe se informa y se listan las disponibles | Operacion inexistente | RN-4 | nada | hecha |
 | 4 | Crear un proyecto: pide los datos, lo crea en el registro y muestra su identificador | Crear un proyecto desde la consola | RN-1, RN-3 | #3 | hecha |
 | 5 | Si el núcleo rechaza la operación, se muestra su mensaje tal cual y la consola sigue | Mostrar el motivo de un rechazo | RN-2, RN-7 | #3 | hecha |
-| 6 | Agregar un integrante y listar los del proyecto; el rol se pasa al dominio como texto | Agregar y listar integrantes | RN-1 | #4 | pendiente |
+| 6 | Agregar un integrante y listar los del proyecto; el rol se pasa al dominio como texto | Agregar y listar integrantes | RN-1 | #4 | hecha |
 | 7 | Listar el backlog de un proyecto sin historias muestra que está vacío | Listar un backlog vacio | RN-1 | #6 | pendiente |
 | 8 | Cargar una historia y listar el backlog con su identificador; una historia con 0 story points se muestra "sin estimar" | Cargar una historia y listar el backlog | RN-1, RN-3 | #6, #12 | pendiente |
 | 9 | Estimar una historia y ver su nuevo valor | Estimar una historia desde la consola | RN-1 | #12 | pendiente |
@@ -332,6 +332,7 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 3 | `35173b0` | `69fbd58` |
 | 4 | `799f9e8` | `07c23ff` |
 | 5 | `b1bf255` | `4cd8d97` |
+| 6 | `385645f` | `ae3ffa5` |
 | 14 | `e48de53` | `42cfe49` |
 
 ### Desvíos respecto de la spec
@@ -345,6 +346,10 @@ Ninguno de comportamiento. Dos notas de proceso:
 - En el RED de la tarea 14 falló solo el caso de la fecha de finalización. El de la fecha de
   inicio pasaba por casualidad: el núcleo respondía "la fecha de inicio es obligatoria", que
   también nombra el dato. Se dejaron los dos casos porque los dos son parte de la RN-5.
+- Antes de la tarea 6 se volvió a traer `dev` (merge `a078f4d`) para tener la #4.
+- Después de la tarea 6, el refactor `ac24073` reemplaza el `switch` de operaciones por una
+  tabla, que es la única lista de operaciones: la usan el ciclo para ejecutarlas y el mensaje
+  de operación inexistente. No cambia comportamiento: los tests pasaron sin tocarlos.
 
 ## Trazabilidad
 
