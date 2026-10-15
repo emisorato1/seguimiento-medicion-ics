@@ -16,4 +16,6 @@ var (
 	ErrProjectNotFound = errors.New("no se encontro el proyecto")
 	// ErrStoryPriorityInvalid: prioridad que no es Alta, Media ni Baja (historia #6, RN-4).
 	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
+	// ErrStoryPointsInvalid: valor fuera de la escala, cero o negativo (historia #12, RN-2, RN-3).
+	ErrStoryPointsInvalid = errors.New("los story points tienen que ser uno de estos valores: " + scaleText())
 )
