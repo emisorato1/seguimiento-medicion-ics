@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-15 10:56. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-15 12:29. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -67,12 +67,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+38f0deb 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
 4181fbf 2026-10-15 Merge pull request #63 from emisorato1/chore-script-de-metricas
 5659804 2026-10-15 chore: calcular las metricas del sprint desde el tablero
+5c191ef 2026-10-15 fix: poner las tildes en los mensajes de error de la historia 6 (defecto 60)
 4099066 2026-10-15 Merge pull request #62 from emisorato1/historia-4-codigo
 fa3fafc 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-4-codigo
-0237b1e 2026-10-15 Merge pull request #61 from emisorato1/defecto-59-fechas-por-dia
-a81f813 2026-10-13 chore: mover la historia 4 a en review
-bd4e171 2026-10-13 docs: registrar la tarea 15 y marcar la historia 4 como implementada
-3e3d580 2026-10-13 test: operar sobre integrantes de un proyecto que no existe (tarea 15, historia 4)
+0d22bc7 2026-10-15 fix: rechazar una historia sin prioridad o con una prioridad que no existe (historia 6)
+bb85eb7 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
 ```
