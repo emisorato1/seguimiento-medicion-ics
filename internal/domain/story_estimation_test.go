@@ -134,3 +134,18 @@ func TestQuitarLaEstimacion(t *testing.T) {
 		t.Fatalf("se esperaba que la historia figurara sin estimar, salio estimada en %d", story.StoryPoints())
 	}
 }
+
+// Sin escenario: caso límite de la RN-7
+// Cubre: RN-7
+func TestQuitarLaEstimacionDeUnaHistoriaYaSinEstimar(t *testing.T) {
+	story := &Story{state: StoryPending}
+
+	err := story.RemoveEstimate()
+
+	if err != nil {
+		t.Fatalf("se esperaba que quitar la estimacion de una historia sin estimar no diera error, salio: %v", err)
+	}
+	if story.IsEstimated() {
+		t.Fatalf("se esperaba que la historia siguiera sin estimar, salio estimada en %d", story.StoryPoints())
+	}
+}
