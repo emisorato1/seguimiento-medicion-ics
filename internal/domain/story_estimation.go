@@ -54,3 +54,14 @@ func (s *Story) RemoveEstimate() error {
 	s.storyPoints = 0
 	return nil
 }
+
+// EstimateStory estima la historia con ese identificador dentro del proyecto. Primero la
+// busca: si no existe, informa que no se encontró (RN-9), antes de mirar su estado o el
+// valor (Fase 2, D5).
+func (p *Project) EstimateStory(id, points int) error {
+	story, err := p.Story(id)
+	if err != nil {
+		return err
+	}
+	return story.Estimate(points)
+}
