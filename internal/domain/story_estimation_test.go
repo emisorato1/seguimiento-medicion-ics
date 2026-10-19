@@ -190,3 +190,15 @@ func TestNoQuitarLaEstimacionDeUnaHistoriaTerminada(t *testing.T) {
 		t.Fatalf("se esperaba que la historia siguiera estimada en 5, salio %d", story.StoryPoints())
 	}
 }
+
+// Escenario: Estimar una historia que no existe
+// Cubre: RN-9
+func TestEstimarUnaHistoriaQueNoExiste(t *testing.T) {
+	project := unProyecto(t)
+
+	err := project.EstimateStory(99, 5)
+
+	if !errors.Is(err, ErrStoryNotFound) {
+		t.Fatalf("se esperaba ErrStoryNotFound al estimar la historia 99, salio: %v", err)
+	}
+}
