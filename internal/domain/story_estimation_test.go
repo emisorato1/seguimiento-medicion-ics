@@ -202,3 +202,15 @@ func TestEstimarUnaHistoriaQueNoExiste(t *testing.T) {
 		t.Fatalf("se esperaba ErrStoryNotFound al estimar la historia 99, salio: %v", err)
 	}
 }
+
+// Sin escenario: tarea 12, segunda mitad de la RN-9
+// Cubre: RN-9
+func TestQuitarLaEstimacionDeUnaHistoriaInexistente(t *testing.T) {
+	project := unProyecto(t)
+
+	err := project.RemoveStoryEstimate(99)
+
+	if !errors.Is(err, ErrStoryNotFound) {
+		t.Fatalf("se esperaba ErrStoryNotFound al quitar la estimacion de la historia 99, salio: %v", err)
+	}
+}
