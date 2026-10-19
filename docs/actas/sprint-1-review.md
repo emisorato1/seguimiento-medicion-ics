@@ -22,8 +22,8 @@ a `dev`.
 | 3 | Crear y modificar proyectos | 3 | **sí** | PR #54 |
 | 4 | Registrar integrantes | 3 | **sí** | PR #62 |
 | 6 | Administrar el Product Backlog | 5 | **sí** | PR #56 y #58 |
-| 12 | Estimar con Story Points | 2 | no | no se empezó |
-| 24 | Interfaz de consola | 3 | no | 9 de 15 tareas |
+| 12 | Estimar con Story Points | 2 | no | 10 de 13 tareas, rama `historia-12-estimar-story-points` |
+| 24 | Interfaz de consola | 3 | no | 7 de 15 tareas |
 
 - **Story points comprometidos:** 16
 - **Story points completados:** **11**
@@ -31,8 +31,12 @@ a `dev`.
 - **Historias completadas:** 3 de 5 (60%)
 
 Las tres terminadas cumplen la Definición de Terminado: spec con sus tres puertas, escenarios
-BDD, tests en Go que pasan, revisadas por otro integrante y mergeadas a `dev`. La cobertura
-del dominio es del **100%**.
+BDD, tests en Go que pasan y mergeadas a `dev`, con el dominio al **100% de cobertura**.
+
+**Con una excepción que hay que anotar:** el PR #56, que trajo las tareas 1 y 2 de la #6, se
+mergeó sin que ninguna persona lo revisara. El resto de la historia (PR #58) sí tuvo revisión
+cruzada, pero la Definición de Terminado no se cumple al pie de la letra para esa parte. Es
+el mismo incumplimiento del acuerdo (b) del Sprint 0 que figura en la retrospectiva.
 
 Las historias no terminadas **vuelven al Product Backlog**, no se arrastran en silencio.
 
@@ -43,12 +47,18 @@ Las historias no terminadas **vuelven al Product Backlog**, no se arrastran en s
 | Emiliano Sorato | 15 | 13 |
 | Agustín Salinas | 9 | 8 |
 | Juliana Bustos | 9 | 8 |
-| Maximiliano Eula | 15 | 8,25 |
+| Maximiliano Eula | 15 | 9,25 |
 | **Total** | **48** | **38,25** |
 
-- **Desviación total:** −9,75 h (−21%).
-- **Conversión recalibrada: 3,5 horas por story point completado** (38,25 h ÷ 11 SP). Se
-  había estimado con 3 h por punto, así que la calibración inicial estaba bien.
+- **Desviación total:** −9,75 h (−20%).
+- **Conversión recalibrada: 2,6 horas por story point completado** (29 h ÷ 11 SP), contando
+  **solo las horas de las historias terminadas**. Se había estimado con 3 h por punto, así
+  que **se estimó de más**: las historias costaron menos de lo previsto.
+
+  Dividir las 38,25 horas totales por los 11 puntos terminados da 3,5 h, pero ese número
+  mezcla las horas invertidas en historias que no entregaron ningún punto. Es el mismo error
+  que el acta advierte más abajo para la desviación. **El número que sirve para estimar el
+  Sprint 2 es 2,6.**
 
 **Cómo leer la desviación.** El −21% mezcla las 48 horas estimadas de las cinco historias
 contra las 38,25 reales de las tres terminadas más lo invertido en las dos que no. La
