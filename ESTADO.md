@@ -65,6 +65,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+1ec33f5 2026-10-19 docs: cerrar el sprint 1 con sus metricas y devolver las historias no terminadas
 87635b9 2026-10-19 Merge pull request #58 from emisorato1/historia-6-backlog
 9f033ec 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
 4481d1c 2026-10-15 Merge pull request #64 from emisorato1/docs-estado-historia-4
@@ -72,5 +73,4 @@ _No hay historias en este estado._
 279cb91 2026-10-15 docs: marcar la historia 4 como terminada y regenerar el estado
 4181fbf 2026-10-15 Merge pull request #63 from emisorato1/chore-script-de-metricas
 5659804 2026-10-15 chore: calcular las metricas del sprint desde el tablero
-5c191ef 2026-10-15 fix: poner las tildes en los mensajes de error de la historia 6 (defecto 60)
 ```
