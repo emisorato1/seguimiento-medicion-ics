@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-15 12:29. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-19 12:17. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,20 +10,15 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 20
 - Sin estimar: 2
 - Story points cargados: 83
-- Terminadas: 4
+- Terminadas: 5
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
+_No hay historias en este estado._
 
 ## En progreso
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
-| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
+_No hay historias en este estado._
 
 ## Lista para implementar
 
@@ -35,7 +30,10 @@ _No hay historias en este estado._
 
 ## Sprint Backlog
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 
 ## Product Backlog
 
@@ -63,16 +61,17 @@ _No hay historias en este estado._
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
+| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## Ultimos commits
 
 ```
+87635b9 2026-10-19 Merge pull request #58 from emisorato1/historia-6-backlog
+9f033ec 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
+4481d1c 2026-10-15 Merge pull request #64 from emisorato1/docs-estado-historia-4
 38f0deb 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
+279cb91 2026-10-15 docs: marcar la historia 4 como terminada y regenerar el estado
 4181fbf 2026-10-15 Merge pull request #63 from emisorato1/chore-script-de-metricas
 5659804 2026-10-15 chore: calcular las metricas del sprint desde el tablero
 5c191ef 2026-10-15 fix: poner las tildes en los mensajes de error de la historia 6 (defecto 60)
-4099066 2026-10-15 Merge pull request #62 from emisorato1/historia-4-codigo
-fa3fafc 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-4-codigo
-0d22bc7 2026-10-15 fix: rechazar una historia sin prioridad o con una prioridad que no existe (historia 6)
-bb85eb7 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
 ```
