@@ -40,5 +40,5 @@ var (
 	ErrStoryPointsInvalid = errors.New("los story points tienen que ser uno de estos valores: " + scaleText())
 	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
 	// Terminada (historia #12, RN-8).
-	ErrStoryEstimateDone = errors.New("la estimacion de una historia terminada no se modifica")
+	ErrStoryEstimateDone = errors.New("la estimación de una historia terminada no se modifica")
 )
