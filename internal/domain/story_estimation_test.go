@@ -214,3 +214,36 @@ func TestQuitarLaEstimacionDeUnaHistoriaInexistente(t *testing.T) {
 		t.Fatalf("se esperaba ErrStoryNotFound al quitar la estimacion de la historia 99, salio: %v", err)
 	}
 }
+
+// Sin escenario: tarea 13, orden de los controles de la Fase 2 (D5)
+// Cubre: RN-8, RN-9
+func TestConMasDeUnProblemaSeInformaElPrimero(t *testing.T) {
+	project := unProyecto(t)
+	story, err := project.AddStory(StoryData{
+		Title: "t", Description: "d", Priority: PriorityHigh, AcceptanceCriteria: []string{"c"},
+	})
+	if err != nil {
+		t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+	}
+	story.state = StoryDone
+
+	cases := []struct {
+		name string
+		run  func() error
+		want error
+	}{
+		{"historia inexistente y valor invalido: informa que no existe",
+			func() error { return project.EstimateStory(99, 4) }, ErrStoryNotFound},
+		{"historia terminada y valor invalido: informa que esta terminada",
+			func() error { return project.EstimateStory(story.ID(), 4) }, ErrStoryEstimateDone},
+		{"quitar la estimacion de una terminada a traves del proyecto",
+			func() error { return project.RemoveStoryEstimate(story.ID()) }, ErrStoryEstimateDone},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := tc.run(); !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+		})
+	}
+}
