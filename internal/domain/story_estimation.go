@@ -65,3 +65,13 @@ func (p *Project) EstimateStory(id, points int) error {
 	}
 	return story.Estimate(points)
 }
+
+// RemoveStoryEstimate le quita la estimación a la historia con ese identificador dentro
+// del proyecto. Igual que EstimateStory, primero la busca (RN-9).
+func (p *Project) RemoveStoryEstimate(id int) error {
+	story, err := p.Story(id)
+	if err != nil {
+		return err
+	}
+	return story.RemoveEstimate()
+}
