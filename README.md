@@ -68,6 +68,7 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
 - [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — lo que queda del backlog con sus dependencias.
+- [Replanificación al 15 de noviembre](docs/replan-al-15-de-noviembre.md) — el plan semana por semana para terminar el proyecto.
 
 ## Tablero
 

@@ -40,6 +40,25 @@ presentarlas a la Puerta 1.
 Puerta 1 (requisitos) → Fase 2 y Puerta 2 (diseño) → Fase 3 y Puerta 3 (tareas) → recién ahí
 la implementación.
 
+### Sprint 2 — del 20 al 24 de octubre
+
+| Spec | Historia | SP | Responsable | Estado |
+|---|---|---|---|---|
+| [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | a definir | 📝 Requisitos — pendiente de Puerta 1 |
+| [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | a definir | 📝 Requisitos — pendiente de Puerta 1 |
+| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ⚙️ En implementación — viene del Sprint 1 |
+| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ⚙️ En implementación — viene del Sprint 1 |
+
+La #12 y la #24 conservan su spec en `sprint-1/`, que es el sprint en el que se
+comprometieron. Las dos tienen sus tres puertas aprobadas.
+
+Las Fases 1 de la #7 y la #8 son borradores preparados con asistencia de IA, igual que en el
+Sprint 1: cada una tiene su sección "Para decidir en la puerta" con las decisiones ambiguas
+que hay que cerrar en la Puerta 1.
+
+**El plan para terminar el proyecto al 15 de noviembre está en
+[docs/replan-al-15-de-noviembre.md](../replan-al-15-de-noviembre.md).**
+
 ## Orden de trabajo del Sprint 1
 
 Las historias tienen dependencias, así que el orden importa:
