@@ -239,6 +239,46 @@ func TestAceptarUnProyectoQueEmpiezaYTerminaElMismoDia(t *testing.T) {
 	}
 }
 
+// Escenario: Comparar las fechas por dia, sin importar la hora
+// Cubre: RN-4 (defecto #59)
+func TestCompararLasFechasPorDiaSinImportarLaHora(t *testing.T) {
+	argentina := time.FixedZone("ART", -3*3600)
+	cases := []struct {
+		name  string
+		start time.Time
+		end   time.Time
+	}{
+		{
+			name:  "distinta hora",
+			start: time.Date(2026, 10, 1, 15, 0, 0, 0, time.UTC),
+			end:   time.Date(2026, 10, 1, 10, 0, 0, 0, time.UTC),
+		},
+		{
+			name:  "distinta zona horaria",
+			start: time.Date(2026, 10, 1, 0, 0, 0, 0, argentina),
+			end:   time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			registry := NewProjectRegistry()
+
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: c.start, End: c.end})
+
+			if err != nil {
+				t.Fatalf("se esperaba crear el proyecto sin error, salio: %v", err)
+			}
+			if !project.Start().Equal(date(2026, 10, 1)) {
+				t.Errorf("se esperaba el inicio el dia 01/10/2026 sin hora, salio: %v", project.Start())
+			}
+			if !project.End().Equal(date(2026, 10, 1)) {
+				t.Errorf("se esperaba el fin el dia 01/10/2026 sin hora, salio: %v", project.End())
+			}
+		})
+	}
+}
+
 // Escenario: Consultar un proyecto que no existe
 // Cubre: RN-6
 func TestConsultarUnProyectoQueNoExiste(t *testing.T) {

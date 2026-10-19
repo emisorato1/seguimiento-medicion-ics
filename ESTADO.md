@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-15 09:38. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-19 11:56. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,21 +10,15 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 20
 - Sin estimar: 2
 - Story points cargados: 83
-- Terminadas: 3
+- Terminadas: 5
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
-| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
+_No hay historias en este estado._
 
 ## En progreso
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
-| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
+_No hay historias en este estado._
 
 ## Lista para implementar
 
@@ -48,6 +42,7 @@ _No hay historias en este estado._
 | #9 | Asignar historias a un sprint | 5 | Alta | - |
 | #10 | Cerrar un sprint | 5 | Alta | - |
 | #11 | Consultar sprints anteriores | 2 | Media | - |
+| #12 | Estimar historias con Story Points | 2 | Alta | - |
 | #13 | Estimar con Planning Poker | 13 | Alta | - |
 | #14 | Registrar el esfuerzo real | 3 | Alta | - |
 | #15 | Gestionar defectos | 5 | Media | - |
@@ -55,6 +50,7 @@ _No hay historias en este estado._
 | #17 | Mostrar el dashboard | 8 | Media | - |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | - |
 | #19 | Exportar el reporte a PDF | 5 | Baja | - |
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | - |
 
 ## Hecho
 
@@ -63,16 +59,18 @@ _No hay historias en este estado._
 | #1 | Configurar el repositorio y el tablero del proyecto | - | - | Sprint 0 |
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
+| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
+| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## Ultimos commits
 
 ```
-8a2ae87 2026-10-09 Merge pull request #57 from emisorato1/docs-criterio-de-pr
-da404f8 2026-10-09 Merge branch 'dev' into docs-criterio-de-pr
-d0b13cc 2026-10-09 Merge pull request #56 from emisorato1/historia-6-implementacion
-ee0cab5 2026-10-09 docs: fijar cuando se puede partir una historia en varios pull requests
-da4f345 2026-10-09 docs: registrar las tareas 1 y 2 de la historia 6
-1d7326d 2026-10-09 test: cubrir la prioridad mostrada y los story points (tareas 1 y 2, historia 6)
-400a285 2026-10-09 feat: convertir el texto en una prioridad en el dominio (tarea 2, historia 6)
-4dc7d45 2026-10-09 test: convertir el texto en una prioridad y rechazar las invalidas (tarea 2, historia 6)
+06656a3 2026-10-15 docs: registrar las tareas 1 a 10 de la historia 12
+2dedbc5 2026-10-15 feat: no quitar la estimacion de una historia terminada (historia 12, tarea 10)
+d305ca8 2026-10-15 test: no quitar la estimacion de una historia terminada (historia 12, tarea 10)
+ed351db 2026-10-15 feat: no reestimar una historia terminada (historia 12, tarea 9)
+1b01841 2026-10-15 test: no reestimar una historia terminada (historia 12, tarea 9)
+ef2fd72 2026-10-15 test: quitar la estimacion de una historia ya sin estimar (historia 12, tarea 8, sin RED)
+8d706ea 2026-10-15 feat: quitar la estimacion (historia 12, tarea 7)
+4375c8b 2026-10-15 test: quitar la estimacion (historia 12, tarea 7)
 ```
