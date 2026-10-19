@@ -10,25 +10,27 @@
 
 - **Velocidad medida: 11 story points.** El Sprint 2 compromete esa velocidad, no más,
   aunque sobre tiempo en el papel.
-- **Conversión recalibrada: 3,5 horas por story point completado**, contra las 3 que se
-  usaron para estimar el Sprint 1.
+- **Conversión recalibrada: 2,6 horas por story point completado** (29 h de las historias
+  terminadas ÷ 11 SP), contra las 3 que se usaron para estimar el Sprint 1: se estimó de más.
 - Los números completos están en el [acta de review](sprint-1-review.md).
 
 ## Historias confirmadas antes de la planning
 
-El Agile Enabler confirmó el **19/10 a las 12:00**, antes de la reunión, que estas dos
-historias entran al Sprint 2:
+El equipo confirmó por chat el **19/10**, antes de la reunión, que estas dos historias
+entran al Sprint 2:
 
 | # | Historia | SP | Estado al confirmarse |
 |---|---|---|---|
-| 12 | Estimar con Story Points | 2 | las tres puertas aprobadas, le faltan 3 tareas |
-| 24 | Interfaz de consola | 3 | las tres puertas aprobadas, 9 de 15 tareas hechas |
+| 12 | Estimar con Story Points | 2 | las tres puertas aprobadas, 10 de 13 tareas hechas |
+| 24 | Interfaz de consola | 3 | las tres puertas aprobadas, 7 de 15 tareas hechas |
 
 **Por qué antes y no en la reunión.** Las dos vuelven del Sprint 1 con sus tres puertas
-aprobadas y a medio hacer: no había forma de que no entraran, y esperar a la reunión dejaba
-a su responsable sin poder avanzar durante todo el día. La regla de no programar fuera del
-sprint existe para que nadie trabaje en algo que el equipo no comprometió, y acá ese riesgo
-no existía. Quedó escrito como regla en `CLAUDE.md`.
+aprobadas y a medio hacer —la #12 con 10 de 13 tareas y la #24 con 7 de 15—: no había forma
+de que no entraran, y esperar a la reunión dejaba a su responsable sin poder avanzar durante
+todo el día. La regla de no programar fuera del sprint existe para que nadie trabaje en algo
+que el equipo no comprometió, y acá ese riesgo no existía. Quedó escrito como regla en
+`CLAUDE.md`, con la aclaración de que la confirmación la da el equipo y no el Agile Enabler
+por su cuenta.
 
 ## Alcance del Sprint 2
 
