@@ -16,6 +16,16 @@ var (
 	ErrProjectNotFound = errors.New("no se encontro el proyecto")
 	// ErrStoryPriorityInvalid: prioridad que no es Alta, Media ni Baja (historia #6, RN-4).
 	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
+	// ErrStoryTitleRequired: crear o modificar una historia sin titulo (historia #6, RN-5).
+	ErrStoryTitleRequired = errors.New("el título de la historia es obligatorio")
+	// ErrStoryDescriptionRequired: crear o modificar una historia sin descripcion (historia #6, RN-5).
+	ErrStoryDescriptionRequired = errors.New("la descripción de la historia es obligatoria")
+	// ErrStoryCriteriaRequired: historia sin ningun criterio de aceptacion (historia #6, RN-5).
+	ErrStoryCriteriaRequired = errors.New("la historia necesita al menos un criterio de aceptación")
+	// ErrStoryDone: modificar una historia ya terminada (historia #6, RN-10).
+	ErrStoryDone = errors.New("una historia terminada no se modifica")
+	// ErrStoryNotFound: modificar una historia que no existe en el proyecto (historia #6, RN-13).
+	ErrStoryNotFound = errors.New("no se encontró la historia")
 	// ErrMemberRoleInvalid: rol que no es Agile Enabler ni Product Builder (historia #4, RN-4).
 	ErrMemberRoleInvalid = errors.New("el rol debe ser Agile Enabler o Product Builder")
 	// ErrMemberNameRequired: agregar un integrante sin nombre y apellido (historia #4, RN-2).

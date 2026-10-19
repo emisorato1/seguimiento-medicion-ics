@@ -94,6 +94,11 @@ type Project struct {
 	start       time.Time
 	end         time.Time
 
+	// backlog y nextStoryID son el Product Backlog del proyecto (historia #6). Las
+	// historias viven dentro del proyecto: no existen sin el, y asi el identificador
+	// unico por proyecto (RN-16) sale solo, sin llevar un indice aparte.
+	backlog     []*Story
+	nextStoryID int
 	// members son los integrantes del proyecto (historia #4). Viven dentro del proyecto: no
 	// existen sin el, y asi el mismo nombre en otro proyecto nunca cuenta como duplicado
 	// (RN-6). Las operaciones sobre integrantes estan en member.go.
