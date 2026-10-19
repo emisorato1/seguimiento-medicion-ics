@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-19 19:47. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-19 19:58. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,13 +14,13 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
-
-## En progreso
-
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
+
+## En progreso
+
+_No hay historias en este estado._
 
 ## Lista para implementar
 
@@ -67,12 +67,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-a24cb9d 2026-10-19 Merge branch 'dev' into historia-12-estimar-story-points
-87635b9 2026-10-19 Merge pull request #58 from emisorato1/historia-6-backlog
-9f033ec 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
-4481d1c 2026-10-15 Merge pull request #64 from emisorato1/docs-estado-historia-4
-38f0deb 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
-279cb91 2026-10-15 docs: marcar la historia 4 como terminada y regenerar el estado
-06656a3 2026-10-15 docs: registrar las tareas 1 a 10 de la historia 12
-2dedbc5 2026-10-15 feat: no quitar la estimacion de una historia terminada (historia 12, tarea 10)
+4f0b35d 2026-10-19 docs: registrar las tareas 11 a 13 de la historia 12
+f7bfa55 2026-10-19 fix: poner la tilde en el mensaje de error de la historia 12 (defecto 60)
+ae2a6cc 2026-10-19 test: con mas de un problema se informa el primero (historia 12, tarea 13, sin RED)
+4e93db8 2026-10-19 feat: quitar la estimacion de una historia inexistente (historia 12, tarea 12)
+f4e9086 2026-10-19 test: quitar la estimacion de una historia inexistente (historia 12, tarea 12)
+e33c7bd 2026-10-19 feat: estimar una historia que no existe (historia 12, tarea 11)
+20e302e 2026-10-19 test: estimar una historia que no existe (historia 12, tarea 11)
+8f52012 2026-10-19 chore: mover la historia 12 a en progreso (sprint 2)
 ```
