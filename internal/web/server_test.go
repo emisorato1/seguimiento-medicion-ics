@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -911,5 +912,115 @@ func TestDosPestanasALaVez(t *testing.T) {
 	}
 	if saver.saves != pestanas {
 		t.Errorf("se esperaba un guardado por operacion, %d, y hubo %d", pestanas, saver.saves)
+	}
+}
+
+// Expresiones para revisar el HTML sin librerias: los campos de un formulario, un atributo
+// de una etiqueta, y los errores que se muestran junto a un campo.
+var (
+	fieldTag   = regexp.MustCompile(`<(input|select|textarea)\b[^>]*>`)
+	errorTag   = regexp.MustCompile(`<span class="error" id="([^"]+)">`)
+	tableStart = regexp.MustCompile(`<div class="tabla">\s*<table`)
+)
+
+// attribute devuelve el valor de un atributo de una etiqueta, el primero si esta repetido,
+// que es el que usa el navegador, y cuantas veces aparece.
+func attribute(tag, name string) (string, int) {
+	found := regexp.MustCompile(`\s`+name+`="([^"]*)"`).FindAllStringSubmatch(tag, -1)
+	if len(found) == 0 {
+		return "", 0
+	}
+	return found[0][1], len(found)
+}
+
+// Escenario: Usar la pagina en un celular y con el teclado
+// Cubre: RN-18, RN-19. El contraste, el ancho de 360 y el foco se verifican a mano.
+func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := addProject(t, registry, "Sistema de metricas")
+	addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+	addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+	navegador := newBrowser(t, newTestServer(t, registry))
+
+	historia := url.Values{"titulo": {"Una"}, "descripcion": {"Otra"}, "prioridad": {"Alta"}, "criterios": {"Un criterio"}}
+	sin := func(datos url.Values, campo string) url.Values {
+		copia := url.Values{}
+		for k, v := range datos {
+			copia[k] = v
+		}
+		copia.Set(campo, "")
+		return copia
+	}
+
+	// Cada formulario vacio, y cada uno rechazado con el error en cada uno de sus campos.
+	paginas := map[string]*httptest.ResponseRecorder{
+		"proyecto nuevo":              navegador.get("/proyectos/nuevo"),
+		"proyecto a modificar":        navegador.get("/proyectos/1/editar"),
+		"integrante nuevo":            navegador.get("/proyectos/1/integrantes/nuevo"),
+		"historia nueva":              navegador.get("/proyectos/1/historias/nueva"),
+		"historia a modificar":        navegador.get("/proyectos/1/historias/1/editar"),
+		"estimacion":                  navegador.get("/proyectos/1/historias/1/estimar"),
+		"proyecto sin nombre":         navegador.post("/proyectos/nuevo", url.Values{"inicio": {"2026-11-01"}}),
+		"proyecto sin fechas":         navegador.post("/proyectos/nuevo", url.Values{"nombre": {"Uno"}, "inicio": {"x"}, "fin": {"y"}}),
+		"integrante sin nombre":       navegador.post("/proyectos/1/integrantes/nuevo", url.Values{"rol": {"Product Builder"}}),
+		"integrante sin rol":          navegador.post("/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Luis Gomez"}}),
+		"historia sin titulo":         navegador.post("/proyectos/1/historias/nueva", sin(historia, "titulo")),
+		"historia sin descripcion":    navegador.post("/proyectos/1/historias/nueva", sin(historia, "descripcion")),
+		"historia sin prioridad":      navegador.post("/proyectos/1/historias/nueva", sin(historia, "prioridad")),
+		"historia sin criterios":      navegador.post("/proyectos/1/historias/nueva", sin(historia, "criterios")),
+		"estimacion sin story points": navegador.post("/proyectos/1/historias/1/estimar", url.Values{}),
+	}
+
+	for nombre, res := range paginas {
+		t.Run(nombre, func(t *testing.T) {
+			html := res.Body.String()
+
+			// Todo campo tiene una etiqueta visible asociada.
+			campos := 0
+			for _, tag := range fieldTag.FindAllString(html, -1) {
+				if tipo, _ := attribute(tag, "type"); tipo == "hidden" {
+					continue
+				}
+				campos++
+				id, _ := attribute(tag, "id")
+				if id == "" || !strings.Contains(html, `<label for="`+id+`">`) {
+					t.Errorf("el campo %s no tiene su etiqueta asociada", tag)
+				}
+			}
+			if campos == 0 {
+				t.Fatalf("se esperaba un formulario con campos, y la pagina es:\n%s", html)
+			}
+
+			// Todo error junto a un campo esta enlazado con el campo, para los lectores de
+			// pantalla, y el campo esta marcado como invalido.
+			for _, match := range errorTag.FindAllStringSubmatch(html, -1) {
+				errorID := match[1]
+				enlazado := false
+				for _, tag := range fieldTag.FindAllString(html, -1) {
+					describe, veces := attribute(tag, "aria-describedby")
+					if veces > 1 {
+						t.Errorf("el campo %s repite aria-describedby: el navegador solo usa el primero", tag)
+					}
+					if slices.Contains(strings.Fields(describe), errorID) {
+						enlazado = true
+						if invalido, _ := attribute(tag, "aria-invalid"); invalido != "true" {
+							t.Errorf("el campo %s tiene error pero no esta marcado como invalido", tag)
+						}
+					}
+				}
+				if !enlazado {
+					t.Errorf("el error %s no esta enlazado con ningun campo", errorID)
+				}
+			}
+		})
+	}
+
+	// Toda tabla esta dentro de su recuadro, que se desplaza de costado si no entra.
+	for _, pagina := range []string{"/proyectos", "/proyectos/1/integrantes", "/proyectos/1/backlog"} {
+		html := navegador.get(pagina).Body.String()
+		tablas := strings.Count(html, "<table")
+		if tablas == 0 || len(tableStart.FindAllString(html, -1)) != tablas {
+			t.Errorf("en %s se esperaba cada tabla dentro de su recuadro, y la pagina es:\n%s", pagina, html)
+		}
 	}
 }
