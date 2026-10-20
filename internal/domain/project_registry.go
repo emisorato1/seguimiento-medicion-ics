@@ -45,6 +45,20 @@ func (r *ProjectRegistry) Get(id int) (*Project, error) {
 	return project, nil
 }
 
+// Projects devuelve todos los proyectos del registro en orden de numero, los guardados y no
+// copias (historia #77). Sin proyectos devuelve una lista vacia, que no es un error. Recorre
+// los numeros del 1 al ultimo asignado en vez de recorrer el mapa, porque el mapa no tiene
+// orden; el control de que exista queda por si algun dia se pueden borrar proyectos.
+func (r *ProjectRegistry) Projects() []*Project {
+	projects := make([]*Project, 0, len(r.projects))
+	for id := 1; id < r.nextID; id++ {
+		if project, ok := r.projects[id]; ok {
+			projects = append(projects, project)
+		}
+	}
+	return projects
+}
+
 // Update modifica el proyecto con ese identificador segun el pedido de cambios.
 // Arma el resultado aparte, lo normaliza y lo valida completo, y recien ahi lo aplica:
 // si algo falla, el proyecto queda como estaba (RN-5).
