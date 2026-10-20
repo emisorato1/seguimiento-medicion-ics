@@ -1,22 +1,35 @@
 {{define "content"}}
 <h1>Nuevo proyecto</h1>
+{{template "error-formulario" .Data.Form.General}}
 <form class="formulario" method="post" action="/proyectos/nuevo" novalidate>
+  {{with .Data.Form.Field "nombre"}}
   <div class="campo">
     <label for="nombre">Nombre</label>
-    <input type="text" id="nombre" name="nombre">
+    <input type="text" id="nombre" name="nombre" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
   </div>
+  {{end}}
+  {{with .Data.Form.Field "descripcion"}}
   <div class="campo">
     <label for="descripcion">Descripción (opcional)</label>
-    <textarea id="descripcion" name="descripcion"></textarea>
+    <textarea id="descripcion" name="descripcion"{{template "invalido" .}}>{{.Value}}</textarea>
+    {{template "error" .}}
   </div>
+  {{end}}
+  {{with .Data.Form.Field "inicio"}}
   <div class="campo">
     <label for="inicio">Fecha de inicio</label>
-    <input type="date" id="inicio" name="inicio">
+    <input type="date" id="inicio" name="inicio" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
   </div>
+  {{end}}
+  {{with .Data.Form.Field "fin"}}
   <div class="campo">
     <label for="fin">Fecha de fin (opcional)</label>
-    <input type="date" id="fin" name="fin">
+    <input type="date" id="fin" name="fin" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
   </div>
+  {{end}}
   <div class="acciones">
     <button type="submit">Crear proyecto</button>
     <a class="boton boton-secundario" href="/proyectos">Cancelar</a>

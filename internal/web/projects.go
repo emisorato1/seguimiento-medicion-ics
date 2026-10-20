@@ -20,25 +20,37 @@ func (s *Server) listProjects(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, http.StatusOK, "proyectos.html", page{Title: "Proyectos", Data: data})
 }
 
+// projectFields son los campos del formulario de proyecto.
+var projectFields = []string{"nombre", "descripcion", "inicio", "fin"}
+
 // newProject muestra el formulario para crear un proyecto.
 func (s *Server) newProject(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, http.StatusOK, "proyecto-nuevo.html", page{Title: "Nuevo proyecto"})
+	s.renderProjectForm(w, r, http.StatusOK, newForm())
+}
+
+// renderProjectForm muestra el formulario de proyecto con lo escrito y sus errores.
+func (s *Server) renderProjectForm(w http.ResponseWriter, r *http.Request, status int, f *form) {
+	data := struct{ Form *form }{Form: f}
+	s.render(w, r, status, "proyecto-nuevo.html", page{Title: "Nuevo proyecto", Data: data})
 }
 
 // createProject crea el proyecto con los datos del formulario y redirige con 303 a su
-// pagina, asi recargar no lo crea de nuevo (RN-9, D5).
+// pagina, asi recargar no lo crea de nuevo (RN-9, D5). Si el dominio lo rechaza, vuelve a
+// mostrar el formulario con lo escrito y el mensaje junto a su campo (RN-12, D6).
 func (s *Server) createProject(w http.ResponseWriter, r *http.Request) {
-	start, _ := time.Parse("2006-01-02", r.FormValue("inicio"))
-	end, _ := time.Parse("2006-01-02", r.FormValue("fin"))
+	f := readForm(r, projectFields...)
+	start, _ := time.Parse("2006-01-02", f.Values["inicio"])
+	end, _ := time.Parse("2006-01-02", f.Values["fin"])
 
 	project, err := s.registry.Create(domain.ProjectData{
-		Name:        r.FormValue("nombre"),
-		Description: r.FormValue("descripcion"),
+		Name:        f.Values["nombre"],
+		Description: f.Values["descripcion"],
 		Start:       start,
 		End:         end,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		f.reject(err)
+		s.renderProjectForm(w, r, http.StatusUnprocessableEntity, f)
 		return
 	}
 

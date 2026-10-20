@@ -273,6 +273,13 @@ textarea {
   font-weight: 600;
 }
 
+/* El mensaje del dominio llega en minuscula: se muestra con la primera en mayuscula sin
+   cambiar el texto. */
+.error::first-letter,
+.aviso-error::first-letter {
+  text-transform: uppercase;
+}
+
 /* Botones y acciones. */
 .acciones {
   display: flex;
