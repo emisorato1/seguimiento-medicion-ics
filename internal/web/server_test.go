@@ -324,6 +324,9 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 		datos      url.Values
 		campo      string
 		err        error
+		// fueraDeLista son los campos de una lista para elegir que recibieron un valor que
+		// la lista no ofrece: no hay opcion que lo muestre, asi que no se puede conservar.
+		fueraDeLista []string
 	}{
 		{
 			nombre:     "proyecto con el nombre vacio",
@@ -418,10 +421,11 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 				project := addProject(t, registry, "Sistema de metricas")
 				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
 			},
-			formulario: "/proyectos/1/historias/1/estimar",
-			datos:      url.Values{"puntos": {"4"}},
-			campo:      "puntos",
-			err:        domain.ErrStoryPointsInvalid,
+			formulario:   "/proyectos/1/historias/1/estimar",
+			datos:        url.Values{"puntos": {"4"}},
+			campo:        "puntos",
+			err:          domain.ErrStoryPointsInvalid,
+			fueraDeLista: []string{"puntos"},
 		},
 		{
 			// Sin elegir de la lista, o con letras: es la forma del dato, como una fecha
@@ -442,10 +446,11 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 				project := addProject(t, registry, "Sistema de metricas")
 				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
 			},
-			formulario: "/proyectos/1/historias/1/estimar",
-			datos:      url.Values{"puntos": {"cinco"}},
-			campo:      "puntos",
-			err:        errInvalidPoints,
+			formulario:   "/proyectos/1/historias/1/estimar",
+			datos:        url.Values{"puntos": {"cinco"}},
+			campo:        "puntos",
+			err:          errInvalidPoints,
+			fueraDeLista: []string{"puntos"},
 		},
 	}
 
@@ -466,6 +471,9 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 
 			// El formulario vuelve con todo lo que se habia escrito.
 			for campo, valores := range caso.datos {
+				if slices.Contains(caso.fueraDeLista, campo) {
+					continue
+				}
 				if valor := template.HTMLEscapeString(valores[0]); !strings.Contains(html, valor) {
 					t.Errorf("se esperaba que el campo %s conservara %q, y no esta en:\n%s", campo, valor, html)
 				}
