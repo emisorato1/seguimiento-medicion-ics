@@ -208,3 +208,23 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 		})
 	}
 }
+
+// Sin escenario: hallazgo de front en el PR #92, los mensajes van en castellano (AGENTS.md)
+// Cubre: #77 RN-24
+//
+// El error del sistema operativo viene en inglés («permission denied»): el mensaje dice que no
+// se pudo abrir el archivo y cuál, sin ese detalle.
+func TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano(t *testing.T) {
+	sinPermisos(t)
+	path := filepath.Join(t.TempDir(), "datos-ics.json")
+	if err := os.WriteFile(path, []byte(`{}`), 0o000); err != nil {
+		t.Fatalf("no se pudo preparar el archivo de prueba: %v", err)
+	}
+	want := "los datos guardados no se pueden leer: no se pudo abrir el archivo " + path
+
+	_, err := NewFile(path).Load()
+
+	if err == nil || err.Error() != want {
+		t.Fatalf("se esperaba el mensaje %q, salio: %v", want, err)
+	}
+}
