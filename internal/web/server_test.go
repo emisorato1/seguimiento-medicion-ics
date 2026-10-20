@@ -54,6 +54,14 @@ func addProject(t *testing.T, registry *domain.ProjectRegistry, name string) *do
 	return project
 }
 
+// addMember agrega un integrante a un proyecto, para preparar un escenario.
+func addMember(t *testing.T, project *domain.Project, name string, role domain.Role) {
+	t.Helper()
+	if _, err := project.AddMember(name, role); err != nil {
+		t.Fatalf("no se pudo preparar el integrante %q: %v", name, err)
+	}
+}
+
 // between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
 // la pagina, como la barra. Si no lo encuentra devuelve vacio.
 func between(html, start, end string) string {
@@ -310,6 +318,28 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			datos:      url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-11-01"}, "fin": {"el lunes"}},
 			campo:      "fin",
 			err:        errInvalidDate,
+		},
+		{
+			nombre: "integrante que ya esta cargado",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+			},
+			formulario: "/proyectos/1/integrantes/nuevo",
+			datos:      url.Values{"nombre": {"ana perez"}, "rol": {"Product Builder"}},
+			campo:      "nombre",
+			err:        domain.ErrMemberDuplicate,
+		},
+		{
+			nombre: "segundo Agile Enabler",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleAgileEnabler)
+			},
+			formulario: "/proyectos/1/integrantes/nuevo",
+			datos:      url.Values{"nombre": {"Luis Gomez"}, "rol": {"Agile Enabler"}},
+			campo:      "rol",
+			err:        domain.ErrMemberAgileEnablerTaken,
 		},
 	}
 
