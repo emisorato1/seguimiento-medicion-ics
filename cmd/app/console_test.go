@@ -307,3 +307,39 @@ func TestOperacionIncompleta(t *testing.T) {
 		t.Fatalf("se esperaba que la operacion no se ejecutara, la historia salio estimada en %d", story.StoryPoints())
 	}
 }
+
+// Escenario: Dato con forma invalida
+// Cubre: RN-5
+func TestDatoConFormaInvalida(t *testing.T) {
+	cases := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"story points con letras", unProyectoConUnaHistoria + "estimar\n1\n1\ncinco\nsalir\n",
+			"Los story points tienen que ser un número"},
+		{"historia con letras", unProyectoConUnaHistoria + "estimar\n1\nuno\n5\nsalir\n",
+			"El identificador de la historia tiene que ser un número"},
+		{"proyecto con letras", unProyectoConUnaHistoria + "listar-backlog\nuno\nsalir\n",
+			"El identificador del proyecto tiene que ser un número"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			var out strings.Builder
+
+			err := runConsole(strings.NewReader(tc.input), &out, registry)
+
+			if err != nil {
+				t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+			}
+			if !strings.Contains(out.String(), tc.want) {
+				t.Fatalf("se esperaba ver %q, salio: %q", tc.want, out.String())
+			}
+			project, _ := registry.Get(1)
+			if story, _ := project.Story(1); story.IsEstimated() {
+				t.Fatalf("se esperaba que la operacion no se ejecutara, la historia salio estimada en %d", story.StoryPoints())
+			}
+		})
+	}
+}
