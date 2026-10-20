@@ -3,7 +3,7 @@
 - **Historia:** #6
 - **Sprint:** 1
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **en implementación**
+- **Estado:** Terminada en el Sprint 2 — **mergeada a `dev`** el 19/10 (PRs #56 y #58)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
