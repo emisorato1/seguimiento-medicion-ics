@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 10:06. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-20 10:08. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -67,12 +67,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-933e3a7 2026-10-20 docs: alcance y reparto del sprint 2 segun el replan
-123ad4c 2026-10-19 docs: la confirmacion la da el equipo, y corregir los datos de las historias
-7fe8eaf 2026-10-19 docs: permitir retomar historias que vuelven con sus puertas aprobadas
-87635b9 2026-10-19 Merge pull request #58 from emisorato1/historia-6-backlog
-9f033ec 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
-4481d1c 2026-10-15 Merge pull request #64 from emisorato1/docs-estado-historia-4
-38f0deb 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-6-backlog
-279cb91 2026-10-15 docs: marcar la historia 4 como terminada y regenerar el estado
+2c23393 2026-10-19 chore: mover la historia 12 a en review
+4f0b35d 2026-10-19 docs: registrar las tareas 11 a 13 de la historia 12
+f7bfa55 2026-10-19 fix: poner la tilde en el mensaje de error de la historia 12 (defecto 60)
+ae2a6cc 2026-10-19 test: con mas de un problema se informa el primero (historia 12, tarea 13, sin RED)
+4e93db8 2026-10-19 feat: quitar la estimacion de una historia inexistente (historia 12, tarea 12)
+f4e9086 2026-10-19 test: quitar la estimacion de una historia inexistente (historia 12, tarea 12)
+e33c7bd 2026-10-19 feat: estimar una historia que no existe (historia 12, tarea 11)
+20e302e 2026-10-19 test: estimar una historia que no existe (historia 12, tarea 11)
 ```

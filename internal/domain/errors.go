@@ -36,4 +36,9 @@ var (
 	ErrMemberAgileEnablerTaken = errors.New("el proyecto ya tiene un Agile Enabler")
 	// ErrMemberNotFound: quitar un integrante que no pertenece al proyecto (historia #4, RN-11).
 	ErrMemberNotFound = errors.New("no se encontró el integrante en el proyecto")
+	// ErrStoryPointsInvalid: valor fuera de la escala, cero o negativo (historia #12, RN-2, RN-3).
+	ErrStoryPointsInvalid = errors.New("los story points tienen que ser uno de estos valores: " + scaleText())
+	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
+	// Terminada (historia #12, RN-8).
+	ErrStoryEstimateDone = errors.New("la estimación de una historia terminada no se modifica")
 )

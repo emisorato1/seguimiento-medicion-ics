@@ -3,7 +3,7 @@
 - **Historia:** #12
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
@@ -257,19 +257,19 @@ quedó como estaba: es la condición de "validar todo antes de cambiar cualquier
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Una historia recién creada figura como no estimada al consultarla | Consultar una historia sin estimar | RN-4 | pendiente |
-| 2 | Estimar con cada valor de la escala: la historia queda estimada en ese valor | Estimar con cada valor de la escala | RN-1, RN-5 | pendiente |
-| 3 | Rechazar los valores fuera de la escala con un único error que informa los valores válidos; la historia sigue sin estimar | Rechazar valores fuera de la escala | RN-1, RN-2, RN-3 | pendiente |
-| 4 | Reestimar reemplaza el valor anterior | Reestimar una historia | RN-5, RN-6 | pendiente |
-| 5 | Reestimar con el mismo valor no es error | Reestimar con el mismo valor | RN-5 | pendiente |
-| 6 | Una historia En curso se puede reestimar | Reestimar una historia en curso | RN-5 | pendiente |
-| 7 | Quitar la estimación deja la historia sin estimar | Quitar la estimacion | RN-7 | pendiente |
-| 8 | Quitarle la estimación a una historia ya sin estimar no es error | — (caso límite) | RN-7 | pendiente |
-| 9 | Una historia Terminada no se estima ni se reestima, y conserva su valor | No reestimar una historia terminada | RN-8 | pendiente |
-| 10 | A una historia Terminada no se le quita la estimación, y conserva su valor | No quitar la estimacion de una historia terminada | RN-8 | pendiente |
-| 11 | Estimar una historia que no existe informa que no se encontró | Estimar una historia que no existe | RN-9 | pendiente |
-| 12 | Quitarle la estimación a una historia que no existe informa que no se encontró | — (RN-9) | RN-9 | pendiente |
-| 13 | Con más de un problema se informa el primero, en el orden existencia → estado → valor | — (decisión de la Fase 2) | RN-8, RN-9 | pendiente |
+| 1 | Una historia recién creada figura como no estimada al consultarla | Consultar una historia sin estimar | RN-4 | hecha |
+| 2 | Estimar con cada valor de la escala: la historia queda estimada en ese valor | Estimar con cada valor de la escala | RN-1, RN-5 | hecha |
+| 3 | Rechazar los valores fuera de la escala con un único error que informa los valores válidos; la historia sigue sin estimar | Rechazar valores fuera de la escala | RN-1, RN-2, RN-3 | hecha |
+| 4 | Reestimar reemplaza el valor anterior | Reestimar una historia | RN-5, RN-6 | hecha |
+| 5 | Reestimar con el mismo valor no es error | Reestimar con el mismo valor | RN-5 | hecha |
+| 6 | Una historia En curso se puede reestimar | Reestimar una historia en curso | RN-5 | hecha |
+| 7 | Quitar la estimación deja la historia sin estimar | Quitar la estimacion | RN-7 | hecha |
+| 8 | Quitarle la estimación a una historia ya sin estimar no es error | — (caso límite) | RN-7 | hecha |
+| 9 | Una historia Terminada no se estima ni se reestima, y conserva su valor | No reestimar una historia terminada | RN-8 | hecha |
+| 10 | A una historia Terminada no se le quita la estimación, y conserva su valor | No quitar la estimacion de una historia terminada | RN-8 | hecha |
+| 11 | Estimar una historia que no existe informa que no se encontró | Estimar una historia que no existe | RN-9 | hecha |
+| 12 | Quitarle la estimación a una historia que no existe informa que no se encontró | — (RN-9) | RN-9 | hecha |
+| 13 | Con más de un problema se informa el primero, en el orden existencia → estado → valor | — (decisión de la Fase 2) | RN-8, RN-9 | hecha |
 
 **Tareas sin escenario.** La 8, la 12 y la 13 cubren un caso límite, la segunda mitad de la
 RN-9 y el orden de los controles decidido en la Fase 2, que no tienen escenario propio en la
@@ -324,7 +324,56 @@ Los diez escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario B
 
 ## Fase 4 — Implementación
 
-_Se completa a medida que se avanza._
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `fba8844` | — (sin RED, ver Desvíos) |
+| 2 | `bf8961a` | `e343aed` |
+| 3 | `5fc534d` | `83ee6a3` |
+| 4 | `46299d2` | — (sin RED, ver Desvíos) |
+| 5 | `695b149` | — (sin RED, ver Desvíos) |
+| 6 | `47fd4b0` | — (sin RED, ver Desvíos) |
+| 7 | `4375c8b` | `8d706ea` |
+| 8 | `ef2fd72` | — (sin RED, ver Desvíos) |
+| 9 | `1b01841` | `ed351db` |
+| 10 | `d305ca8` | `2dedbc5` |
+| 11 | `20e302e` | `e33c7bd` |
+| 12 | `f4e9086` | `4e93db8` |
+| 13 | `ae2a6cc` | — (sin RED, ver Desvíos) |
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Seis tareas no tuvieron ciclo RED, y quedan anotadas en vez de
+disimuladas:
+
+- **Tarea 1:** la consulta de si una historia está estimada (`IsEstimated`) ya estaba en
+  `dev` desde el PR #56 de la historia #6, así que el test pasó sin código nuevo. Se escribió
+  igual porque el escenario necesita su test.
+- **Tareas 4, 5 y 6:** reestimar, reestimar con el mismo valor y reestimar una historia En
+  curso pasaron sin código nuevo. Por la decisión D2 de la Fase 2, estimar y reestimar son la
+  misma operación, así que la tarea 2 ya las resolvía. Fue un error de la Fase 3: separó en
+  tareas lo que, con ese diseño, sale del mismo código.
+- **Tarea 8:** quitar la estimación de una historia ya sin estimar pasó sin código nuevo:
+  la operación de la tarea 7 deja la historia en 0 sin importar el valor anterior.
+- **Tarea 13:** el orden de los controles (existencia → estado → valor) pasó sin código
+  nuevo: buscar la historia primero viene de la tarea 11, y controlar el estado antes que el
+  valor, de la tarea 9. El test se escribió igual porque protege ese orden, y además cubre
+  las operaciones del proyecto sobre una historia que existe: después de las tareas 11 y 12
+  la cobertura del dominio había bajado a 99,1%, y con este test volvió al 100%.
+
+Los RED de las tareas 2, 3, 7, 9, 11 y 12 fueron por compilación (la operación o el error
+todavía no existían); el de la tarea 10, por comportamiento.
+
+Tres notas de proceso:
+
+- La historia volvió al Product Backlog al cerrar el Sprint 1 con 10 de 13 tareas: las
+  tareas 11 a 13 necesitaban buscar una historia dentro del proyecto, que llegó a `dev` con
+  el PR #58 de la #6 recién el 19/10. Se retomó en el Sprint 2.
+- Antes de las tareas 11 a 13 se trajo `dev` a la rama (merge `a24cb9d`), resolviendo a mano
+  el conflicto en `errors.go`: se conservaron los errores de la #4, la #6 y la #12.
+- El mensaje de `ErrStoryEstimateDone` pasó a llevar tilde ("estimación"), como el resto de
+  los mensajes del dominio desde el defecto #60.
 
 ## Trazabilidad
 
@@ -334,5 +383,5 @@ _Se completa a medida que se avanza._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | pendiente |
-| Código Go | pendiente |
+| Tests | `internal/domain/story_estimation_test.go` |
+| Código Go | `internal/domain/story_estimation.go` y sus dos errores en `internal/domain/errors.go` |
