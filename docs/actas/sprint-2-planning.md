@@ -118,3 +118,51 @@ Van **en paralelo**, no después del código:
 - [ ] Estimar con Planning Poker de verdad las historias nuevas, con votos ocultos: en el
       Sprint 1 se estimó por afinidad y quedó el compromiso de hacerlo bien esta vez.
 - [ ] Decidir si la #13 (13 SP) se parte en dos antes de estimarla.
+
+---
+
+## Anexo — cambio de alcance decidido el 20/10
+
+Después de esta planning, el Agile Enabler llevó al equipo la decisión de **entregar el
+alcance completo** en lugar de los 29 story points que se habían comprometido arriba. Lo que
+está más arriba en esta acta queda como lo que se acordó en la reunión; esto es lo que
+cambió el mismo día.
+
+### Qué cambia
+
+| | En la planning | Después del cambio |
+|---|---|---|
+| Alcance | 29 SP, 43 quedaban como backlog | **72 SP, nada queda afuera** |
+| Sprints hasta el 2/11 | uno (20 al 31/10) | **tres**: Sprint 2 (20–25/10), Sprint 3 (26–30/10), Sprint 4 (31/10–1/11) |
+| Ritmo pedido | ~10 h por persona por semana | **~3,6 h por persona por día**, fines de semana incluidos |
+| Historias por persona | una o dos | cuatro o cinco, repartidas 17/19/18/18 SP |
+
+### Por qué
+
+Se presenta el **2 de noviembre** y el equipo prefiere defender el producto entero antes que
+defender un recorte. Los cuatro trabajan con Claude Code, así que el costo por story point
+puede bajar bastante respecto de las 2,6 horas medidas en el Sprint 1 —ese número incluía
+cuatro o cinco pull requests por historia y revisiones que tardaban un día— y el plan
+reorganiza el trabajo justamente para atacar eso.
+
+### Qué se resolvió de los pendientes de arriba
+
+- **La #13 se parte en dos**, como quedó pendiente de decidir: queda la #13 *Votar en secreto
+  en una ronda* (8 SP) y la nueva #73 *Resolver diferencias y acordar la estimación* (5 SP).
+  Eran 13 puntos en una sola historia: demasiado para un pull request y para un solo
+  responsable con este plazo.
+- **Las estimaciones no se rehicieron con Planning Poker.** Se mantienen las que ya estaban,
+  salvo el reparto de la #13 entre sus dos mitades. Con el plazo encima no había margen para
+  una sesión de estimación, y queda anotado como desvío: sigue siendo el compromiso
+  pendiente desde el Sprint 1.
+
+### Lo que no cambia
+
+La Definición de Terminado. Spec antes del código, escenarios BDD, tests que pasan, revisión
+escrita y cobertura. **Se recorta ceremonia, no calidad.**
+
+Si el ritmo no da, el **domingo 25 a la noche** se recorta con el criterio escrito en
+[el plan](../plan-final-al-2-de-noviembre.md), y se avisa ese día.
+
+El plan completo —calendario, reparto por persona, dependencias y riesgos— está en
+[docs/plan-final-al-2-de-noviembre.md](../plan-final-al-2-de-noviembre.md).

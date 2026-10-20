@@ -30,6 +30,34 @@ Lo que va a permitir hacer:
 
 El núcleo de la solución y todas las reglas de negocio están desarrollados en **Go**.
 
+## Cómo correrlo
+
+Hace falta **Go 1.23 o posterior**. No hay dependencias externas: todo es biblioteca estándar.
+
+```bash
+git clone https://github.com/emisorato1/seguimiento-medicion-ics.git
+cd seguimiento-medicion-ics
+
+go test ./...                 # correr todos los tests
+go test ./... -cover          # con el porcentaje de cobertura
+go run ./cmd/app              # ejecutar la aplicación
+```
+
+### Qué funciona hoy
+
+El **núcleo del dominio** está implementado y cubierto por tests: crear y modificar
+proyectos, registrar integrantes, administrar el Product Backlog. Se puede ver funcionando
+corriendo los tests, que están escritos con el nombre de cada escenario de las
+especificaciones:
+
+```bash
+go test ./internal/domain/ -v
+```
+
+La **interfaz de consola** está en curso (historia #24): por ahora `go run ./cmd/app`
+muestra el nombre y la versión. Cuando esté terminada, va a ser la forma de usar el sistema
+a mano.
+
 ## Cómo trabajamos
 
 El proyecto se desarrolla con **Scrum** (sprints, planning, daily, review y retrospectiva) y
@@ -68,6 +96,7 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
 - [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — lo que queda del backlog con sus dependencias.
+- [Replanificación al 2 de noviembre](docs/replan-al-2-de-noviembre.md) — qué entra y qué no en las dos semanas que quedan.
 
 ## Tablero
 
