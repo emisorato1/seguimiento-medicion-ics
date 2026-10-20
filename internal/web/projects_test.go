@@ -62,3 +62,39 @@ func TestCrearUnProyectoDesdeLaWeb(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Consultar un proyecto
+// Cubre: RN-4, RN-5, RN-6
+func TestConsultarUnProyecto(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	addProject(t, registry, "Sistema de metricas")
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1")
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+	}
+	html := res.Body.String()
+	contenido := between(html, "<main", "</main>")
+	for _, texto := range []string{"<dd>1</dd>", "Sistema de metricas", "sin descripción", "01/11/2026", "sin fecha de fin"} {
+		if !strings.Contains(contenido, texto) {
+			t.Errorf("se esperaba en la pagina del proyecto %q, y no esta en:\n%s", texto, contenido)
+		}
+	}
+
+	barra := between(html, `<nav aria-label="Navegación principal">`, "</nav>")
+	for _, texto := range []string{"Sistema de metricas", `href="/proyectos/1"`, `href="/proyectos/1/integrantes"`, `href="/proyectos/1/backlog"`} {
+		if !strings.Contains(barra, texto) {
+			t.Errorf("se esperaba en la barra %q, y no esta en:\n%s", texto, barra)
+		}
+	}
+
+	// La lista de proyectos muestra las mismas fechas, con el mismo formato.
+	lista := between(get(t, server, "/proyectos").Body.String(), "<main", "</main>")
+	for _, texto := range []string{"01/11/2026", "sin fecha de fin"} {
+		if !strings.Contains(lista, texto) {
+			t.Errorf("se esperaba en la lista de proyectos %q, y no esta en:\n%s", texto, lista)
+		}
+	}
+}

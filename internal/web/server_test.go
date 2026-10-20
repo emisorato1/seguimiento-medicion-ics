@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
@@ -36,6 +37,34 @@ func get(t *testing.T, server http.Handler, path string) *httptest.ResponseRecor
 	res := httptest.NewRecorder()
 	server.ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))
 	return res
+}
+
+// addProject registra un proyecto con inicio el 01/11/2026, sin descripcion ni fin, para
+// preparar un escenario.
+func addProject(t *testing.T, registry *domain.ProjectRegistry, name string) *domain.Project {
+	t.Helper()
+	project, err := registry.Create(domain.ProjectData{
+		Name:  name,
+		Start: time.Date(2026, 11, 1, 0, 0, 0, 0, time.UTC),
+	})
+	if err != nil {
+		t.Fatalf("no se pudo preparar el proyecto %q: %v", name, err)
+	}
+	return project
+}
+
+// between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
+// la pagina, como la barra. Si no lo encuentra devuelve vacio.
+func between(html, start, end string) string {
+	i := strings.Index(html, start)
+	if i < 0 {
+		return ""
+	}
+	j := strings.Index(html[i:], end)
+	if j < 0 {
+		return ""
+	}
+	return html[i : i+j]
 }
 
 // snapshot describe en texto todo lo que tiene el registro, para comparar antes y despues
