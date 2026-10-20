@@ -117,4 +117,6 @@ al Product Backlog como historias nuevas, no se arreglan sobre la marcha.]
       y la #24 vuelven sin sprint asignado. La #24 conserva sus 9 tareas hechas.
 - [x] Pasar la #6 al Sprint 2 en el tablero (20/10).
 - [ ] Abrir el pull request de `dev` a `main` con el incremento y etiquetarlo `v0.1.0-sprint1`.
+      Abierto el 20/10: PR #88, con `dev` al cierre del sprint (`4481d1c`). Falta mergearlo y
+      poner el tag.
 - [ ] Hacer la retrospectiva.
