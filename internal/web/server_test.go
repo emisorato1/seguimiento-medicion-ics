@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"path/filepath"
 	"regexp"
 	"slices"
 	"strconv"
@@ -16,6 +17,7 @@ import (
 	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
+	"github.com/emisorato1/seguimiento-medicion-ics/internal/store"
 )
 
 // fakeSaver es el guardado falso de los tests (D21): en vez de escribir un archivo, cuenta
@@ -1077,5 +1079,57 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		if tablas == 0 || len(tableStart.FindAllString(html, -1)) != tablas {
 			t.Errorf("en %s se esperaba cada tabla dentro de su recuadro, y la pagina es:\n%s", pagina, html)
 		}
+	}
+}
+
+// Escenario: Los datos siguen al cerrar y volver a abrir
+// Cubre: RN-21, RN-22
+func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "datos-ics.json")
+	// abrir arma la web desde el archivo, como hace el comando al arrancar.
+	abrir := func() *browser {
+		file := store.NewFile(path)
+		registry, err := file.Load()
+		if err != nil {
+			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
+		}
+		return newBrowser(t, NewServer(registry, file))
+	}
+	operar := func(navegador *browser, path string, datos url.Values) *httptest.ResponseRecorder {
+		t.Helper()
+		res := navegador.post(path, datos)
+		if res.Code != http.StatusSeeOther {
+			t.Fatalf("%s: se esperaba el estado %d, salio %d:\n%s", path, http.StatusSeeOther, res.Code, res.Body.String())
+		}
+		return res
+	}
+
+	// Dado que cargue el proyecto 1 con el integrante "Ana Perez" y la historia 1 estimada en 3.
+	primera := abrir()
+	operar(primera, "/proyectos/nuevo", url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-11-01"}})
+	operar(primera, "/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}})
+	operar(primera, "/proyectos/1/historias/nueva", url.Values{
+		"titulo": {"Registrar esfuerzo"}, "descripcion": {"Como integrante quiero registrar esfuerzo"},
+		"prioridad": {"Alta"}, "criterios": {"Se puede registrar esfuerzo"},
+	})
+	operar(primera, "/proyectos/1/historias/1/estimar", url.Values{"puntos": {"3"}})
+
+	// Cuando cierro el sistema y lo vuelvo a abrir.
+	segunda := abrir()
+
+	esperado := map[string]string{
+		"/proyectos/1":             "<h1>Sistema de metricas</h1>",
+		"/proyectos/1/integrantes": "<td>Ana Perez</td>",
+		"/proyectos/1/backlog":     "<td>3</td>",
+	}
+	for pagina, texto := range esperado {
+		if html := segunda.get(pagina).Body.String(); !strings.Contains(html, texto) {
+			t.Errorf("al volver a abrir se esperaba en %s %s, y no esta en:\n%s", pagina, texto, html)
+		}
+	}
+
+	res := operar(segunda, "/proyectos/nuevo", url.Values{"nombre": {"Metricas ICS"}, "inicio": {"2026-11-02"}})
+	if destino := res.Header().Get("Location"); destino != "/proyectos/2" {
+		t.Errorf("el siguiente proyecto deberia recibir el numero 2, y la web fue a %q", destino)
 	}
 }
