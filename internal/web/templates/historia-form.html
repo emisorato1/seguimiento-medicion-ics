@@ -31,7 +31,7 @@
     <span class="ayuda" id="criterios-ayuda">Uno por renglón.</span>
     {{/* Este campo ya esta descripto por su ayuda: el error se suma a la misma lista, porque
          el navegador solo lee el primer aria-describedby. */}}
-    <textarea id="criterios" name="criterios" aria-describedby="criterios-ayuda{{if .Error}} criterios-error{{end}}"{{if .Error}} aria-invalid="true"{{end}}>{{.Value}}</textarea>
+    <textarea id="criterios" name="criterios" aria-describedby="criterios-ayuda{{if .Error}} criterios-error{{end}}"{{if .Error}} aria-invalid="true"{{if .Focus}} autofocus{{end}}{{end}}>{{.Value}}</textarea>
     {{template "error" .}}
   </div>
   {{end}}

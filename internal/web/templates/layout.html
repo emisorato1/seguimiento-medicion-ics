@@ -34,7 +34,7 @@
 
 {{/* Partes comunes de los formularios. "invalido" marca el campo y lo enlaza con su error
      para los lectores de pantalla; "error" muestra el mensaje del dominio junto al campo. */}}
-{{define "invalido"}}{{if .Error}} aria-invalid="true" aria-describedby="{{.Name}}-error"{{end}}{{end}}
+{{define "invalido"}}{{if .Error}} aria-invalid="true" aria-describedby="{{.Name}}-error"{{if .Focus}} autofocus{{end}}{{end}}{{end}}
 {{define "error"}}{{if .Error}}<span class="error" id="{{.Name}}-error">{{.Error}}</span>{{end}}{{end}}
 {{define "error-formulario"}}{{with .}}<div class="aviso aviso-error" role="alert" id="error-formulario">{{.}}</div>{{end}}{{end}}
 {{/* "opciones" arma las opciones de una lista para elegir, con una primera opcion vacia que

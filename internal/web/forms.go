@@ -28,13 +28,18 @@ type form struct {
 	Values  map[string]string
 	Errors  map[string]string
 	General string
+	// focus es el primer campo que quedo con error: ahi arranca el foco al volver a
+	// mostrar el formulario, para que el lector de pantalla anuncie el error.
+	focus string
 }
 
-// field es un campo listo para mostrar: su nombre, lo escrito y su error si lo tiene.
+// field es un campo listo para mostrar: su nombre, lo escrito, su error si lo tiene y si
+// el foco arranca en el.
 type field struct {
 	Name  string
 	Value string
 	Error string
+	Focus bool
 }
 
 // newForm arma un formulario vacio, para la primera vez que se muestra.
@@ -53,7 +58,15 @@ func readForm(r *http.Request, names ...string) *form {
 
 // Field devuelve un campo del formulario para la plantilla.
 func (f *form) Field(name string) field {
-	return field{Name: name, Value: f.Values[name], Error: f.Errors[name]}
+	return field{Name: name, Value: f.Values[name], Error: f.Errors[name], Focus: name == f.focus}
+}
+
+// fail anota el error junto al campo. El primero que falla es el que recibe el foco.
+func (f *form) fail(name, message string) {
+	f.Errors[name] = message
+	if f.focus == "" {
+		f.focus = name
+	}
 }
 
 // date lee una fecha del formulario. Vacia es una fecha sin indicar, y que sea obligatoria
@@ -66,7 +79,7 @@ func (f *form) date(name string) time.Time {
 	}
 	day, err := time.Parse(dateLayout, value)
 	if err != nil {
-		f.Errors[name] = errInvalidDate.Error()
+		f.fail(name, errInvalidDate.Error())
 		return time.Time{}
 	}
 	return day
@@ -77,7 +90,7 @@ func (f *form) date(name string) time.Time {
 func (f *form) number(name string, shapeErr error) int {
 	value, err := strconv.Atoi(strings.TrimSpace(f.Values[name]))
 	if err != nil {
-		f.Errors[name] = shapeErr.Error()
+		f.fail(name, shapeErr.Error())
 		return 0
 	}
 	return value
@@ -113,7 +126,7 @@ var fieldErrors = []struct {
 func (f *form) reject(err error) {
 	for _, fe := range fieldErrors {
 		if errors.Is(err, fe.err) {
-			f.Errors[fe.field] = err.Error()
+			f.fail(fe.field, err.Error())
 			return
 		}
 	}
