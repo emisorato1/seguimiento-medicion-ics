@@ -53,11 +53,11 @@ func (f *File) Load() (*domain.ProjectRegistry, error) {
 func (f *File) Save(registry *domain.ProjectRegistry) error {
 	data, err := registry.ToJSON()
 	if err != nil {
-		return fmt.Errorf("%w: %v", ErrNotSaved, err)
+		return notSaved(f.path)
 	}
 	tmp, err := os.CreateTemp(filepath.Dir(f.path), ".datos-*.tmp")
 	if err != nil {
-		return fmt.Errorf("%w: %v", ErrNotSaved, err)
+		return notSaved(f.path)
 	}
 	_, err = tmp.Write(data)
 	if err == nil {
@@ -73,7 +73,13 @@ func (f *File) Save(registry *domain.ProjectRegistry) error {
 	}
 	if err != nil {
 		os.Remove(tmp.Name())
-		return fmt.Errorf("%w: %v", ErrNotSaved, err)
+		return notSaved(f.path)
 	}
 	return nil
+}
+
+// notSaved arma el error de un guardado que fallo. El detalle del sistema operativo viene en
+// ingles y el mensaje es para el usuario (AGENTS.md): se dice que archivo no se pudo escribir.
+func notSaved(path string) error {
+	return fmt.Errorf("%w: no se pudo escribir el archivo %s", ErrNotSaved, path)
 }
