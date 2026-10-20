@@ -1,7 +1,7 @@
 {{define "content"}}
-<h1>Nuevo proyecto</h1>
+<h1>{{.Data.Heading}}</h1>
 {{template "error-formulario" .Data.Form.General}}
-<form class="formulario" method="post" action="/proyectos/nuevo" novalidate>
+<form class="formulario" method="post" action="{{.Data.Action}}" novalidate>
   {{with .Data.Form.Field "nombre"}}
   <div class="campo">
     <label for="nombre">Nombre</label>
@@ -31,8 +31,8 @@
   </div>
   {{end}}
   <div class="acciones">
-    <button type="submit">Crear proyecto</button>
-    <a class="boton boton-secundario" href="/proyectos">Cancelar</a>
+    <button type="submit">{{.Data.Submit}}</button>
+    <a class="boton boton-secundario" href="{{.Data.Cancel}}">Cancelar</a>
   </div>
 </form>
 {{end}}
