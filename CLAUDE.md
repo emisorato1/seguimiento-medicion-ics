@@ -24,17 +24,30 @@ Siempre, al empezar una sesión:
    Nunca empezar a trabajar sobre una copia vieja. Si ya estabas en una rama de trabajo,
    traé `dev` primero: `git pull origin dev`.
 
-1. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
+1. **Mirar si hay pull requests esperando tu revisión:**
+
+   ```bash
+   scripts/revisiones.sh
+   ```
+
+   Si hay alguno, **eso va antes que ponerte a programar**: un PR parado frena al que lo
+   abrió y a todos los que dependen de esa historia. Claude prepara la revisión (muestra el
+   diff, señala lo que no cierra con la spec), pero **la aprobación la da una persona**.
+
+2. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
    estimadas. Si tenés `gh`, regeneralo primero con `scripts/estado.sh`.
-2. Elegir la historia a trabajar: la de más arriba en **Sprint Backlog**, o seguir la que
-   ya está empezada.
-3. Mirar en qué estado del tablero está y hacer lo que corresponde:
+3. Elegir la historia a trabajar: la que te toca según
+   [docs/specs/README.md](docs/specs/README.md), respetando el orden de dependencias que ahí
+   se indica. Si la historia que te toca depende de otra que todavía no está en `dev`,
+   podés avanzar con su spec pero no con su código.
+4. Mirar en qué estado del tablero está y hacer lo que corresponde:
 
 | Si la historia está en... | Lo que sigue es... |
 |---|---|
 | Product Backlog | No se toca: entra al sprint en la planning. Si no está estimada, se estima con Planning Poker. |
-| Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
-| Especificación SDD | Completar Diseño y Tareas con sus puertas. Cuando pasa la Puerta 3, mover a *En progreso*. |
+| Sprint Backlog | Escribir la **Fase 1 (Requisitos)** de su spec en `docs/specs/sprint-N/NN-nombre.md` y pedir la Puerta 1. Mover a *Especificación SDD*. |
+| Especificación SDD | Completar Diseño y Tareas con sus puertas. Cuando pasa la Puerta 3, mover a *Lista para implementar*. |
+| Lista para implementar | Las tres puertas están aprobadas. Si lo que necesita ya está en `dev`, empezar el ciclo TDD y mover a *En progreso*. Si todavía depende de otra historia, no se toca. |
 | En progreso | Implementar con TDD, tarea por tarea. Cuando está lista, abrir el pull request y mover a *En review*. |
 | En review | Esperar la revisión de otro integrante. Si hay correcciones, volver a *En progreso*. |
 | Hecho | Nada. Elegir otra historia. |
@@ -105,8 +118,14 @@ edita a mano: se regenera con `scripts/estado.sh` y se commitea.
 ### Estados
 
 ```
-Product Backlog → Sprint Backlog → Especificacion SDD → En progreso → En review → Hecho
+Product Backlog → Sprint Backlog → Especificacion SDD → Lista para implementar
+  → En progreso → En review → Hecho
 ```
+
+**Para agregar o renombrar un estado, hacelo desde la web del Project, no por la API.**
+Reescribir las opciones del campo por la API les cambia el identificador y deja sin estado a
+todas las tarjetas que lo tenían. Pasó una vez: 16 tarjetas quedaron en blanco y hubo que
+restaurarlas a mano.
 
 ### Campos
 
@@ -123,6 +142,9 @@ Product Backlog → Sprint Backlog → Especificacion SDD → En progreso → En
 refleja la realidad es peor que no tener tablero.
 
 ```bash
+scripts/revisiones.sh                           # PRs esperando tu revision
+scripts/coherencia.sh                           # specs, indice y puertas coherentes
+scripts/metricas.sh "Sprint 1"                  # metricas del sprint para la review
 scripts/tablero.sh ver                          # estado de todas las historias
 scripts/tablero.sh estado 3 "En progreso"       # mover una historia
 scripts/tablero.sh puntos 3 5                   # cargar story points
@@ -214,7 +236,14 @@ Requisitos → [P1] → Diseño → [P2] → Tareas → [P3] → Implementación
 
 Cada fase produce un documento que se revisa **antes** de avanzar. La plantilla está en
 [docs/specs/PLANTILLA.md](docs/specs/PLANTILLA.md) y la spec de cada historia va en
-`docs/specs/NN-nombre-de-la-funcionalidad.md`, versionada junto al código.
+`docs/specs/sprint-N/NN-nombre-de-la-funcionalidad.md`, versionada junto al código.
+
+**El índice de specs, con el estado de cada una, quién la tiene y en qué orden hay que
+hacerlas, está en [docs/specs/README.md](docs/specs/README.md).** Es lo primero que hay que
+mirar para saber si una historia se puede empezar o está esperando otra.
+
+No todo lleva el flujo completo: las tareas de configuración y los bugs chicos se resuelven
+directo. SDD se reserva para funcionalidad de complejidad media o alta.
 
 Reglas de las puertas:
 
@@ -227,6 +256,27 @@ Reglas de las puertas:
 Calibrar el esfuerzo al tamaño del problema: una historia chica puede tener un diseño de
 tres líneas. Escribir specs enormes para cosas simples es un anti-patrón, igual que escribir
 specs que nadie revisa de verdad.
+
+### Qué va y qué no va en una spec
+
+Las dos reglas que más se incumplen, y que el apunte de la cátedra marca como
+anti-patrones:
+
+- **En Requisitos no va nada técnico.** Ni base de datos, ni estructuras, ni nombres de
+  funciones: solo comportamiento. La prueba es si alguien que conoce el dominio pero no
+  programa puede entender y validar el requisito. Si solo lo entiende un programador,
+  tiene decisiones técnicas disfrazadas.
+- **En Diseño van decisiones, no código.** Nada de structs, firmas ni pseudocódigo: si el
+  diseño se vuelve código en prosa, el agente lo traduce mecánicamente y se pierde el valor
+  de trabajar con IA. La heurística: *si dos personas con experiencia tomarían la misma
+  decisión sin discutirla, no va en el diseño; si podrían elegir distinto y las
+  consecuencias cambian, sí va.*
+
+Si la spec termina más larga que el código que genera, está sobreespecificada.
+
+Las reglas de negocio se escriben con la notación **EARS**, que es la que recomienda el
+apunte: *Cuando [evento], el sistema debe…* / *Mientras [condición], el sistema debe…* /
+*Si [situación de error], el sistema debe…*. La plantilla tiene los cinco patrones.
 
 ### BDD
 
@@ -271,8 +321,15 @@ main                 rama "de producción": siempre estable, siempre compila, si
 
 - Nombre de la rama: `historia-<numero>-<descripcion-corta>`. Para un defecto:
   `defecto-<numero>-<descripcion-corta>`.
-- **Una historia = una rama = un pull request.** No mezclar dos historias en una rama:
-  hace imposible revisar y rompe la trazabilidad.
+- **Una tarjeta del tablero = una historia = una rama = un pull request.** No mezclar dos
+  historias en una rama: hace imposible revisar y rompe la trazabilidad. La historia se parte
+  en más de un PR solo en los dos casos de abajo.
+- Al mergear el PR, **GitHub borra la rama solo**. No hace falta limpiarla a mano. Para
+  borrar tu copia local de las ramas que ya no existen en el remoto:
+
+  ```bash
+  git fetch --prune
+  ```
 - Antes de abrir el PR, traer `dev` a tu rama y resolver los conflictos vos:
 
   ```bash
@@ -282,6 +339,67 @@ main                 rama "de producción": siempre estable, siempre compila, si
 
 - No se hace `push --force` sobre ramas compartidas ni se aplasta el historial: los commits
   del ciclo TDD son la evidencia que se evalúa.
+
+### Protección de ramas
+
+`main` y `dev` están protegidas en GitHub, así que las reglas de arriba no dependen de la
+buena memoria de nadie:
+
+- No se puede pushear directo: hace falta un pull request.
+- El PR necesita **1 aprobación** y el **CI en verde** para poder mergearse.
+- Si se suben commits nuevos, las aprobaciones anteriores se descartan.
+- No se permite `push --force` ni borrar la rama.
+- Solo se puede mergear con **merge commit**: squash y rebase están desactivados.
+- Los comentarios del PR tienen que estar resueltos antes de mergear.
+
+El dueño del repositorio puede saltear la protección en una emergencia. Si alguna vez se
+usa, se avisa al equipo y se deja dicho por qué.
+
+### Cuándo se puede partir una historia en varios pull requests
+
+Por defecto **la historia entra en un solo pull request**, con todas sus tareas. Eso es lo
+que hace que el PR cierre la historia con `Closes #N`, que la tarjeta se mueva sola y que
+quien revisa pueda contrastar el código contra la spec entera, tarea por tarea. Un PR
+parcial no cierra nada y deja la historia a medias en el tablero.
+
+Se puede partir en dos casos, y solo en esos:
+
+1. **Alguien está bloqueado esperándote.** Si tu historia es la base de otras —como la #3,
+   que creaba `project.go` y `errors.go`— conviene mergear primero las tareas que destraban
+   y seguir con el resto en otro PR. El costo de partir lo paga el tiempo que ahorran los
+   demás.
+2. **La historia es grande y tiene un corte natural.** De 5 story points para arriba, si hay
+   dos mitades con sentido propio (por ejemplo "crear" y "modificar"), se pueden mandar por
+   separado. Dos PRs, no cinco.
+
+Fuera de esos dos casos, partir solo agrega vueltas: cada PR cuesta actualizar la rama,
+volver a aprobar y resolver el conflicto de `ESTADO.md`.
+
+**Cuando se parte, el último PR es el que cierra la historia** con `Closes #N`. Los
+anteriores usan `Refs #N`.
+
+### Historias y tareas: qué es una rama y qué no
+
+| Nivel | Qué es | Dónde vive |
+|---|---|---|
+| Historia | una tarjeta del tablero, algo que le sirve al usuario | **una rama y un PR** |
+| Tarea | un paso de la Fase 3 de la spec, un ciclo de TDD | **commits** dentro de la rama de la historia |
+
+Las tareas **no** llevan rama propia. Una tarea es "el test de que no se puede crear un
+proyecto sin nombre" más su implementación: dos commits. Partir eso en ramas daría PRs de
+tres líneas, multiplicaría las revisiones y rompería la trazabilidad, porque el PR ya no
+cerraría una historia completa.
+
+Si una historia se siente demasiado grande para una sola rama (13 o 21 story points), el
+problema no es la rama: **hay que partir la historia en dos historias**, cada una con su
+tarjeta, su spec y su valor propio. Eso se decide en la planning o en el refinamiento, no
+mientras se programa.
+
+### Cómo se mergea
+
+Solo está habilitado el **merge commit**. El squash y el rebase están desactivados a
+propósito: aplastan los commits y borrarían la evidencia del ciclo TDD, que es lo que
+la cátedra evalúa.
 
 ### Dos personas, la misma historia
 
@@ -300,7 +418,21 @@ es parte de la documentación que se evalúa, no un trámite.
   escenarios BDD, y que se entienda. Si no se entiende, se pide que se aclare.
 - Plazo: si a las 48 h nadie revisó, el Agile Enabler busca revisor. Un PR parado frena a todos.
 - No se mergea con el CI en rojo. Nunca.
+- **Mergea el autor**, una vez que tiene la aprobación y el CI en verde. Es quien resuelve
+  los conflictos, mueve la tarjeta y regenera `ESTADO.md`.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
+
+### Quién aprueba
+
+| Pull request de… | Lo aprueba… |
+|---|---|
+| Un Product Builder | Emiliano Sorato (Agile Enabler) |
+| Emiliano Sorato | cualquiera de los otros tres |
+| `dev` → `main` (cierre de sprint) | el equipo en la review |
+
+Además, **todos pueden comentar en cualquier PR aunque no sean el aprobador**, y conviene
+que lo hagan: es la forma más barata de que los cuatro conozcan todo el proyecto, y en la
+defensa pueden preguntarle a cualquiera por cualquier parte del código.
 
 ### De `dev` a `main`
 
@@ -318,7 +450,7 @@ Cada tag es la evidencia de un incremento entregado.
 
 | Workflow | Cuándo corre | Qué hace |
 |---|---|---|
-| [CI](.github/workflows/ci.yml) | en cada PR y push a `dev` o `main` | `gofmt`, `go vet` y `go test ./... -cover` |
+| [CI](.github/workflows/ci.yml) | en cada PR y push a `dev` o `main` | coherencia de las specs, `gofmt`, `go vet` y `go test ./... -cover` |
 | [CD](.github/workflows/cd.yml) | al entrar algo a `main` | corre los tests, compila y publica los binarios |
 
 Si el CI se pone en rojo en `dev` o `main`, **arreglarlo es la prioridad número uno** del
@@ -337,6 +469,11 @@ Para tenerlas hay que ir cargando los datos mientras se trabaja:
 - **Velocidad**: sale sola de los story points completados al cerrar cada sprint, siempre que
   el tablero esté al día.
 
+Las nueve métricas que pide la consigna se calculan con `scripts/metricas.sh "Sprint N"`, que
+las saca del tablero y de las issues con la etiqueta `defecto`. **Solo cuenta las historias
+en estado Hecho**: una historia a medias no suma story points aunque tenga horas cargadas, y
+contarlas infla la velocidad y arruina la calibración del sprint siguiente.
+
 ---
 
 ## Documentación
@@ -347,7 +484,7 @@ Para tenerlas hay que ir cargando los datos mientras se trabaja:
 | `CLAUDE.md` | este archivo: las reglas de trabajo |
 | `AGENTS.md` | convenciones técnicas: comandos, estructura, estilo, git, límites |
 | `ESTADO.md` | estado del tablero (generado, no editar) |
-| `docs/specs/` | una spec por funcionalidad |
+| `docs/specs/sprint-N/` | una spec por funcionalidad, agrupadas por sprint |
 | `docs/actas/` | plannings, reviews y retrospectivas |
 | `docs/guia-planning-poker.md` | cómo estimamos |
 
@@ -370,6 +507,8 @@ una línea, la tenés que poder justificar.
 **Siempre:**
 
 - Hacer `git pull` sobre `dev` al empezar la sesión, antes de leer nada más.
+- Correr `scripts/revisiones.sh` al empezar y avisar si hay PRs esperando revisión, antes de
+  proponer cualquier otra cosa.
 - Leer `ESTADO.md` y este archivo al empezar una sesión.
 - Trabajar sobre una historia del tablero, y mover la historia cuando cambia de estado.
 - Trabajar siempre en una rama de historia sacada de `dev`.
