@@ -247,3 +247,25 @@ func TestConMasDeUnProblemaSeInformaElPrimero(t *testing.T) {
 		})
 	}
 }
+
+// Sin escenario: tarea 1 de la #77, lectura de la escala para ofrecerla como opciones
+// Cubre: #77 RN-11
+func TestLeerLaEscalaDeStoryPoints(t *testing.T) {
+	want := []int{1, 2, 3, 5, 8, 13, 21}
+
+	scale := StoryPointScale()
+
+	if len(scale) != len(want) {
+		t.Fatalf("se esperaba la escala %v, salio %v", want, scale)
+	}
+	for i := range want {
+		if scale[i] != want[i] {
+			t.Fatalf("se esperaba la escala %v, salio %v", want, scale)
+		}
+	}
+
+	scale[0] = 4
+	if again := StoryPointScale(); again[0] != 1 {
+		t.Fatalf("se esperaba que cambiar lo recibido no cambiara la escala, ahora empieza en %d", again[0])
+	}
+}
