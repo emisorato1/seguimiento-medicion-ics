@@ -24,6 +24,7 @@ entregarlo y presentarlo en la review final sin depender de tener el programa ab
 - **Gráficos, tablas dibujadas, colores, logos e imágenes**: el PDF es un documento de texto.
   Los gráficos son del dashboard (#17) y no pasan al PDF (punto 1 de "Para decidir en la
   puerta").
+- Exportar el dashboard (#17) a PDF: la issue pide el reporte.
 - Elegir la tipografía, el tamaño de página o los márgenes: son fijos.
 - Exportar a otros formatos, abrir el archivo, imprimirlo, mandarlo por correo, protegerlo con
   contraseña o firmarlo.
@@ -243,8 +244,9 @@ Esquema del escenario: No se puede guardar el archivo
 
 Las decisiones transversales están en [AGENTS.md](../../../AGENTS.md) y no se repiten. Lo que
 se lee del reporte son los datos del [contrato del dominio](../../diseno-dominio.md):
-`Title`, `GeneratedOn` y `Sections`, con su `Heading` y sus `Lines`. **No se leen `Metrics`
-ni `Scope`**: los números ya están escritos en las líneas por la #18.
+`Title`, `GeneratedOn` y `Sections`, cada una una `Section` con su `Heading` y sus `Lines`
+(la misma que usa el dashboard). **No se leen `Metrics` ni `Scope`**: los números ya están
+escritos en las líneas por la #18.
 
 ### Enfoque
 

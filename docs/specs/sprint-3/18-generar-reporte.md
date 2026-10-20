@@ -277,8 +277,9 @@ Esquema del escenario: Pedir un reporte de algo que no existe
 
 Las decisiones transversales están en [AGENTS.md](../../../AGENTS.md) y no se repiten. Los
 nombres son los del [contrato del dominio](../../diseno-dominio.md): `Report`, con `Title`,
-`GeneratedOn`, `Scope` (`ScopeProject`, `ScopeSprint`), `Metrics` y `Sections`, cada una con
-`Heading` y `Lines`, pedido con `ProjectReport` y `SprintReport`.
+`GeneratedOn`, `Scope` (`ScopeProject`, `ScopeSprint`), `Metrics` y `Sections`, pedido con
+`ProjectReport` y `SprintReport`. Cada sección es una `Section`, con `Heading` y `Lines`
+(textos ya armados), **compartida con el dashboard de la #17**.
 
 ### Enfoque
 
@@ -298,7 +299,7 @@ qué historias, qué defectos y qué va en el Resumen.
 
 | Archivo | Se crea o se modifica | Para qué |
 |---|---|---|
-| `internal/domain/report.go` | se crea | el reporte, sus secciones, el armado y las dos operaciones |
+| `internal/domain/report.go` | se crea | el reporte, el armado de sus secciones y las dos operaciones; también la `Section`, si la #18 llega a `dev` antes que la #17 |
 | `internal/domain/report_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
 
 No se agregan errores: se reutilizan el de sprint no encontrado (#11) y el de proyecto no
@@ -315,6 +316,7 @@ encontrado, que ya está en `dev`.
 | Siempre las cuatro secciones, aunque estén vacías | omitir las vacías | el reporte tiene siempre la misma forma, y "no hay defectos" también es información |
 | La fecha de generación sale del reloj del sistema, por día | recibirla como dato | el contrato define las operaciones sin fecha; es el criterio de la #14 |
 | La situación de cada historia en un sprint sale del registro del cierre | del estado actual de la historia | ver el punto 2 de la puerta |
+| Las secciones usan la `Section` que comparte con el dashboard, y la declara la primera de las dos historias que llegue a `dev` | una sección propia del reporte | lo fija el contrato: la #19 y la interfaz leen las dos cosas igual, y es la misma regla que se usó con `errors.go` |
 
 ### Dependencias y restricciones
 
@@ -323,6 +325,9 @@ encontrado, que ya está en `dev`.
 - **También se leen sprints (#8 a #11) y defectos (#15)**, que tampoco están: los tests los
   arman dentro del paquete, contra el contrato.
 - **No se calcula ninguna métrica** ni se cambia ningún dato.
+- **`Section` es compartida con la #17**: si la #17 ya la declaró en `dev`, se usa tal como
+  está, sin cambiarla; si no, la declara esta historia y la #17 la reutiliza. Cualquier cambio
+  en su forma se avisa a las dos.
 - **Lo necesita la #19**, que arma un reporte a mano en sus tests. Si cambia el formato de
   las secciones, se avisa.
 

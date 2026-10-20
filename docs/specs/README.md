@@ -52,36 +52,48 @@ comprometieron.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | Agustín Salinas | 📝 Requisitos — pendiente de Puerta 1 |
-| [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | 📝 Requisitos — pendiente de Puerta 1 |
-| Asignar historias a un sprint | #9 | 5 | Agustín Salinas | ⏳ spec pendiente |
-| Registrar el esfuerzo real | #14 | 3 | Juliana Bustos | ⏳ spec pendiente |
-| Gestionar defectos | #15 | 5 | Juliana Bustos | ⏳ spec pendiente |
+| [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
+| [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
+| [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
+| [Registrar el esfuerzo real](sprint-2/14-registrar-esfuerzo-real.md) | #14 | 3 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
+| [Gestionar defectos](sprint-2/15-gestionar-defectos.md) | #15 | 5 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🔍 En review |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ⚙️ En implementación |
-| Consultar el estado de un proyecto | #5 | 3 | Juliana Bustos | ⏳ spec pendiente |
+| [Consultar el estado de un proyecto](sprint-2/05-consultar-estado-proyecto.md) | #5 | 3 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
 
 ### Sprint 3 — del 26 al 30 de octubre (36 SP)
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| Cerrar un sprint | #10 | 5 | Emiliano Sorato | ⏳ spec pendiente |
-| Calcular las métricas del proyecto | #16 | 8 | Emiliano Sorato | ⏳ spec pendiente |
-| Mostrar el dashboard | #17 | 8 | Juliana Bustos | ⏳ spec pendiente |
-| Votar en secreto en una ronda | #13 | 8 | Maximiliano Eula | ⏳ spec pendiente |
-| Consultar sprints anteriores | #11 | 2 | Agustín Salinas | ⏳ spec pendiente |
-| Generar el reporte de proyecto o sprint | #18 | 5 | Agustín Salinas | ⏳ spec pendiente |
+| [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
+| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
+| [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
+| [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | 📝 Borrador completo — pendiente de las tres puertas |
+| [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
+| [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 
 ### Sprint 4 — 31 de octubre y 1 de noviembre (10 SP)
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| Exportar el reporte a PDF | #19 | 5 | Emiliano Sorato | ⏳ spec pendiente |
-| Resolver diferencias y acordar la estimación | #73 | 5 | Maximiliano Eula | ⏳ spec pendiente |
+| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
+| [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | 📝 Borrador completo — pendiente de las tres puertas |
 
-Las Fases 1 son borradores preparados con asistencia de IA, igual que en el Sprint 1: cada
-una tiene su sección "Para decidir en la puerta" con las decisiones ambiguas que hay que
-cerrar en la Puerta 1, y cada responsable la revisa y corrige antes de presentarla.
+### Qué es un "borrador completo"
+
+Las 14 specs que quedan se escribieron **enteras y por adelantado** el 20/10 —las tres fases,
+con asistencia de IA— en vez de fase por fase esperando cada puerta. Es el modo acordado
+hasta el 2/11 (ver *Modo sprint final* en [CLAUDE.md](../../CLAUDE.md)): esperar las puertas
+una por una fue el cuello de botella medido del Sprint 1.
+
+Que sea un borrador completo **no quiere decir que esté aprobado**. Las tres puertas siguen
+pendientes y las aprueba una persona, en una sola revisión, antes de que se escriba código.
+Cada spec lo dice en su encabezado, y `scripts/coherencia.sh` verifica que un documento que
+se declara borrador no tenga ninguna puerta firmada.
+
+Cada una tiene su sección **"Para decidir en la puerta"** con las decisiones ambiguas que
+tomó el borrador y qué cambiaría si el equipo decide distinto: es lo que hace que la
+revisión sirva para algo. El responsable la revisa, la corrige y la presenta.
 
 **El plan completo —calendario, reparto y riesgos— está en
 [docs/plan-final-al-2-de-noviembre.md](../plan-final-al-2-de-noviembre.md).**
