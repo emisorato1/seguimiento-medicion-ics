@@ -225,6 +225,11 @@ func storyFromJSON(sj storyJSON) (*Story, error) {
 	if sj.StoryPoints != 0 && !inScale(sj.StoryPoints) {
 		return nil, ErrStoryPointsInvalid
 	}
+	// cero es "sin horas estimadas" (historia #16, RN-17); un valor cargado tiene que ser mayor
+	// que cero (RN-18). NaN no puede llegar: JSON no tiene como escribirlo
+	if sj.EstimatedHours < 0 {
+		return nil, ErrEstimatedHoursInvalid
+	}
 	return &Story{
 		id:                 sj.ID,
 		title:              data.Title,
