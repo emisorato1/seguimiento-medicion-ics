@@ -11,9 +11,9 @@ var (
 	// ErrProjectStartRequired: crear o modificar un proyecto sin fecha de inicio (historia #3, RN-3).
 	ErrProjectStartRequired = errors.New("la fecha de inicio del proyecto es obligatoria")
 	// ErrProjectDatesInconsistent: fecha de finalizacion anterior a la de inicio (historia #3, RN-4).
-	ErrProjectDatesInconsistent = errors.New("las fechas son incoherentes: la fecha de finalizacion es anterior a la de inicio")
+	ErrProjectDatesInconsistent = errors.New("las fechas son incoherentes: la fecha de finalización es anterior a la de inicio")
 	// ErrProjectNotFound: consultar o modificar un proyecto que no existe (historia #3, RN-6).
-	ErrProjectNotFound = errors.New("no se encontro el proyecto")
+	ErrProjectNotFound = errors.New("no se encontró el proyecto")
 	// ErrStoryPriorityInvalid: prioridad que no es Alta, Media ni Baja (historia #6, RN-4).
 	ErrStoryPriorityInvalid = errors.New("la prioridad debe ser Alta, Media o Baja")
 	// ErrStoryTitleRequired: crear o modificar una historia sin titulo (historia #6, RN-5).
@@ -31,9 +31,14 @@ var (
 	// ErrMemberNameRequired: agregar un integrante sin nombre y apellido (historia #4, RN-2).
 	ErrMemberNameRequired = errors.New("el nombre y apellido del integrante es obligatorio")
 	// ErrMemberDuplicate: agregar un integrante que ya esta cargado en el proyecto (historia #4, RN-5).
-	ErrMemberDuplicate = errors.New("el integrante ya esta cargado en el proyecto")
+	ErrMemberDuplicate = errors.New("el integrante ya está cargado en el proyecto")
 	// ErrMemberAgileEnablerTaken: agregar un segundo Agile Enabler al mismo proyecto (historia #4, RN-7).
 	ErrMemberAgileEnablerTaken = errors.New("el proyecto ya tiene un Agile Enabler")
 	// ErrMemberNotFound: quitar un integrante que no pertenece al proyecto (historia #4, RN-11).
-	ErrMemberNotFound = errors.New("no se encontro el integrante en el proyecto")
+	ErrMemberNotFound = errors.New("no se encontró el integrante en el proyecto")
+	// ErrStoryPointsInvalid: valor fuera de la escala, cero o negativo (historia #12, RN-2, RN-3).
+	ErrStoryPointsInvalid = errors.New("los story points tienen que ser uno de estos valores: " + scaleText())
+	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
+	// Terminada (historia #12, RN-8).
+	ErrStoryEstimateDone = errors.New("la estimación de una historia terminada no se modifica")
 )

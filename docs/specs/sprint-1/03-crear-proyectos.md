@@ -448,6 +448,11 @@ Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en
   fechas por dia, sin importar la hora". En la revisión del arreglo (PR #61), Juliana Bustos
   encontró que dos fechas del mismo día en zonas horarias distintas se seguían comparando
   como instantes: el día se arma ahora siempre en UTC, y el test cubre los dos casos.
+- **#60 — mensajes de error sin tildes.** "No se encontro el proyecto" y "la fecha de
+  finalizacion" llegaban así al usuario, porque la consola muestra los mensajes tal cual. Lo
+  encontró Maximiliano Eula en la revisión del PR #54 (Sprint 1). Se corrigió en el mismo
+  arreglo que los mensajes de la #4 con el mismo problema, con un test que verifica el texto
+  de los mensajes afectados.
 
 ## Trazabilidad
 
