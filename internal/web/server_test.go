@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -867,5 +868,48 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 	// El cambio queda en memoria y lo incluye el siguiente guardado que funcione (D19).
 	if cantidad := len(registry.Projects()); cantidad != 1 {
 		t.Errorf("se esperaba el proyecto en memoria, hay %d proyectos", cantidad)
+	}
+}
+
+// Escenario: Dos pestanas a la vez
+// Cubre: RN-20
+func TestDosPestanasALaVez(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	saver := &fakeSaver{}
+	server := NewServer(registry, saver)
+	const pestanas = 20
+
+	// Veinte pestañas crean un proyecto cada una, todas al mismo tiempo. Con go test -race,
+	// cualquier dato que dos pedidos toquen a la vez sin el candado hace fallar el test.
+	var wg sync.WaitGroup
+	codigos := make([]int, pestanas)
+	for i := 0; i < pestanas; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			form := url.Values{"nombre": {fmt.Sprintf("Proyecto %d", i)}, "inicio": {"2026-11-01"}}
+			req := httptest.NewRequest(http.MethodPost, "/proyectos/nuevo", strings.NewReader(form.Encode()))
+			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			res := httptest.NewRecorder()
+			server.ServeHTTP(res, req)
+			codigos[i] = res.Code
+		}(i)
+	}
+	wg.Wait()
+
+	for i, codigo := range codigos {
+		if codigo != http.StatusSeeOther {
+			t.Errorf("la pestaña %d esperaba el estado %d, salio %d", i, http.StatusSeeOther, codigo)
+		}
+	}
+	numeros := make(map[int]bool)
+	for _, project := range registry.Projects() {
+		numeros[project.ID()] = true
+	}
+	if len(numeros) != pestanas {
+		t.Errorf("se esperaban %d proyectos con numeros distintos, quedaron %d", pestanas, len(numeros))
+	}
+	if saver.saves != pestanas {
+		t.Errorf("se esperaba un guardado por operacion, %d, y hubo %d", pestanas, saver.saves)
 	}
 }
