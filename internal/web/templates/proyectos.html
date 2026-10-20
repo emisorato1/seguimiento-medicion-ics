@@ -23,7 +23,7 @@
       {{range .Data.Projects}}
       <tr>
         <td>{{.ID}}</td>
-        <td><a href="/proyectos/{{.ID}}">{{.Name}}</a></td>
+        <td class="principal"><a href="/proyectos/{{.ID}}">{{.Name}}</a></td>
         <td>{{fecha .Start}}</td>
         <td>{{if .HasEnd}}{{fecha .End}}{{else}}<span class="sin-dato">sin fecha de fin</span>{{end}}</td>
       </tr>

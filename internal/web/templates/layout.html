@@ -15,7 +15,7 @@
       <li><a href="/proyectos"{{if not .Project}} aria-current="page"{{end}}>Proyectos</a></li>
     </ul>
     {{with .Project}}
-    <p class="proyecto-actual">Proyecto: <strong>{{.Name}}</strong></p>
+    <p class="proyecto-actual" title="{{.Name}}">Proyecto: <strong>{{.Name}}</strong></p>
     <ul aria-label="Secciones del proyecto">
       <li><a href="/proyectos/{{.ID}}"{{if eq $.Section "datos"}} aria-current="page"{{end}}>Datos</a></li>
       <li><a href="/proyectos/{{.ID}}/integrantes"{{if eq $.Section "integrantes"}} aria-current="page"{{end}}>Integrantes</a></li>

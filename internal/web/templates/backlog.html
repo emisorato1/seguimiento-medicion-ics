@@ -25,7 +25,7 @@
       {{range .Backlog}}
       <tr>
         <td>{{.ID}}</td>
-        <td><a href="/proyectos/{{$.Data.ID}}/historias/{{.ID}}">{{.Title}}</a></td>
+        <td class="principal"><a href="/proyectos/{{$.Data.ID}}/historias/{{.ID}}">{{.Title}}</a></td>
         <td>{{.Priority}}</td>
         <td>{{.State}}</td>
         <td>{{if .IsEstimated}}{{.StoryPoints}}{{else}}<span class="sin-dato">sin estimar</span>{{end}}</td>

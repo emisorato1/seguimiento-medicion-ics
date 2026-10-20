@@ -198,8 +198,22 @@ th,
 td {
   padding: 0.6rem 0.75rem;
   text-align: left;
+  vertical-align: top;
   border-bottom: 1px solid var(--borde);
+}
+
+/* Los encabezados y los datos cortos no se cortan; un titulo largo pasa al renglon de
+   abajo, asi en un celular entran mas columnas sin desplazar la tabla. */
+th {
   white-space: nowrap;
+}
+
+td {
+  min-width: 4rem;
+}
+
+td.principal {
+  min-width: 11rem;
 }
 
 tr:last-child td {
@@ -372,6 +386,15 @@ button:hover {
 
 /* En un celular los botones ocupan el ancho y la tabla de datos va en una columna. */
 @media (max-width: 40rem) {
+  /* En un celular la barra queda fija pero baja: el nombre del proyecto va en un renglon y,
+     si no entra, se corta con puntos suspensivos. Completo esta en el titulo de la pagina. */
+  .barra .proyecto-actual {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .datos {
     grid-template-columns: 1fr;
     gap: 0.1rem;
