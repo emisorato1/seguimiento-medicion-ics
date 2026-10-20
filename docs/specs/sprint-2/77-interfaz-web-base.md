@@ -670,16 +670,44 @@ los lectores de pantalla. Ahora va un solo atributo con las dos referencias (`ad
 
 ### Verificación manual
 
+La empezó Emiliano a mano y la terminó Claude Code automatizada, con Playwright, contra el
+binario compilado (`go build ./cmd/web`) y en los tres motores: **Chromium 151, Firefox 153
+y WebKit 26.5** (el de Safari), de a uno por vez. El script no está en el repo, porque
+agregar una dependencia de Node es una decisión del equipo; queda fuera, en `~/ics/e2e`.
+Resultado final: **52 controles bien, ninguno falla.**
+
 | Qué | Cómo | Resultado |
 |---|---|---|
+| Teclado y foco | crear un proyecto, agregar un integrante, cargar y estimar una historia y quitar con confirmación (primero cancelando), todo con Tab y Enter. En WebKit, Option+Tab, porque en Safari Tab solo pasa por los campos. En cada parada se mira que el contorno del foco se vea | bien en los tres, después de los dos arreglos de abajo. El primer Tab lleva a «Saltar al contenido». Las listas se eligen tecleando el comienzo de la opción. La fecha se cargó directo en el campo, sin teclear, porque el calendario de cada motor tiene su propio teclado |
+| El error junto al campo y anunciado | enviar el proyecto sin nombre | el foco arranca en Nombre, marcado como inválido y descripto por el mensaje del dominio, que está en el mismo bloque del campo |
+| Sin red | todo pedido que no va al binario se corta y se anota. El modo sin conexión del navegador también corta 127.0.0.1, así que no sirve para esto | ningún pedido sale del binario, y los estilos se aplican (se mira el color de fondo) |
+| Sin JavaScript | cargar una historia con JavaScript apagado | se carga igual en los tres |
+| Reinicio | cargar datos, matar el proceso y volver a arrancarlo con el mismo archivo | están el proyecto, la historia con sus 5 story points y la cargada sin JavaScript |
+| 360 de ancho | 12 páginas a 360 de ancho en los tres motores (lista, formularios, proyecto, integrantes, backlog, historia, estimar, confirmar, no encontrado) | ninguna se desplaza de costado; capturas en [77-verificacion/](77-verificacion/) |
+| Puerto ocupado | abrir el binario con el 8080 tomado por Docker | termina con «el puerto 8080 ya lo está usando otro programa. Probá con otro, por ejemplo: go run ./cmd/web -puerto 8081» |
 | Contraste de 4,5 a 1 | fórmula de WCAG sobre cada par de colores del CSS | el más bajo es 5,75 a 1 (el error sobre su fondo); el foco, 14,7 a 1, y 10,2 en la barra |
-| 360 de ancho | capturas con Chromium sin ventana a 360×800 de la lista, el proyecto, el backlog, un formulario y una confirmación | la página no se desplaza de costado y la tabla se recorre en su recuadro. Se ajustó el CSS (`833abf5`): en el celular el nombre del proyecto va en un renglón en la barra y los títulos largos pasan de renglón |
-| El binario y los datos | `go build ./cmd/web`, crear un proyecto, mirar el archivo; abrirlo con un archivo cortado | guarda después de cada operación; con el archivo dañado termina con el motivo y el archivo queda igual |
-| Teclado y foco, Chrome, Firefox y Safari, red desconectada | a mano | **pendiente**: lo hace una persona antes del merge |
+| El binario y los datos | crear un proyecto, mirar el archivo; abrirlo con un archivo cortado | guarda después de cada operación; con el archivo dañado termina con el motivo y el archivo queda igual |
 
-Las dos primeras filas las corrió Claude Code y no reemplazan la prueba a mano: falta
-recorrer los formularios con el teclado mirando el foco en los tres navegadores, y abrir el
-binario con la red desconectada.
+### Hallazgos de la verificación manual
+
+Se encontraron antes del merge, así que no se abrió defecto. Los tres tienen su arreglo en
+este PR:
+
+- **Con el puerto ocupado, la web arrancaba igual y mostraba otra aplicación.** Lo encontró
+  Emiliano: en su máquina Docker tiene el 8080, y el navegador abrió Adminer. En macOS, que
+  otro programa escuche en todas las direcciones no impide escuchar solo en 127.0.0.1, así
+  que la web no daba ningún error. Además mostraba la dirección antes de tener el puerto.
+  Ahora prueba el puerto en todas las direcciones antes de tomarlo, muestra la dirección
+  recién cuando lo tiene, y si está ocupado termina con el aviso en castellano y la
+  sugerencia de `-puerto` (test `4a8a148`, arreglo `13e0f27`).
+- **Después de un rechazo, el foco quedaba al principio de la página**, y el lector de
+  pantalla no anunciaba el error. Ahora el foco arranca en el primer campo con error, que
+  se lee con su mensaje; sin errores, la página no mueve el foco (test `4473b0e`, arreglo
+  `b19be59`).
+- **En los campos de fecha de Chromium, el foco no se veía en el botón del calendario**,
+  que es una parada aparte del Tab: ahí el campo no cuenta como enfocado. Se arregló en el
+  CSS (`ff7ce79`). No tiene test en Go: `httptest` no aplica estilos; lo prueba el recorrido
+  con el teclado.
 
 ### Hallazgos de la revisión del PR #92
 
