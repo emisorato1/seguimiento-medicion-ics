@@ -98,3 +98,25 @@ func TestConsultarUnProyecto(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Un texto con signos se muestra tal cual
+// Cubre: RN-17
+func TestUnTextoConSignosSeMuestraTalCual(t *testing.T) {
+	navegador := newBrowser(t, newTestServer(t, domain.NewProjectRegistry()))
+
+	res := navegador.post("/proyectos/nuevo", url.Values{
+		"nombre": {"<b>Metricas</b> & Cia"},
+		"inicio": {"2026-11-01"},
+	})
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusSeeOther, res.Code)
+	}
+
+	lista := between(navegador.get("/proyectos").Body.String(), "<main", "</main>")
+	if !strings.Contains(lista, "&lt;b&gt;Metricas&lt;/b&gt; &amp; Cia") {
+		t.Errorf("se esperaba el nombre escrito tal cual, y no esta en:\n%s", lista)
+	}
+	if strings.Contains(lista, "<b>") {
+		t.Errorf("no se esperaba que el nombre se muestre en negrita, y esta en:\n%s", lista)
+	}
+}
