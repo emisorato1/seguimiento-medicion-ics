@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -65,6 +66,19 @@ func between(html, start, end string) string {
 		return ""
 	}
 	return html[i : i+j]
+}
+
+// options devuelve los valores que se pueden elegir en la lista con ese nombre. La opcion
+// vacia del principio no es un valor: es el pedido de que se elija uno.
+func options(html, name string) []string {
+	list := between(html, `<select id="`+name+`"`, "</select>")
+	var values []string
+	for _, part := range strings.Split(list, `<option value="`)[1:] {
+		if value := part[:strings.Index(part, `"`)]; value != "" {
+			values = append(values, value)
+		}
+	}
+	return values
 }
 
 // snapshot describe en texto todo lo que tiene el registro, para comparar antes y despues
@@ -128,7 +142,9 @@ func (b *browser) do(req *http.Request) *httptest.ResponseRecorder {
 // Escenario: Abrir el sistema con un solo comando y sin internet
 // Cubre: RN-3, RN-4. Esta es la parte de la web; el comando lo prueba cmd/web.
 func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
-	server := newTestServer(t, domain.NewProjectRegistry())
+	registry := domain.NewProjectRegistry()
+	addProject(t, registry, "Sistema de metricas")
+	server := newTestServer(t, registry)
 
 	t.Run("la raiz lleva a la lista de proyectos", func(t *testing.T) {
 		res := get(t, server, "/")
@@ -156,7 +172,14 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 	})
 
 	// Toda pagina de la web: cada pantalla nueva suma aca su direccion.
-	paginas := []string{"/proyectos", "/proyectos/nuevo"}
+	paginas := []string{
+		"/proyectos",
+		"/proyectos/nuevo",
+		"/proyectos/1",
+		"/proyectos/1/editar",
+		"/proyectos/1/integrantes",
+		"/proyectos/1/integrantes/nuevo",
+	}
 
 	for _, pagina := range paginas {
 		t.Run(pagina, func(t *testing.T) {
@@ -209,6 +232,15 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			pagina:   "/proyectos",
 			mensaje:  "Todavía no hay proyectos",
 			acceso:   `href="/proyectos/nuevo"`,
+		},
+		{
+			nombre: "un proyecto sin integrantes",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/integrantes",
+			mensaje: "Este proyecto todavía no tiene integrantes",
+			acceso:  `href="/proyectos/1/integrantes/nuevo"`,
 		},
 	}
 
@@ -333,6 +365,16 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 		figura     string
 	}{
 		{
+			nombre: "agregar un integrante",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/integrantes/nuevo",
+			datos:      url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}},
+			mensaje:    "Se agregó a Ana Perez",
+			figura:     "<td>Product Builder</td>",
+		},
+		{
 			nombre: "cambiar el nombre de un proyecto",
 			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
 				addProject(t, registry, "Sistema de metricas")
@@ -428,6 +470,41 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 			}
 			if !strings.Contains(contenido, `href="/proyectos"`) {
 				t.Errorf("se esperaba el acceso para volver a la lista de proyectos, y no esta en:\n%s", contenido)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Las opciones para elegir son las del sistema
+// Cubre: RN-11
+func TestLasOpcionesParaElegirSonLasDelSistema(t *testing.T) {
+	casos := []struct {
+		formulario string
+		pagina     string
+		lista      string
+		opciones   []string
+	}{
+		{
+			formulario: "integrante",
+			pagina:     "/proyectos/1/integrantes/nuevo",
+			lista:      "rol",
+			opciones:   []string{domain.RoleAgileEnabler.String(), domain.RoleProductBuilder.String()},
+		},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.formulario, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			addProject(t, registry, "Sistema de metricas")
+			server := newTestServer(t, registry)
+
+			res := get(t, server, caso.pagina)
+
+			if res.Code != http.StatusOK {
+				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			if salio := options(res.Body.String(), caso.lista); !slices.Equal(salio, caso.opciones) {
+				t.Errorf("se esperaban las opciones de %s %v, salieron %v", caso.lista, caso.opciones, salio)
 			}
 		})
 	}
