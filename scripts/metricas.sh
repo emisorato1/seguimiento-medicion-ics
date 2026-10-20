@@ -9,16 +9,16 @@
 # Limitacion conocida: el script lee el campo Sprint que cada historia tiene HOY en el
 # tablero. Una historia que no se termino y paso al sprint siguiente deja de contar en el
 # sprint donde se comprometio, asi que para un sprint cerrado los numeros pueden no
-# coincidir con lo que paso (el Sprint 1 da 11 de 11 puntos, pero se comprometieron 16).
+# coincidir con lo que paso (el Sprint 1 da 6 de 6 puntos, pero se comprometieron 16).
 # Para un sprint cerrado, el registro que vale es su acta de review
 # (docs/actas/sprint-N-review.md), que se escribe al cierre y no cambia. Este script sirve
 # para el sprint abierto y para armar esa acta el dia del cierre.
 #
 # Otra limitacion: el tablero guarda un solo total de horas por historia. Si una historia
 # viene de un sprint anterior, sus horas estimadas y reales se suman enteras en el sprint
-# actual, aunque una parte ya se conto en el anterior (la #12 y la #24 traen 9,25 h reales
-# del Sprint 1). Para no contarlas dos veces, se resta lo que dice el acta de review del
-# sprint anterior; la regla esta en docs/informe-de-metricas.md.
+# actual, aunque una parte ya se conto en el anterior (la #12, la #24 y la #6 traen 22,25 h
+# reales del Sprint 1). Para no contarlas dos veces, se resta lo que dice el acta de review
+# del sprint anterior; la regla esta en docs/informe-de-metricas.md.
 
 set -u
 
@@ -32,9 +32,11 @@ command -v jq >/dev/null || { echo "Falta jq. Instalar: brew install jq"; exit 1
 
 # Fechas de cada sprint, las de CLAUDE.md y las actas de planning. Sirven para saber en que
 # sprint se detecto y se resolvio cada defecto. Un sprint que no esta aca cuenta todos.
+# Lo que pasa entre un sprint y el siguiente cuenta en el siguiente: por eso el Sprint 2
+# arranca el 17/10, el dia despues del cierre del Sprint 1, aunque empezo el 20/10.
 case "$SPRINT" in
   "Sprint 1") DESDE="2026-09-28"; HASTA="2026-10-16" ;;
-  "Sprint 2") DESDE="2026-10-20"; HASTA="2026-10-25" ;;
+  "Sprint 2") DESDE="2026-10-17"; HASTA="2026-10-25" ;;
   "Sprint 3") DESDE="2026-10-26"; HASTA="2026-10-30" ;;
   "Sprint 4") DESDE="2026-10-31"; HASTA="2026-11-01" ;;
   *)          DESDE="0000-00-00"; HASTA="9999-99-99" ;;
