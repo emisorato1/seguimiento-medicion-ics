@@ -110,7 +110,7 @@ func (s *Server) findProject(r *http.Request) (*domain.Project, error) {
 func (s *Server) showProject(w http.ResponseWriter, r *http.Request) {
 	project, err := s.findProject(r)
 	if err != nil {
-		http.NotFound(w, r)
+		s.notFound(w, r, nil, err)
 		return
 	}
 	s.render(w, r, http.StatusOK, "proyecto.html", page{
@@ -125,7 +125,7 @@ func (s *Server) showProject(w http.ResponseWriter, r *http.Request) {
 func (s *Server) editProject(w http.ResponseWriter, r *http.Request) {
 	project, err := s.findProject(r)
 	if err != nil {
-		http.NotFound(w, r)
+		s.notFound(w, r, nil, err)
 		return
 	}
 
@@ -145,7 +145,7 @@ func (s *Server) editProject(w http.ResponseWriter, r *http.Request) {
 func (s *Server) updateProject(w http.ResponseWriter, r *http.Request) {
 	project, err := s.findProject(r)
 	if err != nil {
-		http.NotFound(w, r)
+		s.notFound(w, r, nil, err)
 		return
 	}
 

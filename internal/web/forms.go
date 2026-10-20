@@ -9,8 +9,8 @@ import (
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
 
-// errInvalidDate es el unico error propio de la web: no es una regla de negocio sino la
-// forma del dato (RN-14), igual que la RN-5 de la consola.
+// errInvalidDate es el error de forma de una fecha. No es una regla de negocio sino la forma
+// del dato (RN-14), igual que la RN-5 de la consola.
 var errInvalidDate = errors.New("la fecha no es válida")
 
 // dateLayout es como manda la fecha el calendario del navegador (D11).

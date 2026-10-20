@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"embed"
 	"encoding/base64"
+	"errors"
 	"html/template"
 	"io/fs"
 	"net/http"
@@ -21,6 +22,10 @@ import (
 //
 //go:embed templates static
 var files embed.FS
+
+// errPageNotFound es para una direccion que no es de ninguna pagina. Lo que no existe en
+// el dominio, como un proyecto o una historia, se informa con el error del dominio.
+var errPageNotFound = errors.New("no se encontró la página")
 
 // Saver guarda el registro completo despues de cada operacion aceptada (D13). En el
 // programa es el archivo de internal/store; en los tests, uno falso en memoria (D21).
@@ -46,6 +51,7 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 		pages:    parsePages(),
 	}
 
+	s.mux.HandleFunc("/", s.pageNotFound)
 	s.mux.HandleFunc("GET /{$}", s.home)
 	s.mux.Handle("GET /static/", http.FileServerFS(files))
 	s.mux.HandleFunc("GET /proyectos", s.listProjects)
@@ -54,6 +60,7 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s.mux.HandleFunc("GET /proyectos/{id}", s.showProject)
 	s.mux.HandleFunc("GET /proyectos/{id}/editar", s.editProject)
 	s.mux.HandleFunc("POST /proyectos/{id}/editar", s.updateProject)
+	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}", s.showStory)
 	return s
 }
 
@@ -75,6 +82,22 @@ var templateFuncs = template.FuncMap{
 // formatDate muestra una fecha como dd/mm/aaaa (RN-5).
 func formatDate(day time.Time) string {
 	return day.Format("02/01/2006")
+}
+
+// notFound responde 404 con el mensaje de lo que no se encontro y el acceso para volver a
+// la lista de proyectos (RN-16). Si se estaba dentro de un proyecto, la barra lo sigue
+// mostrando.
+func (s *Server) notFound(w http.ResponseWriter, r *http.Request, project *domain.Project, err error) {
+	s.render(w, r, http.StatusNotFound, "no-encontrado.html", page{
+		Title:   "No se encontró",
+		Project: project,
+		Data:    err.Error(),
+	})
+}
+
+// pageNotFound atiende toda direccion que no es de ninguna pagina.
+func (s *Server) pageNotFound(w http.ResponseWriter, r *http.Request) {
+	s.notFound(w, r, nil, errPageNotFound)
 }
 
 // parsePages arma una plantilla por pagina: cada una es el layout comun mas el archivo de
