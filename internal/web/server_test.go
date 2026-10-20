@@ -369,6 +369,36 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			campo:      "rol",
 			err:        domain.ErrMemberAgileEnablerTaken,
 		},
+		{
+			nombre: "historia con el titulo vacio",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/historias/nueva",
+			datos: url.Values{
+				"titulo":      {""},
+				"descripcion": {"Como integrante quiero registrar mis horas"},
+				"prioridad":   {"Media"},
+				"criterios":   {"Se cargan las horas"},
+			},
+			campo: "titulo",
+			err:   domain.ErrStoryTitleRequired,
+		},
+		{
+			nombre: "historia con los criterios en blanco",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/historias/nueva",
+			datos: url.Values{
+				"titulo":      {"Registrar esfuerzo"},
+				"descripcion": {"Como integrante quiero registrar mis horas"},
+				"prioridad":   {"Media"},
+				"criterios":   {"  \n   \n"},
+			},
+			campo: "criterios",
+			err:   domain.ErrStoryCriteriaRequired,
+		},
 	}
 
 	for _, caso := range casos {
