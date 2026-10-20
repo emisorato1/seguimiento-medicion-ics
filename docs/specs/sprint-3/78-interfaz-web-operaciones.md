@@ -31,7 +31,7 @@ empezó la #77, con la misma forma de trabajar.
   historias de dominio de cada pantalla.
 - **Lo que el núcleo no permite**: editar o borrar un sprint, un registro de esfuerzo o un
   defecto; reabrir un sprint o un defecto resuelto; cambiar un voto; borrar una ronda.
-- **Usuarios y permisos**: como en la #77, no hay inicio de sesión. Ver el punto 2 de "Para
+- **Usuarios y permisos**: como en la #77, no hay inicio de sesión. Ver el punto 1 de "Para
   decidir en la puerta".
 - **Lo que ya resolvió la #77** —barra, mensajes, errores, confirmaciones, guardado, celular
   y teclado— no se vuelve a decidir: se aplica (RN-2).
@@ -400,37 +400,29 @@ Escenario: Los datos nuevos siguen al cerrar y volver a abrir
 
 **Para decidir en la puerta:**
 
-1. **El PDF se descarga, no se guarda en una ruta.** El punto 4 de la #19 tomó «se
-   descarga» como «se guarda donde se indica» porque la aplicación no era web, y por eso su
-   exportación escribe en un archivo de la computadora donde corre el sistema. Desde el
-   navegador eso no sirve: quien usa la página no ve ese disco y, con la opción de red de la
-   #77, puede ni siquiera estar en la misma computadora. **Decidido el 20/10** al escribir esta
-   spec, con un cambio del contrato (PR #94): la #19 entrega el PDF a quien lo pida sin pasar
-   por un archivo; la consola lo graba donde se le indica y la web lo manda como archivo para
-   guardar. La spec de la #19 se actualiza en consecuencia.
-2. **Quién vota, sin usuarios.** Quien vota se elige de la lista de los que faltan. El voto es
+1. **Quién vota, sin usuarios.** Quien vota se elige de la lista de los que faltan. El voto es
    secreto frente a la pantalla —nadie lo ve hasta revelar (RN-4)—, pero nada impide elegir el
    nombre de otro. Para un equipo que vota junto alcanza; impedirlo exige usuarios, que la
    #77 dejó afuera.
-3. **Los votos sin revelar quedan en el archivo de datos**, porque las rondas entran en lo que
+2. **Los votos sin revelar quedan en el archivo de datos**, porque las rondas entran en lo que
    se guarda (contrato, PR #94). Quien abra el archivo con un editor los ve. La alternativa
    —no guardar las rondas abiertas— las pierde al cerrar el sistema. **Lo decide la #13 en su
    puerta**: la web no cambia en ningún caso.
-4. **Las listas para elegir no filtran por reglas** (RN-16). Para asignar se ofrecen todas
+3. **Las listas para elegir no filtran por reglas** (RN-16). Para asignar se ofrecen todas
    las historias, aunque la #9 rechace las que no están estimadas, las Terminadas y las ya
    asignadas: filtrarlas en la web copiaría reglas de la #9 fuera del núcleo. Ofrecer solo
    las que se pueden asignar exige una consulta nueva en el núcleo, que el contrato no tiene.
    La excepción es votar (RN-7): la lista de los que faltan sí la da el núcleo (#13).
-5. **Un filtro de defectos por vez** (RN-13). El núcleo filtra por estado o por severidad,
+4. **Un filtro de defectos por vez** (RN-13). El núcleo filtra por estado o por severidad,
    cada uno por su lado; combinarlos sería una regla en la web.
-6. **Confirmación también antes de cerrar un sprint y de resolver un defecto** (RN-9), que no
+5. **Confirmación también antes de cerrar un sprint y de resolver un defecto** (RN-9), que no
    se deshacen (#10, #15). La #77 la pedía solo para quitar. No se pide antes de revelar
    —solo se puede con todos los votos— ni antes de acordar —se puede abrir otra ronda y
    acordar de nuevo—.
-7. **Las horas estimadas (#16) y el resumen del proyecto (#5) entran acá.** La #77 dejó el
+6. **Las horas estimadas (#16) y el resumen del proyecto (#5) entran acá.** La #77 dejó el
    resumen para la #78 (su punto 6), y sin cargar horas estimadas desde la web la desviación
    de horas da siempre cero. El resumen depende de que la #5 llegue a `dev` (RN-20).
-8. **Cada pantalla se conecta cuando su historia de dominio está en `dev`.** La issue dice
+7. **Cada pantalla se conecta cuando su historia de dominio está en `dev`.** La issue dice
    que hasta entonces «se prueba contra el contrato», pero una pantalla llama al núcleo y no
    se puede conectar a una operación que todavía no existe. Las tareas siguen el orden
    en que llegan las historias de dominio, y se pueden entregar por partes (D13).
@@ -493,13 +485,13 @@ falta algo del núcleo, se pide en la historia de dominio que corresponde (ver D
 | **D2** La página de una ronda sin revelar se arma solo con lo que el núcleo deja leer antes de revelar —quién votó, quién falta, cuántos votaron— y un test recorre todas las páginas y respuestas buscando el valor votado | ocultar los votos con CSS; mostrarle su voto a quien votó | el secreto lo garantiza el núcleo (#13), que no deja leer un voto sin revelar. Ocultarlo con estilos lo dejaría en el HTML, a un «ver código fuente» de distancia |
 | **D3** Al rechazar un voto, el formulario vuelve sin el valor elegido (RN-6) | volver a mostrar lo escrito, como pide la #77 | mostrar el valor en pantalla rompería la RN-4 delante de quien esté mirando |
 | **D4** Quien vota se elige de la lista de los que faltan, que da el núcleo | un campo de texto con el nombre; usuarios con contraseña | sin usuarios (#77), elegir de la lista evita errores de tipeo y solo ofrece a quien puede votar; escribir el nombre igual lo valida el núcleo |
-| **D5** La descarga usa la exportación de la #19, que escribe el PDF donde se le pida (`r.WritePDF`, contrato del PR #94): la web lo arma en memoria y, si salió bien, lo envía como archivo para guardar con su nombre (RN-15) | escribirlo en un archivo temporal y enviarlo; guardarlo en una carpeta del servidor y mostrar la ruta | quien usa la página no ve el disco donde corre el sistema, y el dominio no toca archivos. Armarlo en memoria antes de enviar es lo que garantiza que un error no deje un PDF cortado a medio descargar (RN-19) |
+| **D5** La descarga usa la exportación de la #19, que escribe el PDF donde se le pida (`r.WritePDF`, contrato del PR #94): la web lo arma en memoria y, si salió bien, lo envía como archivo para guardar con su nombre (RN-15) | escribirlo en un archivo temporal y enviarlo; guardarlo en una carpeta del servidor y mostrar la ruta | quien usa la página no ve el disco donde corre el sistema y, con la opción de red de la #77, puede ni siquiera estar en la misma computadora; además, el dominio no toca archivos. La #19 había tomado «se descarga» como «se guarda donde se indica» porque la aplicación no era web: se decidió el 20/10, al escribir esta spec, que la #19 escriba el PDF donde se le pida y que la consola lo grabe y la web lo descargue (contrato, PR #94). Armarlo en memoria antes de enviar es lo que garantiza que un error no deje un PDF cortado a medio descargar (RN-19) |
 | **D6** El reporte se muestra como una lista de líneas por sección, tal como las arma el núcleo, sin tabla y sin reformatear | armar una tabla con los números de las métricas | el formato es una regla del núcleo (#18, AGENTS.md): si la web lo rearmara, la página y el PDF podrían mostrar el mismo número distinto |
-| **D7** El filtro de defectos va en la dirección, como parámetro, y es uno por vez | un formulario por POST; combinar los dos filtros | filtrar no cambia nada, así que se pide por GET y la página filtrada se puede recargar o guardar. Combinarlos sería una regla nueva fuera del núcleo (punto 5) |
+| **D7** El filtro de defectos va en la dirección, como parámetro, y es uno por vez | un formulario por POST; combinar los dos filtros | filtrar no cambia nada, así que se pide por GET y la página filtrada se puede recargar o guardar. Combinarlos sería una regla nueva fuera del núcleo (punto 4) |
 | **D8** Cerrar el sprint es un solo formulario con la fecha y una casilla por historia, y la confirmación muestra cuáles quedan completadas y cuáles vuelven al backlog | marcar las completadas una por una y cerrar aparte | la #10 recibe todo junto, en una sola lista (su punto 3), y marcar de a una dejaría un estado intermedio que el núcleo no tiene |
 | **D9** La confirmación de la #77 (D9) se usa también para cerrar un sprint y resolver un defecto | confirmar solo al quitar | no se deshacen (#10, #15). Es la misma página intermedia, sin JavaScript |
-| **D10** Las listas para elegir salen de las consultas del núcleo sin filtrar por reglas: el backlog para asignar, abrir rondas o registrar esfuerzo; los integrantes; los sprints; las severidades y los estados con su nombre | filtrar en la web las que el núcleo va a rechazar | es la D7 y la D10 de la #77 aplicadas a las listas nuevas (punto 4). La única lista filtrada, la de los que faltan votar, la filtra el núcleo |
-| **D11** Las horas se leen como número con coma o con punto, y lo que no es número se marca junto al campo sin llamar al dominio | dejar pasar el texto y que lo rechace el dominio | es controlar la forma, como las fechas en la #77 (D7): el dominio recibe horas, no texto. Que sean mayores que cero lo decide el dominio |
+| **D10** Las listas para elegir salen de las consultas del núcleo sin filtrar por reglas: el backlog para asignar, abrir rondas o registrar esfuerzo; los integrantes; los sprints; las severidades y los estados con su nombre | filtrar en la web las que el núcleo va a rechazar | es la D7 y la D10 de la #77 aplicadas a las listas nuevas (punto 3). La única lista filtrada, la de los que faltan votar, la filtra el núcleo |
+| **D11** Las horas se leen como número con coma o con punto, y lo que no es número se marca junto al campo sin llamar al dominio. **«NaN» e «Inf» (y sus variantes, como «infinity») también se marcan como «no es un número»**, aunque la conversión de texto a número de Go los acepta | dejar pasar el texto y que lo rechace el dominio | es controlar la forma, como las fechas en la #77 (D7): el dominio recibe horas, no texto. Que sean mayores que cero lo decide el dominio, pero el infinito es mayor que cero y pasaría, y NaN no es una cantidad de horas: ninguno de los dos es un número que alguien escriba como horas |
 | **D12** El resumen del proyecto (#5) se suma a la página del proyecto de la #77 solo cuando la #5 está en `dev` | una página aparte; esperarla para empezar la #78 | la #77 lo dejó así (su punto 6), y el resto de la #78 no depende de ella |
 | **D13** Cada pantalla se entrega cuando su historia de dominio está en `dev`, en PRs con `Refs #78`, y el último cierra la historia | esperar a que estén todas para un solo PR | son cinco pantallas sobre nueve historias de dominio de cuatro personas. Esperarlas a todas deja la web entera para el último día. Es el caso 1 de CLAUDE.md para partir una historia |
 
@@ -508,7 +500,7 @@ falta algo del núcleo, se pide en la historia de dominio que corresponde (ver D
 - **Depende de la #77 entera en `dev`**: layout, barra, errores por campo, mensaje de una
   sola vez, confirmación, candado y guardado.
 - **Cada pantalla depende de su historia de dominio**, y no se empieza hasta que esté en
-  `dev` (punto 8):
+  `dev` (punto 7):
 
   | Pantalla | Historias de dominio |
   |---|---|
