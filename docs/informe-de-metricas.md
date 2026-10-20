@@ -21,7 +21,7 @@ los tests en cada cierre de sprint.
 | Defectos | las issues con la etiqueta `defecto` |
 | Compromiso de cada sprint | el acta de planning (`docs/actas/sprint-N-planning.md`) |
 | Lo que se terminó | el acta de review (`docs/actas/sprint-N-review.md`) |
-| Cobertura | `go test ./... -coverprofile`, el mismo comando que corre el CI, sobre `dev` en el commit de cierre |
+| Cobertura | `go test ./... -coverprofile`, el mismo comando que corre el CI, sobre `dev` en el último cambio de código del sprint |
 | Evidencia de TDD | el historial de commits de `dev` |
 
 Los números del tablero se sacan con `scripts/metricas.sh "Sprint N"`.
@@ -45,6 +45,32 @@ Son las nueve que pide la consigna.
 Una historia a medias **no suma puntos**, aunque tenga horas cargadas. Si sumara, la
 velocidad quedaría inflada y el sprint siguiente se planificaría mal.
 
+### Historias que pasan de un sprint a otro
+
+Una historia que no se termina vuelve al backlog y sigue en el sprint siguiente. El tablero
+guarda un solo total de horas por historia, así que hay que decidir dónde cuenta cada hora
+para no sumarla dos veces:
+
+- **Las horas reales cuentan en el sprint donde se trabajaron.** Lo que la historia tenía
+  cargado al cierre queda en ese sprint, y lo fija el acta de review. En el sprint siguiente
+  solo cuenta lo que se cargue después. Como `scripts/metricas.sh` suma el total de la
+  historia, a su resultado se le resta lo que ya quedó en el sprint anterior.
+- **Las horas estimadas cuentan una sola vez**, en el sprint donde la historia se comprometió
+  por primera vez.
+- **La desviación de una historia terminada se mide con la historia entera** —todas sus
+  horas, de todos los sprints— en el sprint donde se termina. Es la que sirve para estimar, y
+  así cada historia entra una sola vez y completa.
+
+**El caso de la #12 y la #24.** Al cierre del Sprint 1 tenían cargadas 4 h y 5,25 h reales:
+son las 9,25 h de Maximiliano que ya están en el Sprint 1. En el Sprint 2 se restan del total
+que da el script. Sus horas estimadas (6 y 9) tampoco se vuelven a sumar, porque ya están en
+las 48 del Sprint 1: el acta de planning del Sprint 2 lista 69,6 h porque las incluye, y en
+este informe el Sprint 2 cuenta 54,6 h estimadas de historias nuevas.
+
+Cuando la #12 se mide como historia terminada en el Sprint 2, entra entera: 6 h estimadas
+contra 4 h reales. Esas 4 h aparecen en dos métricas distintas —las horas que puso el equipo
+en el Sprint 1 y lo que costó la #12—, pero ninguna de las dos las suma dos veces.
+
 ## Resumen por sprint
 
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
@@ -60,7 +86,7 @@ velocidad quedaría inflada y el sprint siguiente se planificaría mal.
 | Horas por story point completado | 2,6 | _pendiente_ | _pendiente_ | _pendiente_ |
 | Defectos detectados / resueltos | 2 / 1 | _pendiente_ | _pendiente_ | _pendiente_ |
 | Cobertura del dominio | 100% | _pendiente_ | _pendiente_ | _pendiente_ |
-| Tests | 52 | _pendiente_ | _pendiente_ | _pendiente_ |
+| Tests | 72 | _pendiente_ | _pendiente_ | _pendiente_ |
 
 **Velocidad del proyecto:** 11 (el promedio de los sprints cerrados; por ahora, uno solo).
 
@@ -136,15 +162,17 @@ con el que se planificó el Sprint 2.
 
 ### Cobertura y tests
 
-Medido sobre `dev` en el último commit antes del cierre (`4481d1c`, 15/10):
+Medido sobre `dev` en `87635b9` (19/10), el merge del PR #58, que completó la #6. La #6
+entró a `dev` después del 16/10, pero la review la cuenta en el Sprint 1, así que la
+cobertura se mide ahí: es el último cambio de código del Sprint 1.
 
 | Paquete | Cobertura |
 |---|---|
 | `internal/domain` (núcleo y reglas de negocio) | **100%** |
 | `cmd/app` (punto de entrada, sin lógica todavía) | 0% |
-| **Total** | **99,2%** |
+| **Total** | **99,5%** |
 
-- **52 tests** en el dominio, de las tres historias terminadas.
+- **72 tests** en el dominio (130 casos, contando cada fila de los tests con tabla).
 - El CI corre formato, análisis estático y los tests con cobertura en cada pull request.
 
 ### Evidencia de TDD
@@ -191,8 +219,6 @@ más de lo pensado y qué haríamos distinto.]_
   registro que vale es su acta de review**, que se escribe el día del cierre y no cambia. Este
   informe toma de ahí los números de cada sprint cerrado, y el script queda para el sprint
   abierto y para armar esa acta.
-- **Las horas de la #12 cuentan en el sprint donde se terminó.** Las 4 horas reales que
-  tiene cargadas se trabajaron casi todas en el Sprint 1, pero la historia cerró en el
-  Sprint 2. Es la misma simplificación que usa la aplicación: el esfuerzo no tiene sprint, y
-  las horas de una historia caen en el último sprint donde estuvo.
+- **Horas de las historias que pasan de sprint.** Cada hora cuenta una sola vez. La regla
+  está en *Historias que pasan de un sprint a otro*, al principio del informe.
 - **Redondeo.** Los porcentajes se redondean al entero más cercano.
