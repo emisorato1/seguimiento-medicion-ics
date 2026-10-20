@@ -60,7 +60,7 @@ comprometieron.
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🔍 En review |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ⚙️ En implementación |
 | [Consultar el estado de un proyecto](sprint-2/05-consultar-estado-proyecto.md) | #5 | 3 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
-| [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
+| [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | ✅ Lista para implementar — puertas aprobadas por el responsable como excepción, falta ratificar |
 
 ### Sprint 3 — del 26 al 30 de octubre (36 SP)
 

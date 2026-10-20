@@ -47,7 +47,7 @@ ritmo. Si alguien no puede, se dice ahora y se recorta con tiempo, no el 31 a la
 
 | | Fechas | Días | SP | Objetivo |
 |---|---|---|---|---|
-| **Sprint 2** | mar 20 → dom 25/10 | 6 | 26 | Sprints, esfuerzo, defectos y consola |
+| **Sprint 2** | mar 20 → dom 25/10 | 6 | 31 | Sprints, esfuerzo, defectos y consola |
 | **Sprint 3** | lun 26 → vie 30/10 | 5 | 36 | Métricas, dashboard, Planning Poker y reportes |
 | **Sprint 4** | sáb 31/10 → dom 1/11 | 2 | 10 | PDF, informe, manual y presentación |
 | **Presentación** | lun 2/11 | — | — | Defensa |
@@ -66,7 +66,11 @@ Reparto total, pensado para que nadie espere a nadie:
 | **Emiliano Sorato** | #10, #16, #19 + interfaz web (#77, #78) | 18 + web |
 | | **Total** | **72 + web** |
 
-### Sprint 2 — del 20 al 25 de octubre (26 SP)
+### Sprint 2 — del 20 al 25 de octubre (31 SP)
+
+Son 26 puntos de historias nuevas más los 5 de la #6, que se terminó el 19/10, después del
+cierre del Sprint 1, y por eso cuenta en este (ver el [acta de review](actas/sprint-1-review.md)).
+El trabajo que queda en el sprint sigue siendo de 26.
 
 | Quién | Historias | SP |
 |---|---|---|
