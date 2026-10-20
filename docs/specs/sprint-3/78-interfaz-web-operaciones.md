@@ -404,17 +404,18 @@ Escenario: Los datos nuevos siguen al cerrar y volver a abrir
    descarga» como «se guarda donde se indica» porque la aplicación no era web, y por eso su
    exportación escribe en un archivo de la computadora donde corre el sistema. Desde el
    navegador eso no sirve: quien usa la página no ve ese disco y, con la opción de red de la
-   #77, puede ni siquiera estar en la misma computadora. **Propuesta:** que la #19 entregue el
-   PDF a quien lo pida sin pasar por un archivo, y que la consola lo grabe. Mientras tanto, la
-   web puede usarla tal como está, con un archivo temporal propio (D5). Cambia el contrato:
-   lo decide el equipo, no esta spec.
+   #77, puede ni siquiera estar en la misma computadora. **Decidido el 20/10** al escribir esta
+   spec, con un cambio del contrato (PR #94): la #19 entrega el PDF a quien lo pida sin pasar
+   por un archivo; la consola lo graba donde se le indica y la web lo manda como archivo para
+   guardar. La spec de la #19 se actualiza en consecuencia.
 2. **Quién vota, sin usuarios.** Quien vota se elige de la lista de los que faltan. El voto es
    secreto frente a la pantalla —nadie lo ve hasta revelar (RN-4)—, pero nada impide elegir el
    nombre de otro. Para un equipo que vota junto alcanza; impedirlo exige usuarios, que la
    #77 dejó afuera.
-3. **Los votos sin revelar quedan en el archivo de datos** si la #13 suma las rondas a lo que
-   se guarda, como pide la #77. Quien abra el archivo con un editor los ve. La alternativa
-   —no guardar las rondas abiertas— las pierde al cerrar el sistema.
+3. **Los votos sin revelar quedan en el archivo de datos**, porque las rondas entran en lo que
+   se guarda (contrato, PR #94). Quien abra el archivo con un editor los ve. La alternativa
+   —no guardar las rondas abiertas— las pierde al cerrar el sistema. **Lo decide la #13 en su
+   puerta**: la web no cambia en ningún caso.
 4. **Las listas para elegir no filtran por reglas** (RN-16). Para asignar se ofrecen todas
    las historias, aunque la #9 rechace las que no están estimadas, las Terminadas y las ya
    asignadas: filtrarlas en la web copiaría reglas de la #9 fuera del núcleo. Ofrecer solo
@@ -492,7 +493,7 @@ falta algo del núcleo, se pide en la historia de dominio que corresponde (ver D
 | **D2** La página de una ronda sin revelar se arma solo con lo que el núcleo deja leer antes de revelar —quién votó, quién falta, cuántos votaron— y un test recorre todas las páginas y respuestas buscando el valor votado | ocultar los votos con CSS; mostrarle su voto a quien votó | el secreto lo garantiza el núcleo (#13), que no deja leer un voto sin revelar. Ocultarlo con estilos lo dejaría en el HTML, a un «ver código fuente» de distancia |
 | **D3** Al rechazar un voto, el formulario vuelve sin el valor elegido (RN-6) | volver a mostrar lo escrito, como pide la #77 | mostrar el valor en pantalla rompería la RN-4 delante de quien esté mirando |
 | **D4** Quien vota se elige de la lista de los que faltan, que da el núcleo | un campo de texto con el nombre; usuarios con contraseña | sin usuarios (#77), elegir de la lista evita errores de tipeo y solo ofrece a quien puede votar; escribir el nombre igual lo valida el núcleo |
-| **D5** La descarga del PDF usa la exportación de la #19 tal como está en el contrato: la web la escribe en un archivo temporal propio, lo envía como archivo para guardar con su nombre (RN-15) y lo borra. Si se acepta el punto 1 de la puerta, se usa la exportación sin archivo y el temporal desaparece | guardar el PDF en una carpeta del servidor y mostrar la ruta | quien usa la página no ve el disco donde corre el sistema. El temporal es un detalle de la web: no cambia el contrato ni la #19 |
+| **D5** La descarga usa la exportación de la #19, que escribe el PDF donde se le pida (`r.WritePDF`, contrato del PR #94): la web lo arma en memoria y, si salió bien, lo envía como archivo para guardar con su nombre (RN-15) | escribirlo en un archivo temporal y enviarlo; guardarlo en una carpeta del servidor y mostrar la ruta | quien usa la página no ve el disco donde corre el sistema, y el dominio no toca archivos. Armarlo en memoria antes de enviar es lo que garantiza que un error no deje un PDF cortado a medio descargar (RN-19) |
 | **D6** El reporte se muestra como una lista de líneas por sección, tal como las arma el núcleo, sin tabla y sin reformatear | armar una tabla con los números de las métricas | el formato es una regla del núcleo (#18, AGENTS.md): si la web lo rearmara, la página y el PDF podrían mostrar el mismo número distinto |
 | **D7** El filtro de defectos va en la dirección, como parámetro, y es uno por vez | un formulario por POST; combinar los dos filtros | filtrar no cambia nada, así que se pide por GET y la página filtrada se puede recargar o guardar. Combinarlos sería una regla nueva fuera del núcleo (punto 5) |
 | **D8** Cerrar el sprint es un solo formulario con la fecha y una casilla por historia, y la confirmación muestra cuáles quedan completadas y cuáles vuelven al backlog | marcar las completadas una por una y cerrar aparte | la #10 recibe todo junto, en una sola lista (su punto 3), y marcar de a una dejaría un estado intermedio que el núcleo no tiene |
@@ -521,18 +522,17 @@ falta algo del núcleo, se pide en la historia de dominio que corresponde (ver D
 - **Lo que se guarda lo suma cada historia de dominio** a la conversión de la #77, con su caso
   en el test de ida y vuelta. La web no agrega nada: guarda el registro entero. Si una
   historia de dominio no lo suma, sus datos se pierden al cerrar y el último escenario falla.
-- **Lo que el contrato todavía no tiene y esta spec necesita.** No se inventa acá: se pide en
-  la historia de dominio que corresponde.
-  1. El PDF sin pasar por un archivo (punto 1 y D5). Mientras no esté, se usa el temporal.
-  2. Volver a encontrar una ronda ya abierta. Hasta la #73, que trae la lista de rondas de una
-     historia, la #13 no tiene cómo pedirle al proyecto la ronda en curso: la web no puede
-     guardarla entre un pedido y otro.
-  3. La forma de lo que devuelven las diferencias (#73) y cómo se lee la estimación acordada
-     de una ronda.
-  4. La fecha de hoy en el reporte: la sección `Report` del contrato pide el reporte sin
-     fecha, y sus decisiones transversales y AGENTS.md dicen que la recibe de quien llama. Se
-     toma la segunda.
-  5. El nombre de la consulta del resumen del proyecto (#5).
+- **Lo que el contrato no tenía y esta spec necesitaba.** No se inventó acá: el contrato se
+  ajustó en el PR #94 (20/10).
+  1. **El PDF sin pasar por un archivo**: la #19 lo escribe donde se le pida (`r.WritePDF`).
+  2. **Volver a encontrar la ronda en curso** entre un pedido y otro:
+     `p.CurrentVotingRound(storyID)`, de la #13. Las rondas entran en lo que se guarda.
+  3. **La fecha de hoy en el reporte**: `p.ProjectReport(today)` y
+     `p.SprintReport(number, today)`.
+- **Lo que define cada historia de dominio**, y la web usa tal como llegue: la forma de lo que
+  devuelven las diferencias y la lectura de la estimación acordada (#73), el nombre de la
+  consulta del resumen (#5) y los nombres y textos de los errores nuevos. La web no depende
+  del texto: los tests lo toman del propio error.
 - **No se toca** `internal/domain`, `internal/store` ni `cmd/app` (la consola, #24), ni el
   dashboard (#17).
 
@@ -622,10 +622,10 @@ Los veintidós escenarios de la Fase 1 tienen su tarea en la columna "Escenario 
 
 - **Ninguna tarea empieza sin la #77 en `dev`**, y cada grupo espera su historia de dominio
   (tabla de la Fase 2). La 1 solo necesita la #77.
-- **La 19 necesita poder volver a encontrar una ronda abierta** (Dependencias de la Fase 2,
-  punto 2). Si la #73 llega tarde, la 16 a la 18 tampoco pueden terminarse.
-- **La 21 se escribe con el temporal (D5)** si el contrato no cambia, o con el PDF sin archivo
-  si se acepta el punto 1.
+- **De la 16 a la 18 vuelven a encontrar la ronda con `p.CurrentVotingRound`** de la #13, así
+  que no esperan a la #73; la 19 sí, porque las diferencias, el acuerdo y la lista de rondas
+  son de la #73.
+- **La 21 usa `r.WritePDF` de la #19** (D5).
 - **La 23 necesita que cada historia de dominio haya sumado su entidad a la conversión.**
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
