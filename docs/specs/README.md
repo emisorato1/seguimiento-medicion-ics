@@ -22,15 +22,15 @@ Son tareas de configuración y planificación, no funcionalidad, así que docume
 | [Configurar el repositorio y el tablero](sprint-0/01-configurar-repositorio-y-tablero.md) | #1 | ✅ terminado | Emiliano Sorato |
 | [Definir el Product Backlog inicial](sprint-0/02-definir-product-backlog-inicial.md) | #2 | ✅ terminado | Emiliano Sorato |
 
-### Sprint 1 — en curso
+### Sprint 1 — cerrado el 16/10
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | [Crear y modificar proyectos](sprint-1/03-crear-proyectos.md) | #3 | 3 | Agustín Salinas | ✅ Terminada — mergeada a `dev` |
 | [Registrar integrantes](sprint-1/04-registrar-integrantes.md) | #4 | 3 | Juliana Bustos | ✅ Terminada — mergeada a `dev` |
-| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | 🔍 Implementada — en review |
-| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🔍 Implementada — en review |
-| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ⚙️ En implementación |
+| [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` |
+| [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🔍 Implementada — en review (pasa al Sprint 2) |
+| [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ⚙️ En implementación (pasa al Sprint 2) |
 
 Las Fases 1 se redactaron como borrador con asistencia de IA a partir de la consigna y de los
 criterios de aceptación de cada issue, y cada responsable las revisó y corrigió antes de
@@ -39,6 +39,15 @@ presentarlas a la Puerta 1.
 **Solo se escribe código de una historia que tiene las tres puertas aprobadas.** El orden es
 Puerta 1 (requisitos) → Fase 2 y Puerta 2 (diseño) → Fase 3 y Puerta 3 (tareas) → recién ahí
 la implementación.
+
+**El Sprint 1 cerró con 11 de los 16 story points comprometidos** (velocidad 11). Las tres
+historias terminadas están en `dev` con el dominio al 100% de cobertura.
+
+La **#12** y la **#24** volvieron al Product Backlog sin sprint asignado. Las dos conservan
+sus tres puertas aprobadas y la #24 sus 9 tareas hechas, así que cuando se replanifiquen
+arrancan desde donde quedaron: no hay que rehacer las specs.
+
+Los números completos están en el [acta de review](../actas/sprint-1-review.md).
 
 ## Orden de trabajo del Sprint 1
 
