@@ -190,6 +190,7 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "rol inexistente", change: func(d *registryJSON) { d.Projects[0].Members[1].Role = "Scrum Master" }, want: ErrMemberRoleInvalid},
 		{name: "dos Agile Enabler", change: func(d *registryJSON) { d.Projects[0].Members[1].Role = "Agile Enabler" }, want: ErrMemberAgileEnablerTaken},
 		{name: "un dato que el sistema no conoce", raw: `{"next_id": 1, "projects": [], "sprints": []}`, want: ErrSavedDataInvalid},
+		{name: "texto sobrante despues de los datos", raw: `{"next_id": 1, "projects": []} basura`, want: ErrSavedDataInvalid},
 		{name: "fecha de inicio que no es fecha", change: func(d *registryJSON) { d.Projects[0].Start = "01/10/2026" }, want: ErrSavedDataInvalid},
 		{name: "fecha de fin que no es fecha", change: func(d *registryJSON) { d.Projects[0].End = "mañana" }, want: ErrSavedDataInvalid},
 		{name: "numero de proyecto repetido", change: func(d *registryJSON) { d.Projects[1].ID = 1 }, want: ErrSavedDataInvalid},
