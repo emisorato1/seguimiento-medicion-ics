@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"encoding/json"
+	"errors"
 	"testing"
 )
 
@@ -140,5 +142,87 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	}
 	if story.ID() != 4 {
 		t.Fatalf("se esperaba que la historia nueva recibiera el numero 4, recibio el %d", story.ID())
+	}
+}
+
+// unosDatosGuardados devuelve datos guardados válidos, en la forma del archivo, para que
+// cada caso de rechazo cambie uno solo.
+func unosDatosGuardados() registryJSON {
+	return registryJSON{
+		NextID: 3,
+		Projects: []projectJSON{
+			{ID: 1, Name: "Sistema de metricas", Start: "2026-10-01", End: "2026-11-02", NextStoryID: 3,
+				Members: []memberJSON{{Name: "Ana Perez", Role: "Agile Enabler"}, {Name: "Juan Gomez", Role: "Product Builder"}},
+				Stories: []storyJSON{
+					{ID: 1, Title: "Registrar esfuerzo", Description: "Cargar horas", Priority: "Alta", State: "Pendiente",
+						StoryPoints: 5, AcceptanceCriteria: []string{"Valida las horas"}},
+					{ID: 2, Title: "Crear proyectos", Description: "Alta de proyectos", Priority: "Baja", State: "Terminada",
+						StoryPoints: 3, AcceptanceCriteria: []string{"Pide el nombre"}},
+				}},
+			{ID: 2, Name: "Otro proyecto", Start: "2026-10-05", NextStoryID: 1},
+		},
+	}
+}
+
+// Escenario: Los datos guardados estan danados (la reconstrucción del registro)
+// Cubre: #77 RN-24
+//
+// Los cinco primeros casos son los de la tarea 3. Los demás cubren cada control que hace la
+// reconstrucción, para que ninguno quede sin probar.
+func TestLosDatosGuardadosEstanDanados(t *testing.T) {
+	base, err := json.Marshal(unosDatosGuardados())
+	if err != nil {
+		t.Fatalf("no se pudieron armar los datos de prueba: %v", err)
+	}
+	if _, err := RegistryFromJSON(base); err != nil {
+		t.Fatalf("los datos de prueba sin cambios tendrian que cargarse, salio: %v", err)
+	}
+
+	cases := []struct {
+		name   string
+		raw    string
+		change func(d *registryJSON)
+		want   error
+	}{
+		{name: "texto que no es JSON", raw: `{"projects": [`, want: ErrSavedDataInvalid},
+		{name: "proyecto sin nombre", change: func(d *registryJSON) { d.Projects[0].Name = "" }, want: ErrProjectNameRequired},
+		{name: "4 story points", change: func(d *registryJSON) { d.Projects[0].Stories[0].StoryPoints = 4 }, want: ErrStoryPointsInvalid},
+		{name: "rol inexistente", change: func(d *registryJSON) { d.Projects[0].Members[1].Role = "Scrum Master" }, want: ErrMemberRoleInvalid},
+		{name: "dos Agile Enabler", change: func(d *registryJSON) { d.Projects[0].Members[1].Role = "Agile Enabler" }, want: ErrMemberAgileEnablerTaken},
+		{name: "un dato que el sistema no conoce", raw: `{"next_id": 1, "projects": [], "sprints": []}`, want: ErrSavedDataInvalid},
+		{name: "fecha de inicio que no es fecha", change: func(d *registryJSON) { d.Projects[0].Start = "01/10/2026" }, want: ErrSavedDataInvalid},
+		{name: "fecha de fin que no es fecha", change: func(d *registryJSON) { d.Projects[0].End = "mañana" }, want: ErrSavedDataInvalid},
+		{name: "numero de proyecto repetido", change: func(d *registryJSON) { d.Projects[1].ID = 1 }, want: ErrSavedDataInvalid},
+		{name: "contador de proyectos que no supera los numeros usados", change: func(d *registryJSON) { d.NextID = 2 }, want: ErrSavedDataInvalid},
+		{name: "contador de historias en cero", change: func(d *registryJSON) { d.Projects[0].NextStoryID = 0 }, want: ErrSavedDataInvalid},
+		{name: "historia sin titulo", change: func(d *registryJSON) { d.Projects[0].Stories[0].Title = "" }, want: ErrStoryTitleRequired},
+		{name: "prioridad inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[0].Priority = "Urgente" }, want: ErrStoryPriorityInvalid},
+		{name: "estado inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[1].State = "Cerrada" }, want: ErrSavedDataInvalid},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			data := []byte(tc.raw)
+			if tc.change != nil {
+				saved := unosDatosGuardados()
+				tc.change(&saved)
+				changed, marshalErr := json.Marshal(saved)
+				if marshalErr != nil {
+					t.Fatalf("no se pudieron armar los datos de prueba: %v", marshalErr)
+				}
+				data = changed
+			}
+
+			registry, err := RegistryFromJSON(data)
+
+			if !errors.Is(err, ErrSavedDataInvalid) {
+				t.Fatalf("se esperaba ErrSavedDataInvalid, salio: %v", err)
+			}
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba que el motivo fuera %v, salio: %v", tc.want, err)
+			}
+			if registry != nil {
+				t.Fatalf("se esperaba que no se cargara ningun registro, se cargo uno con %d proyectos", len(registry.Projects()))
+			}
+		})
 	}
 }
