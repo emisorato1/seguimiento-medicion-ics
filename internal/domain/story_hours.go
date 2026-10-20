@@ -13,7 +13,9 @@ func (p *Project) EstimateHours(id int, hours float64) error {
 	if story.state == StoryDone {
 		return ErrStoryEstimateDone
 	}
-	if hours <= 0 {
+	// "no es mayor que cero" y no "menor o igual que cero": las dos dicen lo mismo salvo con
+	// NaN, que no es mayor ni menor que nada y con la segunda pasaría.
+	if !(hours > 0) {
 		return ErrEstimatedHoursInvalid
 	}
 	story.estimatedHours = hours
