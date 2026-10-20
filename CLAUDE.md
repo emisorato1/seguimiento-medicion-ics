@@ -182,6 +182,14 @@ Las actas de retrospectiva son **entregable final**, así que ninguna se saltea.
 
 - Un solo sprint abierto a la vez.
 - Lo que no se termina vuelve al Product Backlog; no se arrastra en silencio.
+- **Una historia que vuelve del sprint anterior con sus tres puertas aprobadas se puede
+  retomar apenas el equipo la confirma, aunque sea por chat, sin esperar a la planning.**
+  El Agile Enabler la propone y facilita que la confirmación ocurra rápido, pero no decide
+  solo: el equipo se autogestiona. La regla de no
+  programar fuera del sprint existe para que nadie trabaje en algo que el equipo no
+  comprometió; en una historia ya especificada, con sus puertas pasadas y a medio hacer, ese
+  riesgo no existe. La planning decide **qué entra nuevo**, no vuelve a decidir lo que ya
+  estaba aprobado y empezado. La confirmación queda registrada en el acta de la planning.
 - El alcance del sprint no se amplía a mitad de camino.
 - Al cerrar, se registran los story points completados: esa es la **velocidad**, y es lo que
   se usa para planificar el sprint siguiente.
