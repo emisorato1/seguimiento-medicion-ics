@@ -16,6 +16,7 @@
       <tr>
         <th scope="col">Nombre y apellido</th>
         <th scope="col">Rol</th>
+        <th scope="col"><span class="oculto">Acciones</span></th>
       </tr>
     </thead>
     <tbody>
@@ -23,6 +24,7 @@
       <tr>
         <td>{{.Name}}</td>
         <td>{{.Role}}</td>
+        <td><a href="/proyectos/{{$.Data.ID}}/integrantes/quitar?nombre={{.Name}}">Quitar<span class="oculto"> a {{.Name}}</span></a></td>
       </tr>
       {{end}}
     </tbody>

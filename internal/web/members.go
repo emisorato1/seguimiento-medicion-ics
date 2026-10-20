@@ -84,3 +84,62 @@ func (s *Server) createMember(w http.ResponseWriter, r *http.Request) {
 	setFlash(w, "Se agregó a "+member.Name())
 	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/integrantes", project.ID()), http.StatusSeeOther)
 }
+
+// findMember busca el integrante con el nombre que viene en el pedido. Compara el nombre
+// exacto, porque llega del enlace que arma la propia lista; que no exista lo informa el
+// dominio con su error.
+func findMember(project *domain.Project, name string) (*domain.Member, error) {
+	for _, member := range project.Members() {
+		if member.Name() == name {
+			return member, nil
+		}
+	}
+	return nil, domain.ErrMemberNotFound
+}
+
+// confirmRemoveMember pide confirmar antes de quitar un integrante (RN-10, D9). Mostrar la
+// confirmacion no cambia nada: recien el boton que confirma envia el pedido.
+func (s *Server) confirmRemoveMember(w http.ResponseWriter, r *http.Request) {
+	project, err := s.findProject(r)
+	if err != nil {
+		s.notFound(w, r, nil, err)
+		return
+	}
+	member, err := findMember(project, r.FormValue("nombre"))
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+
+	s.render(w, r, http.StatusOK, "confirmar.html", page{
+		Title:   "Quitar integrante",
+		Project: project,
+		Section: "integrantes",
+		Data: confirmation{
+			Question: fmt.Sprintf("¿Quitar a %s del proyecto?", member.Name()),
+			Detail:   "Deja de figurar entre los integrantes. Se puede volver a agregar después.",
+			Action:   fmt.Sprintf("/proyectos/%d/integrantes/quitar", project.ID()),
+			Fields:   map[string]string{"nombre": member.Name()},
+			Confirm:  "Sí, quitar",
+			Cancel:   fmt.Sprintf("/proyectos/%d/integrantes", project.ID()),
+		},
+	})
+}
+
+// removeMember quita el integrante, despues de que se confirmo.
+func (s *Server) removeMember(w http.ResponseWriter, r *http.Request) {
+	project, err := s.findProject(r)
+	if err != nil {
+		s.notFound(w, r, nil, err)
+		return
+	}
+	name := r.FormValue("nombre")
+	if err := project.RemoveMember(name); err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+
+	s.saver.Save(s.registry)
+	setFlash(w, "Se quitó a "+name)
+	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/integrantes", project.ID()), http.StatusSeeOther)
+}

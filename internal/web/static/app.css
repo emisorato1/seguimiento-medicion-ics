@@ -46,6 +46,19 @@ body {
   outline-color: var(--foco-barra);
 }
 
+/* Texto que solo leen los lectores de pantalla, como "Quitar a Ana Perez" en una tabla. */
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* El enlace para saltar la barra con el teclado aparece al recibir el foco. */
 .saltar {
   position: absolute;
@@ -289,6 +302,20 @@ textarea {
 .error::first-letter,
 .aviso-error::first-letter {
   text-transform: uppercase;
+}
+
+/* La pagina que pide confirmar antes de quitar algo. */
+.confirmar {
+  max-width: 36rem;
+  padding: 1.25rem;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--peligro);
+  border-radius: var(--radio);
+}
+
+.confirmar p {
+  margin: 0 0 0.5rem;
 }
 
 /* Botones y acciones. */

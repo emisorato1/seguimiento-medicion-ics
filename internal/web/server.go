@@ -63,6 +63,8 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s.mux.HandleFunc("GET /proyectos/{id}/integrantes", s.listMembers)
 	s.mux.HandleFunc("GET /proyectos/{id}/integrantes/nuevo", s.newMember)
 	s.mux.HandleFunc("POST /proyectos/{id}/integrantes/nuevo", s.createMember)
+	s.mux.HandleFunc("GET /proyectos/{id}/integrantes/quitar", s.confirmRemoveMember)
+	s.mux.HandleFunc("POST /proyectos/{id}/integrantes/quitar", s.removeMember)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}", s.showStory)
 	return s
 }
@@ -99,6 +101,17 @@ func newChoices(prompt string, options []string, selected string) choices {
 // formatDate muestra una fecha como dd/mm/aaaa (RN-5).
 func formatDate(day time.Time) string {
 	return day.Format("02/01/2006")
+}
+
+// confirmation es la pagina que pide confirmar antes de quitar algo (D9): la pregunta, a
+// donde se envia lo que se confirma, con que datos, y a donde vuelve si se cancela.
+type confirmation struct {
+	Question string
+	Detail   string
+	Action   string
+	Fields   map[string]string
+	Confirm  string
+	Cancel   string
 }
 
 // notFound responde 404 con el mensaje de lo que no se encontro y el acceso para volver a
