@@ -3,17 +3,29 @@ package web
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
 
-// newTestServer arma una web nueva sobre el registro que recibe. Cada test arma el suyo y
-// arranca de cero.
+// fakeSaver es el guardado falso de los tests (D21): en vez de escribir un archivo, cuenta
+// cuantas veces se guardo el registro.
+type fakeSaver struct {
+	saves int
+}
+
+func (f *fakeSaver) Save(registry *domain.ProjectRegistry) error {
+	f.saves++
+	return nil
+}
+
+// newTestServer arma una web nueva sobre el registro que recibe, con un guardado falso.
+// Cada test arma el suyo y arranca de cero.
 func newTestServer(t *testing.T, registry *domain.ProjectRegistry) *Server {
 	t.Helper()
-	return NewServer(registry)
+	return NewServer(registry, &fakeSaver{})
 }
 
 // get pide una pagina a la web, como lo haria el navegador.
@@ -21,6 +33,16 @@ func get(t *testing.T, server http.Handler, path string) *httptest.ResponseRecor
 	t.Helper()
 	res := httptest.NewRecorder()
 	server.ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))
+	return res
+}
+
+// post envia un formulario a la web, como lo haria el navegador.
+func post(t *testing.T, server http.Handler, path string, form url.Values) *httptest.ResponseRecorder {
+	t.Helper()
+	req := httptest.NewRequest(http.MethodPost, path, strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res := httptest.NewRecorder()
+	server.ServeHTTP(res, req)
 	return res
 }
 
@@ -55,7 +77,7 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 	})
 
 	// Toda pagina de la web: cada pantalla nueva suma aca su direccion.
-	paginas := []string{"/proyectos"}
+	paginas := []string{"/proyectos", "/proyectos/nuevo"}
 
 	for _, pagina := range paginas {
 		t.Run(pagina, func(t *testing.T) {
