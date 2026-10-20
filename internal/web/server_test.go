@@ -62,6 +62,21 @@ func addMember(t *testing.T, project *domain.Project, name string, role domain.R
 	}
 }
 
+// addStory carga una historia en el backlog de un proyecto, para preparar un escenario.
+func addStory(t *testing.T, project *domain.Project, title string, priority domain.Priority) *domain.Story {
+	t.Helper()
+	story, err := project.AddStory(domain.StoryData{
+		Title:              title,
+		Description:        "Como integrante quiero " + strings.ToLower(title),
+		Priority:           priority,
+		AcceptanceCriteria: []string{"Se puede " + strings.ToLower(title)},
+	})
+	if err != nil {
+		t.Fatalf("no se pudo preparar la historia %q: %v", title, err)
+	}
+	return story
+}
+
 // between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
 // la pagina, como la barra. Si no lo encuentra devuelve vacio.
 func between(html, start, end string) string {
@@ -535,6 +550,98 @@ func TestLasOpcionesParaElegirSonLasDelSistema(t *testing.T) {
 			}
 			if salio := options(res.Body.String(), caso.lista); !slices.Equal(salio, caso.opciones) {
 				t.Errorf("se esperaban las opciones de %s %v, salieron %v", caso.lista, caso.opciones, salio)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Confirmar o cancelar antes de quitar
+// Cubre: RN-8, RN-10
+func TestConfirmarOCancelarAntesDeQuitar(t *testing.T) {
+	casos := []struct {
+		nombre    string
+		pedido    string
+		confirmar string
+		datos     url.Values
+		cancelar  string
+		confirmo  bool
+		mensaje   string
+		pagina    string
+		figura    string
+		queda     bool
+	}{
+		{
+			nombre:    "quitar a Ana Perez y confirmar",
+			pedido:    "/proyectos/1/integrantes/quitar?nombre=Ana+Perez",
+			confirmar: "/proyectos/1/integrantes/quitar",
+			datos:     url.Values{"nombre": {"Ana Perez"}},
+			cancelar:  "/proyectos/1/integrantes",
+			confirmo:  true,
+			mensaje:   "Se quitó a Ana Perez",
+			pagina:    "/proyectos/1/integrantes",
+			figura:    "<td>Ana Perez</td>",
+			queda:     false,
+		},
+		{
+			nombre:    "quitar a Ana Perez y cancelar",
+			pedido:    "/proyectos/1/integrantes/quitar?nombre=Ana+Perez",
+			confirmar: "/proyectos/1/integrantes/quitar",
+			datos:     url.Values{"nombre": {"Ana Perez"}},
+			cancelar:  "/proyectos/1/integrantes",
+			confirmo:  false,
+			pagina:    "/proyectos/1/integrantes",
+			figura:    "<td>Ana Perez</td>",
+			queda:     true,
+		},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			// Dado el integrante "Ana Perez" y la historia 1 estimada en 5.
+			registry := domain.NewProjectRegistry()
+			project := addProject(t, registry, "Sistema de metricas")
+			addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+			addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			if err := project.EstimateStory(1, 5); err != nil {
+				t.Fatalf("no se pudo preparar la estimacion: %v", err)
+			}
+			saver := &fakeSaver{}
+			navegador := newBrowser(t, NewServer(registry, saver))
+			antes := snapshot(registry)
+
+			// Pedir que se quite no quita nada: muestra la confirmacion.
+			res := navegador.get(caso.pedido)
+			if res.Code != http.StatusOK {
+				t.Fatalf("se esperaba la confirmacion con el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			confirmacion := between(res.Body.String(), "<main", "</main>")
+			for _, texto := range []string{`action="` + caso.confirmar + `"`, `href="` + caso.cancelar + `"`} {
+				if !strings.Contains(confirmacion, texto) {
+					t.Errorf("se esperaba en la confirmacion %s, y no esta en:\n%s", texto, confirmacion)
+				}
+			}
+			if despues := snapshot(registry); despues != antes {
+				t.Fatalf("pedir que se quite no deberia cambiar nada, y el registro paso de:\n%s\na:\n%s", antes, despues)
+			}
+
+			if caso.confirmo {
+				res = navegador.post(caso.confirmar, caso.datos)
+				if res.Code != http.StatusSeeOther {
+					t.Fatalf("se esperaba el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
+				}
+			} else {
+				navegador.get(caso.cancelar)
+				if despues := snapshot(registry); despues != antes || saver.saves != 0 {
+					t.Errorf("cancelar no deberia cambiar nada, y el registro paso de:\n%s\na:\n%s", antes, despues)
+				}
+			}
+
+			html := between(navegador.get(caso.pagina).Body.String(), "<main", "</main>")
+			if caso.mensaje != "" && !strings.Contains(html, caso.mensaje) {
+				t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", caso.mensaje, html)
+			}
+			if strings.Contains(html, caso.figura) != caso.queda {
+				t.Errorf("se esperaba que %s figure: %v, y la pagina es:\n%s", caso.figura, caso.queda, html)
 			}
 		})
 	}
