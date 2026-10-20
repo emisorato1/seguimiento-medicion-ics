@@ -1,7 +1,9 @@
 package domain
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -88,18 +90,47 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 }
 
 // RegistryFromJSON reconstruye un registro a partir del texto guardado, con los mismos
-// numeros y contadores que tenia.
+// numeros y contadores que tenia. Cada entidad pasa por las mismas validaciones que al
+// crearla, y un solo dato invalido rechaza la carga entera (D15): asi el resto del sistema
+// puede seguir dando por ciertas sus reglas aunque el archivo se haya editado a mano. El
+// error cumple errors.Is con ErrSavedDataInvalid y, si el motivo es una regla del dominio,
+// tambien con el error de esa regla.
 func RegistryFromJSON(data []byte) (*ProjectRegistry, error) {
+	registry, err := registryFromJSON(data)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %w", ErrSavedDataInvalid, err)
+	}
+	return registry, nil
+}
+
+// registryFromJSON hace la reconstruccion; RegistryFromJSON solo le agrega al error que son
+// los datos guardados los que no se pueden leer.
+func registryFromJSON(data []byte) (*ProjectRegistry, error) {
+	// Un dato que el sistema no conoce se rechaza en vez de ignorarse: si un programa viejo
+	// abriera un archivo con datos de una historia posterior, los perderia en silencio al
+	// volver a guardar.
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
 	var in registryJSON
-	if err := json.Unmarshal(data, &in); err != nil {
-		return nil, err
+	if err := decoder.Decode(&in); err != nil {
+		// el detalle de encoding/json viene en ingles: se deja entre parentesis, para quien
+		// tenga que arreglar el archivo
+		return nil, fmt.Errorf("no tienen la forma esperada (%v)", err)
+	}
+
+	ids := make([]int, 0, len(in.Projects))
+	for _, pj := range in.Projects {
+		ids = append(ids, pj.ID)
+	}
+	if err := checkNumbers(ids, in.NextID); err != nil {
+		return nil, fmt.Errorf("proyectos: %w", err)
 	}
 
 	registry := NewProjectRegistry()
 	for _, pj := range in.Projects {
 		project, err := projectFromJSON(pj)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("proyecto %d: %w", pj.ID, err)
 		}
 		registry.projects[project.id] = project
 	}
@@ -107,7 +138,8 @@ func RegistryFromJSON(data []byte) (*ProjectRegistry, error) {
 	return registry, nil
 }
 
-// projectFromJSON reconstruye un proyecto con sus integrantes y su backlog.
+// projectFromJSON reconstruye un proyecto con sus integrantes y su backlog, validando cada
+// uno como al crearlo.
 func projectFromJSON(pj projectJSON) (*Project, error) {
 	start, err := parseDay(pj.Start)
 	if err != nil {
@@ -117,43 +149,103 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 	if err != nil {
 		return nil, err
 	}
+	data, err := prepare(ProjectData{Name: pj.Name, Description: pj.Description, Start: start, End: end})
+	if err != nil {
+		return nil, err
+	}
 	project := &Project{
 		id:          pj.ID,
-		name:        pj.Name,
-		description: pj.Description,
-		start:       start,
-		end:         end,
-		nextStoryID: pj.NextStoryID,
+		name:        data.Name,
+		description: data.Description,
+		start:       data.Start,
+		end:         data.End,
 	}
 
+	// Los integrantes entran con la misma operacion que al cargarlos, que controla el nombre,
+	// el duplicado y que haya un solo Agile Enabler.
 	for _, mj := range pj.Members {
 		role, err := ParseRole(mj.Role)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("integrante %q: %w", mj.Name, err)
 		}
-		project.members = append(project.members, &Member{name: mj.Name, role: role})
+		if _, err := project.AddMember(mj.Name, role); err != nil {
+			return nil, fmt.Errorf("integrante %q: %w", mj.Name, err)
+		}
 	}
 
+	// Las historias no pueden entrar con AddStory, que les daria un numero nuevo: se validan
+	// con lo mismo que usa AddStory y se conserva su numero.
+	ids := make([]int, 0, len(pj.Stories))
 	for _, sj := range pj.Stories {
-		priority, err := ParsePriority(sj.Priority)
-		if err != nil {
-			return nil, err
-		}
-		state, err := parseStoryState(sj.State)
-		if err != nil {
-			return nil, err
-		}
-		project.backlog = append(project.backlog, &Story{
-			id:                 sj.ID,
-			title:              sj.Title,
-			description:        sj.Description,
-			priority:           priority,
-			state:              state,
-			storyPoints:        sj.StoryPoints,
-			acceptanceCriteria: sj.AcceptanceCriteria,
-		})
+		ids = append(ids, sj.ID)
 	}
+	if err := checkNumbers(ids, pj.NextStoryID); err != nil {
+		return nil, fmt.Errorf("historias: %w", err)
+	}
+	for _, sj := range pj.Stories {
+		story, err := storyFromJSON(sj)
+		if err != nil {
+			return nil, fmt.Errorf("historia %d: %w", sj.ID, err)
+		}
+		project.backlog = append(project.backlog, story)
+	}
+	project.nextStoryID = pj.NextStoryID
 	return project, nil
+}
+
+// storyFromJSON reconstruye una historia con su numero, su estado y su estimacion.
+func storyFromJSON(sj storyJSON) (*Story, error) {
+	priority, err := ParsePriority(sj.Priority)
+	if err != nil {
+		return nil, err
+	}
+	state, err := parseStoryState(sj.State)
+	if err != nil {
+		return nil, err
+	}
+	data, err := prepareStory(StoryData{
+		Title:              sj.Title,
+		Description:        sj.Description,
+		Priority:           priority,
+		AcceptanceCriteria: sj.AcceptanceCriteria,
+	})
+	if err != nil {
+		return nil, err
+	}
+	// cero es "sin estimar" (historia #12); cualquier otro valor tiene que estar en la escala
+	if sj.StoryPoints != 0 && !inScale(sj.StoryPoints) {
+		return nil, ErrStoryPointsInvalid
+	}
+	return &Story{
+		id:                 sj.ID,
+		title:              data.Title,
+		description:        data.Description,
+		priority:           data.Priority,
+		state:              state,
+		storyPoints:        sj.StoryPoints,
+		acceptanceCriteria: data.AcceptanceCriteria,
+	}, nil
+}
+
+// checkNumbers controla los numeros de un grupo (los proyectos del registro o las historias
+// de un proyecto) contra su contador: el contador es el numero que va a recibir el proximo,
+// asi que tiene que ser al menos 1 y mayor que todos los usados, y ningun numero se repite.
+// Es lo que garantiza que al volver a abrir nunca se reparta un numero ya usado (RN-22).
+func checkNumbers(ids []int, next int) error {
+	if next < 1 {
+		return fmt.Errorf("el próximo número a asignar es %d y tiene que ser al menos 1", next)
+	}
+	seen := map[int]bool{}
+	for _, id := range ids {
+		if id < 1 || id >= next {
+			return fmt.Errorf("el número %d no es válido con el próximo a asignar en %d", id, next)
+		}
+		if seen[id] {
+			return fmt.Errorf("el número %d está repetido", id)
+		}
+		seen[id] = true
+	}
+	return nil
 }
 
 // parseDay lee una fecha guardada como dia. Un texto vacio es una fecha sin cargar.
@@ -161,7 +253,11 @@ func parseDay(text string) (time.Time, error) {
 	if text == "" {
 		return time.Time{}, nil
 	}
-	return time.Parse(dayLayout, text)
+	day, err := time.Parse(dayLayout, text)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("la fecha %q no es un día con la forma aaaa-mm-dd", text)
+	}
+	return day, nil
 }
 
 // parseStoryState lee el estado de una historia por su nombre.
@@ -171,5 +267,5 @@ func parseStoryState(text string) (StoryState, error) {
 			return state, nil
 		}
 	}
-	return StoryPending, ErrSavedDataInvalid
+	return StoryPending, fmt.Errorf("el estado %q no existe", text)
 }
