@@ -1088,6 +1088,26 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 				t.Fatalf("se esperaba un formulario con campos, y la pagina es:\n%s", html)
 			}
 
+			// Con errores, el foco arranca en el primer campo con error, asi el lector de
+			// pantalla lo anuncia con su mensaje; sin errores, la pagina no mueve el foco.
+			// Hallazgo de la verificacion con el teclado.
+			conFoco := 0
+			for _, tag := range fieldTag.FindAllString(html, -1) {
+				if strings.Contains(tag, " autofocus") {
+					conFoco++
+					if invalido, _ := attribute(tag, "aria-invalid"); invalido != "true" {
+						t.Errorf("el foco arranca en %s, que no tiene error", tag)
+					}
+				}
+			}
+			tieneErrores := errorTag.MatchString(html)
+			if tieneErrores && conFoco != 1 {
+				t.Errorf("con errores se esperaba el foco en un solo campo, el primero con error, y hay %d", conFoco)
+			}
+			if !tieneErrores && conFoco != 0 {
+				t.Errorf("sin errores la pagina no deberia mover el foco, y lo mueve en %d campos", conFoco)
+			}
+
 			// Todo error junto a un campo esta enlazado con el campo, para los lectores de
 			// pantalla, y el campo esta marcado como invalido.
 			for _, match := range errorTag.FindAllStringSubmatch(html, -1) {
