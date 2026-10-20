@@ -198,3 +198,36 @@ func TestListarUnBacklogVacio(t *testing.T) {
 		t.Fatalf("se esperaba ver que el backlog no tiene historias, salio: %q", out.String())
 	}
 }
+
+// Escenario: Cargar una historia y listar el backlog
+// Cubre: RN-1, RN-3
+func TestCargarUnaHistoriaYListarElBacklog(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := "crear-proyecto\nSistema de metricas\n\n01/10/2026\n\n" +
+		"cargar-historia\n1\nRegistrar esfuerzo\nCargar las horas trabajadas\nalta\n" +
+		"Se cargan las horas de una historia\nNo se aceptan horas negativas\n\n" +
+		"listar-backlog\n1\n" +
+		"salir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	project, _ := registry.Get(1)
+	story, err := project.Story(1)
+	if err != nil {
+		t.Fatalf("se esperaba la historia 1 en el backlog, salio: %v", err)
+	}
+	if story.Title() != "Registrar esfuerzo" || story.Priority() != domain.PriorityHigh || len(story.AcceptanceCriteria()) != 2 {
+		t.Fatalf("se esperaba la historia con su titulo, prioridad Alta y dos criterios, salio: %q, %v, %v",
+			story.Title(), story.Priority(), story.AcceptanceCriteria())
+	}
+	if !strings.Contains(out.String(), "#1 Registrar esfuerzo") {
+		t.Fatalf("se esperaba ver la historia \"Registrar esfuerzo\" con su identificador, salio: %q", out.String())
+	}
+	if !strings.Contains(out.String(), "sin estimar") {
+		t.Fatalf("se esperaba ver la historia como sin estimar, salio: %q", out.String())
+	}
+}
