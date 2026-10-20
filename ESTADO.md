@@ -1,15 +1,15 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 11:05. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-20 11:06. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 20
+- Historias en el tablero: 21
 - Sin estimar: 2
-- Story points cargados: 78
+- Story points cargados: 83
 - Terminadas: 6
 
 ## En review
@@ -47,6 +47,7 @@ _No hay historias en este estado._
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
 
 ## Product Backlog
 
@@ -66,6 +67,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+93d81c5 2026-10-20 docs: ajustar el reparto y registrar el cambio de alcance en el acta
 ee86d17 2026-10-20 docs: plan para entregar el proyecto completo el 2 de noviembre
 09a2a5a 2026-10-20 merge: traer dev
 2d0d14f 2026-10-20 merge: traer el README de como correrlo
@@ -73,5 +75,4 @@ addad05 2026-10-20 merge: traer el modo sprint final al plan
 e7936ec 2026-10-20 Merge pull request #70 from emisorato1/historia-12-estimar-story-points
 897dfbb 2026-10-20 Merge remote-tracking branch 'origin/dev' into historia-12-estimar-story-points
 aedd892 2026-10-20 Merge pull request #67 from emisorato1/docs-retomar-historias
-a0ea81a 2026-10-20 Merge remote-tracking branch 'origin/dev' into docs-retomar-historias
 ```
