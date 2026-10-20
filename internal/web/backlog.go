@@ -55,19 +55,46 @@ func (s *Server) listBacklog(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// renderStoryForm muestra el formulario de historia con lo escrito y sus errores.
-func (s *Server) renderStoryForm(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, f *form) {
-	data := struct {
-		ProjectID  int
-		Priorities []string
-		Form       *form
-	}{
-		ProjectID:  project.ID(),
+// storyForm es lo que muestra el formulario de historia, que sirve para cargar y para
+// modificar: a donde se envia, el titulo, el boton, las prioridades y lo escrito.
+type storyForm struct {
+	Action     string
+	Heading    string
+	Submit     string
+	Cancel     string
+	Priorities []string
+	Form       *form
+}
+
+// newStoryForm es el formulario para cargar una historia en el backlog del proyecto.
+func newStoryForm(project *domain.Project, f *form) storyForm {
+	return storyForm{
+		Action:     fmt.Sprintf("/proyectos/%d/historias/nueva", project.ID()),
+		Heading:    "Cargar historia",
+		Submit:     "Cargar historia",
+		Cancel:     fmt.Sprintf("/proyectos/%d/backlog", project.ID()),
 		Priorities: priorityOptions(),
 		Form:       f,
 	}
+}
+
+// editStoryForm es el formulario para modificar una historia.
+func editStoryForm(project *domain.Project, story *domain.Story, f *form) storyForm {
+	storyPage := fmt.Sprintf("/proyectos/%d/historias/%d", project.ID(), story.ID())
+	return storyForm{
+		Action:     storyPage + "/editar",
+		Heading:    fmt.Sprintf("Modificar la historia %d", story.ID()),
+		Submit:     "Guardar cambios",
+		Cancel:     storyPage,
+		Priorities: priorityOptions(),
+		Form:       f,
+	}
+}
+
+// renderStoryForm muestra el formulario de historia con lo escrito y sus errores.
+func (s *Server) renderStoryForm(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, data storyForm) {
 	s.render(w, r, status, "historia-form.html", page{
-		Title:   "Cargar historia",
+		Title:   data.Heading,
 		Project: project,
 		Section: "backlog",
 		Data:    data,
@@ -81,7 +108,7 @@ func (s *Server) newStory(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r, nil, err)
 		return
 	}
-	s.renderStoryForm(w, r, http.StatusOK, project, newForm())
+	s.renderStoryForm(w, r, http.StatusOK, project, newStoryForm(project, newForm()))
 }
 
 // createStory carga la historia en el backlog. La prioridad se convierte en el dominio y,
@@ -103,7 +130,7 @@ func (s *Server) createStory(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		f.reject(err)
-		s.renderStoryForm(w, r, http.StatusUnprocessableEntity, project, f)
+		s.renderStoryForm(w, r, http.StatusUnprocessableEntity, project, newStoryForm(project, f))
 		return
 	}
 
@@ -132,4 +159,53 @@ func (s *Server) showStory(w http.ResponseWriter, r *http.Request) {
 		Section: "backlog",
 		Data:    data,
 	})
+}
+
+// editStory muestra el formulario para modificar una historia, precargado con sus datos.
+func (s *Server) editStory(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+
+	f := newForm()
+	f.Values["titulo"] = story.Title()
+	f.Values["descripcion"] = story.Description()
+	f.Values["prioridad"] = story.Priority().String()
+	f.Values["criterios"] = strings.Join(story.AcceptanceCriteria(), "\n")
+	s.renderStoryForm(w, r, http.StatusOK, project, editStoryForm(project, story, f))
+}
+
+// updateStory modifica la historia con lo que quedo en el formulario, que trae los cuatro
+// datos. Si el dominio la rechaza —tambien si esta Terminada—, vuelve el formulario con lo
+// escrito y el mensaje junto a su campo o arriba (RN-12, RN-13).
+func (s *Server) updateStory(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+
+	f := readForm(r, storyFields...)
+	title := f.Values["titulo"]
+	description := f.Values["descripcion"]
+	priority, _ := domain.ParsePriority(f.Values["prioridad"])
+	criteria := splitLines(f.Values["criterios"])
+	changes := domain.StoryChanges{
+		Title:              &title,
+		Description:        &description,
+		Priority:           &priority,
+		AcceptanceCriteria: &criteria,
+	}
+
+	if err := project.UpdateStory(story.ID(), changes); err != nil {
+		f.reject(err)
+		s.renderStoryForm(w, r, http.StatusUnprocessableEntity, project, editStoryForm(project, story, f))
+		return
+	}
+
+	s.saver.Save(s.registry)
+	setFlash(w, fmt.Sprintf("Se modificó la historia %d", story.ID()))
+	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/historias/%d", project.ID(), story.ID()), http.StatusSeeOther)
 }

@@ -69,6 +69,8 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/nueva", s.newStory)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/nueva", s.createStory)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}", s.showStory)
+	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/editar", s.editStory)
+	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/editar", s.updateStory)
 	return s
 }
 

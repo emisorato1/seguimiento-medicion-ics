@@ -1,7 +1,7 @@
 {{define "content"}}
-<h1>Cargar historia</h1>
+<h1>{{.Data.Heading}}</h1>
 {{template "error-formulario" .Data.Form.General}}
-<form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/historias/nueva" novalidate>
+<form class="formulario" method="post" action="{{.Data.Action}}" novalidate>
   {{with .Data.Form.Field "titulo"}}
   <div class="campo">
     <label for="titulo">Título</label>
@@ -34,8 +34,8 @@
   </div>
   {{end}}
   <div class="acciones">
-    <button type="submit">Cargar historia</button>
-    <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/backlog">Cancelar</a>
+    <button type="submit">{{.Data.Submit}}</button>
+    <a class="boton boton-secundario" href="{{.Data.Cancel}}">Cancelar</a>
   </div>
 </form>
 {{end}}
