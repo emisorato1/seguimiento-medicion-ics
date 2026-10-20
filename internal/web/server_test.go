@@ -1,6 +1,8 @@
 package web
 
 import (
+	"fmt"
+	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -34,6 +36,23 @@ func get(t *testing.T, server http.Handler, path string) *httptest.ResponseRecor
 	res := httptest.NewRecorder()
 	server.ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))
 	return res
+}
+
+// snapshot describe en texto todo lo que tiene el registro, para comparar antes y despues
+// de una operacion y saber si cambio algun dato.
+func snapshot(registry *domain.ProjectRegistry) string {
+	var b strings.Builder
+	for _, p := range registry.Projects() {
+		fmt.Fprintf(&b, "proyecto %d %q %q %v %v\n", p.ID(), p.Name(), p.Description(), p.Start(), p.End())
+		for _, m := range p.Members() {
+			fmt.Fprintf(&b, "  integrante %q %v\n", m.Name(), m.Role())
+		}
+		for _, h := range p.Backlog() {
+			fmt.Fprintf(&b, "  historia %d %q %q %v %v %d %q\n", h.ID(), h.Title(), h.Description(),
+				h.Priority(), h.State(), h.StoryPoints(), h.AcceptanceCriteria())
+		}
+	}
+	return b.String()
 }
 
 // browser es un navegador de prueba: guarda las cookies que manda la web y las devuelve en
@@ -181,6 +200,74 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			}
 			if !strings.Contains(html, caso.acceso) {
 				t.Errorf("se esperaba el acceso %s, y no esta en:\n%s", caso.acceso, html)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Mostrar el rechazo sin perder lo escrito
+// Cubre: RN-12, RN-15
+func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
+	casos := []struct {
+		nombre     string
+		preparar   func(t *testing.T, registry *domain.ProjectRegistry)
+		formulario string
+		datos      url.Values
+		campo      string
+		err        error
+	}{
+		{
+			nombre:     "proyecto con el nombre vacio",
+			preparar:   func(t *testing.T, registry *domain.ProjectRegistry) {},
+			formulario: "/proyectos/nuevo",
+			datos:      url.Values{"nombre": {""}, "descripcion": {"Tablero & métricas"}, "inicio": {"2026-11-01"}},
+			campo:      "nombre",
+			err:        domain.ErrProjectNameRequired,
+		},
+		{
+			nombre:     "proyecto con la fecha de fin antes que la de inicio",
+			preparar:   func(t *testing.T, registry *domain.ProjectRegistry) {},
+			formulario: "/proyectos/nuevo",
+			datos:      url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-11-01"}, "fin": {"2026-10-01"}},
+			campo:      "fin",
+			err:        domain.ErrProjectDatesInconsistent,
+		},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			caso.preparar(t, registry)
+			saver := &fakeSaver{}
+			server := NewServer(registry, saver)
+			antes := snapshot(registry)
+
+			res := newBrowser(t, server).post(caso.formulario, caso.datos)
+
+			if res.Code != http.StatusUnprocessableEntity {
+				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+			}
+			html := res.Body.String()
+
+			// El formulario vuelve con todo lo que se habia escrito.
+			for campo, valores := range caso.datos {
+				if valor := template.HTMLEscapeString(valores[0]); !strings.Contains(html, valor) {
+					t.Errorf("se esperaba que el campo %s conservara %q, y no esta en:\n%s", campo, valor, html)
+				}
+			}
+
+			// El mensaje del dominio, junto a su campo.
+			junto := fmt.Sprintf(`id="%s-error">%s<`, caso.campo, template.HTMLEscapeString(caso.err.Error()))
+			if !strings.Contains(html, junto) {
+				t.Errorf("se esperaba junto al campo %s el mensaje %q, y no esta en:\n%s", caso.campo, caso.err, html)
+			}
+
+			// No cambio ningun dato.
+			if despues := snapshot(registry); despues != antes {
+				t.Errorf("no se esperaba ningun cambio, y el registro paso de:\n%s\na:\n%s", antes, despues)
+			}
+			if saver.saves != 0 {
+				t.Errorf("no se esperaba que se guardara nada, se guardo %d veces", saver.saves)
 			}
 		})
 	}
