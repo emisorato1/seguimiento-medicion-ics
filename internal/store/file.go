@@ -59,6 +59,11 @@ func (f *File) Save(registry *domain.ProjectRegistry) error {
 		return fmt.Errorf("%w: %v", ErrNotSaved, err)
 	}
 	_, err = tmp.Write(data)
+	if err == nil {
+		// Sync obliga a que el contenido llegue al disco antes de renombrar: sin eso, un
+		// corte de luz justo despues del renombre puede dejar el archivo vacio.
+		err = tmp.Sync()
+	}
 	if closeErr := tmp.Close(); err == nil {
 		err = closeErr
 	}
