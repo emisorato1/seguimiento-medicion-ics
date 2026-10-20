@@ -206,7 +206,7 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 }
 
 // Esquema del escenario: Mostrar el rechazo sin perder lo escrito
-// Cubre: RN-12, RN-15
+// Cubre: RN-12, RN-14, RN-15
 func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 	casos := []struct {
 		nombre     string
@@ -231,6 +231,24 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			datos:      url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-11-01"}, "fin": {"2026-10-01"}},
 			campo:      "fin",
 			err:        domain.ErrProjectDatesInconsistent,
+		},
+		{
+			nombre:     "proyecto con una fecha de inicio que no es fecha",
+			preparar:   func(t *testing.T, registry *domain.ProjectRegistry) {},
+			formulario: "/proyectos/nuevo",
+			datos:      url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"31/02/2026"}},
+			campo:      "inicio",
+			err:        errInvalidDate,
+		},
+		{
+			// Si la fecha mal escrita llegara al dominio como "sin fecha", el proyecto se
+			// crearia sin fecha de fin: por eso este caso prueba que no se lo llama.
+			nombre:     "proyecto con una fecha de fin que no es fecha",
+			preparar:   func(t *testing.T, registry *domain.ProjectRegistry) {},
+			formulario: "/proyectos/nuevo",
+			datos:      url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-11-01"}, "fin": {"el lunes"}},
+			campo:      "fin",
+			err:        errInvalidDate,
 		},
 	}
 
