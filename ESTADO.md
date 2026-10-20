@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 11:06. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-20 13:14. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -28,10 +28,6 @@ _No hay historias en este estado._
 
 ## Especificacion SDD
 
-_No hay historias en este estado._
-
-## Sprint Backlog
-
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
@@ -48,6 +44,10 @@ _No hay historias en este estado._
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+
+## Sprint Backlog
+
+_No hay historias en este estado._
 
 ## Product Backlog
 
@@ -67,12 +67,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-93d81c5 2026-10-20 docs: ajustar el reparto y registrar el cambio de alcance en el acta
-ee86d17 2026-10-20 docs: plan para entregar el proyecto completo el 2 de noviembre
-09a2a5a 2026-10-20 merge: traer dev
-2d0d14f 2026-10-20 merge: traer el README de como correrlo
-addad05 2026-10-20 merge: traer el modo sprint final al plan
-e7936ec 2026-10-20 Merge pull request #70 from emisorato1/historia-12-estimar-story-points
-897dfbb 2026-10-20 Merge remote-tracking branch 'origin/dev' into historia-12-estimar-story-points
-aedd892 2026-10-20 Merge pull request #67 from emisorato1/docs-retomar-historias
+1df458d 2026-10-20 Merge pull request #75 from emisorato1/specs-sprint-2-3-4
+d467e9e 2026-10-20 Merge pull request #72 from emisorato1/plan-final-2-noviembre
+284e9be 2026-10-20 docs: completar la retrospectiva del Sprint 1
+6bda516 2026-10-20 docs: acta de la retrospectiva del Sprint 1
+cbbcb65 2026-10-20 docs: congelar los story points de un sprint al cerrarlo
+fa7eff7 2026-10-20 docs: decidir que el dominio no lee el reloj y que puede armar texto
+0e85b9f 2026-10-20 docs: borradores completos de las specs de Planning Poker
+6911cef 2026-10-20 docs: indice de specs y README al dia con los borradores completos
 ```
