@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -100,6 +101,15 @@ func options(html, name string) []string {
 		if value := part[:strings.Index(part, `"`)]; value != "" {
 			values = append(values, value)
 		}
+	}
+	return values
+}
+
+// scaleText pasa la escala de story points a texto, que es como la muestra la lista.
+func scaleText(scale []int) []string {
+	var values []string
+	for _, points := range scale {
+		values = append(values, strconv.Itoa(points))
 	}
 	return values
 }
@@ -207,6 +217,7 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 		"/proyectos/1/historias/nueva",
 		"/proyectos/1/historias/1",
 		"/proyectos/1/historias/1/editar",
+		"/proyectos/1/historias/1/estimar",
 	}
 
 	for _, pagina := range paginas {
@@ -400,6 +411,42 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			campo: "criterios",
 			err:   domain.ErrStoryCriteriaRequired,
 		},
+		{
+			// La lista no ofrece el 4: se envia igual, y lo rechaza el dominio (punto 5).
+			nombre: "estimacion fuera de la escala",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/historias/1/estimar",
+			datos:      url.Values{"puntos": {"4"}},
+			campo:      "puntos",
+			err:        domain.ErrStoryPointsInvalid,
+		},
+		{
+			// Sin elegir de la lista, o con letras: es la forma del dato, como una fecha
+			// que no es fecha, y no se llama al dominio.
+			nombre: "estimacion sin elegir",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/historias/1/estimar",
+			datos:      url.Values{"puntos": {""}},
+			campo:      "puntos",
+			err:        errInvalidPoints,
+		},
+		{
+			nombre: "estimacion con letras",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/historias/1/estimar",
+			datos:      url.Values{"puntos": {"cinco"}},
+			campo:      "puntos",
+			err:        errInvalidPoints,
+		},
 	}
 
 	for _, caso := range casos {
@@ -507,6 +554,17 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 			},
 			mensaje: "Se modificó la historia 1",
 			figura:  []string{"<dd>Alta</dd>"},
+		},
+		{
+			nombre: "estimar una historia",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/historias/1/estimar",
+			datos:      url.Values{"puntos": {"5"}},
+			mensaje:    "Se estimó la historia 1 en 5 story points",
+			figura:     []string{"<td>5</td>"},
 		},
 		{
 			nombre: "cambiar el nombre de un proyecto",
@@ -635,12 +693,19 @@ func TestLasOpcionesParaElegirSonLasDelSistema(t *testing.T) {
 			lista:      "prioridad",
 			opciones:   []string{domain.PriorityHigh.String(), domain.PriorityMedium.String(), domain.PriorityLow.String()},
 		},
+		{
+			formulario: "estimacion",
+			pagina:     "/proyectos/1/historias/1/estimar",
+			lista:      "puntos",
+			opciones:   scaleText(domain.StoryPointScale()),
+		},
 	}
 
 	for _, caso := range casos {
 		t.Run(caso.formulario, func(t *testing.T) {
 			registry := domain.NewProjectRegistry()
-			addProject(t, registry, "Sistema de metricas")
+			project := addProject(t, registry, "Sistema de metricas")
+			addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
 			server := newTestServer(t, registry)
 
 			res := get(t, server, caso.pagina)
