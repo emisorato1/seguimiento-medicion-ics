@@ -6,6 +6,7 @@ package web
 import (
 	"bytes"
 	"embed"
+	"encoding/base64"
 	"html/template"
 	"io/fs"
 	"net/http"
@@ -85,15 +86,51 @@ func parsePages() map[string]*template.Template {
 	return pages
 }
 
-// page es lo que recibe el layout: el titulo de la pestaña y los datos de la pagina.
+// page es lo que recibe el layout: el titulo de la pestaña, el mensaje de confirmacion si
+// hay uno y los datos de la pagina.
 type page struct {
 	Title string
+	Flash string
 	Data  any
 }
 
-// render muestra una pagina dentro del layout. Arma todo antes de escribir, asi una
-// plantilla que falla no deja una pagina cortada a la mitad.
-func (s *Server) render(w http.ResponseWriter, status int, name string, p page) {
+// flashCookie es la cookie que lleva el mensaje de confirmacion hasta la pagina siguiente.
+const flashCookie = "aviso"
+
+// setFlash deja el mensaje que confirma una operacion para la pagina a la que se redirige
+// (RN-8). Viaja en una cookie y no en la direccion, asi recargar o guardar el enlace no lo
+// vuelve a mostrar (D8). Va en base64 porque una cookie no admite tildes ni espacios.
+func setFlash(w http.ResponseWriter, message string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     flashCookie,
+		Value:    base64.URLEncoding.EncodeToString([]byte(message)),
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+}
+
+// takeFlash lee el mensaje de confirmacion y borra la cookie, asi se muestra una sola vez
+// (RN-9). Sin cookie, o con una que no se puede leer, no hay mensaje.
+func takeFlash(w http.ResponseWriter, r *http.Request) string {
+	cookie, err := r.Cookie(flashCookie)
+	if err != nil {
+		return ""
+	}
+	http.SetCookie(w, &http.Cookie{Name: flashCookie, Path: "/", MaxAge: -1})
+	message, err := base64.URLEncoding.DecodeString(cookie.Value)
+	if err != nil {
+		return ""
+	}
+	return string(message)
+}
+
+// render muestra una pagina dentro del layout, con el mensaje de confirmacion pendiente si
+// lo hay. Arma todo antes de escribir, asi una plantilla que falla no deja una pagina
+// cortada a la mitad.
+func (s *Server) render(w http.ResponseWriter, r *http.Request, status int, name string, p page) {
+	p.Flash = takeFlash(w, r)
+
 	var buf bytes.Buffer
 	if err := s.pages[name].ExecuteTemplate(&buf, "layout", p); err != nil {
 		http.Error(w, "No se pudo mostrar la página.", http.StatusInternalServerError)

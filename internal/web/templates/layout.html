@@ -17,6 +17,7 @@
   </nav>
 </header>
 <main id="contenido" tabindex="-1">
+{{with .Flash}}<p class="aviso aviso-ok" role="status">{{.}}</p>{{end}}
 {{template "content" .}}
 </main>
 </body>

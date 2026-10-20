@@ -17,12 +17,12 @@ func (s *Server) listProjects(w http.ResponseWriter, r *http.Request) {
 	}{
 		Projects: s.registry.Projects(),
 	}
-	s.render(w, http.StatusOK, "proyectos.html", page{Title: "Proyectos", Data: data})
+	s.render(w, r, http.StatusOK, "proyectos.html", page{Title: "Proyectos", Data: data})
 }
 
 // newProject muestra el formulario para crear un proyecto.
 func (s *Server) newProject(w http.ResponseWriter, r *http.Request) {
-	s.render(w, http.StatusOK, "proyecto-nuevo.html", page{Title: "Nuevo proyecto"})
+	s.render(w, r, http.StatusOK, "proyecto-nuevo.html", page{Title: "Nuevo proyecto"})
 }
 
 // createProject crea el proyecto con los datos del formulario y redirige con 303 a su
@@ -43,6 +43,7 @@ func (s *Server) createProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.saver.Save(s.registry)
+	setFlash(w, "Se creó el proyecto "+project.Name())
 	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d", project.ID()), http.StatusSeeOther)
 }
 
@@ -54,5 +55,5 @@ func (s *Server) showProject(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	s.render(w, http.StatusOK, "proyecto.html", page{Title: project.Name(), Data: project})
+	s.render(w, r, http.StatusOK, "proyecto.html", page{Title: project.Name(), Data: project})
 }
