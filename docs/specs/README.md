@@ -56,8 +56,8 @@ Las Fases 1 de la #7 y la #8 son borradores preparados con asistencia de IA, igu
 Sprint 1: cada una tiene su sección "Para decidir en la puerta" con las decisiones ambiguas
 que hay que cerrar en la Puerta 1.
 
-**El plan para terminar el proyecto al 15 de noviembre está en
-[docs/replan-al-15-de-noviembre.md](../replan-al-15-de-noviembre.md).**
+**El plan para las dos semanas que quedan está en
+[docs/replan-al-2-de-noviembre.md](../replan-al-2-de-noviembre.md).**
 
 ## Orden de trabajo del Sprint 1
 
