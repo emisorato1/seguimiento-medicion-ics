@@ -74,7 +74,7 @@ noviembre ([plan](../plan-final-al-2-de-noviembre.md)), y eso ajustó algunas pr
 |---|---|---|
 | Una historia por persona (Juliana) | **Reparto parejo por story points**: entre 17 y 19 por persona, nadie colgado de un PR ajeno | con 72 puntos en 13 días, una historia por persona no alcanza. Lo que la retro marcó como problema era la sobrecarga de uno solo, y eso es lo que se corrige |
 | Cero bypass (Juliana) | **Se mantiene.** Hacia `dev` deja de hacer falta la aprobación: alcanza con el CI en verde y la revisión escrita. Hacia `main` sigue obligatoria | el bypass apareció porque la aprobación obligatoria dejaba los PRs parados un día. Sacándola de `dev` desaparece la razón para saltearla |
-| Cada autor mergea su propio PR (Juliana) | **Se mantiene**, ya estaba en `CLAUDE.md` | — |
+| Cada autor mergea su propio PR (Juliana) | **Cambió el 20/10**: hacia `dev` mergea la sesión de revisión, siempre después de la revisión escrita y con el CI en verde | lo que la retro marcó como problema era mergear sin revisión o con cambios pedidos sin responder, y eso sigue prohibido. Lo que cambia es quién aprieta el botón, para que un PR ya revisado no quede parado esperando |
 | PR en dos tiempos: spec primero, código después (Maximiliano, según Agustín) | **Se adopta, y más fuerte**: las 14 specs que quedan se escribieron todas juntas el 20/10, en un PR propio, antes de cualquier código | ataca directo la espera entre fases que marcó Agustín |
 | Revisión en el día (Agustín) | **Se adopta**: regla 7 del *Modo sprint final* | — |
 | No mergear con cambios pedidos sin responder (Agustín) | **Se adopta** | es lo que pasó con el #31 |
@@ -83,7 +83,7 @@ noviembre ([plan](../plan-final-al-2-de-noviembre.md)), y eso ajustó algunas pr
 |---|---|
 | Nadie con más carga que el resto ni dependiendo de un PR ajeno para arrancar | Emiliano, en el plan y en cada planning |
 | Cero bypass de administrador, ni hacia `dev` ni hacia `main` | todos |
-| Cada autor mergea su propio PR | todos |
+| Hacia `dev` mergea la sesión de revisión, siempre después de la revisión escrita y con el CI en verde | la sesión de revisión |
 | Un PR con cambios pedidos no se mergea hasta que se respondan | quien mergea |
 | Un PR abierto antes de las 18:00 se revisa ese mismo día | quien revisa; si a las 20:00 nadie lo hizo, Emiliano |
 

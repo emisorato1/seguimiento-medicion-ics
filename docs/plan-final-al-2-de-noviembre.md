@@ -54,8 +54,8 @@ Reparto total, pensado para que nadie espere a nadie:
 | **Agustín Salinas** | #7, #8, #9, #11, #18 | 17 |
 | **Juliana Bustos** | #5, #14, #15, #17 | 19 |
 | **Maximiliano Eula** | #12, #24, #13, #73 | 18 |
-| **Emiliano Sorato** | #10, #16, #19 | 18 |
-| | **Total** | **72** |
+| **Emiliano Sorato** | #10, #16, #19 + interfaz web (#77, #78) | 18 + web |
+| | **Total** | **72 + web** |
 
 ### Sprint 2 — del 20 al 25 de octubre (26 SP)
 
@@ -64,7 +64,7 @@ Reparto total, pensado para que nadie espere a nadie:
 | Agustín | #7 Priorizar el backlog (2), #8 Crear un sprint (3), #9 Asignar historias (5) | 10 |
 | Juliana | #5 Consultar el estado (3), #14 Registrar el esfuerzo real (3), #15 Gestionar defectos (5) | 11 |
 | Maximiliano | #12 Story Points (2), #24 Interfaz de consola (3) | 5 |
-| Emiliano | **las specs de las 15 historias** y las revisiones | — |
+| Emiliano | **las specs de las 15 historias** y las revisiones; después, la base de la interfaz web (#77) | web |
 
 **Sprint Goal:** que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda
 operar desde la consola.
@@ -80,7 +80,7 @@ espere una puerta. Es el cuello de botella que mató al Sprint 1.
 
 | Quién | Historias | SP |
 |---|---|---|
-| Emiliano | #10 Cerrar un sprint (5), #16 Calcular las métricas (8) | 13 |
+| Emiliano | #10 Cerrar un sprint (5), #16 Calcular las métricas (8), y las pantallas web que faltan (#78) | 13 + web |
 | Juliana | #17 Mostrar el dashboard (8) | 8 |
 | Maximiliano | #13 Votar en secreto en una ronda (8) | 8 |
 | Agustín | #11 Consultar sprints anteriores (2), #18 Generar el reporte (5) | 7 |
@@ -99,6 +99,29 @@ Es el sprint más cargado y el que decide la presentación.
 | Juliana | presentación final | — |
 
 **Sprint Goal:** cerrar el producto y tener todo lo que se entrega listo para presentar.
+
+## Interfaz web (agregada el 20/10)
+
+El mismo 20/10 el equipo decidió que la aplicación tenga **una interfaz web profesional**,
+además de la consola de la #24. La consigna permite web, escritorio o consola, pero pide una
+*"interfaz usable"* en el Sprint 2 y *"representaciones gráficas"* en el dashboard, y las dos
+cosas se defienden mucho mejor en el navegador que en una terminal.
+
+| # | Historia | Sprint | Responsable |
+|---|---|---|---|
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | 2 | Emiliano |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 3 | Emiliano |
+| #17 | El dashboard pasa a mostrarse en la web, con gráficos de verdad | 3 | Juliana |
+
+- **Las dos historias nuevas no tienen story points todavía.** Se estiman con el equipo,
+  como cualquier otra: nadie estima solo.
+- **Emiliano las toma porque es el que tiene más tiempo libre**, y queda con más carga que el
+  resto. Es voluntario y no frena a nadie, porque la web *consume* lo que hacen los demás:
+  ninguna otra historia depende de ella. Aun así, **sus historias de dominio van primero**:
+  la #16 está en el camino crítico y la web no.
+- **La web no reemplaza a la consola.** Maximiliano termina la #24 como está especificada.
+- **Si el ritmo no da**, en el punto de control del 25 la #78 se reduce a las pantallas de lo
+  que ya esté en `dev`. La #77 no se recorta: es la base.
 
 ## Entregables que no son historias
 
