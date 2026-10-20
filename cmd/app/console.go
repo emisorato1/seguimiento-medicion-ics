@@ -137,11 +137,15 @@ func parseDate(text string) (time.Time, error) {
 	return time.Parse(dateLayout, text)
 }
 
-// askProject pide el identificador de un proyecto y lo busca en el registro. Si no existe,
-// muestra el mensaje del núcleo y devuelve nil (RN-2). Un identificador escrito con letras
-// todavía no se informa como error de forma: es la tarea 12.
+// askProject pide el identificador de un proyecto y lo busca en el registro. Si no es un
+// número, lo informa la consola sin llamar al núcleo (RN-5); si no existe, muestra el
+// mensaje del núcleo (RN-2). En los dos casos devuelve nil.
 func askProject(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) *domain.Project {
-	id, _ := strconv.Atoi(ask(scanner, out, "Proyecto (identificador): "))
+	id, ok := parseNumber(ask(scanner, out, "Proyecto (identificador): "))
+	if !ok {
+		fmt.Fprintln(out, "El identificador del proyecto tiene que ser un número: la operación no se ejecuta.")
+		return nil
+	}
 	project, err := registry.Get(id)
 	if err != nil {
 		fmt.Fprintln(out, err)
@@ -238,17 +242,34 @@ func estimateStory(scanner *bufio.Scanner, out io.Writer, registry *domain.Proje
 		return
 	}
 	idText := ask(scanner, out, "Historia (identificador): ")
-	points, _ := strconv.Atoi(ask(scanner, out, "Story points: "))
-	if idText == "" {
+	pointsText := ask(scanner, out, "Story points: ")
+	if strings.TrimSpace(idText) == "" {
 		fmt.Fprintln(out, "Falta indicar la historia: la operación no se ejecuta.")
 		return
 	}
-	id, _ := strconv.Atoi(idText)
+	id, ok := parseNumber(idText)
+	if !ok {
+		fmt.Fprintln(out, "El identificador de la historia tiene que ser un número: la operación no se ejecuta.")
+		return
+	}
+	points, ok := parseNumber(pointsText)
+	if !ok {
+		fmt.Fprintln(out, "Los story points tienen que ser un número: la operación no se ejecuta.")
+		return
+	}
 	if err := project.EstimateStory(id, points); err != nil {
 		fmt.Fprintln(out, err)
 		return
 	}
 	fmt.Fprintf(out, "Historia %d estimada en %d story points\n", id, points)
+}
+
+// parseNumber lee un número entero escrito por el usuario, ignorando los espacios de los
+// extremos. Solo controla la forma (RN-5): si el número es válido para la operación lo
+// decide el núcleo (RN-7), así un 0 o un negativo los rechaza el dominio con su mensaje.
+func parseNumber(text string) (int, bool) {
+	n, err := strconv.Atoi(strings.TrimSpace(text))
+	return n, err == nil
 }
 
 // askList pide una lista de textos, uno por línea, hasta una línea vacía o el fin de la entrada.
