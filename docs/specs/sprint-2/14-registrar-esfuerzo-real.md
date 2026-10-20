@@ -6,7 +6,8 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
-  y lo presenta a las puertas.
+  y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres
+  puertas por pull request.
 - **Depende de:** #3 (el proyecto), #4 (el integrante que carga las horas) y #6 (la historia
   sobre la que se trabajó)
 - **La necesitan:** #16 (horas reales y desviación contra las estimadas), #17 (dashboard),
@@ -275,15 +276,11 @@ Escenario: Registrar esfuerzo en un proyecto que no existe
 
 **Para decidir en la puerta:**
 
-1. **La actividad realizada no está en el contrato del dominio.** La issue la pide como dato
-   del registro ("se registra integrante, fecha, actividad realizada y horas trabajadas"),
-   pero el `Effort` de [`docs/diseno-dominio.md`](../../diseno-dominio.md) tiene solo historia,
-   integrante, horas y día. Acá se la dejó como dato obligatorio y **no se le inventó un
-   nombre**: antes de implementar hay que agregarla al contrato, que es la regla 1 del propio
-   contrato. Si el equipo prefiere no guardarla, se cae la RN-6 y el primer criterio de
-   aceptación de la issue queda sin cumplir: eso se decide en la puerta, no mientras se
-   programa. Lo mismo vale para los dos totales, por historia y por integrante: el contrato
-   solo nombra registrar y listar, así que también hay que nombrarlos ahí.
+1. **La actividad realizada es obligatoria.** La issue la pide como dato del registro ("se
+   registra integrante, fecha, actividad realizada y horas trabajadas"). **Resuelto en el
+   contrato:** [`docs/diseno-dominio.md`](../../diseno-dominio.md) ya tiene la actividad
+   como dato obligatorio del `Effort` y nombra las dos consultas de totales, por historia y
+   por integrante. No hace falta tocar el contrato antes de implementar.
 2. **El registro no se ata a un sprint.** El contrato no le puso sprint al `Effort`, así que
    las horas de un sprint salen de las historias asignadas a ese sprint, y esa cuenta es de
    la #16. La consecuencia: si una historia pasa por dos sprints, todas sus horas caen en el
@@ -320,7 +317,8 @@ memoria, errores como valores del dominio comparables con `errors.Is`, mensajes 
 y validar todo antes de cambiar nada— están en [AGENTS.md](../../../AGENTS.md) y no se
 repiten acá. Los nombres de los datos y de las operaciones son los del contrato
 ([`docs/diseno-dominio.md`](../../diseno-dominio.md)): `Effort`, con `StoryID`, `MemberName`,
-`Hours` y `Day`, registrado con `LogEffort` y consultado con `Efforts`.
+`Activity`, `Hours` y `Day`, registrado con `LogEffort` y consultado con `Efforts`,
+`StoryHours` y `MemberHours`.
 
 ### Enfoque
 
@@ -343,7 +341,6 @@ total que no se guarda no puede quedar desactualizado, y es lo que dice el contr
 | `internal/domain/effort_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/errors.go` | se modifica | los errores propios de esta historia: horas inválidas, día futuro, fecha faltante y actividad faltante |
 | `internal/domain/project.go` | se modifica | la lista de registros de esfuerzo dentro del proyecto, al lado de los integrantes y el backlog |
-| `docs/diseno-dominio.md` | se modifica | agregar al `Effort` la actividad realizada y nombrar las dos consultas de totales, antes de escribir código (punto 1 y 7 de la puerta) |
 
 ### Decisiones
 
@@ -354,6 +351,7 @@ total que no se guarda no puede quedar desactualizado, y es lo que dice el contr
 | Los totales los responde el proyecto | devolver la lista de registros y que cada interfaz sume | si la suma vive afuera del dominio, las RN-13 y RN-14 no quedan cubiertas por ningún test y cada interfaz la reimplementa distinto |
 | Se guarda el nombre del integrante ya resuelto contra la lista del proyecto (RN-8) | guardar el texto tal como se escribió | la #16 agrupa las horas por nombre: dos formas de escribir el mismo nombre partirían el total de la misma persona en dos |
 | Un error propio para cada rechazo (horas, día futuro, falta la fecha, falta la actividad) | un único error de "registro inválido" | la Fase 1 da cuatro mensajes distintos, y los tests distinguen cuál salió con `errors.Is` |
+| Las horas se validan como "mayores que cero", y no como "no menores o iguales que cero" | comprobar que no sean cero ni negativas | las dos parecen lo mismo, pero solo la primera rechaza un valor que no es un número (`NaN`), que puede llegar desde la consola porque convertir el texto "NaN" a número no da error. Es el mismo criterio que usa la #16 para las horas estimadas (hallazgo de la revisión del PR #81) |
 | El registro admite varias cargas del mismo integrante, historia y día (RN-11) | un único registro por esa combinación, que acumula o rechaza | ver el punto 3 de "Para decidir en la puerta": con la actividad adentro, acumular pierde información |
 
 ### Dependencias y restricciones
@@ -365,8 +363,9 @@ total que no se guarda no puede quedar desactualizado, y es lo que dice el contr
 - **No se toca `member.go` ni `story.go`:** al integrante y a la historia solo se los busca.
 - **`errors.go` es compartido:** los errores de esta historia se agregan ahí, y al traer
   `dev` hay que resolver ese conflicto a mano, como ya pasó en la #12.
-- **El contrato se toca antes que el código** (puntos 1 y 7 de la puerta), avisando al grupo:
-  es la regla 3 de `docs/diseno-dominio.md`.
+- **El contrato no se toca:** ya tiene la actividad y las dos consultas de totales (punto 1
+  de la puerta). Si al implementar hiciera falta cambiarlo, se avisa al grupo antes, como
+  pide la regla 3 de `docs/diseno-dominio.md`.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -383,7 +382,7 @@ comprueba además que el proyecto quedó sin registros, que es la otra mitad de 
 |---|---|---|---|---|
 | 1 | Registrar un esfuerzo válido: queda guardado con sus cinco datos y aparece en los registros del proyecto | Registrar horas trabajadas en una historia | RN-1, RN-15 | pendiente |
 | 2 | Las horas admiten fracciones | Registrar media hora | RN-2 | pendiente |
-| 3 | Rechazar cero horas y horas negativas, sin dejar rastro | Rechazar horas que no son mayores que cero | RN-3, RN-18 | pendiente |
+| 3 | Rechazar cero horas, horas negativas y un valor que no es un número, sin dejar rastro | Rechazar horas que no son mayores que cero | RN-3, RN-18 | pendiente |
 | 4 | El día de mañana se rechaza; el de hoy y uno anterior al inicio del proyecto se aceptan | Rechazar horas de un dia que todavia no paso / Registrar horas de un dia anterior al inicio del proyecto | RN-4, RN-17 | pendiente |
 | 5 | Rechazar un registro sin fecha | Rechazar un registro sin fecha | RN-5 | pendiente |
 | 6 | La actividad es obligatoria, un texto de solo espacios cuenta como vacío y se guarda sin los espacios de los extremos | Rechazar un registro sin actividad realizada / Guardar la actividad sin los espacios de los extremos | RN-6 | pendiente |
@@ -445,8 +444,20 @@ Los dieciocho escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escena
   el estado directamente, igual que hizo la #12 en su tarea 9.
 - **Ninguna tarea necesita la #8.** Esta historia se implementa completa sin que el `Sprint`
   exista.
-- **La actividad realizada tiene que estar en el contrato antes de la tarea 1**, porque es
-  uno de los cinco datos que esa tarea guarda.
+- **La actividad realizada ya está en el contrato**, así que la tarea 1 puede guardar los
+  cinco datos sin esperar nada.
+
+### Entrega en dos pull requests
+
+La #16 (métricas) necesita registros de esfuerzo para sus tareas 4 a 16, y en Go su test no
+puede armar un `Effort` si el tipo todavía no existe en `dev`. Por eso esta historia se parte
+en dos, que es el caso 1 de "Cuándo se puede partir una historia" en `CLAUDE.md` (alguien
+está bloqueado esperándote):
+
+1. **Primer PR (`Refs #14`):** esta spec con sus tres puertas y la **tarea 1**, que deja el
+   `Effort`, el registro y la consulta de los registros. Con eso la #16 ya puede cargar
+   esfuerzo en sus tests.
+2. **Segundo PR (`Closes #14`):** las tareas 2 a 13.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
