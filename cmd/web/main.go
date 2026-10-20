@@ -8,16 +8,21 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
 	"os"
+	"syscall"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/store"
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/web"
 )
+
+// errPortInUse es el aviso de que otro programa ya usa el puerto.
+var errPortInUse = errors.New("ya lo está usando otro programa")
 
 // options son las opciones del comando (D20).
 type options struct {
@@ -48,6 +53,36 @@ func (o options) addr() string {
 		return fmt.Sprintf(":%d", o.port)
 	}
 	return fmt.Sprintf("127.0.0.1:%d", o.port)
+}
+
+// listen toma el puerto donde va a escuchar la web. Antes prueba el puerto en todas las
+// direcciones: en macOS, otro programa que escucha en todas —como Docker en el 8080— no
+// impide escuchar solo en 127.0.0.1, y el navegador podia terminar en el otro programa sin
+// ningun aviso (hallazgo de la verificacion manual).
+func listen(o options) (net.Listener, error) {
+	probe, err := net.Listen("tcp", fmt.Sprintf(":%d", o.port))
+	if err != nil {
+		return nil, portError(o.port, err)
+	}
+	probe.Close()
+
+	listener, err := net.Listen("tcp", o.addr())
+	if err != nil {
+		return nil, portError(o.port, err)
+	}
+	return listener, nil
+}
+
+// portError explica en castellano por que no se pudo tomar el puerto, y que hacer.
+func portError(port int, err error) error {
+	switch {
+	case errors.Is(err, syscall.EADDRINUSE):
+		return fmt.Errorf("el puerto %d %w. Probá con otro, por ejemplo: go run ./cmd/web -puerto %d", port, errPortInUse, port+1)
+	case errors.Is(err, syscall.EACCES):
+		return fmt.Errorf("no hay permiso para usar el puerto %d. Probá con uno mayor que 1024, por ejemplo: go run ./cmd/web -puerto 8081", port)
+	default:
+		return fmt.Errorf("no se pudo usar el puerto %d (%v). Probá con otro con -puerto", port, err)
+	}
 }
 
 // open carga los datos guardados y arma la web, que guarda en el mismo archivo. Si los datos
@@ -102,8 +137,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	// La direccion se muestra recien cuando el puerto es nuestro: si no, se mostraria una
+	// direccion donde atiende otro programa.
+	listener, err := listen(opts)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "No se pudo abrir el sistema:", err)
+		os.Exit(1)
+	}
 	showAddress(os.Stdout, opts)
-	if err := http.ListenAndServe(opts.addr(), handler); err != nil {
+	if err := http.Serve(listener, handler); err != nil {
 		fmt.Fprintln(os.Stderr, "La web se detuvo:", err)
 		os.Exit(1)
 	}
