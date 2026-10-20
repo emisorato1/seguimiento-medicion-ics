@@ -166,7 +166,8 @@ func (b *browser) do(req *http.Request) *httptest.ResponseRecorder {
 // Cubre: RN-3, RN-4. Esta es la parte de la web; el comando lo prueba cmd/web.
 func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 	registry := domain.NewProjectRegistry()
-	addProject(t, registry, "Sistema de metricas")
+	project := addProject(t, registry, "Sistema de metricas")
+	addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
 	server := newTestServer(t, registry)
 
 	t.Run("la raiz lleva a la lista de proyectos", func(t *testing.T) {
@@ -202,6 +203,9 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 		"/proyectos/1/editar",
 		"/proyectos/1/integrantes",
 		"/proyectos/1/integrantes/nuevo",
+		"/proyectos/1/backlog",
+		"/proyectos/1/historias/nueva",
+		"/proyectos/1/historias/1",
 	}
 
 	for _, pagina := range paginas {
@@ -264,6 +268,15 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			pagina:  "/proyectos/1/integrantes",
 			mensaje: "Este proyecto todavía no tiene integrantes",
 			acceso:  `href="/proyectos/1/integrantes/nuevo"`,
+		},
+		{
+			nombre: "un proyecto sin historias",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/backlog",
+			mensaje: "El backlog está vacío",
+			acceso:  `href="/proyectos/1/historias/nueva"`,
 		},
 	}
 
@@ -407,7 +420,8 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 		precargado []string
 		datos      url.Values
 		mensaje    string
-		figura     string
+		figura     []string
+		verificar  func(t *testing.T, registry *domain.ProjectRegistry)
 	}{
 		{
 			nombre: "agregar un integrante",
@@ -417,7 +431,34 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 			formulario: "/proyectos/1/integrantes/nuevo",
 			datos:      url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}},
 			mensaje:    "Se agregó a Ana Perez",
-			figura:     "<td>Product Builder</td>",
+			figura:     []string{"<td>Product Builder</td>"},
+		},
+		{
+			nombre: "cargar una historia",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/historias/nueva",
+			datos: url.Values{
+				"titulo":      {"Registrar esfuerzo"},
+				"descripcion": {"Como integrante quiero registrar mis horas"},
+				"prioridad":   {"Alta"},
+				"criterios":   {"Se cargan las horas\r\n\r\nSe ve el total"},
+			},
+			mensaje: "Se cargó la historia 1",
+			figura:  []string{"<td>Pendiente</td>", "sin estimar"},
+			verificar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project, _ := registry.Get(1)
+				story, err := project.Story(1)
+				if err != nil {
+					t.Fatalf("se esperaba la historia 1 cargada: %v", err)
+				}
+				// Un criterio por renglon; el renglon en blanco lo ignora el dominio.
+				criterios := []string{"Se cargan las horas", "Se ve el total"}
+				if !slices.Equal(story.AcceptanceCriteria(), criterios) {
+					t.Errorf("se esperaban los criterios %q, salieron %q", criterios, story.AcceptanceCriteria())
+				}
+			},
 		},
 		{
 			nombre: "cambiar el nombre de un proyecto",
@@ -428,7 +469,7 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 			precargado: []string{`value="Sistema de metricas"`, `value="2026-11-01"`},
 			datos:      url.Values{"nombre": {"Metricas ICS"}, "inicio": {"2026-11-01"}},
 			mensaje:    "Se modificó el proyecto Metricas ICS",
-			figura:     "<h1>Metricas ICS</h1>",
+			figura:     []string{"<h1>Metricas ICS</h1>"},
 		},
 		{
 			nombre: "borrar la descripcion de un proyecto",
@@ -446,7 +487,7 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 			precargado: []string{">Tablero del curso</textarea>"},
 			datos:      url.Values{"nombre": {"Sistema de metricas"}, "descripcion": {""}, "inicio": {"2026-11-01"}},
 			mensaje:    "Se modificó el proyecto Sistema de metricas",
-			figura:     "sin descripción",
+			figura:     []string{"sin descripción"},
 		},
 	}
 
@@ -476,8 +517,13 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 			if !strings.Contains(html, caso.mensaje) {
 				t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", caso.mensaje, html)
 			}
-			if !strings.Contains(html, caso.figura) {
-				t.Errorf("se esperaba que figure %s, y no esta en:\n%s", caso.figura, html)
+			for _, texto := range caso.figura {
+				if !strings.Contains(html, texto) {
+					t.Errorf("se esperaba que figure %s, y no esta en:\n%s", texto, html)
+				}
+			}
+			if caso.verificar != nil {
+				caso.verificar(t, registry)
 			}
 		})
 	}
@@ -534,6 +580,12 @@ func TestLasOpcionesParaElegirSonLasDelSistema(t *testing.T) {
 			pagina:     "/proyectos/1/integrantes/nuevo",
 			lista:      "rol",
 			opciones:   []string{domain.RoleAgileEnabler.String(), domain.RoleProductBuilder.String()},
+		},
+		{
+			formulario: "historia",
+			pagina:     "/proyectos/1/historias/nueva",
+			lista:      "prioridad",
+			opciones:   []string{domain.PriorityHigh.String(), domain.PriorityMedium.String(), domain.PriorityLow.String()},
 		},
 	}
 
