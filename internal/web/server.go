@@ -11,6 +11,7 @@ import (
 	"io/fs"
 	"net/http"
 	"path"
+	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
@@ -64,10 +65,20 @@ func (s *Server) home(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/proyectos", http.StatusSeeOther)
 }
 
+// templateFuncs son las funciones que pueden usar las plantillas.
+var templateFuncs = template.FuncMap{
+	"fecha": formatDate,
+}
+
+// formatDate muestra una fecha como dd/mm/aaaa (RN-5).
+func formatDate(day time.Time) string {
+	return day.Format("02/01/2006")
+}
+
 // parsePages arma una plantilla por pagina: cada una es el layout comun mas el archivo de
 // la pagina, que define el bloque "content". Una pantalla nueva solo suma su archivo.
 func parsePages() map[string]*template.Template {
-	layout := template.Must(template.ParseFS(files, "templates/layout.html"))
+	layout := template.Must(template.New("layout").Funcs(templateFuncs).ParseFS(files, "templates/layout.html"))
 
 	names, err := fs.Glob(files, "templates/*.html")
 	if err != nil {
@@ -87,11 +98,14 @@ func parsePages() map[string]*template.Template {
 }
 
 // page es lo que recibe el layout: el titulo de la pestaña, el mensaje de confirmacion si
-// hay uno y los datos de la pagina.
+// hay uno, el proyecto en el que se esta (para la barra, RN-4) con la seccion abierta, y
+// los datos de la pagina.
 type page struct {
-	Title string
-	Flash string
-	Data  any
+	Title   string
+	Flash   string
+	Project *domain.Project
+	Section string
+	Data    any
 }
 
 // flashCookie es la cookie que lleva el mensaje de confirmacion hasta la pagina siguiente.

@@ -70,5 +70,10 @@ func (s *Server) showProject(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	s.render(w, r, http.StatusOK, "proyecto.html", page{Title: project.Name(), Data: project})
+	s.render(w, r, http.StatusOK, "proyecto.html", page{
+		Title:   project.Name(),
+		Project: project,
+		Section: "datos",
+		Data:    project,
+	})
 }

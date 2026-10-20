@@ -96,6 +96,12 @@ body {
   font-weight: 700;
 }
 
+/* El proyecto en el que se esta, siempre a la vista (RN-4). */
+.barra .proyecto-actual {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 .barra ul {
   display: flex;
   flex-wrap: wrap;
@@ -217,6 +223,11 @@ th {
 .datos dd {
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+/* Un texto largo, como la descripcion, respeta los renglones que escribio el usuario. */
+.texto-largo {
+  white-space: pre-line;
 }
 
 /* Formularios: cada campo con su etiqueta visible y su error debajo (RN-12, RN-19). */
