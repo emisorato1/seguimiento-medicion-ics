@@ -59,6 +59,7 @@ se puede reemplazar, no se toca si la historia está Terminada. **Es el único c
 | `State` | `SprintOpen`, `SprintClosed` | en qué etapa está |
 | `Stories` | lista de identificadores de historia | las que se le asignaron; **no se vacía nunca**, ni al cerrar |
 | `CompletedStories` | lista de identificadores de historia | las que estaban terminadas al cerrar; vacía mientras está abierto |
+| `PointsAtClose` | story points por historia | los puntos que tenía cada historia de `Stories` al cerrar; vacío mientras está abierto |
 | `ClosedOn` | fecha | cuándo se cerró de verdad; vacía si no cerró |
 
 Cuelga del proyecto: `p.AddSprint(...)` y `p.OpenSprint()` (#8), `p.AssignStory(id)` y
@@ -70,6 +71,10 @@ vuelve al Product Backlog y se puede terminar en el sprint siguiente: si "comple
 dedujera del estado actual de la historia, contaría en los dos sprints y la velocidad del
 primero quedaría inflada. Se fija al cerrar y no cambia más. Lo detectó la spec de la #10.
 
+**Por qué `PointsAtClose`.** Por la misma razón: una historia que volvió al backlog se puede
+reestimar, y si los planificados de un sprint cerrado se calcularan con los puntos actuales,
+el número de un sprint viejo cambiaría sin que nadie lo toque. Decidido el 20/10.
+
 **Son solo dos estados, no tres.** La Fase 1 de la #8 descartó un estado "Planificado": el
 sprint se crea ya abierto, y solo puede haber uno abierto por proyecto a la vez. El
 razonamiento está en su sección "Para decidir en la puerta", punto 4.
@@ -79,8 +84,9 @@ razonamiento está en su sección "Para decidir en la puerta", punto 4.
 **Lo que necesita saber quien lo consume:** un sprint cerrado tiene `State` en
 `SprintClosed`, `ClosedOn` cargada y `CompletedStories` fija. Las historias que no se
 terminaron **vuelven al Product Backlog** al cerrar (pasan a Pendiente), pero siguen en
-`Stories`: así la #16 sabe cuánto se había comprometido. Los puntos completados de un sprint
-salen de `CompletedStories`, nunca del estado actual de las historias.
+`Stories`: así la #16 sabe cuánto se había comprometido. Los puntos de un sprint cerrado —planificados
+y completados— salen de `PointsAtClose` y `CompletedStories`, nunca de los puntos ni del
+estado actual de las historias.
 
 ### `Effort` — historia #14
 

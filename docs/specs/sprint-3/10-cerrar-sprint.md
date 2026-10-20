@@ -87,6 +87,9 @@ como Pendientes. El proyecto deja de tener sprint abierto.
     abierto, de modo que se pueda crear el siguiente.
 15. **[RN-15]** Si se intenta cerrar el sprint de un proyecto que no existe, el sistema debe
     informar que no se encontró el proyecto y no cerrar nada.
+16. **[RN-16]** Cuando se cierra el sprint, el sistema debe registrar los story points que
+    tenía en ese momento cada historia asignada, y esos valores no deben cambiar después,
+    aunque una de las historias vuelva al Product Backlog y se reestime.
 
 Los estados de una historia —Pendiente, En curso y Terminada— son los que define la
 historia #6. Esta historia usa las dos transiciones que faltaban: de En curso a Terminada y
@@ -138,6 +141,8 @@ reestima (#6 RN-10, #12 RN-8).
 - [ ] No se puede cerrar dos veces el mismo sprint.
 - [ ] Después de cerrar, el proyecto no tiene sprint abierto y se puede crear el siguiente.
 - [ ] Cerrar el sprint de un proyecto que no existe informa que no se encontró el proyecto.
+- [ ] Los story points que el sprint registró al cerrar no cambian si después se reestima una
+      de sus historias.
 
 ### Escenarios BDD
 
@@ -219,6 +224,12 @@ Escenario: Una fecha de cierre distinta de la fecha de fin se acepta
   Dado un proyecto con el sprint 1 abierto, con fin el 25/10/2026
   Cuando cierro el sprint el 23/10/2026
   Entonces el sprint 1 queda con fecha de cierre 23/10/2026
+
+Escenario: Los puntos registrados al cerrar no cambian si se reestima la historia
+  Dado un sprint abierto con la historia 3 estimada en 5 story points
+  Y cierro el sprint sin indicar la historia 3 como completada
+  Cuando reestimo la historia 3 en 8 story points
+  Entonces el sprint cerrado sigue registrando 5 story points para la historia 3
 
 Escenario: Cerrar el sprint de un proyecto que no existe
   Dado que no existe ningun proyecto con identificador 99
@@ -358,6 +369,7 @@ siguió abierto y que ninguna historia cambió de estado (RN-13).
 | 10 | Cerrar dos veces se rechaza y el sprint conserva lo que había quedado registrado | No se puede cerrar dos veces el mismo sprint | RN-12, RN-13 | pendiente |
 | 11 | Una fecha de cierre distinta de la fecha de fin del sprint se acepta | Una fecha de cierre distinta de la fecha de fin se acepta | RN-11 | pendiente |
 | 12 | Cerrar el sprint de un proyecto que no existe informa que no se encontró | Cerrar el sprint de un proyecto que no existe | RN-15 | pendiente |
+| 13 | Al cerrar se registran los puntos de cada historia, y reestimarla después no los cambia | Los puntos registrados al cerrar no cambian si se reestima la historia | RN-16 | pendiente |
 
 ### Por qué este orden
 
@@ -372,13 +384,14 @@ siguió abierto y que ninguna historia cambió de estado (RN-13).
 
 ### Cobertura
 
-Las quince reglas quedan cubiertas: RN-1 (1), RN-2 (2, 6), RN-3 (2, 4), RN-4 (2, 4),
+Las dieciséis reglas quedan cubiertas: RN-1 (1), RN-2 (2, 6), RN-3 (2, 4), RN-4 (2, 4),
 RN-5 (3), RN-6 (9), RN-7 (7), RN-8 (6), RN-9 (4, 5), RN-10 (8), RN-11 (11), RN-12 (10),
-RN-13 (7, 8, 10), RN-14 (1), RN-15 (12).
+RN-13 (7, 8, 10), RN-14 (1), RN-15 (12), RN-16 (13).
 
 | Criterio de aceptación | Tareas |
 |---|---|
 | Se puede cerrar el sprint abierto y queda Cerrado con su fecha | 1 |
+| Los story points registrados al cerrar no cambian si se reestima una historia | 13 |
 | Las historias completadas quedan Terminadas | 2, 4 |
 | Las que no se indicaron quedan Pendientes | 2, 4 |
 | El sprint conserva las historias que se le habían asignado | 3 |

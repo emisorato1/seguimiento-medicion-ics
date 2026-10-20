@@ -65,7 +65,8 @@ Además, una historia queda con sus horas estimadas cuando se le cargan.
    ese momento, sin guardarlas y sin modificar ningún dato.
 3. **[RN-3]** Cuando se piden las métricas de un sprint, el sistema debe tomar como
    planificadas todas las historias comprometidas en ese sprint, incluidas las que al
-   cerrarlo volvieron al Product Backlog.
+   cerrarlo volvieron al Product Backlog. Si el sprint está cerrado, debe usar los story
+   points que cada historia tenía al cerrar, no los actuales.
 4. **[RN-4]** Cuando se piden las métricas de un sprint, el sistema debe tomar como
    completadas las historias que quedaron registradas como completadas al cerrarlo, y no
    debe deducirlas del estado actual de las historias.
@@ -322,9 +323,10 @@ Esquema del escenario: Pedir algo que no existe
    estimadas, para que la desviación compare las mismas historias. La consecuencia: las horas
    de un sprint **ya cerrado** bajan si una historia que no se completó se vuelve a
    comprometer. Evitarlo exige ponerle sprint al registro de esfuerzo (#14 y contrato).
-3. **Los planificados de un sprint cerrado pueden cambiar** si una historia que volvió al
-   backlog se reestima, porque la #12 lo permite mientras no esté Terminada. Los completados
-   no cambian. Fijar los puntos al cerrar sería un cambio de la #10 y del contrato.
+3. **Los planificados de un sprint cerrado no cambian.** Una historia que volvió al backlog
+   se puede reestimar (la #12 lo permite), y eso movía los números de un sprint viejo.
+   **Decidido el 20/10:** la #10 registra los puntos de cada historia al cerrar (su RN-16), y
+   esta historia los usa para los sprints cerrados (RN-3).
 4. **Dividir por cero da cero (RN-14)**, como pide la issue. Un "sin datos" sería más exacto,
    pero el contrato define las métricas como números planos: quien muestra puede decir "sin
    datos" cuando las horas estimadas son cero.
