@@ -766,6 +766,29 @@ func TestConfirmarOCancelarAntesDeQuitar(t *testing.T) {
 			figura:    "<td>Ana Perez</td>",
 			queda:     true,
 		},
+		{
+			nombre:    "quitar la estimacion de la 1 y confirmar",
+			pedido:    "/proyectos/1/historias/1/quitar-estimacion",
+			confirmar: "/proyectos/1/historias/1/quitar-estimacion",
+			datos:     url.Values{},
+			cancelar:  "/proyectos/1/historias/1",
+			confirmo:  true,
+			mensaje:   "Se quitó la estimación de la historia 1",
+			pagina:    "/proyectos/1/backlog",
+			figura:    "sin estimar",
+			queda:     true,
+		},
+		{
+			nombre:    "quitar la estimacion de la 1 y cancelar",
+			pedido:    "/proyectos/1/historias/1/quitar-estimacion",
+			confirmar: "/proyectos/1/historias/1/quitar-estimacion",
+			datos:     url.Values{},
+			cancelar:  "/proyectos/1/historias/1",
+			confirmo:  false,
+			pagina:    "/proyectos/1/backlog",
+			figura:    "<td>5</td>",
+			queda:     true,
+		},
 	}
 
 	for _, caso := range casos {
