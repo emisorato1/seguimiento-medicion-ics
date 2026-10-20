@@ -32,9 +32,11 @@ command -v jq >/dev/null || { echo "Falta jq. Instalar: brew install jq"; exit 1
 
 # Fechas de cada sprint, las de CLAUDE.md y las actas de planning. Sirven para saber en que
 # sprint se detecto y se resolvio cada defecto. Un sprint que no esta aca cuenta todos.
+# Lo que pasa entre un sprint y el siguiente cuenta en el siguiente: por eso el Sprint 2
+# arranca el 17/10, el dia despues del cierre del Sprint 1, aunque empezo el 20/10.
 case "$SPRINT" in
   "Sprint 1") DESDE="2026-09-28"; HASTA="2026-10-16" ;;
-  "Sprint 2") DESDE="2026-10-20"; HASTA="2026-10-25" ;;
+  "Sprint 2") DESDE="2026-10-17"; HASTA="2026-10-25" ;;
   "Sprint 3") DESDE="2026-10-26"; HASTA="2026-10-30" ;;
   "Sprint 4") DESDE="2026-10-31"; HASTA="2026-11-01" ;;
   *)          DESDE="0000-00-00"; HASTA="9999-99-99" ;;

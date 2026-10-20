@@ -46,9 +46,11 @@ Una historia a medias **no suma puntos**, aunque tenga horas cargadas. Si sumara
 velocidad quedaría inflada y el sprint siguiente se planificaría mal.
 
 **Una historia cuenta en el sprint en que se mergea a `dev`**, porque la Definición de
-Terminado exige el merge, y un defecto cuenta en el sprint en que se cierra su issue. Una
-historia aprobada pero sin mergear al cierre no está terminada: es lo que pasó con la #6 en el
-Sprint 1.
+Terminado exige el merge, y un defecto cuenta en el sprint en que se cierra su issue. **Lo que
+se mergea o se cierra entre un sprint y el siguiente cuenta en el siguiente.** Una historia
+aprobada pero sin mergear al cierre no está terminada: es lo que pasó con la #6, que se mergeó
+el 19/10, entre el cierre del Sprint 1 (16/10) y el arranque del Sprint 2 (20/10), y por eso
+cuenta en el Sprint 2.
 
 ### Historias que pasan de un sprint a otro
 
@@ -244,5 +246,7 @@ más de lo pensado y qué haríamos distinto.]_
 - **Defectos por sprint.** Hasta el 20/10, `scripts/metricas.sh` contaba todos los defectos
   del proyecto en cualquier sprint, y el Sprint 1 daba 2 resueltos cuando fue 1 (el #60 se
   cerró el 20/10). Ahora los filtra por las fechas de cada sprint: un defecto se detecta el día
-  que se abre su issue y se resuelve el día que se cierra.
+  que se abre su issue y se resuelve el día que se cierra. Lo que cae entre dos sprints va al
+  siguiente, así que para el script el Sprint 2 arranca el 17/10, el día después del cierre
+  del Sprint 1.
 - **Redondeo.** Los porcentajes se redondean al entero más cercano.

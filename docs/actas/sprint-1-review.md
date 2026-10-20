@@ -52,7 +52,7 @@ una cosa, y la Definición de Terminado la exige: **no estaba mergeada a `dev`**
 | 19/10 | Se mergea el PR #58, sin cambios después de la aprobación, y la tarjeta pasa a *Hecho* |
 
 La #6 se cuenta **en el Sprint 2**, igual que la #12: una historia cuenta en el sprint en que
-se mergea a `dev`. Es el mismo criterio que se usa para los defectos, que cuentan en el sprint
+se mergea a `dev`, y lo que se mergea entre un sprint y el siguiente cuenta en el siguiente. Es el mismo criterio que se usa para los defectos, que cuentan en el sprint
 en que se cierran (el #60 está más abajo).
 
 **Otra cosa que hay que anotar de la #6:** el PR #56, que trajo sus tareas 1 y 2, se mergeó

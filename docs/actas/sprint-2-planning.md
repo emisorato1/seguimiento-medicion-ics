@@ -187,7 +187,8 @@ equipo por chat y, hasta entonces, no suman puntos ni horas al compromiso del sp
 _Agregado el 20/10._ La #6 *Administrar el Product Backlog* (5 SP) estaba aprobada al cierre
 del Sprint 1, pero se mergeó a `dev` recién el 19/10, y la Definición de Terminado exige el
 merge. Por eso no cuenta en el Sprint 1 y entra en este sprint, igual que la #12: una
-historia cuenta en el sprint en que se mergea. Las fechas están en el
+historia cuenta en el sprint en que se mergea, y lo que se mergea entre un sprint y el
+siguiente, como la #6 el 19/10, cuenta en el siguiente. Las fechas están en el
 [acta de review del Sprint 1](sprint-1-review.md).
 
 - **El compromiso del Sprint 2 queda en 31 story points**: los 26 del plan más los 5 de la
