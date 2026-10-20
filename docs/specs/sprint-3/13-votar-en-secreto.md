@@ -89,6 +89,11 @@ con el nombre de quien los dio.
     historia y cuántos participantes votaron, sin ningún valor votado.
 18. **[RN-18]** Si un voto o un pedido de revelar se rechaza, el sistema debe dejar la ronda
     como estaba.
+19. **[RN-19]** El sistema debe permitir consultar la ronda actual de una historia, que es la
+    última que se abrió sobre ella, esté revelada o no. Si la historia todavía no tiene
+    ninguna ronda, debe informarlo, y eso no es un error. Si la historia no existe, debe
+    informar que no se encontró la historia. *(Agregado del contrato del 20/10: punto 8 de
+    "Para decidir en la puerta".)*
 
 ### Casos límite
 
@@ -97,6 +102,8 @@ con el nombre de quien los dio.
 - Integrante que se agrega después de abrir: no vota en esa ronda. Integrante que se quita
   después de abrir: sigue participando y la ronda espera su voto.
 - Dos historias del mismo proyecto con su ronda en curso a la vez: válido, son independientes.
+- Historia sobre la que nunca se abrió una ronda: consultar su ronda actual informa que no
+  tiene ninguna, y no es un error.
 
 ### Condiciones de error
 
@@ -131,6 +138,8 @@ con el nombre de quien los dio.
 - [ ] Al revelarse se ven todos los votos con el nombre de quien los dio.
 - [ ] No se puede votar ni volver a revelar una ronda ya revelada.
 - [ ] Un voto o un pedido de revelar rechazado deja la ronda como estaba.
+- [ ] Se puede consultar la ronda actual de una historia, revelada o no; si no tiene ninguna,
+      se informa y no es un error.
 
 ### Escenarios BDD
 
@@ -266,6 +275,22 @@ Escenario: Mostrar una ronda sin revelar no deja ver los votos
   Cuando se muestra la ronda
   Entonces se ve que es la ronda 1 de la historia 1 y que votaron 2 de 3
   Y no aparece ninguno de los valores votados
+
+Esquema del escenario: Consultar la ronda actual de una historia
+  Dado la historia 1 con <rondas>
+  Cuando consulto su ronda actual
+  Entonces <resultado>
+
+  Ejemplos:
+    | rondas                 | resultado                                                |
+    | ninguna ronda          | se informa que no tiene ninguna ronda, y no es un error  |
+    | la ronda 1 sin revelar | recibo la ronda 1, sin revelar                           |
+    | la ronda 1 revelada    | recibo la ronda 1, revelada                              |
+
+Escenario: Consultar la ronda actual de una historia que no existe
+  Dado un proyecto sin historia 99
+  Cuando consulto la ronda actual de la historia 99
+  Entonces se informa que no se encontro la historia
 ```
 
 **Para decidir en la puerta:**
@@ -293,6 +318,18 @@ Escenario: Mostrar una ronda sin revelar no deja ver los votos
    tiene los participantes de la ronda, y dice que "solo se sabe quién votó y quién no" pero
    no nombra esas consultas ni la de ver los votos revelados. Acá no se les inventó nombre:
    el dueño de la entidad los agrega al contrato antes de la tarea 1 (regla 1 del contrato).
+8. **Agregados del contrato del 20/10 (PR #94), para que los revise Maximiliano en la
+   puerta.** Los pidió la web (#78) y los escribió el Agile Enabler al ajustar el contrato;
+   no son decisión de esta spec:
+   - **La ronda actual de una historia (RN-19)**: entre un pedido y otro, la web tiene que
+     volver a encontrar la ronda que está votando, y la lista de rondas de una historia es de
+     la #73. Devuelve la última ronda, revelada o no. Sin ninguna ronda se informa y no es un
+     error, igual que el sprint abierto de la #8.
+   - **Las rondas entran en lo que se guarda**, como toda entidad nueva desde la #77 (tarea
+     14). La consecuencia: los votos de una ronda sin revelar quedan escritos en el archivo de
+     datos, y quien lo abra con un editor los ve. La alternativa —no guardar las rondas
+     abiertas— las pierde al cerrar el sistema. **Lo decide esta puerta**; la web (#78) no
+     cambia en ningún caso.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -342,7 +379,8 @@ consulta protegida.
 
 | Archivo | Se crea o se modifica | Para qué |
 |---|---|---|
-| `internal/domain/voting_round.go` | se crea | la ronda; abrirla, votar y revelar; las consultas de quién votó, quién falta y los votos; cómo se imprime |
+| `internal/domain/voting_round.go` | se crea | la ronda; abrirla, votar y revelar; las consultas de quién votó, quién falta y los votos; la ronda actual de una historia; cómo se imprime |
+| `internal/domain/registry_json.go` y su test | se modifican | las rondas entran en la conversión del registro, con su caso en el test de ida y vuelta (regla de la #77; punto 8 de la puerta) |
 | `internal/domain/voting_round_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/project.go` | se modifica | la lista de rondas dentro del proyecto, al lado de los integrantes y el backlog |
 | `internal/domain/errors.go` | se modifica | los siete errores nuevos: sin integrantes, ronda en curso, no participa, ya votó, votos ocultos, faltan votos y ronda revelada |
@@ -397,6 +435,8 @@ verificados con `errors.Is`. Cada rechazo comprueba además que la ronda quedó 
 | 10 | Rechazar el voto de quien no participa, antes que el control del valor; reconocer el nombre escrito distinto y guardarlo como está cargado; quien sale del proyecto sigue participando | Rechazar el voto de quien no participa de la ronda / Reconocer al integrante aunque el nombre venga escrito distinto / Quien sale del proyecto despues de abrir la ronda sigue participando | RN-2, RN-11, RN-18 | pendiente |
 | 11 | Rechazar votar o revelar de nuevo en una ronda revelada, antes que cualquier otro control | Una ronda revelada ya no acepta cambios | RN-16, RN-18 | pendiente |
 | 12 | Imprimir una ronda sin revelar muestra número, historia y cuántos votaron, sin ningún valor | Mostrar una ronda sin revelar no deja ver los votos | RN-17 | pendiente |
+| 13 | La ronda actual de una historia: la última, revelada o no; sin rondas se informa y no es un error; historia inexistente | Consultar la ronda actual de una historia / Consultar la ronda actual de una historia que no existe | RN-19 | pendiente |
+| 14 | Las rondas entran en la conversión del registro: una sin revelar y una revelada, con sus participantes y sus votos, se reconstruyen iguales | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
 
 **Cómo se verifica que no se filtra ningún valor.** Los tests de las tareas 9 y 12 votan 13 y
 21, valores que no aparecen en ningún otro dato de la ronda (historia 1, ronda 1, nombres sin
@@ -414,13 +454,15 @@ se compara el texto completo, que puede cambiar: se verifica lo que la RN-12 pro
   Fase 2: cada control nuevo va delante de los que ya existen, y su test incluye un caso donde
   también fallaría el anterior. Así el orden queda probado sin una tarea propia que pasaría
   en verde.
-- **La 12 va al final**: cierra la última vía por la que se podía ver un voto.
+- **La 12 cierra la última vía por la que se podía ver un voto.**
+- **La 13 y la 14 son los agregados del contrato del 20/10** (punto 8 de la puerta): no
+  cambian nada de lo anterior, y la 14 va última porque guarda todo lo que la ronda ya tiene.
 
 ### Cobertura
 
-Las dieciocho reglas quedan cubiertas: RN-1 (1), RN-2 (1, 10), RN-3 (1), RN-4 (2), RN-5 (2),
+Las diecinueve reglas quedan cubiertas: RN-1 (1), RN-2 (1, 10), RN-3 (1), RN-4 (2), RN-5 (2),
 RN-6 (3), RN-7 (4), RN-8 (5), RN-9 (8), RN-10 (9), RN-11 (10), RN-12 (5, 9), RN-13 (1, 5),
-RN-14 (6), RN-15 (7), RN-16 (11), RN-17 (12), RN-18 (7, 8, 9, 10, 11).
+RN-14 (6), RN-15 (7), RN-16 (11), RN-17 (12), RN-18 (7, 8, 9, 10, 11), RN-19 (13).
 
 | Criterio de aceptación | Tareas |
 |---|---|
@@ -437,8 +479,11 @@ RN-14 (6), RN-15 (7), RN-16 (11), RN-17 (12), RN-18 (7, 8, 9, 10, 11).
 | Al revelarse se ven todos los votos con su nombre | 6 |
 | No se puede votar ni volver a revelar una ronda revelada | 11 |
 | Un rechazo deja la ronda como estaba | 7, 8, 9, 10, 11 |
+| Se consulta la ronda actual; sin ninguna se informa y no es error | 13 |
 
-Los catorce escenarios de la Fase 1 tienen su tarea, en la columna "Escenario BDD".
+Los dieciséis escenarios de la Fase 1 tienen su tarea, en la columna "Escenario BDD". La 14
+no tiene escenario propio: cumple la regla de la #77 de sumar cada entidad nueva a lo que se
+guarda.
 
 ### Dependencias
 
