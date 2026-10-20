@@ -519,9 +519,14 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 3 | `4d24c31` | `9d00e6f` |
 | 16 (fila de la historia) | `15a8336` | — (sin RED, ver Desvíos) |
 | 2 (NaN, hallazgo de la revisión) | `4708708` | `9dd7309` |
+| Conversión: las horas estimadas se guardan (regla de la #77) | `ac4eb74` | `8b364b3` |
+| Conversión: horas estimadas negativas en los datos guardados | `a2dbb04` | `eea8b48` |
 
 Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
 existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
+Los dos de la conversión, por comportamiento: las horas se perdían al reconstruir el
+registro, y unas horas negativas se cargaban sin error. Esos dos commits de test llevan la
+salida del test fallando en su mensaje, como pide AGENTS.md desde el PR #98.
 
 ### Hallazgo de la revisión
 
@@ -545,6 +550,14 @@ Ninguno de comportamiento. Uno de orden:
   `ErrStoryHoursInvalid`, para no confundirlo con `p.StoryHours(id)`, que en el contrato son
   las horas **reales** de una historia (#14).
 
+- **Las horas estimadas entran en la conversión del registro** (`internal/domain/registry_json.go`
+  y su test), que no figura en los archivos afectados de la Fase 2. La conversión llegó a
+  `dev` con la #77 (PR #92) después de las puertas de esta historia, y su regla pide que la
+  historia que agrega un dato lo sume ahí, con su caso en el test de ida y vuelta. Como el
+  #92 entró antes que este PR, le tocó a esta historia. Al reconstruir, las horas pasan por
+  la misma regla que al cargarlas: cero es "sin horas estimadas" y un valor negativo rechaza
+  la carga (RN-17, RN-18).
+
 Nota de proceso: las tareas 4 a 16 necesitan `Sprint` (#8), `Effort` (#14) y `Defect` (#15).
 Como ninguna está en `dev` y esas entidades son de sus dueños, las tareas 1 a 3 entran en un
 primer PR con `Refs #16`, y el resto sigue cuando esas entidades lleguen a `dev`.
@@ -557,5 +570,5 @@ primer PR con `Refs #16`, y el resto sigue cuando esas entidades lleguen a `dev`
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/metrics_test.go` y `internal/domain/story_hours_test.go` |
-| Código Go | `internal/domain/metrics.go`, `internal/domain/story_hours.go`, el dato de horas estimadas en `internal/domain/story.go` y su error en `internal/domain/errors.go` |
+| Tests | `internal/domain/metrics_test.go`, `internal/domain/story_hours_test.go` y los casos de horas estimadas en `internal/domain/registry_json_test.go` |
+| Código Go | `internal/domain/metrics.go`, `internal/domain/story_hours.go`, el dato de horas estimadas en `internal/domain/story.go` y en `internal/domain/registry_json.go`, y su error en `internal/domain/errors.go` |
