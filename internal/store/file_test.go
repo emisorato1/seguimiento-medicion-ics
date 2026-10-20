@@ -2,6 +2,7 @@ package store
 
 import (
 	"bytes"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -106,5 +107,104 @@ func TestLoGuardadoSeVuelveALeerIgual(t *testing.T) {
 			names = append(names, entry.Name())
 		}
 		t.Fatalf("se esperaba que en la carpeta quedara solo datos-ics.json, quedaron %q", names)
+	}
+}
+
+// sinPermisos saltea el test si corre como administrador, que puede leer y escribir aunque
+// el archivo o la carpeta no lo permitan.
+func sinPermisos(t *testing.T) {
+	t.Helper()
+	if os.Geteuid() == 0 {
+		t.Skip("como administrador los permisos no frenan nada")
+	}
+}
+
+// Escenario: Los datos guardados estan danados (el archivo)
+// Cubre: #77 RN-24
+func TestUnArchivoDanadoQuedaComoEstaba(t *testing.T) {
+	cases := []struct {
+		name string
+		mode os.FileMode
+	}{
+		{"texto que no es JSON", 0o600},
+		{"archivo que no se puede leer", 0o000},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if tc.mode == 0o000 {
+				sinPermisos(t)
+			}
+			path := filepath.Join(t.TempDir(), "datos-ics.json")
+			original := []byte(`{"projects": [ esto no es json`)
+			if err := os.WriteFile(path, original, tc.mode); err != nil {
+				t.Fatalf("no se pudo preparar el archivo de prueba: %v", err)
+			}
+
+			registry, err := NewFile(path).Load()
+
+			if !errors.Is(err, domain.ErrSavedDataInvalid) {
+				t.Fatalf("se esperaba ErrSavedDataInvalid, salio: %v", err)
+			}
+			if registry != nil {
+				t.Fatalf("se esperaba que no se cargara ningun registro")
+			}
+			os.Chmod(path, 0o600)
+			after, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatalf("no se pudo releer el archivo de prueba: %v", err)
+			}
+			if !bytes.Equal(after, original) {
+				t.Fatalf("se esperaba que el archivo quedara igual, quedo:\n%s", after)
+			}
+		})
+	}
+}
+
+// Escenario: Un cambio que no se pudo guardar se avisa (el archivo)
+// Cubre: #77 RN-25
+func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
+	cases := []struct {
+		name    string
+		prepare func(t *testing.T, dir string) string
+	}{
+		{"carpeta donde no se puede escribir", func(t *testing.T, dir string) string {
+			sinPermisos(t)
+			if err := os.Chmod(dir, 0o500); err != nil {
+				t.Fatalf("no se pudo quitar el permiso de escritura: %v", err)
+			}
+			t.Cleanup(func() { os.Chmod(dir, 0o700) })
+			return filepath.Join(dir, "datos-ics.json")
+		}},
+		{"en el lugar del archivo hay una carpeta", func(t *testing.T, dir string) string {
+			path := filepath.Join(dir, "datos-ics.json")
+			if err := os.Mkdir(path, 0o700); err != nil {
+				t.Fatalf("no se pudo crear la carpeta de prueba: %v", err)
+			}
+			if err := os.WriteFile(filepath.Join(path, "algo"), []byte("x"), 0o600); err != nil {
+				t.Fatalf("no se pudo llenar la carpeta de prueba: %v", err)
+			}
+			return path
+		}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			path := tc.prepare(t, dir)
+
+			err := NewFile(path).Save(unRegistro(t))
+
+			if !errors.Is(err, ErrNotSaved) {
+				t.Fatalf("se esperaba ErrNotSaved, salio: %v", err)
+			}
+			entries, err := os.ReadDir(dir)
+			if err != nil {
+				t.Fatalf("no se pudo leer la carpeta de prueba: %v", err)
+			}
+			for _, entry := range entries {
+				if entry.Name() != "datos-ics.json" {
+					t.Fatalf("se esperaba que no quedara ningun temporal, quedo %q", entry.Name())
+				}
+			}
+		})
 	}
 }
