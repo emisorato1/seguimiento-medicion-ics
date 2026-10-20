@@ -12,6 +12,7 @@ import (
 	"io/fs"
 	"net/http"
 	"path"
+	"sync"
 	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
@@ -40,6 +41,9 @@ type Server struct {
 	saver    Saver
 	mux      *http.ServeMux
 	pages    map[string]*template.Template
+	// lock hace que los pedidos usen el registro de a uno (RN-20, D12): net/http atiende
+	// cada pedido en paralelo y el dominio no esta hecho para eso.
+	lock sync.RWMutex
 }
 
 // NewServer arma la web sobre el registro de proyectos que recibe, guardandolo con saver.
@@ -78,8 +82,17 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	return s
 }
 
-// ServeHTTP atiende cada pedido del navegador.
+// ServeHTTP atiende cada pedido del navegador. Toma el candado alrededor de todo el pedido,
+// asi una operacion y su guardado quedan juntos (D12). Los pedidos que solo leen —las paginas
+// que se piden con GET— pueden ir a la vez entre ellos; los que cambian algo van solos.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet || r.Method == http.MethodHead {
+		s.lock.RLock()
+		defer s.lock.RUnlock()
+	} else {
+		s.lock.Lock()
+		defer s.lock.Unlock()
+	}
 	s.mux.ServeHTTP(w, r)
 }
 
