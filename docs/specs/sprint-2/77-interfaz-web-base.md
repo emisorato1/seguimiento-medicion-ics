@@ -567,6 +567,13 @@ Se encontraron antes de que entrara a `dev`, así que no se abrió defecto:
   del renombre podía dejar el archivo vacío. Se agregó la sincronización (`Sync`, `6a39f92`) antes de
   cerrarlo. **No tiene test**: un corte de luz no se puede simular desde un test, y en el
   camino normal la línea ya queda cubierta por el test de la tarea 4.
+- **Los mensajes arrastraban texto en inglés** (lo encontró front): un archivo cortado decía
+  «(unexpected EOF)», que viene de `encoding/json`, y un archivo sin permiso o un guardado
+  que fallaba traían el error del sistema operativo («permission denied»). Los mensajes son
+  para el usuario y van en castellano (AGENTS.md). Ahora dicen «el archivo está dañado,
+  incompleto o tiene datos que el sistema no conoce», «no se pudo abrir el archivo …» y «no
+  se pudo escribir el archivo …», con la ruta. Tests en `ff2b683` y `6f761d9` (RED por
+  comportamiento), arreglos en `d0f0a49` y `3854359`.
 
 Nota para la #16: si el PR #81 (horas estimadas) entra a `dev` antes que esta conversión, o
 después, la que llegue segunda suma `estimatedHours` a `registry_json.go` con su caso en el
