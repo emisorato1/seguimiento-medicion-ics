@@ -280,3 +280,55 @@ func (s *Server) estimateStory(w http.ResponseWriter, r *http.Request) {
 	setFlash(w, fmt.Sprintf("Se estimó la historia %d en %d story points", story.ID(), points))
 	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/backlog", project.ID()), http.StatusSeeOther)
 }
+
+// removeEstimateConfirmation es la pagina que pide confirmar antes de quitar la estimacion.
+func removeEstimateConfirmation(project *domain.Project, story *domain.Story) confirmation {
+	storyPage := fmt.Sprintf("/proyectos/%d/historias/%d", project.ID(), story.ID())
+	return confirmation{
+		Question: fmt.Sprintf("¿Quitar la estimación de la historia %d?", story.ID()),
+		Detail:   fmt.Sprintf("Está estimada en %d story points y va a quedar sin estimar.", story.StoryPoints()),
+		Action:   storyPage + "/quitar-estimacion",
+		Confirm:  "Sí, quitar la estimación",
+		Cancel:   storyPage,
+	}
+}
+
+// confirmRemoveEstimate pide confirmar antes de quitar la estimacion (RN-10, D9).
+func (s *Server) confirmRemoveEstimate(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	s.render(w, r, http.StatusOK, "confirmar.html", page{
+		Title:   "Quitar estimación",
+		Project: project,
+		Section: "backlog",
+		Data:    removeEstimateConfirmation(project, story),
+	})
+}
+
+// removeEstimate quita la estimacion, despues de que se confirmo. Si el dominio lo rechaza,
+// como en una historia Terminada, el motivo se muestra arriba de la confirmacion (RN-13).
+func (s *Server) removeEstimate(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	if err := project.RemoveStoryEstimate(story.ID()); err != nil {
+		data := removeEstimateConfirmation(project, story)
+		data.Error = err.Error()
+		s.render(w, r, http.StatusUnprocessableEntity, "confirmar.html", page{
+			Title:   "Quitar estimación",
+			Project: project,
+			Section: "backlog",
+			Data:    data,
+		})
+		return
+	}
+
+	s.saver.Save(s.registry)
+	setFlash(w, fmt.Sprintf("Se quitó la estimación de la historia %d", story.ID()))
+	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/backlog", project.ID()), http.StatusSeeOther)
+}

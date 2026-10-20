@@ -73,6 +73,8 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/editar", s.updateStory)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/estimar", s.estimateForm)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/estimar", s.estimateStory)
+	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/quitar-estimacion", s.confirmRemoveEstimate)
+	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/quitar-estimacion", s.removeEstimate)
 	return s
 }
 
@@ -111,7 +113,8 @@ func formatDate(day time.Time) string {
 }
 
 // confirmation es la pagina que pide confirmar antes de quitar algo (D9): la pregunta, a
-// donde se envia lo que se confirma, con que datos, y a donde vuelve si se cancela.
+// donde se envia lo que se confirma, con que datos, a donde vuelve si se cancela y, si el
+// dominio rechazo lo confirmado, su motivo.
 type confirmation struct {
 	Question string
 	Detail   string
@@ -119,6 +122,7 @@ type confirmation struct {
 	Fields   map[string]string
 	Confirm  string
 	Cancel   string
+	Error    string
 }
 
 // notFound responde 404 con el mensaje de lo que no se encontro y el acceso para volver a
