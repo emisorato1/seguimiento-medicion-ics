@@ -20,17 +20,26 @@ import (
 //go:embed templates static
 var files embed.FS
 
-// Server es la web: las rutas, las plantillas y el registro de proyectos que muestra.
+// Saver guarda el registro completo despues de cada operacion aceptada (D13). En el
+// programa es el archivo de internal/store; en los tests, uno falso en memoria (D21).
+type Saver interface {
+	Save(registry *domain.ProjectRegistry) error
+}
+
+// Server es la web: las rutas, las plantillas, el registro de proyectos que muestra y
+// donde lo guarda.
 type Server struct {
 	registry *domain.ProjectRegistry
+	saver    Saver
 	mux      *http.ServeMux
 	pages    map[string]*template.Template
 }
 
-// NewServer arma la web sobre el registro de proyectos que recibe.
-func NewServer(registry *domain.ProjectRegistry) *Server {
+// NewServer arma la web sobre el registro de proyectos que recibe, guardandolo con saver.
+func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s := &Server{
 		registry: registry,
+		saver:    saver,
 		mux:      http.NewServeMux(),
 		pages:    parsePages(),
 	}
@@ -38,6 +47,9 @@ func NewServer(registry *domain.ProjectRegistry) *Server {
 	s.mux.HandleFunc("GET /{$}", s.home)
 	s.mux.Handle("GET /static/", http.FileServerFS(files))
 	s.mux.HandleFunc("GET /proyectos", s.listProjects)
+	s.mux.HandleFunc("GET /proyectos/nuevo", s.newProject)
+	s.mux.HandleFunc("POST /proyectos/nuevo", s.createProject)
+	s.mux.HandleFunc("GET /proyectos/{id}", s.showProject)
 	return s
 }
 

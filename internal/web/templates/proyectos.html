@@ -5,5 +5,27 @@
   <p>Todavía no hay proyectos.</p>
   <a class="boton" href="/proyectos/nuevo">Crear el primer proyecto</a>
 </div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/nuevo">Nuevo proyecto</a>
+</div>
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Nombre</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Data.Projects}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td><a href="/proyectos/{{.ID}}">{{.Name}}</a></td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
 {{end}}
 {{end}}

@@ -1,0 +1,25 @@
+{{define "content"}}
+<h1>Nuevo proyecto</h1>
+<form class="formulario" method="post" action="/proyectos/nuevo" novalidate>
+  <div class="campo">
+    <label for="nombre">Nombre</label>
+    <input type="text" id="nombre" name="nombre">
+  </div>
+  <div class="campo">
+    <label for="descripcion">Descripción (opcional)</label>
+    <textarea id="descripcion" name="descripcion"></textarea>
+  </div>
+  <div class="campo">
+    <label for="inicio">Fecha de inicio</label>
+    <input type="date" id="inicio" name="inicio">
+  </div>
+  <div class="campo">
+    <label for="fin">Fecha de fin (opcional)</label>
+    <input type="date" id="fin" name="fin">
+  </div>
+  <div class="acciones">
+    <button type="submit">Crear proyecto</button>
+    <a class="boton boton-secundario" href="/proyectos">Cancelar</a>
+  </div>
+</form>
+{{end}}
