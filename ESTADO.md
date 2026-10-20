@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 17:43. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-20 19:29. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,6 +16,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
@@ -23,7 +24,6 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
-| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 
 ## Lista para implementar
 
@@ -71,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-b3050d8 2026-10-15 docs: registrar la tarea 6 de la historia 24
-ac24073 2026-10-15 refactor: una tabla de operaciones en la consola (historia 24)
-ae3ffa5 2026-10-15 feat: agregar y listar integrantes (historia 24, tarea 6)
-385645f 2026-10-15 test: agregar y listar integrantes (historia 24, tarea 6)
-a078f4d 2026-10-15 Merge branch 'dev' into historia-24-interfaz-consola
-4181fbf 2026-10-15 Merge pull request #63 from emisorato1/chore-script-de-metricas
-5659804 2026-10-15 chore: calcular las metricas del sprint desde el tablero
-4099066 2026-10-15 Merge pull request #62 from emisorato1/historia-4-codigo
+03421cb 2026-10-20 docs: manual de usuario de la consola (historia 24)
+75ce9e6 2026-10-20 docs: registrar las tareas 7 a 15 de la historia 24
+43fface 2026-10-20 test: cubrir las ramas de rechazo y el fin de la entrada en la consola (historia 24)
+ac4a4d3 2026-10-20 feat: arrancar la consola conectada al teclado y la pantalla (historia 24, tarea 15)
+fb5bad5 2026-10-20 test: operar sobre un identificador que no existe (historia 24, tarea 13)
+de946a6 2026-10-20 feat: informar los datos con forma inválida en la consola (historia 24, tarea 12)
+7e64570 2026-10-20 test: dato con forma inválida en la consola (historia 24, tarea 12)
+28b8aef 2026-10-20 feat: informar que falta indicar la historia al estimar (historia 24, tarea 11)
 ```
