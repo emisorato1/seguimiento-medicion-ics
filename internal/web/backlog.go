@@ -209,3 +209,74 @@ func (s *Server) updateStory(w http.ResponseWriter, r *http.Request) {
 	setFlash(w, fmt.Sprintf("Se modificó la historia %d", story.ID()))
 	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/historias/%d", project.ID(), story.ID()), http.StatusSeeOther)
 }
+
+// pointOptions es la escala de story points que se ofrece para elegir, la misma con la que
+// valida el dominio (RN-11, D10).
+func pointOptions() []string {
+	var options []string
+	for _, points := range domain.StoryPointScale() {
+		options = append(options, strconv.Itoa(points))
+	}
+	return options
+}
+
+// renderEstimateForm muestra el formulario para estimar una historia.
+func (s *Server) renderEstimateForm(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, story *domain.Story, f *form) {
+	data := struct {
+		ProjectID int
+		Story     *domain.Story
+		Points    []string
+		Form      *form
+	}{
+		ProjectID: project.ID(),
+		Story:     story,
+		Points:    pointOptions(),
+		Form:      f,
+	}
+	s.render(w, r, status, "estimar.html", page{
+		Title:   fmt.Sprintf("Estimar la historia %d", story.ID()),
+		Project: project,
+		Section: "backlog",
+		Data:    data,
+	})
+}
+
+// estimateForm muestra el formulario para estimar, con la estimacion actual elegida.
+func (s *Server) estimateForm(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	f := newForm()
+	if story.IsEstimated() {
+		f.Values["puntos"] = strconv.Itoa(story.StoryPoints())
+	}
+	s.renderEstimateForm(w, r, http.StatusOK, project, story, f)
+}
+
+// estimateStory estima la historia con los story points elegidos. Un valor fuera de la
+// escala lo rechaza el dominio (RN-15); uno que no es un numero, la web (RN-14).
+func (s *Server) estimateStory(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+
+	f := readForm(r, "puntos")
+	points := f.number("puntos", errInvalidPoints)
+	if f.hasErrors() {
+		s.renderEstimateForm(w, r, http.StatusUnprocessableEntity, project, story, f)
+		return
+	}
+	if err := project.EstimateStory(story.ID(), points); err != nil {
+		f.reject(err)
+		s.renderEstimateForm(w, r, http.StatusUnprocessableEntity, project, story, f)
+		return
+	}
+
+	s.saver.Save(s.registry)
+	setFlash(w, fmt.Sprintf("Se estimó la historia %d en %d story points", story.ID(), points))
+	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/backlog", project.ID()), http.StatusSeeOther)
+}

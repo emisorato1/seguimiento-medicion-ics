@@ -3,6 +3,7 @@ package web
 import (
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -12,6 +13,11 @@ import (
 // errInvalidDate es el error de forma de una fecha. No es una regla de negocio sino la forma
 // del dato (RN-14), igual que la RN-5 de la consola.
 var errInvalidDate = errors.New("la fecha no es válida")
+
+// errInvalidPoints es el error de forma de los story points: no se eligio ninguno de la
+// lista, o llego algo que no es un numero (RN-14). Que el numero este en la escala lo
+// decide el dominio.
+var errInvalidPoints = errors.New("hay que elegir los story points de la lista")
 
 // dateLayout es como manda la fecha el calendario del navegador (D11).
 const dateLayout = "2006-01-02"
@@ -66,6 +72,17 @@ func (f *form) date(name string) time.Time {
 	return day
 }
 
+// number lee un numero entero del formulario. Vacio o con letras se marca junto al campo
+// con el error que recibe (RN-14), y quien llama no llama al dominio.
+func (f *form) number(name string, shapeErr error) int {
+	value, err := strconv.Atoi(strings.TrimSpace(f.Values[name]))
+	if err != nil {
+		f.Errors[name] = shapeErr.Error()
+		return 0
+	}
+	return value
+}
+
 // hasErrors indica si algun campo quedo con un error de forma.
 func (f *form) hasErrors() bool {
 	return len(f.Errors) > 0
@@ -88,6 +105,7 @@ var fieldErrors = []struct {
 	{domain.ErrStoryDescriptionRequired, "descripcion"},
 	{domain.ErrStoryPriorityInvalid, "prioridad"},
 	{domain.ErrStoryCriteriaRequired, "criterios"},
+	{domain.ErrStoryPointsInvalid, "puntos"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje
