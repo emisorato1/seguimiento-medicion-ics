@@ -10,8 +10,8 @@ análisis previo.
 requerimientos mínimos terminados. Nada se presenta como "backlog pendiente".
 
 El replan del 20/10 proponía recortar a unos 30 puntos y defender el resto como backlog. Se
-descarta: el Agile Enabler decide subir el ritmo en vez de bajar el alcance, y se lo plantea
-al equipo.
+descarta: el Agile Enabler propone subir el ritmo en vez de bajar el alcance, y **el equipo lo
+confirma el 20/10** por el grupo.
 
 ## El número, sin maquillar
 
@@ -19,14 +19,22 @@ al equipo.
 |---|---|
 | Story points que quedan | **72** de 83 |
 | Días hasta la presentación | **13** (20/10 al 1/11) |
-| Costo medido en el Sprint 1 | 2,6 h por story point |
-| Horas necesarias a ese costo | **187** |
-| Por persona, por día, sábados y domingos incluidos | **~3,6 h** |
+| Costo medido en el Sprint 1 | 2,7 h por story point |
+| Horas necesarias a ese costo | **194** |
+| Por persona, por día, sábados y domingos incluidos | **~3,7 h** |
 
-En el Sprint 1 cada uno puso unas **9,5 horas por semana** (≈1,4 h por día). Este plan pide
-**dos veces y media eso, trece días seguidos**.
+> **Corregido el 20/10.** La primera versión decía 2,6 h por punto, 187 horas y 3,6 h por
+> día. La #6 se mergeó el 19/10, después del cierre del Sprint 1, y por la Definición de
+> Terminado no cuenta en ese sprint: la velocidad medida es **6, no 11**, y la conversión
+> pasa a 2,7 h por punto. El detalle está en el [acta de review](actas/sprint-1-review.md).
 
-**Por qué igual cierra.** Las 2,6 h por punto midieron un proceso con cuatro o cinco pull
+En el Sprint 1 cada uno cargó unas **9,5 horas en todo el sprint**, que duró tres semanas: unas
+**3 horas por semana, media hora por día**. *(La primera versión de este plan decía 9,5 por
+semana: era un error de cuenta.)* Solo cuentan las horas cargadas en las historias; las
+reuniones, las revisiones y las specs de otros no están. Aun así, este plan pide
+**unas ocho veces eso por día, trece días seguidos**.
+
+**Por qué igual cierra.** Las 2,7 h por punto midieron un proceso con cuatro o cinco pull
 requests por historia y revisiones que tardaban un día. Con una historia por pull request,
 las specs escritas de antemano y revisión en el día, el costo por punto tiene que bajar a
 unas **2,0 h**. A ese costo hacen falta 144 horas: **2,8 h por persona por día**, y aparecen
@@ -103,8 +111,8 @@ Es el sprint más cargado y el que decide la presentación.
 
 ## Interfaz web (agregada el 20/10)
 
-El mismo 20/10 el Agile Enabler decidió que la aplicación tenga **una interfaz web
-profesional**, y se lo planteó al equipo,
+El mismo 20/10 el Agile Enabler propuso que la aplicación tenga **una interfaz web
+profesional**, y el equipo lo confirmó,
 además de la consola de la #24. La consigna permite web, escritorio o consola, pero pide una
 *"interfaz usable"* en el Sprint 2 y *"representaciones gráficas"* en el dashboard, y las dos
 cosas se defienden mucho mejor en el navegador que en una terminal.
