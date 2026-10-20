@@ -82,6 +82,9 @@ Los nueve requerimientos mínimos de la consigna, cada uno con sus historias en 
 | 8 | Dashboard | #17 |
 | 9 | Reportes (PDF en el Sprint 4) | #18, #19 |
 
+Se usa desde **dos interfaces**: la consola (#24) y el navegador (#77 y #78, decidido el
+20/10). El dashboard (#17) se muestra en la web.
+
 La consigna completa está en el campus. **Ninguna funcionalidad nueva se agrega sin que
 exista su historia en el tablero.**
 
@@ -382,8 +385,8 @@ usa, se avisa al equipo y se deja dicho por qué.
 
 ### Modo sprint final (del 20/10 al 2/11)
 
-Las presentaciones arrancan el **2 de noviembre** y el equipo decidió el 20/10 **entregar el
-proyecto completo**: las 20 historias, los 83 story points, los nueve requerimientos
+Las presentaciones arrancan el **2 de noviembre** y el Agile Enabler decidió el 20/10 **entregar
+el proyecto completo**: todas las historias, los 83 story points, los nueve requerimientos
 terminados. Son 72 puntos en 13 días, unas **3,6 horas por persona por día, sábados y
 domingos incluidos**.
 
@@ -492,8 +495,11 @@ es parte de la documentación que se evalúa, no un trámite.
 - Plazo: hasta el 2/11 rige la **revisión en el día** (ver *Modo sprint final*). Después del
   2/11 vuelve a ser 48 h.
 - No se mergea con el CI en rojo. Nunca.
-- **Mergea el autor**, con el CI en verde y —si va a `main`— la aprobación. Es quien resuelve
-  los conflictos, mueve la tarjeta y regenera `ESTADO.md`.
+- **Hacia `dev` mergea la sesión de revisión de Claude Code**, después de dejar la revisión
+  escrita y con el CI en verde, para todos los PRs, también los del Agile Enabler. Así un PR
+  ya revisado no queda parado esperando a su autor (decidido el 20/10). El autor sigue
+  resolviendo los conflictos de su rama. **Hacia `main`** hace falta la aprobación de una
+  persona.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
 
 ### Quién aprueba

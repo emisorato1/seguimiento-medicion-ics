@@ -38,6 +38,12 @@ Nada de esto se toca sin avisar: ya está implementado y con tests.
 Las operaciones cuelgan del proyecto: `p.AddStory(...)`, `p.Members()`, `p.Story(id)`.
 Lo nuevo sigue el mismo camino.
 
+**Agregados de la #77 (interfaz web):** el registro suma `r.Projects()`, que lista todos los
+proyectos en orden de número, y el dominio suma `StoryPointScale()`, que entrega una copia de
+la escala válida para ofrecerla como opciones. Los dos los implementa Emiliano, como parte de la #77. La conversión
+a JSON vive en `internal/domain/registry_json.go`: **toda entidad nueva entra ahí** (ver
+`AGENTS.md`).
+
 **Cambio a lo que ya existe: `Story` suma `EstimatedHours`** (decimal, cero mientras no se
 cargue), con su operación `p.EstimateHours(id, hours)`. Lo agrega la #16, que es la que lo
 necesita para la desviación, y sigue las mismas reglas que los story points: mayor que cero,

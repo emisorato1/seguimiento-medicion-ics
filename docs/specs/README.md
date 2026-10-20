@@ -60,6 +60,7 @@ comprometieron.
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🔍 En review |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ⚙️ En implementación |
 | [Consultar el estado de un proyecto](sprint-2/05-consultar-estado-proyecto.md) | #5 | 3 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
+| [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
 
 ### Sprint 3 — del 26 al 30 de octubre (36 SP)
 
@@ -71,6 +72,7 @@ comprometieron.
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | 📝 Borrador completo — pendiente de las tres puertas |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
+| Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes | #78 | sin estimar | Emiliano Sorato | ⏳ spec pendiente |
 
 ### Sprint 4 — 31 de octubre y 1 de noviembre (10 SP)
 
