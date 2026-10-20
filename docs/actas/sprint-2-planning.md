@@ -182,26 +182,50 @@ sola no alcanza para eso.
 **Están sin estimar.** No tienen story points ni horas estimadas cargadas. Las estima el
 equipo por chat y, hasta entonces, no suman puntos ni horas al compromiso del sprint.
 
+### La #6 cuenta en este sprint
+
+_Agregado el 20/10._ La #6 *Administrar el Product Backlog* (5 SP) estaba aprobada al cierre
+del Sprint 1, pero se mergeó a `dev` recién el 19/10, y la Definición de Terminado exige el
+merge. Por eso no cuenta en el Sprint 1 y entra en este sprint, igual que la #12: una
+historia cuenta en el sprint en que se mergea. Las fechas están en el
+[acta de review del Sprint 1](sprint-1-review.md).
+
+- **El compromiso del Sprint 2 queda en 31 story points**: los 26 del plan más los 5 de la
+  #6, que llega **ya terminada** (se mergeó el 19/10).
+- Con la #6 afuera del Sprint 1, **la velocidad del Sprint 1 pasa de 11 a 6** y la conversión
+  de 2,6 a **2,7 horas por story point** (16 h ÷ 6 SP). Lo que está más arriba en esta acta
+  usa el 11 y el 2,6, que eran los números de ese momento.
+
 ### Horas estimadas del Sprint 2
 
 Se cargaron en el tablero el 20/10, antes de empezar cada historia, con la conversión de
-**2,6 horas por story point** que sale del Sprint 1 (ver arriba). No se usó el 2,0 del plan
-porque es una meta, no algo medido.
+**2,7 horas por story point** que sale del Sprint 1. No se usó el 2,0 del plan porque es una
+meta, no algo medido. Primero se cargaron a 2,6 y el mismo día se corrigieron a 2,7, cuando
+la #6 salió del Sprint 1.
 
 | # | Historia | SP | Horas estimadas |
 |---|---|---|---|
-| 5 | Consultar el estado de un proyecto | 3 | 7,8 |
-| 7 | Priorizar el Product Backlog | 2 | 5,2 |
-| 8 | Crear un sprint con su Sprint Goal | 3 | 7,8 |
-| 9 | Asignar historias a un sprint | 5 | 13 |
-| 14 | Registrar el esfuerzo real | 3 | 7,8 |
-| 15 | Gestionar defectos | 5 | 13 |
+| 5 | Consultar el estado de un proyecto | 3 | 8,1 |
+| 7 | Priorizar el Product Backlog | 2 | 5,4 |
+| 8 | Crear un sprint con su Sprint Goal | 3 | 8,1 |
+| 9 | Asignar historias a un sprint | 5 | 13,5 |
+| 14 | Registrar el esfuerzo real | 3 | 8,1 |
+| 15 | Gestionar defectos | 5 | 13,5 |
 | 12 | Estimar con Story Points | 2 | 6 |
 | 24 | Interfaz de consola | 3 | 9 |
-| | **Total** | **26** | **69,6** |
+| 6 | Administrar el Product Backlog | 5 | 15 |
+| | **Total** | **31** | **86,7** |
 
-La #12 y la #24 conservan las horas que se les cargaron en el Sprint 1, a 3 horas por punto:
-ya estaban estimadas antes de empezar y cambiarlas ahora no sería una estimación honesta.
+La #12, la #24 y la #6 conservan las horas que se les cargaron en el Sprint 1, a 3 horas por
+punto: ya estaban estimadas antes de empezar y cambiarlas ahora no sería una estimación
+honesta. Las seis historias nuevas suman 56,7 h.
 
 **Cada responsable puede ajustar las horas de su historia al empezarla**, antes de cargar
 horas reales. La #77 queda sin horas hasta que tenga story points.
+
+### Confirmación del equipo
+
+El 20/10 el equipo confirmó por el grupo las dos decisiones de este anexo: **entregar el
+alcance completo** con el plan al 2 de noviembre, y **sumar la interfaz web** (#77 y #78).
+
+- **Respondieron:** [completar con quiénes confirmaron en el grupo]
