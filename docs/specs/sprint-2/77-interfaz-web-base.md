@@ -637,8 +637,9 @@ De cada escenario a su test. Los esquemas que cruzan pantallas están en
   dominio. Si no se elige rol o prioridad, rechaza el dominio junto al campo. Los story points
   vacíos, o con letras, son un error de forma de la web, «hay que elegir los story points de
   la lista», como una fecha mal escrita (RN-14), y no se llama al dominio. El test de las
-  opciones compara exactamente los valores que se pueden elegir, sin la opción vacía. Lo
-  aceptó el manager el 20/10; queda para la ratificación.
+  opciones compara exactamente los valores que se pueden elegir, sin la opción vacía. Se
+  propuso en la implementación el 20/10 y queda para que lo acepte quien ratifique las
+  puertas.
 - **Una lista no conserva un valor que no ofrece.** En «Mostrar el rechazo», un 4 o
   «cinco» enviados igual no tienen opción que los muestre, así que en esas filas el test no
   controla que se conserve lo escrito (`5ab4419`). El mensaje junto al campo sí se controla.
@@ -688,7 +689,7 @@ Resultado final: **52 controles bien, ninguno falla.**
 | Contraste de 4,5 a 1 | fórmula de WCAG sobre cada par de colores del CSS | el más bajo es 5,75 a 1 (el error sobre su fondo); el foco, 14,7 a 1, y 10,2 en la barra |
 | El binario y los datos | crear un proyecto, mirar el archivo; abrirlo con un archivo cortado | guarda después de cada operación; con el archivo dañado termina con el motivo y el archivo queda igual |
 
-### Hallazgos de la verificación manual
+### Hallazgos de la verificación en los navegadores
 
 Se encontraron antes del merge, así que no se abrió defecto. Los tres tienen su arreglo en
 este PR:
