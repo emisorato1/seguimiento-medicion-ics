@@ -286,3 +286,24 @@ func TestElNucleoRechazaUnValorFueraDeLaEscala(t *testing.T) {
 		t.Fatalf("se esperaba que la historia siguiera sin estimar, salio estimada en %d", story.StoryPoints())
 	}
 }
+
+// Escenario: Operacion incompleta
+// Cubre: RN-5
+func TestOperacionIncompleta(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := unProyectoConUnaHistoria + "estimar\n1\n\n5\nsalir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), "Falta indicar la historia") {
+		t.Fatalf("se esperaba ver que falta indicar la historia, salio: %q", out.String())
+	}
+	project, _ := registry.Get(1)
+	if story, _ := project.Story(1); story.IsEstimated() {
+		t.Fatalf("se esperaba que la operacion no se ejecutara, la historia salio estimada en %d", story.StoryPoints())
+	}
+}
