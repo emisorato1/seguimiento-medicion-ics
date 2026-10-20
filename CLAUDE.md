@@ -387,7 +387,7 @@ usa, se avisa al equipo y se deja dicho por qué.
 
 Las presentaciones arrancan el **2 de noviembre** y el Agile Enabler decidió el 20/10 **entregar
 el proyecto completo**: todas las historias, los 83 story points, los nueve requerimientos
-terminados. Son 72 puntos en 13 días, unas **3,6 horas por persona por día, sábados y
+terminados. Son 72 puntos en 13 días, unas **3,7 horas por persona por día, sábados y
 domingos incluidos**.
 
 El plan entero —calendario, reparto por persona, riesgos y el punto de control del 25— está

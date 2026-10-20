@@ -19,14 +19,19 @@ al equipo.
 |---|---|
 | Story points que quedan | **72** de 83 |
 | Días hasta la presentación | **13** (20/10 al 1/11) |
-| Costo medido en el Sprint 1 | 2,6 h por story point |
-| Horas necesarias a ese costo | **187** |
-| Por persona, por día, sábados y domingos incluidos | **~3,6 h** |
+| Costo medido en el Sprint 1 | 2,7 h por story point |
+| Horas necesarias a ese costo | **194** |
+| Por persona, por día, sábados y domingos incluidos | **~3,7 h** |
+
+> **Corregido el 20/10.** La primera versión decía 2,6 h por punto, 187 horas y 3,6 h por
+> día. La #6 se mergeó el 19/10, después del cierre del Sprint 1, y por la Definición de
+> Terminado no cuenta en ese sprint: la velocidad medida es **6, no 11**, y la conversión
+> pasa a 2,7 h por punto. El detalle está en el [acta de review](actas/sprint-1-review.md).
 
 En el Sprint 1 cada uno puso unas **9,5 horas por semana** (≈1,4 h por día). Este plan pide
 **dos veces y media eso, trece días seguidos**.
 
-**Por qué igual cierra.** Las 2,6 h por punto midieron un proceso con cuatro o cinco pull
+**Por qué igual cierra.** Las 2,7 h por punto midieron un proceso con cuatro o cinco pull
 requests por historia y revisiones que tardaban un día. Con una historia por pull request,
 las specs escritas de antemano y revisión en el día, el costo por punto tiene que bajar a
 unas **2,0 h**. A ese costo hacen falta 144 horas: **2,8 h por persona por día**, y aparecen
