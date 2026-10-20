@@ -2,11 +2,11 @@
 
 - **Historia:** #8
 - **Sprint:** 2
-- **Responsable:** a definir en la planning
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Responsable:** Agustín Salinas
+- **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
-  revisa, lo corrige si hace falta y lo presenta a la Puerta 1.
+  revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #3 (el sprint pertenece a un proyecto)
 - **La necesitan:** #9 (asignar historias al sprint), #10 (cerrar el sprint),
   #11 (consultar sprints anteriores), #16 (métricas)
@@ -280,15 +280,158 @@ Esquema del escenario: Operar sobre un proyecto que no existe
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto —un solo paquete `internal/domain`, datos en
+memoria, errores como valores del dominio comparables con `errors.Is`, mensajes en
+castellano y validar todo antes de cambiar nada— están en
+[AGENTS.md](../../../AGENTS.md) y no se repiten acá. Los datos del sprint y los nombres de
+sus operaciones ya están fijados en [el contrato del dominio](../../diseno-dominio.md).
+Esta fase registra solo lo propio de esta historia.
+
+### Enfoque
+
+El sprint es una entidad nueva, pero **no es una entidad suelta: vive dentro del proyecto**,
+igual que el Product Backlog (#6) y los integrantes (#4). Un sprint no existe sin proyecto,
+y guardarlo adentro hace que el número único por proyecto (RN-1, RN-9) salga solo, sin tener
+que llevar un índice aparte.
+
+Crear un sprint sigue el mismo camino que crear un proyecto o una historia:
+
+1. **Normalizar** lo que llegó: sacarle los espacios de los extremos al Sprint Goal (RN-7) y
+   dejar las fechas en día, sin hora.
+2. **Validar** sobre lo ya normalizado: el goal, las dos fechas, su coherencia y que el
+   proyecto no tenga otro sprint abierto (RN-4 a RN-6, RN-8).
+3. **Aplicar**: recién ahí se le asigna el número y se agrega a los sprints del proyecto.
+
+Ese orden es lo que garantiza la RN-12 sin tener que deshacer nada.
+
+La regla de "un solo sprint abierto" (RN-8) y la consulta del sprint abierto (RN-10) son
+**la misma pregunta**: antes de crear, el sistema se pregunta si ya hay uno abierto y, si lo
+hay, lo informa en el rechazo. Por eso la consulta se implementa primero y la validación la
+usa, en lugar de recorrer los sprints dos veces con dos criterios distintos.
+
+Esta historia crea la entidad **con todos los datos que fija el contrato del dominio**,
+aunque solo use algunos: el estado arranca en Abierto, la lista de historias arranca vacía y
+la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `internal/domain/sprint.go` | se crea | la entidad sprint con los datos del contrato, su estado como tipo propio, la creación dentro del proyecto, el listado de sprints y la consulta del sprint abierto |
+| `internal/domain/sprint_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
+| `internal/domain/project.go` | se modifica | el proyecto pasa a contener sus sprints y el contador de números |
+| `internal/domain/errors.go` | se modifica | los cinco errores de esta historia |
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| Los sprints viven dentro del proyecto | una colección de sprints aparte, indexada por proyecto | un sprint no existe sin proyecto, y adentro el número único por proyecto (RN-9) sale gratis, igual que el identificador de historia en la #6 |
+| El contador de números es del proyecto y **nunca retrocede** | calcular el próximo número como "cantidad de sprints + 1" | contar se rompe apenas exista borrado y repetiría un número ya usado. Es la misma decisión que tomó la #6 para las historias |
+| El estado del sprint es un tipo propio con dos valores, y **Abierto es el valor inicial** | un texto libre, o dejar un valor inicial "sin estado" como hizo la #4 con el rol | un texto libre deja pasar estados que no existen; y un sprint sin estado no existe: nace abierto (RN-3), así que reservar un valor para "sin estado" sería reservarlo para algo imposible |
+| La consulta del sprint abierto informa aparte si hay alguno, en lugar de devolver un error cuando no hay | devolver el error "el proyecto no tiene sprint abierto" | la RN-10 dice que no tener sprint abierto **no es un error**. Con un error, quien consulta tendría que distinguir "no hay" de "falló", que es justo lo que la regla quiere evitar. La #9 y la #10 sí lo tratan como error en sus propias operaciones, y ese error lo declara la #9 |
+| La RN-8 se verifica con la misma consulta de la RN-10 | guardar aparte cuál es el sprint abierto del proyecto | un dato aparte puede contradecir a la lista de sprints; con una sola fuente eso no puede pasar |
+| Las fechas del sprint se guardan por día, reusando la normalización que ya hace el proyecto | guardarlas tal como llegan, con hora y zona | los casos límite de la Fase 1 piden que dos fechas del mismo día sean la misma fecha; reusar lo de la #3 evita que el sprint compare distinto que el proyecto (defecto #59) |
+| La entidad se crea completa, con los datos del contrato que esta historia no usa | crear solo el número, el goal, las fechas y el estado | el contrato ya los fija, y si no están, la #9 y la #10 tienen que volver a tocar la entidad y chocan entre ellas en el mismo archivo |
+| Lo de esta historia va en `sprint.go`; la #9, la #10 y la #11 agregan archivos propios | que las cuatro historias del sprint escriban en `sprint.go` | es el criterio que ya se aprobó en la Puerta 2 de la #12 para `story_estimation.go`: separar por funcionalidad para que dos personas no editen el mismo archivo |
+
+### Dependencias y restricciones
+
+- **Depende de la #3.** Modifica `project.go`, así que el código no se empieza hasta que la
+  #3 esté en `dev`.
+- **`errors.go` es compartido.** Los errores de esta historia se agregan ahí, al final, para
+  achicar el conflicto con las otras historias del sprint.
+- **No se toca nada de las historias:** ni el backlog, ni el estado, ni la estimación. El
+  sprint nace sin historias asignadas y quien las asigna es la #9.
+- **No se escribe el cierre.** El pase a Cerrado y la fecha de cierre son de la #10: esta
+  historia solo deja el dato vacío.
+- **Las operaciones son las que ya nombra el contrato del dominio** (`p.AddSprint(...)`,
+  `p.Sprints()`, `p.OpenSprint()`). La consulta de un sprint por su número, que el contrato
+  también nombra, la escribe la #11.
+- **Las usan:** la #9 (necesita el sprint abierto para asignar), la #10 (lo cierra), la #11
+  (lista los cerrados) y la #16 (mide sobre ellos).
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
 
 ## Fase 3 — Tareas
 
-_Se escribe después de que la Puerta 2 esté aprobada._
+Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
+lo hace pasar en otro. Están en el orden en que hay que hacerlas, y cada una deja el código
+compilando y los tests en verde.
+
+Los tests siguen la convención de [AGENTS.md](../../../AGENTS.md): un test por escenario, con
+el nombre del escenario. Cada tarea de rechazo verifica, además del error, que el proyecto
+quedó con los mismos sprints que antes: es la RN-12.
+
+| # | Tarea | Escenario BDD | Reglas | Estado |
+|---|---|---|---|---|
+| 1 | Un proyecto recién creado no tiene sprints y no tiene sprint abierto, y eso no es un error | Un proyecto sin sprints no tiene sprint abierto | RN-10 | pendiente |
+| 2 | Crear el primer sprint: queda con número 1, en Abierto y sin historias asignadas | Crear el primer sprint de un proyecto | RN-1, RN-2, RN-3 | pendiente |
+| 3 | La consulta del sprint abierto devuelve ese sprint con su goal, sus fechas y su estado | Consultar el sprint abierto de un proyecto | RN-10 | pendiente |
+| 4 | Rechazar la creación sin Sprint Goal, con el goal de solo espacios incluido; el proyecto sigue sin sprints | Rechazar un sprint sin Sprint Goal | RN-4, RN-12 | pendiente |
+| 5 | Rechazar la creación sin fecha de inicio y sin fecha de fin, informando cuál de las dos falta | Rechazar un sprint sin las fechas obligatorias | RN-5, RN-12 | pendiente |
+| 6 | Rechazar la creación con la fecha de fin anterior a la de inicio | Rechazar un sprint con fechas incoherentes | RN-6, RN-12 | pendiente |
+| 7 | Un sprint de un solo día y un sprint con las dos fechas en el pasado se aceptan | Un sprint de un solo dia es valido / Un sprint con fechas pasadas es valido | RN-6, RN-14 | pendiente |
+| 8 | El Sprint Goal se guarda sin los espacios del principio y del final | Guardar el Sprint Goal sin espacios en los extremos | RN-7 | pendiente |
+| 9 | Con un sprint abierto, crear otro se rechaza informando cuál está abierto, y el proyecto sigue con un solo sprint | No se puede abrir un segundo sprint habiendo uno abierto | RN-8, RN-12 | pendiente |
+| 10 | Cerrado el sprint 1, el sprint nuevo recibe el número 2 y el proyecto queda con dos sprints | El sprint nuevo recibe el numero siguiente | RN-1, RN-2 | pendiente |
+| 11 | Un proyecto con todos sus sprints cerrados no tiene sprint abierto | Un proyecto con todos sus sprints cerrados no tiene sprint abierto | RN-10 | pendiente |
+| 12 | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | RN-11 | pendiente |
+| 13 | Dos proyectos tienen cada uno su sprint número 1, y el sprint abierto de uno no impide crear el del otro | Cada proyecto puede tener su propio sprint abierto | RN-9 | pendiente |
+| 14 | Crear un sprint o pedir el sprint abierto de un proyecto que no existe informa que no se encontró el proyecto | Operar sobre un proyecto que no existe | RN-13 | pendiente |
+
+### Por qué este orden
+
+- **La 1 va primero** porque la consulta del sprint abierto es lo que usan casi todas las
+  demás para verificar el resultado, y en un proyecto vacío se puede escribir sin que exista
+  todavía la creación.
+- **La 2 es el camino feliz** y deja la entidad armada; de la 4 a la 6 se le agregan las
+  validaciones de a una, que recién ahí tienen contra qué fallar.
+- **La 9 va después de la 2** porque necesita un sprint ya creado para que haya uno abierto.
+- **La 10, la 11 y la 12 necesitan un sprint cerrado**, así que van después de que la regla
+  del sprint abierto esté cerrada: son las que prueban que el número sigue avanzando.
+- **La 13 y la 14 van al final** porque miran el borde de afuera —otro proyecto, o ninguno— y
+  solo tienen sentido cuando lo de adentro ya funciona.
+
+### Cobertura
+
+Las catorce reglas quedan cubiertas: RN-1 (2, 10), RN-2 (2, 10), RN-3 (2), RN-4 (4),
+RN-5 (5), RN-6 (6, 7), RN-7 (8), RN-8 (9), RN-9 (13), RN-10 (1, 3, 11), RN-11 (12),
+RN-12 (4, 5, 6, 9), RN-13 (14), RN-14 (7).
+
+| Criterio de aceptación | Tareas |
+|---|---|
+| Se puede crear un sprint y queda registrado con su número y en Abierto | 2 |
+| El primer sprint recibe el número 1 y cada sprint nuevo el siguiente | 2, 10 |
+| El número no se repite dentro del mismo proyecto | 10 |
+| Un sprint recién creado no tiene historias asignadas | 2 |
+| No se puede crear un sprint sin Sprint Goal, y el goal de solo espacios cuenta como vacío | 4 |
+| No se puede crear un sprint sin fecha de inicio ni sin fecha de fin | 5 |
+| No se puede crear un sprint con fecha de fin anterior a la de inicio | 6 |
+| Un sprint cuya fecha de fin es igual a la de inicio se acepta | 7 |
+| No se puede crear un segundo sprint habiendo uno abierto, y el mensaje dice cuál es | 9 |
+| Tener un sprint abierto en un proyecto no impide crear uno en otro proyecto | 13 |
+| Se puede consultar el sprint abierto, y no tener ninguno no es un error | 1, 3, 11 |
+| El Sprint Goal se guarda sin los espacios de los extremos | 8 |
+| Una creación rechazada no agrega ningún sprint | 4, 5, 6, 9 |
+| Operar sobre un proyecto inexistente informa que no se encontró | 14 |
+
+Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+
+### Dependencias
+
+- **Todas las tareas necesitan la #3 en `dev`**: el proyecto y su registro.
+- **Las tareas 10, 11 y 12 necesitan un sprint cerrado**, y cerrar es la #10, que todavía no
+  existe. Los tests lo preparan desde dentro del paquete, que puede fijar el estado
+  directamente. Es lo mismo que hizo la #12 con las historias Terminadas.
+
+> **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
 
 ## Fase 4 — Implementación
 
-_Se escribe después de que la Puerta 3 esté aprobada._
+_Se completa durante la implementación._
 
 ## Trazabilidad
 
@@ -298,5 +441,5 @@ _Se escribe después de que la Puerta 3 esté aprobada._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | pendiente (Fase 3) |
-| Código Go | pendiente (Fase 3) |
+| Tests | `internal/domain/sprint_test.go` |
+| Código Go | `internal/domain/sprint.go`, con los sprints dentro de `internal/domain/project.go` y sus errores en `internal/domain/errors.go` |

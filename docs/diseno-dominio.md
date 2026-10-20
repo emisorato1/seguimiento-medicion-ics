@@ -46,19 +46,35 @@ Lo nuevo sigue el mismo camino.
 
 | Dato | Tipo | Qué es |
 |---|---|---|
-| `ID` | entero | identificador dentro del proyecto |
+| `Number` | entero | número del sprint **dentro del proyecto**, lo asigna el sistema empezando en 1 |
 | `Goal` | texto | el Sprint Goal, obligatorio |
 | `Start` | fecha | día de inicio |
 | `End` | fecha | día de cierre planificado |
-| `State` | `SprintPlanned`, `SprintActive`, `SprintClosed` | en qué etapa está |
-| `Stories` | lista de identificadores de historia | las que se le asignaron |
+| `State` | `SprintOpen`, `SprintClosed` | en qué etapa está |
+| `Stories` | lista de identificadores de historia | las que se le asignaron; **no se vacía nunca**, ni al cerrar |
+| `CompletedStories` | lista de identificadores de historia | las que estaban terminadas al cerrar; vacía mientras está abierto |
 | `ClosedOn` | fecha | cuándo se cerró de verdad; vacía si no cerró |
 
-Cuelga del proyecto: `p.AddSprint(...)`, `p.Sprints()`, `p.Sprint(id)`.
+Cuelga del proyecto: `p.AddSprint(...)` y `p.OpenSprint()` (#8), `p.AssignStory(id)` y
+`p.UnassignStory(id)` (#9), `p.CloseSprint(...)` (#10), `p.Sprints()`, `p.ClosedSprints()` y
+`p.Sprint(number)` (#11).
+
+**Por qué `CompletedStories` es un dato y no se deduce.** Una historia que no se terminó
+vuelve al Product Backlog y se puede terminar en el sprint siguiente: si "completada" se
+dedujera del estado actual de la historia, contaría en los dos sprints y la velocidad del
+primero quedaría inflada. Se fija al cerrar y no cambia más. Lo detectó la spec de la #10.
+
+**Son solo dos estados, no tres.** La Fase 1 de la #8 descartó un estado "Planificado": el
+sprint se crea ya abierto, y solo puede haber uno abierto por proyecto a la vez. El
+razonamiento está en su sección "Para decidir en la puerta", punto 4.
+
+**El número es por proyecto, no global.** Dos proyectos pueden tener los dos su sprint 1.
 
 **Lo que necesita saber quien lo consume:** un sprint cerrado tiene `State` en
-`SprintClosed`, `ClosedOn` cargada, y sus historias quedan con el estado que tenían al
-cierre. Las que no se terminaron **vuelven al Product Backlog**, no se arrastran.
+`SprintClosed`, `ClosedOn` cargada y `CompletedStories` fija. Las historias que no se
+terminaron **vuelven al Product Backlog** al cerrar (pasan a Pendiente), pero siguen en
+`Stories`: así la #16 sabe cuánto se había comprometido. Los puntos completados de un sprint
+salen de `CompletedStories`, nunca del estado actual de las historias.
 
 ### `Effort` — historia #14
 
@@ -68,13 +84,18 @@ cierre. Las que no se terminaron **vuelven al Product Backlog**, no se arrastran
 |---|---|---|
 | `StoryID` | entero | sobre qué historia se trabajó |
 | `MemberName` | texto | quién lo registró |
+| `Activity` | texto | qué se hizo, obligatorio (lo pide el primer criterio de la #14) |
 | `Hours` | decimal | horas reales, mayor que cero |
 | `Day` | fecha | qué día |
 
-Se registra sobre el proyecto: `p.LogEffort(...)`, `p.Efforts()`.
+Se registra sobre el proyecto: `p.LogEffort(...)`, `p.Efforts()`, `p.StoryHours(id)` y
+`p.MemberHours(name)`.
 
-**Lo que necesita saber quien lo consume:** hay un registro por persona, historia y día. Las
-horas de una historia son la suma de todos sus registros.
+**Lo que necesita saber quien lo consume:** las horas de una historia son la suma de todos
+sus registros. **El esfuerzo no tiene sprint**: las horas reales de un sprint (#16) se
+calculan sumando las de las historias asignadas a ese sprint (`Sprint.Stories`). Si una
+historia pasó por dos sprints, todas sus horas caen en el último donde estuvo asignada; es
+una simplificación aceptada y queda escrita en la spec de la #14.
 
 ### `Defect` — historia #15
 
@@ -88,10 +109,15 @@ horas de una historia son la suma de todos sus registros.
 | `Severity` | `SeverityCritical`, `SeverityMajor`, `SeverityMinor` | gravedad |
 | `State` | `DefectOpen`, `DefectInProgress`, `DefectResolved` | en qué anda |
 | `StoryID` | entero | a qué historia pertenece |
-| `DetectedIn` | identificador de sprint | sprint donde se detectó |
-| `ResolvedIn` | identificador de sprint | sprint donde se resolvió; vacío si sigue abierto |
+| `DetectedIn` | número de sprint | sprint donde se detectó |
+| `ResolvedIn` | número de sprint | sprint donde se resolvió; vacío si sigue abierto |
 
-Cuelga del proyecto: `p.AddDefect(...)`, `p.Defects()`, `p.ResolveDefect(id, sprintID)`.
+Cuelga del proyecto: `p.AddDefect(...)`, `p.Defects()`, `p.ChangeDefectState(id, state)`,
+`p.ResolveDefect(id, sprintNumber)`, `p.DefectsByState(state)` y
+`p.DefectsBySeverity(severity)`.
+
+**`DefectResolved` solo se alcanza con `ResolveDefect`**, porque resolver exige el sprint de
+resolución. Un defecto resuelto no se reabre.
 
 ### `Metrics` — historia #16
 
@@ -113,7 +139,7 @@ Es un resultado calculado, no algo que se guarda. Se pide por sprint o por proye
 | `DefectsDetected` | entero | defectos detectados |
 | `DefectsResolved` | entero | defectos resueltos |
 
-Se pide así: `p.SprintMetrics(sprintID)` y `p.ProjectMetrics()`.
+Se pide así: `p.SprintMetrics(sprintNumber)` y `p.ProjectMetrics()`.
 
 **Lo que necesita saber quien lo consume (#17 y #18):** `Metrics` es un dato plano, sin
 métodos de cálculo. Se puede armar a mano en un test para probar el dashboard o el reporte
@@ -131,7 +157,7 @@ sin que la historia #16 esté implementada.
 | `Metrics` | `Metrics` | los números |
 | `Sections` | lista de secciones | cada una con `Heading` y `Lines` |
 
-Se pide: `p.ProjectReport()` y `p.SprintReport(sprintID)`.
+Se pide: `p.ProjectReport()` y `p.SprintReport(sprintNumber)`.
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
 PDF **solo lo formatea**. No vuelve a calcular nada.
