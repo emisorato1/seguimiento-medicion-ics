@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"errors"
+	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -57,6 +59,47 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 
 		if !strings.Contains(out.String(), "http://127.0.0.1:9090") {
 			t.Errorf("se esperaba la direccion http://127.0.0.1:9090, salio:\n%s", out.String())
+		}
+	})
+
+	// Hallazgo de la verificacion manual: con Docker en el 8080, la web arrancaba igual en
+	// 127.0.0.1 sin avisar y el navegador mostraba la otra aplicacion. Se prueba con el
+	// puerto tomado en todas las direcciones, como lo toma Docker, y solo en 127.0.0.1.
+	for _, ocupado := range []string{":0", "127.0.0.1:0"} {
+		t.Run("con el puerto ocupado en "+ocupado+" avisa en castellano y sugiere -puerto", func(t *testing.T) {
+			otro, err := net.Listen("tcp", ocupado)
+			if err != nil {
+				t.Fatalf("no se pudo ocupar el puerto para la prueba: %v", err)
+			}
+			defer otro.Close()
+			puerto := otro.Addr().(*net.TCPAddr).Port
+			opts, _ := parseOptions([]string{"-puerto", fmt.Sprint(puerto)})
+
+			listener, err := listen(opts)
+
+			if listener != nil {
+				listener.Close()
+			}
+			if !errors.Is(err, errPortInUse) {
+				t.Fatalf("se esperaba errPortInUse, salio: %v", err)
+			}
+			if !strings.Contains(err.Error(), "-puerto") || strings.Contains(err.Error(), "address already in use") {
+				t.Errorf("se esperaba el aviso en castellano con la sugerencia de -puerto, salio: %v", err)
+			}
+		})
+	}
+
+	t.Run("con el puerto libre escucha en esa direccion", func(t *testing.T) {
+		opts, _ := parseOptions([]string{"-puerto", "0"})
+
+		listener, err := listen(opts)
+
+		if err != nil {
+			t.Fatalf("no se esperaba error con un puerto libre, salio: %v", err)
+		}
+		defer listener.Close()
+		if ip := listener.Addr().(*net.TCPAddr).IP.String(); ip != "127.0.0.1" {
+			t.Errorf("se esperaba escuchar solo en 127.0.0.1, salio %s", ip)
 		}
 	})
 
