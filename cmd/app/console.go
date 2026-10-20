@@ -33,6 +33,7 @@ var operations = []operation{
 	{"crear-proyecto", createProject},
 	{"agregar-integrante", addMember},
 	{"listar-integrantes", listMembers},
+	{"listar-backlog", listBacklog},
 }
 
 // operationNames devuelve las operaciones disponibles, en el orden en que se muestran.
@@ -175,5 +176,16 @@ func listMembers(scanner *bufio.Scanner, out io.Writer, registry *domain.Project
 	}
 	for _, member := range project.Members() {
 		fmt.Fprintf(out, "- %s (%s)\n", member.Name(), member.Role())
+	}
+}
+
+// listBacklog muestra las historias del backlog de un proyecto, o avisa que no tiene.
+func listBacklog(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) {
+	project := askProject(scanner, out, registry)
+	if project == nil {
+		return
+	}
+	if len(project.Backlog()) == 0 {
+		fmt.Fprintln(out, "No hay historias cargadas en el backlog.")
 	}
 }
