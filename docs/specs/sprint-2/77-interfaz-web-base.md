@@ -556,6 +556,18 @@ Ninguno de comportamiento. Tres agregados y una nota:
   registro a texto, que con textos, números y listas `encoding/json` no puede dar. Se dejó
   igual, para que se avise si algún día un dato nuevo sí puede fallar.
 
+### Hallazgos de la revisión del PR #92
+
+Se encontraron antes de que entrara a `dev`, así que no se abrió defecto:
+
+- **Se aceptaba texto sobrante después de los datos** («{…} basura» cargaba sin error),
+  porque la lectura de JSON se detiene en el primer valor. Se agregó ese caso al test de la
+  tarea 3 (`312cc45`, RED por comportamiento) y ahora se rechaza (`19ccd1b`).
+- **El temporal no se forzaba al disco antes de renombrarlo**: un corte de luz justo después
+  del renombre podía dejar el archivo vacío. Se agregó la sincronización (`Sync`, `6a39f92`) antes de
+  cerrarlo. **No tiene test**: un corte de luz no se puede simular desde un test, y en el
+  camino normal la línea ya queda cubierta por el test de la tarea 4.
+
 Nota para la #16: si el PR #81 (horas estimadas) entra a `dev` antes que esta conversión, o
 después, la que llegue segunda suma `estimatedHours` a `registry_json.go` con su caso en el
 test de ida y vuelta, como pide la regla de Dependencias.
