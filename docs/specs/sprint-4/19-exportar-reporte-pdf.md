@@ -7,16 +7,16 @@
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #18 (el reporte ya armado), y por ella de la #16. Ninguna está en `dev`
   todavía: se trabaja contra el contrato del dominio
-- **La necesitan:** nadie dentro del producto: es el último eslabón de la cadena, y el PDF es
-  lo que se muestra en la review final
+- **La necesitan:** la #78, que ofrece el PDF para descargar desde la web. Es el último
+  eslabón de la cadena, y el PDF es lo que se muestra en la review final
 
 ## Fase 1 — Requisitos
 
 ### Objetivo
 
-Que el equipo pueda llevarse un reporte de proyecto o de sprint como archivo PDF —descargado
-desde la web o guardado desde la consola—, para entregarlo y presentarlo en la review final
-sin depender de tener el programa abierto.
+Que el equipo pueda descargar desde la web un reporte de proyecto o de sprint como archivo
+PDF, para entregarlo y presentarlo en la review final sin depender de tener el programa
+abierto.
 
 ### Qué queda afuera
 
@@ -29,21 +29,20 @@ sin depender de tener el programa abierto.
 - Elegir la tipografía, el tamaño de página o los márgenes: son fijos.
 - Exportar a otros formatos, abrir el archivo, imprimirlo, mandarlo por correo, protegerlo con
   contraseña o firmarlo.
-- **El botón o la opción que lo pide** en cada interfaz: la descarga desde la web es de la
-  #78 (su tarea 21), y la opción de la consola, de la historia que le sume los reportes a la
-  consola (punto 4 de "Para decidir en la puerta").
+- **El botón de descarga**, que es de la #78 (su tarea 21).
+- **Exportar desde la consola**: la consola queda con lo que especifica la #24, y el PDF se
+  usa desde la web (punto 4 de "Para decidir en la puerta").
 
 ### Entradas
 
 | Dato | Obligatorio | Descripción |
 |---|---|---|
 | Reporte | sí | un reporte ya generado, de un proyecto o de un sprint |
-| Ubicación del archivo | solo al guardarlo desde la consola | dónde guardar el PDF, con su nombre |
 
 ### Salidas
 
-El reporte como archivo PDF: desde la web se descarga (#78) y desde la consola se guarda en
-la ubicación indicada. Lo que tiene que tener el archivo, llegue como llegue:
+El reporte como archivo PDF, que la web ofrece para descargar (#78). Lo que tiene que tener
+el archivo:
 
 | Qué | Cómo |
 |---|---|
@@ -57,8 +56,7 @@ la ubicación indicada. Lo que tiene que tener el archivo, llegue como llegue:
 ### Reglas de negocio
 
 1. **[RN-1]** Cuando se exporta un reporte, el sistema debe producir un archivo PDF que se
-   pueda abrir con un lector común, sin instalar nada adicional, y que sea el mismo se
-   descargue desde la web o se guarde desde la consola.
+   pueda abrir con un lector común, sin instalar nada adicional.
 2. **[RN-2]** El sistema debe escribir en el archivo el título del reporte, su día de
    generación y cada sección con su encabezado y todas sus líneas, con el mismo texto y en el
    mismo orden que el reporte.
@@ -82,13 +80,9 @@ la ubicación indicada. Lo que tiene que tener el archivo, llegue como llegue:
     signo de pregunta y exportar igual.
 11. **[RN-11]** El sistema debe escribir tal cual los paréntesis, las barras y cualquier otro
     signo del texto, sin que el archivo deje de abrirse.
-12. **[RN-12]** Cuando se guarda el PDF en una ubicación y ya existe un archivo ahí, el sistema
-    debe reemplazarlo.
-13. **[RN-13]** Si se pide guardar el PDF sin indicar la ubicación, el sistema debe rechazarlo
-    e informar que falta indicar dónde guardar el archivo.
-14. **[RN-14]** Si el archivo no se puede guardar —la carpeta no existe o no hay permiso—, el
-    sistema debe informarlo y no dejar un archivo incompleto en esa ubicación.
-15. **[RN-15]** El sistema debe exportar de la misma forma un reporte de proyecto y uno de
+12. **[RN-12]** Si el PDF no se puede entregar entero, el sistema debe informar que no se pudo
+    generar el PDF.
+13. **[RN-13]** El sistema debe exportar de la misma forma un reporte de proyecto y uno de
     sprint.
 
 ### Casos límite
@@ -102,18 +96,17 @@ la ubicación indicada. Lo que tiene que tener el archivo, llegue como llegue:
 - Texto con "(", ")" y "\": se ve tal cual.
 - Texto con un emoji o con letras de otro alfabeto: en su lugar aparece "?", y el resto de la
   línea se ve bien.
+- Exportar dos veces el mismo reporte: da dos archivos iguales.
 
 ### Condiciones de error
 
 | Situación | Qué hace el sistema |
 |---|---|
-| Al guardar, no se indicó la ubicación | rechaza e informa que falta indicar dónde guardar el archivo |
-| La carpeta no existe o no hay permiso para escribir | informa que no se pudo guardar el archivo y no deja uno incompleto |
+| El PDF no se puede entregar entero | informa que no se pudo generar el PDF |
 
 ### Criterios de aceptación
 
-- [ ] Exportar un reporte da un archivo PDF, el mismo para la web y para la consola, y
-      guardarlo lo deja en la ubicación indicada.
+- [ ] Exportar un reporte da un archivo PDF, que la web ofrece para descargar.
 - [ ] El archivo se abre en Vista Previa y en un navegador y muestra el texto del reporte,
       que se puede seleccionar y buscar.
 - [ ] El archivo tiene el título, la fecha de generación y todas las secciones con todas sus
@@ -125,9 +118,7 @@ la ubicación indicada. Lo que tiene que tener el archivo, llegue como llegue:
 - [ ] Las tildes y la ñ se ven bien, y un carácter que no se puede representar sale como "?"
       sin impedir la exportación.
 - [ ] Los paréntesis y las barras del texto no impiden abrir el archivo.
-- [ ] Si el archivo ya existe, se reemplaza.
-- [ ] Sin ubicación se rechaza, y si no se puede guardar se informa y no queda un archivo a
-      medias.
+- [ ] Si el PDF no se puede entregar entero, se informa.
 - [ ] Un reporte de proyecto y uno de sprint se exportan de la misma forma.
 
 ### Escenarios BDD
@@ -135,13 +126,13 @@ la ubicación indicada. Lo que tiene que tener el archivo, llegue como llegue:
 ```gherkin
 Escenario: Exportar el reporte de un sprint a PDF
   Dado el reporte "Reporte del sprint 1 — Seguimiento ICS", generado el 25/10/2026, con sus cuatro secciones
-  Cuando lo exporto a "reporte-sprint-1.pdf"
-  Entonces queda guardado el archivo "reporte-sprint-1.pdf"
+  Cuando lo exporto a PDF
+  Entonces recibo un archivo PDF
   Y la primera pagina empieza con el titulo en letra grande y "Generado el 25/10/2026"
   Y el archivo tiene cada encabezado en negrita y cada linea del reporte, en el mismo orden
 
 Escenario: El archivo se abre en un lector de PDF
-  Dado el reporte del sprint 1 exportado a "reporte-sprint-1.pdf"
+  Dado el reporte del sprint 1 exportado a PDF
   Cuando abro el archivo con Vista Previa y con un navegador
   Entonces veo el titulo y todas las lineas del reporte
   Y puedo seleccionar y buscar el texto
@@ -200,22 +191,11 @@ Escenario: Los parentesis y las barras no rompen el archivo
   Cuando lo exporto a PDF
   Entonces el archivo se abre y muestra esa linea tal cual
 
-Escenario: Exportar sobre un archivo que ya existe lo reemplaza
-  Dado un archivo "reporte.pdf" de una exportacion anterior
-  Cuando exporto otro reporte a "reporte.pdf"
-  Entonces "reporte.pdf" tiene el contenido del reporte nuevo
-
-Esquema del escenario: No se puede guardar el archivo
+Escenario: Un PDF que no se puede entregar se informa
   Dado un reporte del sprint 1
-  Cuando intento exportarlo <a donde>
+  Cuando lo exporto y la entrega del archivo falla
   Entonces la exportacion se rechaza
-  Y se informa que <mensaje>
-  Y no queda ningun archivo en esa ubicacion
-
-  Ejemplos:
-    | a donde                     | mensaje                                |
-    | sin indicar la ubicacion    | falta indicar donde guardar el archivo |
-    | a una carpeta que no existe | no se pudo guardar el archivo          |
+  Y se informa que no se pudo generar el PDF
 ```
 
 **Para decidir en la puerta:**
@@ -232,22 +212,19 @@ Esquema del escenario: No se puede guardar el archivo
    (RN-10). Para los reportes de este proyecto, que son en castellano, no se pierde nada.
 3. **"El mismo contenido que el reporte en pantalla" se interpretó como "las mismas líneas"**:
    el PDF solo agrega "Generado el" y los números de página, y acomoda el texto en páginas.
-   No copia el aspecto de la consola.
-4. **"Se descarga": el núcleo escribe el PDF sin pasar por un archivo, la web lo descarga y
-   la consola lo graba donde se le indica.** Decidido el 20/10, al escribir la spec de la #78,
-   con un cambio del contrato (PR #94). El primer borrador había tomado «se descarga» como
-   «se guarda donde se indica» porque la aplicación no era web; con la #77 lo es, y desde el
-   navegador no se ve el disco de la computadora donde corre el sistema. Esta historia
-   entrega el PDF y cómo guardarlo en una ubicación; la descarga es de la #78, y la opción de
-   la consola, de la historia que le sume los reportes a la consola, que todavía no está
-   nombrada.
-5. **Si el archivo existe, se reemplaza (RN-12)**, como en el "Exportar" de cualquier
-   programa. Rechazar sería más seguro, pero molesta justo cuando se vuelve a exportar el
-   mismo reporte después de corregir un dato.
-6. **El contrato ya nombra la operación de exportar**: el reporte escribe su PDF donde se le
+   No copia el aspecto de la página web.
+4. **"Se descarga": el núcleo escribe el PDF en un `io.Writer` y la web lo descarga (#78).**
+   Decidido el 20/10, al escribir la spec de la #78, con un cambio del contrato (PR #94). El
+   primer borrador había tomado «se descarga» como «se guarda donde se indica» porque la
+   aplicación no era web; con la #77 lo es, y desde el navegador no se ve el disco de la
+   computadora donde corre el sistema. **La consola no exporta**: queda con lo que especifica
+   la #24, y todo lo nuevo —sprints, esfuerzo, defectos, Planning Poker, reportes y PDF— se
+   usa desde la web (decidido el 20/10, en el plan). Por eso esta historia no guarda el PDF
+   en el disco: no hay quién lo pida.
+5. **El contrato ya nombra la operación de exportar**: el reporte escribe su PDF donde se le
    pida (PR #94, 20/10). Reemplaza la propuesta del primer borrador, que lo grababa en una
    ubicación.
-7. **El tercer criterio de la issue ("previsto para el Sprint 4") es de planificación**, no de
+6. **El tercer criterio de la issue ("previsto para el Sprint 4") es de planificación**, no de
    comportamiento: se cumple con que la historia y su spec estén en el Sprint 4, y no lleva
    escenario ni test.
 
@@ -279,12 +256,7 @@ La exportación tiene tres pasos separados, cada uno con sus tests:
    posiciones. Acá vive la codificación de los caracteres (RN-10, RN-11).
 3. **Entregar**: el archivo se arma entero en memoria y se escribe de una vez donde lo pida
    quien llama (`r.WritePDF(w)`, contrato del PR #94). El dominio no toca archivos: la web lo
-   escribe en la respuesta y la consola lo graba con `internal/store`, que es lo que lee y
-   escribe archivos en el proyecto (AGENTS.md, #77).
-
-**Guardar en una ubicación** (RN-12 a RN-14) va en `internal/store`, con el mismo método que el
-archivo de datos de la #77: un temporal en la misma carpeta, que se renombra al final y se
-borra si algo falla.
+   escribe en la respuesta, como descarga (#78).
 
 Separar el maquetado de la escritura permite probar el corte de renglones y de páginas sin
 leer PDF, y probar que el archivo es válido sin depender del maquetado.
@@ -294,9 +266,8 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
 | Archivo | Se crea o se modifica | Para qué |
 |---|---|---|
 | `internal/domain/report_pdf.go` | se crea | la exportación del reporte: maquetar y escribir el PDF donde se pida |
-| `internal/domain/report_pdf_test.go` | se crea | los tests del maquetado y de la escritura |
-| `internal/store/pdf.go` | se crea | guardar el PDF en una ubicación: reemplazar, y no dejarlo a medias |
-| `internal/store/pdf_test.go` | se crea | los tests del guardado |
+| `internal/domain/report_pdf_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
+| `internal/domain/errors.go` | se modifica | el error de un PDF que no se pudo entregar |
 
 ### Decisiones
 
@@ -309,10 +280,10 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
 | El contenido de las páginas va sin comprimir | comprimirlo con zlib, que está en la biblioteca estándar | el archivo pesa pocos KB, y sin comprimir el texto se encuentra en los bytes del archivo: es como los tests verifican la RN-2 sin un lector de PDF |
 | El ancho del renglón se mide en caracteres: 85 en las líneas (cuerpo de 10 puntos), 75 en los encabezados y 50 en el título | medir el ancho real de cada letra con la tabla de anchos de Helvetica | la tabla son más de 200 números copiados a mano y sin forma de testearlos; con un máximo conservador el texto entra igual. Consecuencia: algún renglón queda más corto de lo que podría |
 | Página A4 con márgenes de 2 cm y un largo fijo de renglones por página | calcular el largo según el tamaño de cada renglón | con un interlineado fijo el paso de página se cuenta en renglones y se prueba con números enteros |
-| Maquetar, escribir y guardar son tres pasos separados | armar el archivo mientras se recorre el reporte | cada paso se prueba por su lado (ver Enfoque) |
+| Maquetar, escribir y entregar son tres pasos separados | armar el archivo mientras se recorre el reporte | cada paso se prueba por su lado (ver Enfoque) |
 | El archivo se arma entero en memoria y se escribe de una vez | ir escribiendo a medida que se arma | un error del maquetado no deja medio PDF en el destino, y el archivo es chico |
-| **La exportación escribe el PDF donde lo pida quien llama (`r.WritePDF(w)`), y guardarlo en una ubicación es de `internal/store`** | que el reporte reciba la ubicación y grabe el archivo (`r.ExportPDF(path)`, el primer borrador) | el dominio no toca archivos (AGENTS.md) y la web necesita mandarlo como descarga sin pasar por el disco (#78). Decidido el 20/10 con el cambio del contrato del PR #94 |
-| Guardar en una ubicación usa el temporal y el renombre del archivo de datos de la #77 | escribir directo en la ubicación | es lo que cumple la RN-14 sin deshacer nada, y es el mismo método ya probado en `internal/store` |
+| **La exportación escribe el PDF donde lo pida quien llama (`r.WritePDF(w)`)** | que el reporte reciba la ubicación y grabe el archivo (`r.ExportPDF(path)`, el primer borrador) | el dominio no toca archivos (AGENTS.md) y la web necesita mandarlo como descarga sin pasar por el disco (#78). Decidido el 20/10 con el cambio del contrato del PR #94 |
+| Si el destino falla al escribir, se informa con un error propio, «no se pudo generar el PDF», y no con el del destino | devolver el error del destino tal cual | el mensaje es para el usuario y va en castellano (AGENTS.md); el del destino viene en inglés. La web lo muestra con su aviso (#78, RN-19) |
 | Vive en `internal/domain/report_pdf.go` | un paquete aparte, `internal/pdf` | AGENTS.md pide un solo paquete y crear otro se acuerda con el equipo. Que el núcleo arme texto con formato ya lo permite AGENTS.md desde el 20/10 |
 
 ### Dependencias y restricciones
@@ -321,10 +292,9 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
   mano dentro del paquete, como dice el contrato, con secciones y líneas inventadas.
 - **No se lee nada fuera del reporte**: ni el proyecto, ni las métricas, ni los sprints. Es lo
   que garantiza la RN-3 por construcción.
-- **Los dos errores del guardado van en `internal/store`**, junto al de la #77; el dominio no
-  suma errores: si el destino falla al escribir, devuelve ese error.
-- **Esta historia no toca ninguna interfaz**: la descarga es de la #78 y la opción de la
-  consola, de la historia que le sume los reportes (punto 4 de la puerta).
+- **`errors.go` es compartido**: el error de esta historia se agrega ahí.
+- **Esta historia no toca ninguna interfaz**: la descarga es de la #78, y la consola no
+  exporta (punto 4 de la puerta).
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -334,7 +304,8 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
 Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
 lo hace pasar en otro, y cada una deja los tests en verde. Siguen la convención de
 [AGENTS.md](../../../AGENTS.md): un test por escenario, con su nombre, cada esquema como un
-solo test con tabla de casos, y los errores verificados con `errors.Is`.
+solo test con tabla de casos, y los errores verificados con `errors.Is`. Los tests escriben
+el PDF en un destino en memoria: no tocan el disco.
 
 **Cómo se verifica que el archivo es un PDF válido sin un lector.** El test de la tarea 6
 comprueba que el archivo empieza con la marca de la versión y termina con la de fin, que la
@@ -353,15 +324,15 @@ antes de mostrar nada. Que **de verdad abra** se verifica a mano (ver abajo).
 | 7 | El texto de cada renglón está en el contenido de su página, con el título más grande y los encabezados en negrita | Exportar el reporte de un sprint a PDF | RN-2, RN-5, RN-9 | pendiente |
 | 8 | Los paréntesis y las barras invertidas se escriben sin romper el archivo | Los parentesis y las barras no rompen el archivo | RN-11 | pendiente |
 | 9 | Tildes, ñ, ü, ¿ y ¡ se escriben en la codificación WinAnsi, y lo que no entra en ella sale como "?" | Letras del castellano y caracteres que no se pueden representar | RN-10 | pendiente |
-| 10 | Guardar el PDF en una ubicación lo deja ahí, y si ya existe lo reemplaza (`internal/store`) | Exportar sobre un archivo que ya existe lo reemplaza | RN-1, RN-12 | pendiente |
-| 11 | Sin ubicación se rechaza; si no se puede guardar se informa y no queda archivo (`internal/store`) | No se puede guardar el archivo | RN-13, RN-14 | pendiente |
-| 12 | Un reporte de proyecto y uno de sprint se exportan igual, sin nada agregado ni quitado | El PDF no agrega ni quita nada del reporte | RN-3, RN-15 | pendiente |
+| 10 | Si el destino falla al escribir, la exportación informa que no se pudo generar el PDF | Un PDF que no se puede entregar se informa | RN-12 | pendiente |
+| 11 | Un reporte de proyecto y uno de sprint se exportan igual, sin nada agregado ni quitado | El PDF no agrega ni quita nada del reporte | RN-3, RN-13 | pendiente |
 
 **Verificación manual, que no es un ciclo de TDD.** Antes de abrir el pull request, se exporta
-un reporte real (de la #18, o armado a mano si la #18 no llegó) y se abre en Vista Previa y en
-un navegador, comprobando que se ve el texto, que se puede buscar y que las tildes salen bien.
-El resultado, con la fecha y los lectores usados, se anota en la Fase 4. Cubre la parte del
-escenario "El archivo se abre en un lector de PDF" que ningún test automático puede probar.
+un reporte real (de la #18, o armado a mano si la #18 no llegó) —descargado desde la web si la
+#78 ya lo ofrece— y se abre en Vista Previa y en un navegador, comprobando que se ve el
+texto, que se puede buscar y que las tildes salen bien. El resultado, con la fecha y los
+lectores usados, se anota en la Fase 4. Cubre la parte del escenario "El archivo se abre en
+un lector de PDF" que ningún test automático puede probar.
 
 ### Por qué este orden
 
@@ -369,37 +340,36 @@ escenario "El archivo se abre en un lector de PDF" que ningún test automático 
   después los cortes de renglón y por último los de página, que se apoyan en ellos.
 - **De la 6 a la 9 va la escritura**: primero la estructura vacía pero válida, después el
   texto, y al final los caracteres que necesitan un trato especial.
-- **La 10 y la 11 son el guardado**, que recién tiene sentido con un archivo válido.
-- **La 12 va al final** porque recorre los tres pasos con los dos tipos de reporte.
+- **La 10 es la entrega que falla**, que recién tiene sentido con un archivo válido.
+- **La 11 va al final** porque recorre los tres pasos con los dos tipos de reporte.
 
 ### Cobertura
 
-Las quince reglas quedan cubiertas: RN-1 (6, 10), RN-2 (1, 7), RN-3 (1, 12), RN-4 (2, 6),
+Las trece reglas quedan cubiertas: RN-1 (6), RN-2 (1, 7), RN-3 (1, 11), RN-4 (2, 6),
 RN-5 (7), RN-6 (2, 3), RN-7 (4, 5), RN-8 (1, 4), RN-9 (7), RN-10 (9), RN-11 (8),
-RN-12 (10), RN-13 (11), RN-14 (11), RN-15 (12).
+RN-12 (10), RN-13 (11).
 
 | Criterio de aceptación | Tareas |
 |---|---|
-| Exportar da un PDF, y guardarlo lo deja en la ubicación indicada | 6, 10 |
+| Exportar da un PDF, que la web ofrece para descargar | 6 (la descarga es de la #78) |
 | Se abre en Vista Previa y en un navegador, con texto seleccionable | 6, 7 y la verificación manual |
-| Título, fecha y todas las secciones en orden, sin nada agregado ni quitado | 1, 7, 12 |
+| Título, fecha y todas las secciones en orden, sin nada agregado ni quitado | 1, 7, 11 |
 | Título más grande y encabezados en negrita | 7 |
 | Las líneas largas siguen en el renglón siguiente, nada fuera del margen | 2, 3 |
 | Varias páginas numeradas, sin encabezados solos al pie | 4, 5 |
 | Tildes y ñ, y "?" para lo que no se puede representar | 9 |
 | Paréntesis y barras no rompen el archivo | 8 |
-| Si el archivo existe, se reemplaza | 10 |
-| Sin ubicación se rechaza; si no se puede guardar, se informa y no queda nada | 11 |
-| Proyecto y sprint se exportan igual | 12 |
+| Si el PDF no se puede entregar, se informa | 10 |
+| Proyecto y sprint se exportan igual | 11 |
 
-Los once escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD". El tercer
-criterio de la issue (Sprint 4) no lleva tarea: es de planificación (punto 7 de la puerta).
+Los diez escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD". El tercer
+criterio de la issue (Sprint 4) no lleva tarea: es de planificación (punto 6 de la puerta).
 
 ### Dependencias
 
 - **Ninguna tarea espera a la #18**: todas arman el `Report` a mano dentro del paquete.
-- **La operación ya está nombrada en el contrato** (PR #94): la tarea 6 escribe en un destino
-  en memoria y la 10 la usa desde `internal/store`.
+- **La operación ya está nombrada en el contrato** (PR #94): todas las tareas escriben en un
+  destino en memoria, y la 10 usa uno que falla a propósito.
 - **La verificación manual** usa un reporte real si la #18 ya está en `dev`; si no, uno armado
   a mano con el mismo formato de líneas.
 
@@ -418,5 +388,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/report_pdf_test.go` e `internal/store/pdf_test.go` |
-| Código Go | `internal/domain/report_pdf.go` e `internal/store/pdf.go` |
+| Tests | `internal/domain/report_pdf_test.go` |
+| Código Go | `internal/domain/report_pdf.go` y su error en `internal/domain/errors.go` |
