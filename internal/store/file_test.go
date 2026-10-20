@@ -208,3 +208,45 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 		})
 	}
 }
+
+// Sin escenario: hallazgo de front en el PR #92, los mensajes van en castellano (AGENTS.md)
+// Cubre: #77 RN-24
+//
+// El error del sistema operativo viene en inglés («permission denied»): el mensaje dice que no
+// se pudo abrir el archivo y cuál, sin ese detalle.
+func TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano(t *testing.T) {
+	sinPermisos(t)
+	path := filepath.Join(t.TempDir(), "datos-ics.json")
+	if err := os.WriteFile(path, []byte(`{}`), 0o000); err != nil {
+		t.Fatalf("no se pudo preparar el archivo de prueba: %v", err)
+	}
+	want := "los datos guardados no se pueden leer: no se pudo abrir el archivo " + path
+
+	_, err := NewFile(path).Load()
+
+	if err == nil || err.Error() != want {
+		t.Fatalf("se esperaba el mensaje %q, salio: %v", want, err)
+	}
+}
+
+// Sin escenario: hallazgo de front en el PR #92, los mensajes van en castellano (AGENTS.md)
+// Cubre: #77 RN-25
+//
+// Lo mismo al guardar: el aviso que muestra la web dice qué archivo no se pudo escribir, sin
+// el detalle en inglés del sistema operativo.
+func TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano(t *testing.T) {
+	sinPermisos(t)
+	dir := t.TempDir()
+	if err := os.Chmod(dir, 0o500); err != nil {
+		t.Fatalf("no se pudo quitar el permiso de escritura: %v", err)
+	}
+	t.Cleanup(func() { os.Chmod(dir, 0o700) })
+	path := filepath.Join(dir, "datos-ics.json")
+	want := "el cambio no quedó guardado: no se pudo escribir el archivo " + path
+
+	err := NewFile(path).Save(unRegistro(t))
+
+	if err == nil || err.Error() != want {
+		t.Fatalf("se esperaba el mensaje %q, salio: %v", want, err)
+	}
+}

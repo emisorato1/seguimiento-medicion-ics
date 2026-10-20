@@ -227,3 +227,29 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		})
 	}
 }
+
+// Sin escenario: hallazgo de front en el PR #92, los mensajes van en castellano (AGENTS.md)
+// Cubre: #77 RN-24
+//
+// El detalle de encoding/json viene en inglés («unexpected EOF», «unknown field»): no tiene
+// que llegar al mensaje que lee el usuario al arrancar.
+func TestElMensajeDeDatosDanadosEstaEnCastellano(t *testing.T) {
+	want := "los datos guardados no se pueden leer: el archivo está dañado, incompleto o tiene datos que el sistema no conoce"
+	cases := []struct {
+		name string
+		raw  string
+	}{
+		{"archivo cortado", `{"next_id": 1, "projects": [`},
+		{"texto que no es JSON", `hola`},
+		{"un dato que el sistema no conoce", `{"next_id": 1, "projects": [], "sprints": []}`},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := RegistryFromJSON([]byte(tc.raw))
+
+			if err == nil || err.Error() != want {
+				t.Fatalf("se esperaba el mensaje %q, salio: %v", want, err)
+			}
+		})
+	}
+}
