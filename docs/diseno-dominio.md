@@ -141,6 +141,10 @@ Es un resultado calculado, no algo que se guarda. Se pide por sprint o por proye
 
 Se pide así: `p.SprintMetrics(sprintNumber)` y `p.ProjectMetrics()`.
 
+**Un sprint abierto también tiene métricas**: las planificadas y las horas reales se
+calculan igual, y los completados y la velocidad dan cero hasta que cierra, porque
+`CompletedStories` recién se fija al cerrar.
+
 **Lo que necesita saber quien lo consume (#17 y #18):** `Metrics` es un dato plano, sin
 métodos de cálculo. Se puede armar a mano en un test para probar el dashboard o el reporte
 sin que la historia #16 esté implementada.
@@ -155,9 +159,14 @@ sin que la historia #16 esté implementada.
 | `GeneratedOn` | fecha | cuándo se generó |
 | `Scope` | `ScopeProject`, `ScopeSprint` | de qué es |
 | `Metrics` | `Metrics` | los números |
-| `Sections` | lista de secciones | cada una con `Heading` y `Lines` |
+| `Sections` | lista de `Section` | ver abajo |
 
 Se pide: `p.ProjectReport()` y `p.SprintReport(sprintNumber)`.
+
+**`Section` es compartida con el dashboard (#17).** Tiene `Heading` (texto) y `Lines`
+(lista de textos ya armados). El dashboard entrega `p.Dashboard()` como una lista de
+`Section`, con las barras ya dibujadas en las líneas. La declara la primera de las dos
+historias que llegue a `dev`, como pasó con `errors.go`.
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
 PDF **solo lo formatea**. No vuelve a calcular nada.
