@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -16,14 +17,15 @@ import (
 )
 
 // fakeSaver es el guardado falso de los tests (D21): en vez de escribir un archivo, cuenta
-// cuantas veces se guardo el registro.
+// cuantas veces se guardo el registro, y con err simula que guardar falla.
 type fakeSaver struct {
 	saves int
+	err   error
 }
 
 func (f *fakeSaver) Save(registry *domain.ProjectRegistry) error {
 	f.saves++
-	return nil
+	return f.err
 }
 
 // newTestServer arma una web nueva sobre el registro que recibe, con un guardado falso.
@@ -840,5 +842,30 @@ func TestConfirmarOCancelarAntesDeQuitar(t *testing.T) {
 				t.Errorf("se esperaba que %s figure: %v, y la pagina es:\n%s", caso.figura, caso.queda, html)
 			}
 		})
+	}
+}
+
+// Escenario: Un cambio que no se pudo guardar se avisa
+// Cubre: RN-25
+func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	saver := &fakeSaver{err: errors.New("el cambio no quedó guardado: permiso denegado")}
+	navegador := newBrowser(t, NewServer(registry, saver))
+
+	res := navegador.post("/proyectos/nuevo", url.Values{
+		"nombre": {"Sistema de metricas"},
+		"inicio": {"2026-11-01"},
+	})
+
+	if res.Code != http.StatusInternalServerError {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusInternalServerError, res.Code)
+	}
+	contenido := between(res.Body.String(), "<main", "</main>")
+	if aviso := template.HTMLEscapeString(saver.err.Error()); !strings.Contains(contenido, aviso) {
+		t.Errorf("se esperaba el aviso %q, y no esta en:\n%s", aviso, contenido)
+	}
+	// El cambio queda en memoria y lo incluye el siguiente guardado que funcione (D19).
+	if cantidad := len(registry.Projects()); cantidad != 1 {
+		t.Errorf("se esperaba el proyecto en memoria, hay %d proyectos", cantidad)
 	}
 }
