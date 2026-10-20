@@ -228,3 +228,25 @@ func TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano(t *testing.T) {
 		t.Fatalf("se esperaba el mensaje %q, salio: %v", want, err)
 	}
 }
+
+// Sin escenario: hallazgo de front en el PR #92, los mensajes van en castellano (AGENTS.md)
+// Cubre: #77 RN-25
+//
+// Lo mismo al guardar: el aviso que muestra la web dice qué archivo no se pudo escribir, sin
+// el detalle en inglés del sistema operativo.
+func TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano(t *testing.T) {
+	sinPermisos(t)
+	dir := t.TempDir()
+	if err := os.Chmod(dir, 0o500); err != nil {
+		t.Fatalf("no se pudo quitar el permiso de escritura: %v", err)
+	}
+	t.Cleanup(func() { os.Chmod(dir, 0o700) })
+	path := filepath.Join(dir, "datos-ics.json")
+	want := "el cambio no quedó guardado: no se pudo escribir el archivo " + path
+
+	err := NewFile(path).Save(unRegistro(t))
+
+	if err == nil || err.Error() != want {
+		t.Fatalf("se esperaba el mensaje %q, salio: %v", want, err)
+	}
+}
