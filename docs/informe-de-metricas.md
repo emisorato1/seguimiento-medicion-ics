@@ -71,6 +71,11 @@ Cuando la #12 se mide como historia terminada en el Sprint 2, entra entera: 6 h 
 contra 4 h reales. Esas 4 h aparecen en dos métricas distintas —las horas que puso el equipo
 en el Sprint 1 y lo que costó la #12—, pero ninguna de las dos las suma dos veces.
 
+**La aplicación no puede hacer este reparto, y el informe sí.** En la aplicación el registro
+de esfuerzo no tiene sprint, así que la #16 (RN-7) pone todas las horas de una historia en el
+último sprint donde estuvo. El informe puede repartirlas porque el acta de review dejó
+escritas las horas que tenía cada historia al cierre.
+
 ## Resumen por sprint
 
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
@@ -219,6 +224,14 @@ más de lo pensado y qué haríamos distinto.]_
   registro que vale es su acta de review**, que se escribe el día del cierre y no cambia. Este
   informe toma de ahí los números de cada sprint cerrado, y el script queda para el sprint
   abierto y para armar esa acta.
-- **Horas de las historias que pasan de sprint.** Cada hora cuenta una sola vez. La regla
-  está en *Historias que pasan de un sprint a otro*, al principio del informe.
+- **Limitación conocida: `scripts/metricas.sh` suma enteras las horas de una historia que
+  viene de un sprint anterior.** El tablero guarda un solo total por historia, así que en el
+  Sprint 2 la #12 y la #24 aparecen con sus 15 h estimadas y sus 9,25 h reales, que ya están
+  en el Sprint 1. Para no contarlas dos veces, a lo que da el script se le resta lo que dice
+  el acta de review del sprint anterior. La regla está en *Historias que pasan de un sprint a
+  otro*, al principio del informe.
+- **Defectos por sprint.** Hasta el 20/10, `scripts/metricas.sh` contaba todos los defectos
+  del proyecto en cualquier sprint, y el Sprint 1 daba 2 resueltos cuando fue 1 (el #60 se
+  cerró el 20/10). Ahora los filtra por las fechas de cada sprint: un defecto se detecta el día
+  que se abre su issue y se resuelve el día que se cierra.
 - **Redondeo.** Los porcentajes se redondean al entero más cercano.
