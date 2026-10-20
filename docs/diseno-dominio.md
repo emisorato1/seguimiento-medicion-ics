@@ -206,19 +206,18 @@ y para la #73 `r.Differences()`, `r.Agree(points)` y `p.VotingRounds(storyID)`.
 **La regla que define la historia #13:** mientras `Revealed` sea falso, **ningún voto se
 puede leer** desde afuera, ni siquiera el propio. Solo se sabe quién votó y quién no.
 
-## Dos decisiones transversales pendientes
+## Dos decisiones transversales, ya tomadas
 
-Aparecieron en varias specs a la vez. **Se deciden una sola vez, en la primera puerta que
-las toque**, y después se escriben en las *Decisiones de arquitectura* de `AGENTS.md` para
-que las demás specs se alineen:
+Aparecieron en varias specs a la vez y las decidió el Agile Enabler el 20/10. Están escritas
+en las *Decisiones de arquitectura* de [AGENTS.md](../AGENTS.md):
 
-1. **¿El dominio puede leer el reloj del sistema?** La #14 lo necesita para rechazar días
-   futuros y la #18 para fechar el reporte. Hoy ninguna parte de `internal/domain` lo hace.
-   La alternativa es que el "hoy" lo pase quien llama (la consola), que deja los tests sin
-   depender del día en que se corren.
-2. **¿El núcleo puede formatear?** `AGENTS.md` dice que no, pero el dashboard (#17), el
-   reporte (#18) y el PDF (#19) proponen entregar el texto ya armado desde
-   `internal/domain`. La alternativa es un paquete aparte para la presentación.
+1. **El dominio no lee el reloj del sistema.** Cuando una regla necesita la fecha de hoy
+   —rechazar horas a futuro en la #14, fechar el reporte en la #18—, la recibe de quien
+   llama. Por eso `p.LogEffort(...)`, `p.ProjectReport(today)` y `p.SprintReport(number,
+   today)` reciben el día.
+2. **El núcleo sí arma texto formateado.** El dashboard (#17), el reporte (#18) y el PDF
+   (#19) entregan sus líneas ya armadas desde `internal/domain`. Lo que sigue prohibido es
+   imprimir o leer del teclado.
 
 ## Qué puede empezar hoy sin esperar nada
 

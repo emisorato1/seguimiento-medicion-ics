@@ -314,7 +314,7 @@ encontrado, que ya está en `dev`.
 | Los números se escriben como texto acá, con reglas fijas | que cada consumidor los formatee | la #19 solo arma páginas; si cada uno formateara, el PDF y la pantalla podrían mostrar números distintos |
 | La coma decimal se arma cambiando el punto que da la biblioteca estándar | depender de la configuración regional del sistema | la biblioteca estándar no tiene formato regional, y el resultado no puede depender de la máquina |
 | Siempre las cuatro secciones, aunque estén vacías | omitir las vacías | el reporte tiene siempre la misma forma, y "no hay defectos" también es información |
-| La fecha de generación sale del reloj del sistema, por día | recibirla como dato | el contrato define las operaciones sin fecha; es el criterio de la #14 |
+| La fecha de generación la recibe la operación como dato de quien llama | sacarla del reloj del sistema | decidido por el Agile Enabler el 20/10 y escrito en AGENTS.md: el dominio no lee el reloj, así los tests fijan la fecha que necesitan |
 | La situación de cada historia en un sprint sale del registro del cierre | del estado actual de la historia | ver el punto 2 de la puerta |
 | Las secciones usan la `Section` que comparte con el dashboard, y la declara la primera de las dos historias que llegue a `dev` | una sección propia del reporte | lo fija el contrato: la #19 y la interfaz leen las dos cosas igual, y es la misma regla que se usó con `errors.go` |
 

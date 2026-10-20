@@ -308,6 +308,7 @@ Escenario: Registrar esfuerzo en un proyecto que no existe
    adentro hace que los tests dependan del día en que se corren. Las dos salidas razonables:
    que el "hoy" lo pase quien llama (la consola), o sacar la regla del día futuro y aceptar
    cualquier fecha, como la #8. **Conviene decidirlo antes de la Puerta 2.**
+   **Decidido el 20/10: el "hoy" lo pasa quien llama.** La regla del día futuro se mantiene.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -348,7 +349,7 @@ total que no se guarda no puede quedar desactualizado, y es lo que dice el contr
 
 | Decisión | Alternativa descartada | Por qué |
 |---|---|---|
-| El día de hoy lo toma el dominio del reloj del sistema | recibirlo como dato de quien llama | una validación que quien llama puede falsear pasándole otro "hoy" no es del dominio, y AGENTS.md dice que ahí viven. El costo, que los tests armen sus fechas relativas a hoy, se paga una sola vez |
+| El día de hoy lo recibe la operación como dato de quien llama | que el dominio lea el reloj del sistema | decidido por el Agile Enabler el 20/10 y escrito en AGENTS.md: los tests no dependen del día en que se corren y el dominio sigue sin efectos externos. La validación del día futuro sigue en el dominio; lo que viene de afuera es solo qué día es hoy |
 | Los totales se calculan sumando los registros en cada consulta | guardar un acumulado por historia y por integrante y actualizarlo al registrar | un acumulado hay que mantenerlo sincronizado y puede mentir; el volumen de un trabajo práctico no justifica el riesgo |
 | Los totales los responde el proyecto | devolver la lista de registros y que cada interfaz sume | si la suma vive afuera del dominio, las RN-13 y RN-14 no quedan cubiertas por ningún test y cada interfaz la reimplementa distinto |
 | Se guarda el nombre del integrante ya resuelto contra la lista del proyecto (RN-8) | guardar el texto tal como se escribió | la #16 agrupa las horas por nombre: dos formas de escribir el mismo nombre partirían el total de la misma persona en dos |
