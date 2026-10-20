@@ -237,8 +237,13 @@ func estimateStory(scanner *bufio.Scanner, out io.Writer, registry *domain.Proje
 	if project == nil {
 		return
 	}
-	id, _ := strconv.Atoi(ask(scanner, out, "Historia (identificador): "))
+	idText := ask(scanner, out, "Historia (identificador): ")
 	points, _ := strconv.Atoi(ask(scanner, out, "Story points: "))
+	if idText == "" {
+		fmt.Fprintln(out, "Falta indicar la historia: la operación no se ejecuta.")
+		return
+	}
+	id, _ := strconv.Atoi(idText)
 	if err := project.EstimateStory(id, points); err != nil {
 		fmt.Fprintln(out, err)
 		return
