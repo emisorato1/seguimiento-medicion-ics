@@ -53,7 +53,7 @@ Reparto total, pensado para que nadie espere a nadie:
 |---|---|---|
 | **Agustín Salinas** | #7, #8, #9, #11, #18 | 17 |
 | **Juliana Bustos** | #5, #14, #15, #17 | 19 |
-| **Maximiliano Eula** | #12, #24, #13, #20 | 18 |
+| **Maximiliano Eula** | #12, #24, #13, #73 | 18 |
 | **Emiliano Sorato** | #10, #16, #19 | 18 |
 | | **Total** | **72** |
 
@@ -62,12 +62,15 @@ Reparto total, pensado para que nadie espere a nadie:
 | Quién | Historias | SP |
 |---|---|---|
 | Agustín | #7 Priorizar el backlog (2), #8 Crear un sprint (3), #9 Asignar historias (5) | 10 |
-| Juliana | #14 Registrar el esfuerzo real (3), #15 Gestionar defectos (5) | 8 |
-| Maximiliano | #12 Story Points (2), #24 Interfaz de consola (3), #5 Consultar el estado (3) | 8 |
+| Juliana | #5 Consultar el estado (3), #14 Registrar el esfuerzo real (3), #15 Gestionar defectos (5) | 11 |
+| Maximiliano | #12 Story Points (2), #24 Interfaz de consola (3) | 5 |
 | Emiliano | **las specs de las 15 historias** y las revisiones | — |
 
 **Sprint Goal:** que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda
 operar desde la consola.
+
+Maximiliano queda con 5 puntos a propósito: las dos historias le vuelven del Sprint 1 a
+medio hacer, y en el Sprint 3 le toca la #13, que es la más grande que queda.
 
 Emiliano no toma historias esta semana a propósito: su trabajo es dejar **todas las
 especificaciones escritas y aprobadas antes del jueves 22**, para que en el Sprint 3 nadie
@@ -91,7 +94,7 @@ Es el sprint más cargado y el que decide la presentación.
 | Quién | Historias | SP |
 |---|---|---|
 | Emiliano | #19 Exportar el reporte a PDF (5) | 5 |
-| Maximiliano | #20 Resolver diferencias y acordar (5) | 5 |
+| Maximiliano | #73 Resolver diferencias y acordar (5) | 5 |
 | Agustín | documentación técnica | — |
 | Juliana | presentación final | — |
 
@@ -160,7 +163,7 @@ Diez cambios, vigentes hasta el 2/11.
    trabado.
 9. **Regla de las dos horas.** Trabado más de dos horas, se avisa al grupo. No se pierde un
    día entero peleando solo.
-10. **La #13 se parte en dos.** Queda #13 *Votar en secreto en una ronda* (8) y #20
+10. **La #13 se parte en dos.** Queda #13 *Votar en secreto en una ronda* (8) y #73
     *Resolver diferencias y acordar la estimación* (5). Eran 13 puntos en una sola historia,
     demasiado para un pull request y demasiado para un dueño solo.
 
@@ -174,7 +177,7 @@ El Agile Enabler mira el tablero y decide:
 - **Si el Sprint 2 cerró sus 26 puntos**, el plan sigue tal cual.
 - **Si cerró 20 o más**, se sostiene el alcance y se recorta #19 (PDF) a exportar un texto
   plano con extensión `.pdf` mínima, o se deja como backlog.
-- **Si cerró menos de 20**, se recorta de verdad: salen #19 y #20, y #17 queda en una
+- **Si cerró menos de 20**, se recorta de verdad: salen #19 y #73, y #17 queda en una
   versión de consola sin gráficos.
 
 La decisión se toma **ese día y se avisa al grupo**, no se patea.

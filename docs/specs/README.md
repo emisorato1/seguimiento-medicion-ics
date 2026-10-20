@@ -59,7 +59,7 @@ comprometieron.
 | Gestionar defectos | #15 | 5 | Juliana Bustos | ⏳ spec pendiente |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | 🔍 En review |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ⚙️ En implementación |
-| Consultar el estado de un proyecto | #5 | 3 | Maximiliano Eula | ⏳ spec pendiente |
+| Consultar el estado de un proyecto | #5 | 3 | Juliana Bustos | ⏳ spec pendiente |
 
 ### Sprint 3 — del 26 al 30 de octubre (36 SP)
 
@@ -77,7 +77,7 @@ comprometieron.
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | Exportar el reporte a PDF | #19 | 5 | Emiliano Sorato | ⏳ spec pendiente |
-| Resolver diferencias y acordar la estimación | #20 | 5 | Maximiliano Eula | ⏳ spec pendiente |
+| Resolver diferencias y acordar la estimación | #73 | 5 | Maximiliano Eula | ⏳ spec pendiente |
 
 Las Fases 1 son borradores preparados con asistencia de IA, igual que en el Sprint 1: cada
 una tiene su sección "Para decidir en la puerta" con las decisiones ambiguas que hay que
@@ -94,7 +94,7 @@ Las historias que quedan están encadenadas:
 #8 → #9 → #10 → #16 ─┬─→ #17 Dashboard
                      └─→ #18 → #19 PDF
 
-#13 → #20            (Planning Poker, cadena aparte)
+#13 → #73            (Planning Poker, cadena aparte)
 #5, #7, #14, #15, #24  (sin dependencias, se hacen cuando sea)
 ```
 

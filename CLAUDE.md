@@ -75,7 +75,7 @@ Los nueve requerimientos mínimos de la consigna, cada uno con sus historias en 
 | 1 | Gestión de proyectos | #3, #4, #5 |
 | 2 | Product Backlog | #6, #7 |
 | 3 | Gestión de Sprints | #8, #9, #10, #11 |
-| 4 | Estimación y Planning Poker | #12, #13, #20 |
+| 4 | Estimación y Planning Poker | #12, #13, #73 |
 | 5 | Registro de esfuerzo | #14 |
 | 6 | Gestión de defectos | #15 |
 | 7 | Métricas | #16 |

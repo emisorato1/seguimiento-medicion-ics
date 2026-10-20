@@ -136,7 +136,7 @@ Se pide: `p.ProjectReport()` y `p.SprintReport(sprintID)`.
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
 PDF **solo lo formatea**. No vuelve a calcular nada.
 
-### `VotingRound` — historias #13 y #20
+### `VotingRound` — historias #13 y #73
 
 **Dueño:** Maximiliano.
 
@@ -162,4 +162,4 @@ puede leer** desde afuera, ni siquiera el propio. Solo se sabe quién votó y qu
 | #17 Dashboard | #16 | arma un `Metrics` a mano en el test |
 | #18 Reporte | #16 | ídem |
 | #19 PDF | #18 | arma un `Report` a mano en el test |
-| #20 Acuerdo | #13 | arma una ronda revelada en el test |
+| #73 Acuerdo | #13 | arma una ronda revelada en el test |
