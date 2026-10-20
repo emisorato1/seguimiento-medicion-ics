@@ -39,6 +39,11 @@ gofmt -l .               # listar archivos mal formateados
 - El test va en un commit y la implementación en otro. El historial de commits es la
   evidencia del TDD que se evalúa, así que no aplastar la historia ni subir el test junto
   con la implementación ya terminada.
+- **El commit del test lleva en su mensaje la salida del test fallando** (las líneas de
+  `--- FAIL` o el error de compilación), después de una línea `RED:`. Trabajamos con IA y el
+  test y el código pueden quedar a segundos de distancia: así el historial muestra que el test
+  falló antes de que existiera el código, y no solo el orden de los commits. Rige desde el
+  20/10; los commits anteriores tienen su RED verificado en la revisión de cada PR.
 - Todo lo que sea regla de negocio, métrica, estimación o validación tiene que tener test.
 - Cómo se nombran y se escriben, en la sección "Cómo se escriben los tests" de este archivo.
 
@@ -107,7 +112,7 @@ de estas hay que cambiarla, se cambia acá y se avisa al equipo.
 | Los errores se devuelven como **valores de error del dominio**, declarados en el paquete y comparables con `errors.Is` | devolver strings, o `panic` | permite que los tests verifiquen *qué* error salió y no el texto del mensaje, que va a cambiar |
 | Los **mensajes** de error son para el usuario y van en español; los **nombres** de los errores en inglés, como el resto del código | todo en inglés | el mensaje lo lee quien usa el sistema, y varias reglas de negocio dicen literalmente qué se le informa |
 | Los identificadores los asigna el dominio: enteros que arrancan en 1 y son **únicos dentro de cada proyecto** | UUID, o únicos globales | es lo que esperan las specs (#6 RN-16) y lo que espera el usuario: la primera historia de un proyecto es la 1 |
-| El núcleo **no sabe nada de la interfaz**: no imprime, no lee del teclado ni de archivos de entrada. **Sí puede armar texto**: el dashboard, el reporte y el PDF entregan sus líneas ya formateadas desde `internal/domain` (decidido el 20/10 para la #17, la #18 y la #19) | que el dominio entregue solo números y cada interfaz los formatee | el formato del dashboard, del reporte y del PDF tiene reglas de negocio propias (redondeo, signo de la desviación, largo de las barras) que tienen que testearse; si lo arma la consola, quedan sin tests y cada salida podría mostrar el mismo número distinto |
+| El núcleo **no sabe nada de la interfaz**: no imprime, no lee del teclado ni de archivos de entrada. **Sí puede armar texto**: el reporte y el PDF entregan sus líneas ya formateadas desde `internal/domain`, y el dashboard sus valores ya escritos, mientras la web dibuja las barras (decidido el 20/10 para la #17, la #18 y la #19) | que el dominio entregue solo números y cada interfaz los formatee | el formato del dashboard, del reporte y del PDF tiene reglas de negocio propias (redondeo, signo de la desviación, decimales) que tienen que testearse; si lo arma la consola, quedan sin tests y cada salida podría mostrar el mismo número distinto |
 | El dominio **no lee el reloj del sistema**: cuando una regla necesita la fecha de hoy, la recibe como dato de quien llama (decidido el 20/10 para la #14 y la #18) | que el dominio llame al reloj | los tests no dependen del día en que se corren, y el dominio sigue sin efectos externos. La consola pasa la fecha real; los tests, la que necesiten |
 | **Sin dependencias externas**: solo la biblioteca estándar de Go | usar un framework o una librería de tests | el proyecto es chico y la cátedra evalúa el código propio. Agregar una dependencia se acuerda con el equipo |
 | Las validaciones viven **en el dominio**, nunca en la interfaz | validar en la consola para dar mejor respuesta | si la validación está en la interfaz, cambiar de interfaz la pierde, y los tests no la cubren |

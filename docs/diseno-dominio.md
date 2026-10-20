@@ -185,10 +185,31 @@ sin que la historia #16 esté implementada.
 Se pide: `p.ProjectReport(today)` y `p.SprintReport(sprintNumber, today)`: el día lo pasa quien
 llama, porque el dominio no lee el reloj.
 
-**`Section` es compartida con el dashboard (#17).** Tiene `Heading` (texto) y `Lines`
-(lista de textos ya armados). El dashboard entrega `p.Dashboard()` como una lista de
-`Section`, con las barras ya dibujadas en las líneas. La declara la primera de las dos
-historias que llegue a `dev`, como pasó con `errors.go`.
+**`Section` es del reporte.** Tiene `Heading` (texto) y `Lines` (lista de textos ya armados).
+Lo que comparten el reporte (#18) y el dashboard (#17) es **la regla de formato de los
+números** (horas con "h", el signo de la desviación, los decimales): la escribe la primera de
+las dos historias que llegue a `dev`, como pasó con `errors.go`, y la otra la reutiliza. Así
+un número se lee igual en el dashboard, en el reporte y en el PDF.
+
+### `Dashboard` — historia #17
+
+**Dueño:** Juliana. Cambió el 20/10, cuando el dashboard pasó a mostrarse en la web con
+gráficos de verdad: el dominio entrega los valores ya escritos y **la web dibuja las barras**.
+
+| Dato | Tipo | Qué es |
+|---|---|---|
+| `HasSprints` | booleano | si el proyecto tiene algún sprint; sin sprints, la página muestra solo el aviso |
+| `Overview` | lista de `Figure` | el estado general del proyecto |
+| `CurrentSprint` | el sprint abierto, o nada | `Number`, `Goal`, `Start`, `End` y `Figures` (sin completados ni velocidad) |
+| `Charts` | lista de `Chart` | los cuatro gráficos, en orden |
+
+- `Chart`: `Title`, `Bars` (lista de `Bar`) y `Empty` (el aviso cuando no tiene barras, por
+  ejemplo "Todavía no hay sprints cerrados").
+- `Bar`: `Label`, `Value` (decimal, para medir la barra) y `Text` (el valor ya escrito con la
+  regla de formato).
+- `Figure`: `Label` y `Text` (ya escrito).
+
+Se pide con `p.Dashboard()`, que no falla: si el proyecto no existe, lo informa el registro.
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
 PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.WritePDF(w)`, que **escribe el PDF en un
