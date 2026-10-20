@@ -1,5 +1,14 @@
 # Replanificación: las presentaciones empiezan el 2 de noviembre
 
+> **Decisión superada el 20/10/2026.** Este documento analizaba recortar el alcance y
+> ofrecía dos opciones. El Agile Enabler decidió lo contrario: entregar el proyecto
+> completo. El plan vigente es
+> [plan-final-al-2-de-noviembre.md](plan-final-al-2-de-noviembre.md).
+>
+> Se conserva porque el análisis —el costo por punto, la cobertura de los nueve
+> requerimientos y el camino crítico— sigue siendo la base del plan nuevo, y porque la
+> opción descartada es parte de cómo se tomó la decisión.
+
 Preparado por el Agile Enabler el **20/10/2026**, después de que la cátedra anunciara en
 clase que las presentaciones arrancan el **2 de noviembre**.
 
