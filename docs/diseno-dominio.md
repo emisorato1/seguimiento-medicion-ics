@@ -40,7 +40,7 @@ Lo nuevo sigue el mismo camino.
 
 **Agregados de la #77 (interfaz web):** el registro suma `r.Projects()`, que lista todos los
 proyectos en orden de número, y el dominio suma `StoryPointScale()`, que entrega una copia de
-la escala válida para ofrecerla como opciones. Los dos los implementa ics-back. La conversión
+la escala válida para ofrecerla como opciones. Los dos los implementa Emiliano, como parte de la #77. La conversión
 a JSON vive en `internal/domain/registry_json.go`: **toda entidad nueva entra ahí** (ver
 `AGENTS.md`).
 

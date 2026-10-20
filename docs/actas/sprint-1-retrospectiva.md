@@ -67,7 +67,7 @@ El de las aprobaciones es el caso: no se cumplió, y se cambia (ver abajo).
   las puertas aprobadas por comentario, después tests y código—; revisión en el día; y que un
   PR con cambios pedidos no se mergee hasta que se respondan.
 
-**Lo que quedó.** El 20/10 el equipo decidió entregar el proyecto completo para el 2 de
+**Lo que quedó.** El 20/10 el Agile Enabler decidió entregar el proyecto completo para el 2 de
 noviembre ([plan](../plan-final-al-2-de-noviembre.md)), y eso ajustó algunas propuestas:
 
 | Propuesta de la retro | Qué quedó | Por qué |

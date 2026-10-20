@@ -6,11 +6,12 @@ análisis previo.
 
 ## La decisión
 
-**Se entrega el alcance completo.** Las 20 historias, los 83 story points, los nueve
+**Se entrega el alcance completo.** Todas las historias del backlog, los 83 story points, los nueve
 requerimientos mínimos terminados. Nada se presenta como "backlog pendiente".
 
 El replan del 20/10 proponía recortar a unos 30 puntos y defender el resto como backlog. Se
-descarta: el equipo decide subir el ritmo en vez de bajar el alcance.
+descarta: el Agile Enabler decide subir el ritmo en vez de bajar el alcance, y se lo plantea
+al equipo.
 
 ## El número, sin maquillar
 
@@ -102,7 +103,8 @@ Es el sprint más cargado y el que decide la presentación.
 
 ## Interfaz web (agregada el 20/10)
 
-El mismo 20/10 el equipo decidió que la aplicación tenga **una interfaz web profesional**,
+El mismo 20/10 el Agile Enabler decidió que la aplicación tenga **una interfaz web
+profesional**, y se lo planteó al equipo,
 además de la consola de la #24. La consigna permite web, escritorio o consola, pero pide una
 *"interfaz usable"* en el Sprint 2 y *"representaciones gráficas"* en el dashboard, y las dos
 cosas se defienden mucho mejor en el navegador que en una terminal.
