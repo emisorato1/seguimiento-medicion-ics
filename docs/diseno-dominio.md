@@ -182,7 +182,8 @@ sin que la historia #16 esté implementada.
 | `Metrics` | `Metrics` | los números |
 | `Sections` | lista de `Section` | ver abajo |
 
-Se pide: `p.ProjectReport()` y `p.SprintReport(sprintNumber)`.
+Se pide: `p.ProjectReport(today)` y `p.SprintReport(sprintNumber, today)`: el día lo pasa quien
+llama, porque el dominio no lee el reloj.
 
 **`Section` es compartida con el dashboard (#17).** Tiene `Heading` (texto) y `Lines`
 (lista de textos ya armados). El dashboard entrega `p.Dashboard()` como una lista de
@@ -190,8 +191,10 @@ Se pide: `p.ProjectReport()` y `p.SprintReport(sprintNumber)`.
 historias que llegue a `dev`, como pasó con `errors.go`.
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
-PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.ExportPDF(path)`, y solo lee
-`Title`, `GeneratedOn` y `Sections`.
+PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.WritePDF(w)`, que **escribe el PDF en un
+`io.Writer`** y solo lee `Title`, `GeneratedOn` y `Sections`. El dominio no toca archivos: la
+consola lo graba en disco y la web lo manda como descarga (decidido el 20/10, al escribir la
+spec de la #78; reemplaza a `r.ExportPDF(path)`).
 
 ### `VotingRound` — historias #13 y #73
 
@@ -211,7 +214,9 @@ la ronda. Se fijan ahí y no cambian aunque después se sume o se vaya alguien.
 Se pide: `p.OpenVotingRound(storyID)`, `r.Vote(member, points)` —`member` es el nombre y
 apellido, como en la #14—, `r.Reveal()`, `r.Voted()` y `r.Pending()` (solo nombres),
 `r.Votes()` (los valores; **con la ronda sin revelar devuelve error**, no una lista vacía),
-y para la #73 `r.Differences()`, `r.Agree(points)` y `p.VotingRounds(storyID)`.
+y `p.CurrentVotingRound(storyID)` (la última ronda de la historia, para volver a encontrarla
+entre un pedido y otro de la web); para la #73, `r.Differences()`, `r.Agree(points)` y
+`p.VotingRounds(storyID)`. Las rondas entran en la conversión a JSON como toda entidad nueva.
 
 `Agreed` vacío se guarda como 0, igual que "sin estimar" en la #12.
 
