@@ -82,6 +82,29 @@ func addStory(t *testing.T, project *domain.Project, title string, priority doma
 	return story
 }
 
+// doneStoryRegistry arma, con la conversion de los datos guardados, un registro con el
+// proyecto 1 y su historia 1 Terminada: hasta que existan los sprints es la unica forma de
+// tener una historia Terminada.
+func doneStoryRegistry(t *testing.T) *domain.ProjectRegistry {
+	t.Helper()
+	registry, err := domain.RegistryFromJSON([]byte(`{
+		"next_id": 2,
+		"projects": [{
+			"id": 1, "name": "Sistema de metricas", "start": "2026-11-01", "next_story_id": 2,
+			"members": [],
+			"stories": [{
+				"id": 1, "title": "Registrar esfuerzo", "description": "Como integrante quiero registrar esfuerzo",
+				"priority": "Media", "state": "Terminada", "story_points": 3,
+				"acceptance_criteria": ["Se puede registrar esfuerzo"]
+			}]
+		}]
+	}`))
+	if err != nil {
+		t.Fatalf("no se pudo preparar la historia Terminada: %v", err)
+	}
+	return registry
+}
+
 // between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
 // la pagina, como la barra. Si no lo encuentra devuelve vacio.
 func between(html, start, end string) string {
@@ -324,9 +347,10 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 	casos := []struct {
 		nombre     string
 		preparar   func(t *testing.T, registry *domain.ProjectRegistry)
+		inicial    func(t *testing.T) *domain.ProjectRegistry
 		formulario string
 		datos      url.Values
-		campo      string
+		campo      string // vacio si el mensaje va arriba del formulario
 		err        error
 		// fueraDeLista son los campos de una lista para elegir que recibieron un valor que
 		// la lista no ofrece: no hay opcion que lo muestre, asi que no se puede conservar.
@@ -456,12 +480,38 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			err:          errInvalidPoints,
 			fueraDeLista: []string{"puntos"},
 		},
+		{
+			nombre:     "modificar una historia Terminada",
+			inicial:    doneStoryRegistry,
+			formulario: "/proyectos/1/historias/1/editar",
+			datos: url.Values{
+				"titulo":      {"Otro titulo"},
+				"descripcion": {"Como integrante quiero registrar esfuerzo"},
+				"prioridad":   {"Media"},
+				"criterios":   {"Se puede registrar esfuerzo"},
+			},
+			campo: "",
+			err:   domain.ErrStoryDone,
+		},
+		{
+			nombre:     "estimar una historia Terminada",
+			inicial:    doneStoryRegistry,
+			formulario: "/proyectos/1/historias/1/estimar",
+			datos:      url.Values{"puntos": {"5"}},
+			campo:      "",
+			err:        domain.ErrStoryEstimateDone,
+		},
 	}
 
 	for _, caso := range casos {
 		t.Run(caso.nombre, func(t *testing.T) {
 			registry := domain.NewProjectRegistry()
-			caso.preparar(t, registry)
+			if caso.inicial != nil {
+				registry = caso.inicial(t)
+			}
+			if caso.preparar != nil {
+				caso.preparar(t, registry)
+			}
 			saver := &fakeSaver{}
 			server := NewServer(registry, saver)
 			antes := snapshot(registry)
@@ -483,10 +533,15 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 				}
 			}
 
-			// El mensaje del dominio, junto a su campo.
-			junto := fmt.Sprintf(`id="%s-error">%s<`, caso.campo, template.HTMLEscapeString(caso.err.Error()))
+			// El mensaje del dominio, junto a su campo o, si no es de ningun campo, arriba.
+			donde := "arriba del formulario"
+			junto := fmt.Sprintf(`id="error-formulario">%s<`, template.HTMLEscapeString(caso.err.Error()))
+			if caso.campo != "" {
+				donde = "junto al campo " + caso.campo
+				junto = fmt.Sprintf(`id="%s-error">%s<`, caso.campo, template.HTMLEscapeString(caso.err.Error()))
+			}
 			if !strings.Contains(html, junto) {
-				t.Errorf("se esperaba junto al campo %s el mensaje %q, y no esta en:\n%s", caso.campo, caso.err, html)
+				t.Errorf("se esperaba %s el mensaje %q, y no esta en:\n%s", donde, caso.err, html)
 			}
 
 			// No cambio ningun dato.
