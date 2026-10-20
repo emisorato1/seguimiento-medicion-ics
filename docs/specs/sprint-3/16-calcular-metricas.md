@@ -3,7 +3,7 @@
 - **Historia:** #16
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Puerta 3 aprobada — **en implementación** (tareas 1 a 3 hechas)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #8, #9 y #10 (los sprints, lo comprometido y lo completado), #11 (buscar un
   sprint por su número), #12 (los story points), #14 (las horas reales) y #15 (los defectos).
@@ -437,9 +437,9 @@ solo test con tabla de casos. Los números con decimales se comparan con una tol
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Una historia nace con cero horas estimadas; cargarlas las registra con fracciones, y volver a cargarlas reemplaza | Cargar y reemplazar las horas estimadas de una historia | RN-17 | pendiente |
-| 2 | Rechazar horas estimadas cero o negativas, sin cambiar la historia | Rechazar horas estimadas que no son mayores que cero | RN-18 | pendiente |
-| 3 | Rechazar la carga en una historia Terminada, sin cambiarla | No cambiar las horas estimadas de una historia terminada | RN-19 | pendiente |
+| 1 | Una historia nace con cero horas estimadas; cargarlas las registra con fracciones, y volver a cargarlas reemplaza | Cargar y reemplazar las horas estimadas de una historia | RN-17 | hecha |
+| 2 | Rechazar horas estimadas cero o negativas, sin cambiar la historia | Rechazar horas estimadas que no son mayores que cero | RN-18 | hecha |
+| 3 | Rechazar la carga en una historia Terminada, sin cambiarla | No cambiar las horas estimadas de una historia terminada | RN-19 | hecha |
 | 4 | Las métricas de un sprint y de un proyecto sin datos valen cero | Sin datos cargados las metricas valen cero | RN-1, RN-14, RN-15 | pendiente |
 | 5 | Planificados de un sprint: puntos y cantidad de todas sus historias comprometidas | Metricas de un sprint cerrado | RN-3, RN-16 | pendiente |
 | 6 | Completados y velocidad de un sprint salen del registro del cierre | Una historia que volvio al backlog cuenta como completada solo donde se completo | RN-4, RN-5 | pendiente |
@@ -452,7 +452,7 @@ solo test con tabla de casos. Los números con decimales se comparan con una tol
 | 13 | Métricas del proyecto: todo el backlog, todo el esfuerzo y todos los defectos | Metricas del proyecto entero | RN-9, RN-11 | pendiente |
 | 14 | Velocidad del proyecto: promedio redondeado de los sprints cerrados, y cero sin ninguno | Velocidad del proyecto | RN-10 | pendiente |
 | 15 | Pedir las métricas no cambia ningún dato y refleja lo que se cargó después | Las metricas reflejan los datos cargados despues | RN-2 | pendiente |
-| 16 | Sprint, historia o proyecto inexistentes informan que no se encontraron | Pedir algo que no existe | RN-20 | pendiente |
+| 16 | Sprint, historia o proyecto inexistentes informan que no se encontraron | Pedir algo que no existe | RN-20 | en curso: fila de la historia |
 
 **El escenario "Metricas de un sprint cerrado" se completa en varias tareas.** La 5 escribe su
 test verificando los planificados, y la 6, la 9, la 10, la 11 y la 12 le agregan la
@@ -510,7 +510,33 @@ Los dieciséis escenarios BDD de la Fase 1 tienen su tarea en la columna "Escena
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `56ff0bc` | `7e4e3b8` |
+| 2 | `eb4ad3d` | `e636a5c` |
+| 3 | `4d24c31` | `9d00e6f` |
+| 16 (fila de la historia) | `15a8336` | — (sin RED, ver Desvíos) |
+
+Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
+existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Uno de orden:
+
+- **La fila "cargar horas estimadas en la historia 99" de la tarea 16 se adelantó.** Con las
+  tareas 1 a 3 la carga ya busca la historia, así que el caso de la historia inexistente
+  pasó sin código nuevo; sin su test, la cobertura del dominio bajaba a 99,6%. Las filas del
+  sprint y del proyecto se agregan en la tarea 16.
+- **El error de horas inválidas se llama `ErrEstimatedHoursInvalid`** y no
+  `ErrStoryHoursInvalid`, para no confundirlo con `p.StoryHours(id)`, que en el contrato son
+  las horas **reales** de una historia (#14).
+
+Nota de proceso: las tareas 4 a 16 necesitan `Sprint` (#8), `Effort` (#14) y `Defect` (#15).
+Como ninguna está en `dev` y esas entidades son de sus dueños, las tareas 1 a 3 entran en un
+primer PR con `Refs #16`, y el resto sigue cuando esas entidades lleguen a `dev`.
 
 ## Trazabilidad
 
