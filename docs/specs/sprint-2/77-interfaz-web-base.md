@@ -675,7 +675,9 @@ La empezó Emiliano a mano y la terminó Claude Code automatizada, con Playwrigh
 binario compilado (`go build ./cmd/web`) y en los tres motores: **Chromium 151, Firefox 153
 y WebKit 26.5** (el de Safari), de a uno por vez. El script no está en el repo, porque
 agregar una dependencia de Node es una decisión del equipo; queda fuera, en `~/ics/e2e`.
-Resultado final: **52 controles bien, ninguno falla.**
+Resultado final: **52 controles bien, ninguno falla.** Esta verificación, la que hizo él a
+mano más la de Playwright en los tres motores, **la aceptó Emiliano Sorato el 20/10** como la
+verificación manual que pide la Fase 3 (en la revisión del PR #95).
 
 | Qué | Cómo | Resultado |
 |---|---|---|
