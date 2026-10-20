@@ -22,6 +22,7 @@ scripts/tablero.sh ver   # ver el estado de las historias
 go test ./...            # correr todos los tests
 go test ./internal/...   # solo los tests del dominio
 go test -run TestX ./... # correr un test puntual
+go run ./cmd/web         # la interfaz web en http://127.0.0.1:8080 (#77)
 go test ./... -coverprofile=cobertura.out && go tool cover -func=cobertura.out | tail -1
                          # cobertura total, igual que en CI
 go build ./...           # compilar
@@ -82,8 +83,11 @@ Si un escenario de la Fase 1 no tiene test, la historia no está terminada.
 ## Estructura del proyecto
 
 ```
-cmd/            punto de entrada de la aplicación
-internal/       nucleo de la solución y reglas de negocio (Go)
+cmd/app/        la consola (#24)
+cmd/web/        la interfaz web (#77)
+internal/domain/  nucleo de la solución y reglas de negocio (Go)
+internal/store/   leer y escribir el archivo de datos (#77)
+internal/web/     handlers, plantillas y CSS de la interfaz web (#77)
 docs/specs/     especificaciones SDD, una carpeta por sprint
 docs/actas/     actas de plannings, reviews y retrospectivas
 scripts/        utilidades del tablero y del estado
@@ -98,11 +102,13 @@ de estas hay que cambiarla, se cambia acá y se avisa al equipo.
 | Decisión | Alternativa descartada | Por qué |
 |---|---|---|
 | El núcleo vive en un solo paquete `internal/domain`, con **un archivo por entidad** (`project.go`, `member.go`, `story.go`, …), y se puede **separar en más archivos por funcionalidad** cuando varias historias tocan la misma entidad (`story_estimation.go`, `project_registry.go`) | un paquete por entidad | con paquetes separados aparecen ciclos de importación en cuanto una historia referencia a un proyecto. La regla existe para que varias personas no editen el mismo archivo: cuando separar por funcionalidad sirve mejor a ese objetivo, se separa |
-| Durante el Sprint 1 los datos viven **en memoria**: al cerrar el programa se pierden | archivo o base de datos | ningún requerimiento mínimo pide persistencia todavía, y meterla ahora obligaría a decidir el formato antes de saber qué se guarda. Se revisa en el Sprint 2 |
+| Desde la #77 los datos **se guardan en un archivo JSON**, reescrito entero después de cada operación aceptada. **La conversión vive en `internal/domain`** —es lo único que puede leer los datos ocultos sin exportarlos— y al cargar cada entidad pasa por las mismas validaciones que al crearla. **Leer y escribir el archivo es de `internal/store`**: el dominio sigue sin tocar archivos | seguir en memoria, o una base de datos | en memoria, cerrar el programa pierde todo y la interfaz web no sirve para usarla de verdad; una base de datos es una dependencia externa. Era la revisión que esta tabla dejaba pendiente para el Sprint 2 |
+| **Toda historia que agrega una entidad o un dato lo suma a la conversión**, con su caso en el test de ida y vuelta. Si la conversión todavía no está en `dev`, lo suma la #77 cuando entre | que cada historia decida si persiste lo suyo | un dato que no entra en la conversión se pierde en silencio al cerrar, sin que ningún test lo muestre |
 | Los errores se devuelven como **valores de error del dominio**, declarados en el paquete y comparables con `errors.Is` | devolver strings, o `panic` | permite que los tests verifiquen *qué* error salió y no el texto del mensaje, que va a cambiar |
 | Los **mensajes** de error son para el usuario y van en español; los **nombres** de los errores en inglés, como el resto del código | todo en inglés | el mensaje lo lee quien usa el sistema, y varias reglas de negocio dicen literalmente qué se le informa |
 | Los identificadores los asigna el dominio: enteros que arrancan en 1 y son **únicos dentro de cada proyecto** | UUID, o únicos globales | es lo que esperan las specs (#6 RN-16) y lo que espera el usuario: la primera historia de un proyecto es la 1 |
-| El núcleo **no sabe nada de la interfaz**: no imprime, no lee del teclado, no formatea | que el dominio imprima directamente | es lo que permite testearlo, y lo que hace que la consola de la #24 sea reemplazable en el Sprint 2 |
+| El núcleo **no sabe nada de la interfaz**: no imprime, no lee del teclado ni de archivos de entrada. **Sí puede armar texto**: el dashboard, el reporte y el PDF entregan sus líneas ya formateadas desde `internal/domain` (decidido el 20/10 para la #17, la #18 y la #19) | que el dominio entregue solo números y cada interfaz los formatee | el formato del dashboard, del reporte y del PDF tiene reglas de negocio propias (redondeo, signo de la desviación, largo de las barras) que tienen que testearse; si lo arma la consola, quedan sin tests y cada salida podría mostrar el mismo número distinto |
+| El dominio **no lee el reloj del sistema**: cuando una regla necesita la fecha de hoy, la recibe como dato de quien llama (decidido el 20/10 para la #14 y la #18) | que el dominio llame al reloj | los tests no dependen del día en que se corren, y el dominio sigue sin efectos externos. La consola pasa la fecha real; los tests, la que necesiten |
 | **Sin dependencias externas**: solo la biblioteca estándar de Go | usar un framework o una librería de tests | el proyecto es chico y la cátedra evalúa el código propio. Agregar una dependencia se acuerda con el equipo |
 | Las validaciones viven **en el dominio**, nunca en la interfaz | validar en la consola para dar mejor respuesta | si la validación está en la interfaz, cambiar de interfaz la pierde, y los tests no la cubren |
 | Quien guarda una entidad **entrega la entidad guardada, no una copia**, y sus datos están **ocultos fuera del paquete**: solo se cambian con operaciones que validan | entregar una copia y obligar a guardar cada cambio | la consola vive en `cmd/`, así que no puede tocar datos ocultos de `internal/domain` y no tiene forma de saltear las validaciones. Dentro del paquete la copia no protege nada, porque es el mismo paquete: paga el costo sin comprar la protección. Además, con copias cada historia tendría que acordarse de guardar, y un olvido pierde el cambio en silencio, sin error y sin que ningún escenario BDD lo muestre |

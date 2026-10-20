@@ -3,7 +3,7 @@
 - **Historia:** #4
 - **Sprint:** 1
 - **Responsable:** Juliana Bustos
-- **Estado:** Implementada — **en review**
+- **Estado:** Terminada — **mergeada a `dev`** (PR #62)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por la
@@ -433,6 +433,17 @@ Ciclo RED → GREEN → REFACTOR: el test en un commit y la implementación en o
   en los extremos" se llama igual que uno de la #3, y Go no admite dos tests con el mismo
   nombre en el mismo paquete. Su test es `TestGuardarElNombreDelIntegranteSinEspaciosEnLosExtremos`;
   el comentario de arriba cita el escenario tal cual, así que la trazabilidad no se corta.
+
+### Defectos
+
+- **#60 — dos mensajes de error sin tildes.** "El integrante ya esta cargado en el proyecto"
+  y "no se encontro el integrante en el proyecto" llegaban así al usuario, porque la consola
+  muestra los mensajes tal cual. El defecto lo encontró Maximiliano Eula en la revisión del
+  PR #54 (Sprint 1) para los mensajes de la #3; Juliana Bustos sumó al alcance los de esta
+  historia, que entraron a `dev` con el PR #62 después de abierto el defecto. Lo corrigió
+  Agustín Salinas en el PR #69, con un test que verifica el texto de los mensajes afectados.
+  Los otros tres mensajes de esta historia no llevan tildes y no cambiaron. Los tests de la
+  historia no se tocaron: comparan los errores con `errors.Is`, no por el texto.
 
 ## Trazabilidad
 

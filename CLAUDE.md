@@ -36,11 +36,15 @@ Siempre, al empezar una sesión:
 
 2. Leer [ESTADO.md](ESTADO.md) — dice qué historias hay, en qué estado y cuáles están
    estimadas. Si tenés `gh`, regeneralo primero con `scripts/estado.sh`.
-3. Elegir la historia a trabajar: la que te toca según
-   [docs/specs/README.md](docs/specs/README.md), respetando el orden de dependencias que ahí
-   se indica. Si la historia que te toca depende de otra que todavía no está en `dev`,
-   podés avanzar con su spec pero no con su código.
-4. Mirar en qué estado del tablero está y hacer lo que corresponde:
+3. **Hasta el 2/11, mirar [docs/plan-final-al-2-de-noviembre.md](docs/plan-final-al-2-de-noviembre.md):**
+   ahí está, por nombre y por sprint, qué historias te tocan y para cuándo. El índice de
+   specs sigue teniendo el detalle de cada una.
+4. Elegir la historia a trabajar: la que te toca según el plan y
+   [docs/specs/README.md](docs/specs/README.md). **Si depende de otra que todavía no está en
+   `dev`, se escribe igual**: el contrato de las entidades está en
+   [docs/diseno-dominio.md](docs/diseno-dominio.md) y los datos que te faltan los armás a
+   mano en tu propio test. No se espera a nadie.
+5. Mirar en qué estado del tablero está y hacer lo que corresponde:
 
 | Si la historia está en... | Lo que sigue es... |
 |---|---|
@@ -71,12 +75,15 @@ Los nueve requerimientos mínimos de la consigna, cada uno con sus historias en 
 | 1 | Gestión de proyectos | #3, #4, #5 |
 | 2 | Product Backlog | #6, #7 |
 | 3 | Gestión de Sprints | #8, #9, #10, #11 |
-| 4 | Estimación y Planning Poker | #12, #13 |
+| 4 | Estimación y Planning Poker | #12, #13, #73 |
 | 5 | Registro de esfuerzo | #14 |
 | 6 | Gestión de defectos | #15 |
 | 7 | Métricas | #16 |
 | 8 | Dashboard | #17 |
 | 9 | Reportes (PDF en el Sprint 4) | #18, #19 |
+
+Se usa desde **dos interfaces**: la consola (#24) y el navegador (#77 y #78, decidido el
+20/10). El dashboard (#17) se muestra en la web.
 
 La consigna completa está en el campus. **Ninguna funcionalidad nueva se agrega sin que
 exista su historia en el tablero.**
@@ -157,15 +164,18 @@ scripts/estado.sh                               # regenerar ESTADO.md y commitea
 
 ## Sprints
 
-Plan de la cátedra:
+Plan de la cátedra, con las fechas que fijó el equipo el 20/10 para llegar al 2 de noviembre:
 
-| Sprint | Objetivo |
-|---|---|
-| 0 | preparación: repositorio, tablero, backlog inicial |
-| 1 | MVP |
-| 2 | interfaz usable |
-| 3 | funcionalidad y calidad (visualización) |
-| 4 | cierre, informe en PDF y review final |
+| Sprint | Objetivo | Fechas | SP |
+|---|---|---|---|
+| 0 | preparación: repositorio, tablero, backlog inicial | cerrado | — |
+| 1 | MVP | cerrado | 16 (velocidad 6) |
+| 2 | interfaz usable: sprints, esfuerzo, defectos y consola | mar 20 → dom 25/10 | 31 (26 + la #6, ya terminada) |
+| 3 | funcionalidad y calidad: métricas, dashboard, Planning Poker y reportes | lun 26 → vie 30/10 | 36 |
+| 4 | cierre, informe en PDF y review final | sáb 31/10 → dom 1/11 | 10 |
+
+La presentación es el **lunes 2 de noviembre**. Cada sprint cierra con review y
+retrospectiva **el último día**, no al día siguiente.
 
 ### Eventos
 
@@ -182,6 +192,14 @@ Las actas de retrospectiva son **entregable final**, así que ninguna se saltea.
 
 - Un solo sprint abierto a la vez.
 - Lo que no se termina vuelve al Product Backlog; no se arrastra en silencio.
+- **Una historia que vuelve del sprint anterior con sus tres puertas aprobadas se puede
+  retomar apenas el equipo la confirma, aunque sea por chat, sin esperar a la planning.**
+  El Agile Enabler la propone y facilita que la confirmación ocurra rápido, pero no decide
+  solo: el equipo se autogestiona. La regla de no
+  programar fuera del sprint existe para que nadie trabaje en algo que el equipo no
+  comprometió; en una historia ya especificada, con sus puertas pasadas y a medio hacer, ese
+  riesgo no existe. La planning decide **qué entra nuevo**, no vuelve a decidir lo que ya
+  estaba aprobado y empezado. La confirmación queda registrada en el acta de la planning.
 - El alcance del sprint no se amplía a mitad de camino.
 - Al cerrar, se registran los story points completados: esa es la **velocidad**, y es lo que
   se usa para planificar el sprint siguiente.
@@ -346,14 +364,72 @@ main                 rama "de producción": siempre estable, siempre compila, si
 buena memoria de nadie:
 
 - No se puede pushear directo: hace falta un pull request.
-- El PR necesita **1 aprobación** y el **CI en verde** para poder mergearse.
-- Si se suben commits nuevos, las aprobaciones anteriores se descartan.
+- **A `main`**: el PR necesita **1 aprobación** y el **CI en verde**. Es la rama que se
+  presenta, ahí no se afloja nada.
+- **A `dev`**: alcanza con el **CI en verde**. La aprobación obligatoria se sacó el 20/10
+  porque era el cuello de botella del Sprint 1: con cuatro personas y un solo aprobador
+  habilitado, los PRs quedaban parados un día entero. **Toda PR sigue recibiendo una
+  revisión escrita** —sigue siendo la puerta de calidad del flujo—, pero ya no bloquea el
+  merge. Si la revisión encuentra algo después del merge, se arregla en un PR de corrección.
+- **Las aprobaciones ya no se descartan al subir commits nuevos.** Estaba activado y lo
+  desactivamos el 20/10: traer `dev` a una rama para resolver un conflicto descartaba la
+  aprobación y obligaba a pedirla de nuevo. Pasó seis veces en el Sprint 1 y nunca por un
+  cambio de contenido. Quien revisa tiene que mirar si hubo commits nuevos después de su
+  aprobación.
 - No se permite `push --force` ni borrar la rama.
 - Solo se puede mergear con **merge commit**: squash y rebase están desactivados.
 - Los comentarios del PR tienen que estar resueltos antes de mergear.
 
 El dueño del repositorio puede saltear la protección en una emergencia. Si alguna vez se
 usa, se avisa al equipo y se deja dicho por qué.
+
+### Modo sprint final (del 20/10 al 2/11)
+
+Las presentaciones arrancan el **2 de noviembre** y el Agile Enabler propuso el 20/10 **entregar
+el proyecto completo**, y el equipo lo confirmó ese mismo día por el grupo: todas las historias, los 83 story points, los nueve requerimientos
+terminados. Son 72 puntos en 13 días, unas **3,7 horas por persona por día, sábados y
+domingos incluidos**.
+
+El plan entero —calendario, reparto por persona, riesgos y el punto de control del 25— está
+en **[docs/plan-final-al-2-de-noviembre.md](docs/plan-final-al-2-de-noviembre.md)**. El
+análisis previo, que proponía recortar, quedó en
+[docs/replan-al-2-de-noviembre.md](docs/replan-al-2-de-noviembre.md) como registro de cómo se
+tomó la decisión.
+
+Mientras dure, cambian estas ocho cosas y solo estas:
+
+1. **Las specs se escriben todas por adelantado, no sprint por sprint.** El Agile Enabler
+   deja las 15 especificaciones completas antes del jueves 22/10, para que nadie espere una
+   puerta. Era el cuello de botella del Sprint 1.
+2. **El contrato del dominio va antes que el código.** Las entidades compartidas (`Sprint`,
+   `Effort`, `Defect`, `Metrics`, `Report`, `VotingRound`) están definidas en
+   [docs/diseno-dominio.md](docs/diseno-dominio.md). Nadie implementa una entidad compartida
+   que no esté ahí, y **quien necesite cambiar el contrato avisa al grupo antes**, no
+   después.
+3. **No se espera a que la dependencia esté en `dev`.** Quien consume una entidad que
+   todavía no existe la arma a mano en su propio test, contra el contrato. Es lo único que
+   hace que el Sprint 3 entre en cinco días.
+4. **Una historia, un pull request**, con la spec, los tests y el código juntos. Las **tres
+   puertas se aprueban en esa única revisión**. El orden SDD se sigue demostrando en los
+   commits: spec, después test, después código, con sus fechas.
+5. **Un pull request puede cerrar más de una historia** cuando son eslabones seguidos de la
+   misma cadena y la segunda no tiene sentido sin la primera (por ejemplo `#8` y `#9`). Se
+   usa `Closes #8, Closes #9` y la spec de cada una va completa. Fuera de ese caso sigue
+   siendo una historia por PR.
+6. **Las Fases 2 y 3 se escriben juntas** en las historias de hasta 3 puntos, bajo el título
+   *Diseño y tareas*, y pasan una sola puerta. De 5 puntos para arriba siguen separadas.
+7. **Revisión en el día.** Un pull request abierto antes de las 18:00 se revisa ese mismo
+   día. Si a las 20:00 sigue sin revisar, el Agile Enabler lo revisa o consigue quién. Con
+   dos semanas de plazo, un PR parado un día se come el 10%.
+8. **Daily asíncrona a las 21:00** por el grupo, una línea cada uno: qué cerré, qué sigo, si
+   estoy trabado. Y **regla de las dos horas**: trabado más de dos horas, se avisa. Nadie
+   pierde un día entero peleando solo.
+
+**Lo que no cambia: la Definición de Terminado.** Spec antes del código, escenarios BDD,
+tests que pasan, revisión escrita y cobertura. Se recorta ceremonia, nunca calidad.
+
+**Si el ritmo no da**, el 25/10 a la noche el Agile Enabler recorta con el criterio que está
+escrito en el plan. Se decide ese día y se avisa: no se patea al 31.
 
 ### Cuándo se puede partir una historia en varios pull requests
 
@@ -416,18 +492,22 @@ es parte de la documentación que se evalúa, no un trámite.
 - **Revisa alguien que no escribió el código.** Es la puerta de calidad del flujo.
 - Quien revisa mira: que el código haga lo que dice la spec, que los tests cubran los
   escenarios BDD, y que se entienda. Si no se entiende, se pide que se aclare.
-- Plazo: si a las 48 h nadie revisó, el Agile Enabler busca revisor. Un PR parado frena a todos.
+- Plazo: hasta el 2/11 rige la **revisión en el día** (ver *Modo sprint final*). Después del
+  2/11 vuelve a ser 48 h.
 - No se mergea con el CI en rojo. Nunca.
-- **Mergea el autor**, una vez que tiene la aprobación y el CI en verde. Es quien resuelve
-  los conflictos, mueve la tarjeta y regenera `ESTADO.md`.
+- **Hacia `dev` mergea la sesión de revisión de Claude Code**, después de dejar la revisión
+  escrita y con el CI en verde, para todos los PRs, también los del Agile Enabler. Así un PR
+  ya revisado no queda parado esperando a su autor (decidido el 20/10). El autor sigue
+  resolviendo los conflictos de su rama. **Hacia `main`** hace falta la aprobación de una
+  persona.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
 
 ### Quién aprueba
 
 | Pull request de… | Lo aprueba… |
 |---|---|
-| Un Product Builder | Emiliano Sorato (Agile Enabler) |
-| Emiliano Sorato | cualquiera de los otros tres |
+| Cualquiera, hacia `dev` | **no hace falta aprobación para mergear**, pero sí una revisión escrita: la hace Claude Code y la firma quien no escribió el código |
+| Cualquiera, hacia `main` | **1 aprobación obligatoria**: si el PR es de un Product Builder lo aprueba Emiliano; si es de Emiliano, cualquiera de los otros tres |
 | `dev` → `main` (cierre de sprint) | el equipo en la review |
 
 Además, **todos pueden comentar en cualquier PR aunque no sean el aprobador**, y conviene
@@ -486,6 +566,8 @@ contarlas infla la velocidad y arruina la calibración del sprint siguiente.
 | `ESTADO.md` | estado del tablero (generado, no editar) |
 | `docs/specs/sprint-N/` | una spec por funcionalidad, agrupadas por sprint |
 | `docs/actas/` | plannings, reviews y retrospectivas |
+| `docs/plan-final-al-2-de-noviembre.md` | el plan vigente: calendario, reparto y riesgos |
+| `docs/diseno-dominio.md` | el contrato de las entidades compartidas |
 | `docs/guia-planning-poker.md` | cómo estimamos |
 
 Simple y al día vale más que extenso. Si un documento dejó de ser cierto, se corrige en el
@@ -524,7 +606,9 @@ una línea, la tenés que poder justificar.
 **Nunca:**
 
 - Commitear directo a `main` o a `dev`.
-- Mergear un pull request con el CI en rojo, o mergear el PR propio sin que lo revise otro.
+- Mergear un pull request con el CI en rojo.
+- Mergear a `dev` sin dejar antes la revisión escrita en el PR, o mergear a `main` sin la
+  aprobación de una persona.
 - Escribir código de una historia sin spec aprobada.
 - Completar actas o retrospectivas con contenido inventado: lo que dijo el equipo lo escribe
   el equipo.
