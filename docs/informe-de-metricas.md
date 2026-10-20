@@ -184,10 +184,13 @@ más de lo pensado y qué haríamos distinto.]_
 
 ## Notas sobre los datos
 
-- **El tablero ya no muestra el Sprint 1 como se comprometió.** La #12 y la #24 volvieron al
-  backlog y hoy tienen cargado *Sprint 2*, así que `scripts/metricas.sh "Sprint 1"` da 11 de
-  11 puntos (100%). Lo comprometido fueron 16: este informe toma los números del acta de
-  planning y de la review, que se escribieron en su momento.
+- **Limitación conocida: el tablero no conserva un sprint cerrado tal como se comprometió.**
+  `scripts/metricas.sh` lee el sprint que cada historia tiene hoy. La #12 y la #24 volvieron
+  al backlog y ahora tienen cargado *Sprint 2*, así que `scripts/metricas.sh "Sprint 1"` da 11
+  de 11 puntos (100%), cuando lo comprometido fueron 16. Por eso, **para un sprint cerrado el
+  registro que vale es su acta de review**, que se escribe el día del cierre y no cambia. Este
+  informe toma de ahí los números de cada sprint cerrado, y el script queda para el sprint
+  abierto y para armar esa acta.
 - **Las horas de la #12 cuentan en el sprint donde se terminó.** Las 4 horas reales que
   tiene cargadas se trabajaron casi todas en el Sprint 1, pero la historia cerró en el
   Sprint 2. Es la misma simplificación que usa la aplicación: el esfuerzo no tiene sprint, y
