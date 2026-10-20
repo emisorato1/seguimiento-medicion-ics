@@ -4,7 +4,7 @@
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula — asignada por el Agile Enabler el 02/10 por carga
   de trabajo (era quien tenía menos story points)
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a la Puerta 1
@@ -259,15 +259,15 @@ verifica lo que escribió como salida.
 | 4 | Crear un proyecto: pide los datos, lo crea en el registro y muestra su identificador | Crear un proyecto desde la consola | RN-1, RN-3 | #3 | hecha |
 | 5 | Si el núcleo rechaza la operación, se muestra su mensaje tal cual y la consola sigue | Mostrar el motivo de un rechazo | RN-2, RN-7 | #3 | hecha |
 | 6 | Agregar un integrante y listar los del proyecto; el rol se pasa al dominio como texto | Agregar y listar integrantes | RN-1 | #4 | hecha |
-| 7 | Listar el backlog de un proyecto sin historias muestra que está vacío | Listar un backlog vacio | RN-1 | #6 | pendiente |
-| 8 | Cargar una historia y listar el backlog con su identificador; una historia con 0 story points se muestra "sin estimar" | Cargar una historia y listar el backlog | RN-1, RN-3 | #6, #12 | pendiente |
-| 9 | Estimar una historia y ver su nuevo valor | Estimar una historia desde la consola | RN-1 | #12 | pendiente |
-| 10 | Si el núcleo rechaza un valor fuera de la escala, se muestra su mensaje y la consola sigue | El nucleo rechaza un valor fuera de la escala | RN-2, RN-7 | #12 | pendiente |
-| 11 | Si falta indicar a qué historia se aplica, se informa y la operación no se ejecuta | Operacion incompleta | RN-5 | #12 | pendiente |
-| 12 | Letras donde va un número se informan y la operación no se ejecuta | Dato con forma invalida | RN-5 | #12 | pendiente |
-| 13 | Operar sobre un identificador que no existe muestra el mensaje del núcleo y la consola sigue | Operar sobre un identificador que no existe | RN-2 | #6 | pendiente |
+| 7 | Listar el backlog de un proyecto sin historias muestra que está vacío | Listar un backlog vacio | RN-1 | #6 | hecha |
+| 8 | Cargar una historia y listar el backlog con su identificador; una historia con 0 story points se muestra "sin estimar" | Cargar una historia y listar el backlog | RN-1, RN-3 | #6, #12 | hecha |
+| 9 | Estimar una historia y ver su nuevo valor | Estimar una historia desde la consola | RN-1 | #12 | hecha |
+| 10 | Si el núcleo rechaza un valor fuera de la escala, se muestra su mensaje y la consola sigue | El nucleo rechaza un valor fuera de la escala | RN-2, RN-7 | #12 | hecha |
+| 11 | Si falta indicar a qué historia se aplica, se informa y la operación no se ejecuta | Operacion incompleta | RN-5 | #12 | hecha |
+| 12 | Letras donde va un número se informan y la operación no se ejecuta | Dato con forma invalida | RN-5 | #12 | hecha |
+| 13 | Operar sobre un identificador que no existe muestra el mensaje del núcleo y la consola sigue | Operar sobre un identificador que no existe | RN-2 | #6 | hecha |
 | 14 | Una fecha mal escrita se informa y la operación no se ejecuta | — (RN-5, sin escenario) | RN-5 | #3 | hecha |
-| 15 | El programa arranca la consola conectada al teclado y la pantalla, con un registro de proyectos nuevo | — (arranque) | — | todas | pendiente |
+| 15 | El programa arranca la consola conectada al teclado y la pantalla, con un registro de proyectos nuevo | — (arranque) | — | todas | hecha |
 
 ### Decisiones de esta fase
 
@@ -333,11 +333,20 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 4 | `799f9e8` | `07c23ff` |
 | 5 | `b1bf255` | `4cd8d97` |
 | 6 | `385645f` | `ae3ffa5` |
+| 7 | `11a3b48` | `01b3b07` |
+| 8 | `3f578a2` | `fc3fa30` |
+| 9 | `0d8941c` | `4d2fe0e` |
+| 10 | `383dcf7` | — (sin RED: la implementación es la de la tarea 9) |
+| 11 | `bedd456` | `28b8aef` |
+| 12 | `7e64570` | `de946a6` |
+| 13 | `fb5bad5` | — (sin RED: la implementación es la de la tarea 6) |
 | 14 | `e48de53` | `42cfe49` |
+| 15 | — (sin test unitario, ver Fase 3) | `ac4a4d3` |
+| tests de cobertura | `43fface` | — (sin RED: prueban código que ya existe) |
 
 ### Desvíos respecto de la spec
 
-Ninguno de comportamiento. Dos notas de proceso:
+Ninguno de comportamiento. Notas de proceso:
 
 - Antes de la tarea 4 se trajo `dev` a la rama (merge `006708f`) para tener la #3, de la que
   dependen las tareas 4, 5 y 14.
@@ -351,6 +360,39 @@ Ninguno de comportamiento. Dos notas de proceso:
   tabla, que es la única lista de operaciones: la usan el ciclo para ejecutarlas y el mensaje
   de operación inexistente. No cambia comportamiento: los tests pasaron sin tocarlos.
 
+- Antes de la tarea 7 se volvió a traer `dev` (merge `2aee268`) para tener la #6 completa y
+  la #12, de las que dependen las tareas 7 a 13.
+- Desde la tarea 7, el commit de cada test lleva en su mensaje la salida del test fallando,
+  después de una línea `RED:`, como pide AGENTS.md desde el 20/10.
+- **Las tareas 10 y 13 no tuvieron RED.** La 10 pasa porque la tarea 9 ya muestra el mensaje
+  del núcleo cuando rechaza la estimación; la 13, porque desde la tarea 6 la consola busca el
+  proyecto y muestra el mensaje del núcleo si no existe. Para verlas fallar habría que haber
+  escrito a propósito una operación que ignorara el error. Cada test lo explica en su
+  comentario.
+- La tarea 15 no tiene test unitario, como dice la Fase 3: se verificó corriendo el programa
+  con `go run ./cmd/app` y recorriendo todas las operaciones.
+- El commit `43fface` agrega tests sin escenario para las ramas de rechazo que ningún
+  escenario pedía (rol y prioridad inválidos, integrante duplicado, proyecto inexistente en
+  cada operación), el listado de una historia estimada y la entrada que se termina sin
+  `salir`. Pasan sin código nuevo. Llevan la cobertura de `cmd/app` a 96,2%: solo queda
+  afuera `main`.
+
+### Decisiones tomadas al implementar
+
+Detalles que la Fase 3 no fijaba y que no cambian ningún escenario:
+
+- **Cada operación pide todos sus datos antes de controlar la forma o llamar al núcleo.** Si
+  cortara apenas un dato viene mal, las líneas que siguen se leerían como nombres de
+  operación. La excepción es el proyecto: si no es un número o no existe, la operación se
+  corta ahí, porque sin proyecto no hay qué pedir.
+- **Un identificador vacío o con letras se informa como "tiene que ser un número"**, salvo la
+  historia vacía al estimar, que es el escenario de la operación incompleta y se informa como
+  "falta indicar la historia". Un 0 o un negativo sí son números: los rechaza el núcleo.
+- **El backlog se lista una historia por línea**, con identificador, título, prioridad, estado
+  y story points (o "sin estimar").
+- **Al arrancar, el programa muestra las operaciones disponibles**, para que quien lo abre
+  sepa qué escribir.
+
 ## Trazabilidad
 
 | Eslabón | Dónde está |
@@ -360,4 +402,4 @@ Ninguno de comportamiento. Dos notas de proceso:
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
 | Tests | `cmd/app/console_test.go` |
-| Código Go | `cmd/app/console.go` |
+| Código Go | `cmd/app/console.go` (operaciones) y `cmd/app/main.go` (arranque) |
