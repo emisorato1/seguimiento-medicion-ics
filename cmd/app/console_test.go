@@ -343,3 +343,27 @@ func TestDatoConFormaInvalida(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Operar sobre un identificador que no existe
+// Cubre: RN-2
+//
+// Desvío: este test pasa sin código nuevo, porque desde la tarea 6 la consola busca el
+// proyecto en el registro y muestra el mensaje del núcleo si no existe. Queda anotado en la
+// Fase 4.
+func TestOperarSobreUnIdentificadorQueNoExiste(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := "listar-backlog\n99\ncrear-proyecto\nSistema de metricas\n\n01/10/2026\n\nsalir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), domain.ErrProjectNotFound.Error()) {
+		t.Fatalf("se esperaba ver el mensaje del nucleo que informa que no se encontro el proyecto, salio: %q", out.String())
+	}
+	if !strings.Contains(out.String(), "Proyecto creado con identificador 1") {
+		t.Fatalf("se esperaba que el programa siguiera funcionando y creara el proyecto, salio: %q", out.String())
+	}
+}
