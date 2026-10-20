@@ -66,7 +66,7 @@ comprometieron.
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
+| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 🟢 Puertas aprobadas — lista para implementar |
 | [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | 📝 Borrador completo — pendiente de las tres puertas |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
