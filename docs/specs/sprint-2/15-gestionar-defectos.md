@@ -6,7 +6,8 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
-  y lo presenta a las puertas.
+  y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres
+  puertas por pull request.
 - **Depende de:** #3 (el proyecto), #6 (la historia relacionada) y #8 (los sprints de
   detección y de resolución)
 - **La necesitan:** #16 (defectos detectados y resueltos), #17 (dashboard), #18 (reporte)
@@ -343,13 +344,11 @@ Esquema del escenario: Operar sobre algo que no existe
 
 **Para decidir en la puerta:**
 
-1. **El contrato no nombra dos de las tres operaciones que pide la issue.**
-   [`docs/diseno-dominio.md`](../../diseno-dominio.md) nombra registrar, listar y resolver,
-   pero no el **cambio de estado** (que la issue pide al registrar "estado" como dato que se
-   sigue) ni las **consultas por estado y por severidad** (último criterio de la issue). Acá
-   no se les inventó nombre: hay que agregarlas al contrato antes de implementar, que es la
-   regla 1 del propio contrato. Si el equipo prefiere que filtrar sea trabajo de quien
-   muestra, se cae parte de la RN-15 y el dashboard (#17) filtra sobre la lista completa.
+1. **El cambio de estado y las consultas por estado y por severidad.** La issue pide seguir
+   el estado del defecto y consultarlos por estado y por severidad. **Resuelto en el
+   contrato:** [`docs/diseno-dominio.md`](../../diseno-dominio.md) ya nombra las seis
+   operaciones (registrar, listar, cambiar el estado, resolver y las dos consultas
+   filtradas). No hace falta tocar el contrato antes de implementar.
 2. **El título es obligatorio aunque la issue no lo nombre.** La issue pide "descripción,
    severidad, estado, historia y sprint de detección"; el contrato le agrega un título, y acá
    se lo tomó como obligatorio igual que la descripción. Si el equipo lo quiere opcional,
@@ -371,6 +370,14 @@ Esquema del escenario: Operar sobre algo que no existe
    contrato no tiene esos tres datos y la issue no los pide; cuándo pasó se deduce del
    sprint. Acá los defectos se listan, y la #16 cuenta sobre esas listas los detectados y los
    resueltos de cada sprint.
+7. **Esta historia necesita que el `Sprint` de la #8 exista en `dev` antes de su tarea 1.**
+   El borrador decía que los tests "arman los sprints a mano" mientras la #8 no esté, pero en
+   Go un test no puede armar un sprint si el tipo todavía no existe en el paquete: no
+   compila. Como la RN-8 valida el sprint de detección desde el primer defecto, la tarea 1
+   ya lo necesita. Se pidió a Agustín, dueño del `Sprint`, que adelante a `dev` la tarea 1 de
+   la #8 (el sprint y su alta) con un PR temprano, igual que se hace acá con el `Defect`. La
+   alternativa —que esta historia defina su propia forma de preguntar por un sprint— rompe
+   la regla 2 del contrato, que hace dueño del `Sprint` a quien tiene la #8.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -383,7 +390,8 @@ y validar todo antes de cambiar nada— están en [AGENTS.md](../../../AGENTS.md
 repiten acá. Los nombres son los del contrato
 ([`docs/diseno-dominio.md`](../../diseno-dominio.md)): `Defect`, con `ID`, `Title`,
 `Description`, `Severity`, `State`, `StoryID`, `DetectedIn` y `ResolvedIn`, registrado con
-`AddDefect`, consultado con `Defects` y resuelto con `ResolveDefect`.
+`AddDefect`, consultado con `Defects`, `DefectsByState` y `DefectsBySeverity`, cambiado de
+estado con `ChangeDefectState` y resuelto con `ResolveDefect`.
 
 ### Enfoque
 
@@ -410,7 +418,6 @@ solo.
 | `internal/domain/defect_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/errors.go` | se modifica | los errores propios de esta historia |
 | `internal/domain/project.go` | se modifica | la lista de defectos y su contador dentro del proyecto |
-| `docs/diseno-dominio.md` | se modifica | nombrar el cambio de estado y las consultas filtradas, antes de escribir código (punto 1 de la puerta) |
 
 ### Decisiones
 
@@ -427,18 +434,20 @@ solo.
 
 - **Depende de la #3 y la #6**, que ya están en `dev`: el proyecto y la búsqueda de una
   historia dentro de él.
-- **Depende del `Sprint` de la #8, que todavía no está en `dev`, y no se la espera.** El
-  contrato ya fija qué es un sprint y cómo se lo pide por su número, así que esta historia se
-  escribe entera —spec, tests y código— contra ese contrato. Lo único que necesita de la #8
-  es poder preguntarle al proyecto si existe el sprint con tal número.
-- **Los tests arman los sprints a mano**, desde dentro del paquete, mientras la #8 no esté
-  (ver la sección Dependencias de la Fase 3).
+- **Depende del `Sprint` de la #8, que todavía no está en `dev`.** El contrato ya fija qué
+  es un sprint y cómo se lo pide por su número, así que esta historia se escribe contra ese
+  contrato. Lo único que necesita de la #8 es poder preguntarle al proyecto si existe el
+  sprint con tal número, pero eso exige que el tipo `Sprint` y su alta estén en `dev`: sin
+  ellos los tests no compilan (punto 7 de la puerta).
+- **Con el `Sprint` en `dev`, los tests cargan los sprints que necesitan** con el alta de la
+  #8, sin esperar el resto de esa historia.
 - **No se toca `story.go`:** a la historia relacionada solo se la busca, y su estado no se
   mira.
 - **`errors.go` es compartido:** los errores de esta historia se agregan ahí, y al traer
   `dev` hay que resolver ese conflicto a mano, como ya pasó en la #12.
-- **El contrato se toca antes que el código** (punto 1 de la puerta), avisando al grupo: es
-  la regla 3 de `docs/diseno-dominio.md`.
+- **El contrato no se toca:** ya nombra todas las operaciones (punto 1 de la puerta). Si al
+  implementar hiciera falta cambiarlo, se avisa al grupo antes, como pide la regla 3 de
+  `docs/diseno-dominio.md`.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -511,10 +520,22 @@ Los veinte escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario
 ### Dependencias
 
 - **Todas las tareas necesitan la #3 y la #6 en `dev`**, que ya lo están.
-- **Las tareas 1, 6, 9, 10, 11 y 12 necesitan sprints**, que son de la #8 y todavía no están.
-  No se espera: los tests los arman a mano desde dentro del paquete, contra el contrato de
-  `docs/diseno-dominio.md`, que es lo acordado el 20/10. Si la #8 llega a `dev` con otra
-  forma de preguntar si un sprint existe, se ajusta acá y se anota en los desvíos.
+- **Las tareas 1, 6, 9, 10, 11 y 12 necesitan sprints**, que son de la #8. No hace falta la
+  #8 completa: alcanza con su tarea 1 (el `Sprint` y su alta) en `dev`, que se le pidió
+  adelantar a Agustín (punto 7 de la puerta). Si la #8 llega con otra forma de preguntar si
+  un sprint existe, se ajusta acá y se anota en los desvíos.
+
+### Entrega en dos pull requests
+
+La #16 (métricas) necesita defectos para contar los detectados y los resueltos de cada
+sprint, y en Go su test no puede armar un `Defect` si el tipo no existe en `dev`. Por eso
+esta historia se parte en dos, que es el caso 1 de "Cuándo se puede partir una historia" en
+`CLAUDE.md` (alguien está bloqueado esperándote):
+
+1. **Primer PR (`Refs #15`):** esta spec con sus tres puertas y la **tarea 1**, que deja el
+   `Defect`, su severidad, su estado, el registro y la lista. Necesita el `Sprint` de la #8
+   en `dev`.
+2. **Segundo PR (`Closes #15`):** las tareas 2 a 15.
 - **La tarea 5 necesita una historia Terminada**, y los cambios de estado son de la #9 y la
   #10. El test la prepara desde dentro del paquete, igual que hizo la #12 en su tarea 9.
 
