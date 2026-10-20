@@ -6,7 +6,9 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a las puertas.
+  falta y lo presenta a las puertas. Revisado por el responsable el 20/10: decidió los cinco
+  puntos de la puerta y cambió el segundo, para que las historias Terminadas vayan al final
+  del listado (RN-10).
 - **Depende de:** #6 (el backlog y la prioridad de cada historia viven ahí), y por lo tanto
   también de #3
 - **La necesitan:** #9 (en la planning se eligen primero las historias más prioritarias) y
@@ -58,7 +60,8 @@ listado es una consulta: no cambia nada.
    historia #6, y esta historia no agrega ni quita ninguna.
 2. **[RN-2]** Cuando se pide el Product Backlog ordenado de un proyecto, el sistema debe
    devolver sus historias de la más importante a la menos importante: primero las de
-   prioridad Alta, después las de prioridad Media y por último las de prioridad Baja.
+   prioridad Alta, después las de prioridad Media y por último las de prioridad Baja. Las
+   historias Terminadas van aparte, al final (RN-10).
 3. **[RN-3]** Cuando dos o más historias tienen la misma prioridad, el sistema debe
    ordenarlas entre sí por su identificador, de menor a mayor, de manera que un mismo backlog
    se devuelva siempre en el mismo orden.
@@ -78,6 +81,10 @@ listado es una consulta: no cambia nada.
 9. **[RN-9]** Si se pide el backlog ordenado de un proyecto que no existe, el sistema debe
    informar que no se encontró el proyecto, igual que cualquier otra operación sobre un
    proyecto inexistente.
+10. **[RN-10]** Cuando se pide el listado ordenado, el sistema debe ubicar las historias
+    Terminadas después de todas las demás, ordenadas entre sí con el mismo criterio: por
+    prioridad y, a igual prioridad, por identificador. Así lo que queda por hacer aparece
+    primero, que es para lo que se usa el listado al planificar.
 
 ### Casos límite
 
@@ -90,8 +97,10 @@ listado es una consulta: no cambia nada.
   está vacío.
 - **Dos historias con el mismo título y la misma prioridad:** las distingue el identificador,
   que además decide cuál va primero.
-- **Historias en distintos estados**, incluso Terminadas: aparecen todas, y el estado no
-  cambia el orden.
+- **Historias en distintos estados**, incluso Terminadas: aparecen todas. Pendiente y En
+  curso no cambian el orden; las Terminadas van al final.
+- **Una historia Terminada de prioridad Alta:** queda después de cualquier historia no
+  terminada, aunque esa sea Baja.
 - **Cambiar la prioridad de la historia que estaba primera a Baja:** pasa al final del
   listado.
 - **Cambiar una prioridad por la misma que ya tenía:** el listado queda exactamente igual.
@@ -132,6 +141,8 @@ deja guardarla (su RN-4 y su RN-5). Queda anotado para la puerta, más abajo.
 - [ ] Un backlog donde todas las historias tienen la misma prioridad se devuelve ordenado por
       identificador.
 - [ ] Pedir el backlog ordenado de un proyecto que no existe informa que no se encontró.
+- [ ] Las historias Terminadas aparecen al final del listado, después de todas las demás, y
+      ordenadas entre sí por prioridad.
 
 ### Escenarios BDD
 
@@ -220,9 +231,17 @@ Escenario: Pedir el backlog ordenado de un proyecto que no existe
   Cuando pido el backlog ordenado del proyecto 99
   Entonces se informa que no se encontro el proyecto
   Y no recibo ningun listado
+
+Escenario: Las historias terminadas van al final
+  Dado un proyecto con la historia 1 "Alta" en estado "Terminada", la 2 "Baja" en estado
+    "Pendiente", la 3 "Media" en estado "En curso" y la 4 "Baja" en estado "Terminada"
+  Cuando pido el backlog ordenado
+  Entonces recibo las historias en el orden 3, 2, 1, 4
 ```
 
-**Para decidir en la puerta:**
+**Decidido por el responsable antes de la puerta (20/10).** Los puntos 1, 3, 4 y 5 quedan como
+estaban propuestos; el 2 cambió (ver abajo). Si quien aprueba la puerta no está de acuerdo con
+alguno, es el momento de decirlo:
 
 1. **RN-3 — el desempate dentro de la misma prioridad es por identificador.** Las otras
    opciones eran dejar el orden en que se cargaron las historias (que hoy es el mismo, porque
@@ -230,10 +249,13 @@ Escenario: Pedir el backlog ordenado de un proyecto que no existe
    Se eligió el identificador porque es el único dato estable de la historia y porque hace
    que el listado sea siempre el mismo; el orden manual es bastante más trabajo y la issue no
    lo pide. **Si el equipo quiere orden manual, es otra historia.**
-2. **RN-4 — el listado incluye también las historias Terminadas.** Se podría argumentar que,
-   como el listado se usa para planificar el próximo sprint, las Terminadas molestan. Se
-   decidió incluirlas porque el backlog es el del proyecto entero y filtrar sería una
-   decisión de quien lo muestra, no del orden. Vale confirmarlo en la puerta.
+2. **RN-4 y RN-10 — el listado incluye las historias Terminadas, pero al final.** El borrador
+   las mezclaba con las demás, ordenadas solo por prioridad: así una historia Alta ya
+   terminada quedaba arriba de todo, tapando lo que hay que planificar, que es justo para lo
+   que la issue pide el listado. Dejar que la interfaz las filtre tampoco servía: decidir qué
+   importa al planificar es una regla de negocio, y `AGENTS.md` dice que esas viven en el
+   dominio. Se descartó también sacarlas del listado, porque dejaría de ser el backlog
+   completo (RN-4). Ubicarlas al final cumple las dos cosas.
 3. **El listado ordenado se pide aparte: el backlog de la #6 se sigue devolviendo como está.**
    La alternativa era que el backlog pasara a devolverse siempre ordenado por prioridad y no
    hubiera dos formas de pedirlo. Se dejaron las dos para no cambiar el comportamiento que la
@@ -263,8 +285,9 @@ Ordenar es **una consulta**: arma una lista nueva con las historias del backlog,
 la devuelve. La lista que guarda el proyecto no se toca, así que el backlog sin ordenar de la
 #6 sigue devolviendo lo mismo (RN-7 y punto 3 de "Para decidir en la puerta").
 
-El orden usa dos criterios, en este orden: la importancia de la prioridad (RN-1, RN-2) y, a
-igual prioridad, el identificador de menor a mayor (RN-3). **No se guarda nada**: el orden se
+El orden usa tres criterios, en este orden: si la historia está Terminada, que la manda al
+final (RN-10); la importancia de la prioridad (RN-1, RN-2); y, a igual prioridad, el
+identificador de menor a mayor (RN-3). **No se guarda nada**: el orden se
 arma cada vez que se pide, y por eso una prioridad que se cambia con la modificación de la #6
 aparece en su nuevo lugar en el listado siguiente, sin trabajo extra (RN-6).
 
@@ -290,6 +313,7 @@ el registro de la #3.
 | El desempate por identificador se hace explícito | confiar en que el backlog está guardado en orden de identificador y ordenar respetando el orden original | hoy coinciden porque el identificador crece con cada alta, pero el día que haya borrado o reordenamiento dejan de coincidir y el listado cambiaría sin que ningún escenario lo note. Lo protege un test propio de la tarea 4 |
 | El listado es una lista nueva; el backlog guardado no se reordena | ordenar el backlog guardado, y que la #6 lo devuelva ordenado | rompe la RN-7 y cambia lo que la #6 ya tiene aprobado y testeado |
 | El orden se arma en cada pedido | guardar el backlog ordenado y reordenarlo al cambiar una prioridad | obligaría a la modificación de la #6 a acordarse de reordenar, y un olvido no da error; armándolo cada vez, la RN-6 sale sola. Son decenas de historias: no hace falta ahorrarse el ordenamiento |
+| Las Terminadas van al final dentro del mismo listado | mezclarlas con las demás, o dejar que la interfaz las filtre | mezcladas tapan lo que hay que planificar, y filtrarlas en la interfaz pondría una regla de negocio fuera del dominio, repetida en la consola y en la web |
 | El listado va en `story_priority.go` | agregarlo a `story.go` | mismo criterio que la estimación de la #12: no pisar el archivo de la #6 y dejar la trazabilidad directa |
 
 ### Dependencias y restricciones
@@ -313,7 +337,7 @@ compilando y los tests en verde.
 Los tests siguen la convención de [AGENTS.md](../../../AGENTS.md): un test por escenario, con
 el nombre del escenario.
 
-**Son cuatro tareas para catorce escenarios, a propósito.** En la #12 seis tareas pasaron en
+**Son cinco tareas para quince escenarios, a propósito.** En la #12 seis tareas pasaron en
 verde sin código nuevo porque separaban en ciclos lo que salía del mismo código, y su Fase 4
 lo anotó como un error de la Fase 3. Acá cada tarea agrupa los escenarios que dependen de la
 misma implementación, y cada una tiene al menos un test que falla antes de escribirla.
@@ -324,6 +348,7 @@ misma implementación, y cada una tiene al menos un test que falla antes de escr
 | 2 | El listado trae todas las historias del backlog con todos sus datos, cualquiera sea su estado y estén estimadas o no, sin omitir ni repetir ninguna | El listado incluye las historias en cualquier estado; Las historias del listado traen todos sus datos; Backlog ordenado de un proyecto con una sola historia | RN-4, RN-5 | pendiente |
 | 3 | El listado va de Alta a Baja, sin huecos si falta una prioridad; se arma en cada pedido, así que un cambio de prioridad se ve en el siguiente; y no toca el backlog guardado | Listar el backlog ordenado por prioridad; No hay historias de prioridad alta; El orden se actualiza al cambiar una prioridad; Bajar la prioridad de la historia que estaba primera; Cambiar una prioridad por la que ya tenia; Pedir el listado ordenado no cambia el backlog | RN-1, RN-2, RN-6, RN-7 | pendiente |
 | 4 | A igual prioridad, el listado desempata por identificador de menor a mayor aunque el backlog esté guardado en otro orden, y dos listados seguidos dan lo mismo | Desempatar por identificador dentro de la misma prioridad; Todas las historias tienen la misma prioridad; Dos listados seguidos devuelven lo mismo | RN-3 | pendiente |
+| 5 | Las historias Terminadas van al final del listado, ordenadas entre sí por prioridad e identificador | Las historias terminadas van al final | RN-10 | pendiente |
 
 **Dónde falla cada una antes de implementarse.**
 
@@ -341,6 +366,8 @@ misma implementación, y cada una tiene al menos un test que falla antes de escr
   identificador. Por eso lleva además un test que arma, desde dentro del paquete, un backlog
   guardado fuera de orden (`TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden`,
   encabezado con `// Tarea 4:` y la decisión de la Fase 2 que protege). Ese es el que falla.
+- **La 5**, porque hasta la 4 el estado no cuenta para el orden: la historia 1, Alta y
+  Terminada, sale primera.
 
 ### Por qué este orden
 
@@ -350,11 +377,13 @@ misma implementación, y cada una tiene al menos un test que falla antes de escr
   dos cosas anda mal.
 - **La 3 antes que la 4**: el desempate solo tiene sentido cuando ya hay un orden que
   desempatar.
+- **La 5 al final**: suma un criterio por encima de los otros dos, y se ve con claridad recién
+  cuando la prioridad y el desempate ya funcionan.
 
 ### Cobertura
 
-Las nueve reglas quedan cubiertas: RN-1 (3), RN-2 (3), RN-3 (4), RN-4 (2), RN-5 (2),
-RN-6 (3), RN-7 (3), RN-8 (1), RN-9 (1).
+Las diez reglas quedan cubiertas: RN-1 (3), RN-2 (3), RN-3 (4), RN-4 (2), RN-5 (2),
+RN-6 (3), RN-7 (3), RN-8 (1), RN-9 (1), RN-10 (5).
 
 | Criterio de aceptación | Tareas |
 |---|---|
@@ -371,8 +400,9 @@ RN-6 (3), RN-7 (3), RN-8 (1), RN-9 (1).
 | Un proyecto con una sola historia devuelve esa historia | 2 |
 | Con todas las historias de la misma prioridad, el orden es por identificador | 4 |
 | Un proyecto inexistente informa que no se encontró | 1 |
+| Las Terminadas aparecen al final, ordenadas entre sí por prioridad | 5 |
 
-Los catorce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
