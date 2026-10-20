@@ -125,6 +125,29 @@ type confirmation struct {
 	Error    string
 }
 
+// notSaved es la pagina que avisa que una operacion se hizo pero no quedo guardada.
+type notSaved struct {
+	Operation string
+	Reason    string
+	Continue  string
+}
+
+// done termina una operacion aceptada: guarda el registro (D13), deja el mensaje que la
+// confirma (RN-8) y redirige con 303 a la pagina del resultado (D5). Si el guardado falla,
+// el cambio queda en memoria y lo incluye el siguiente guardado que funcione; se avisa con
+// estado 500 (RN-25, D19).
+func (s *Server) done(w http.ResponseWriter, r *http.Request, message, location string) {
+	if err := s.saver.Save(s.registry); err != nil {
+		s.render(w, r, http.StatusInternalServerError, "no-guardado.html", page{
+			Title: "No quedó guardado",
+			Data:  notSaved{Operation: message, Reason: err.Error(), Continue: location},
+		})
+		return
+	}
+	setFlash(w, message)
+	http.Redirect(w, r, location, http.StatusSeeOther)
+}
+
 // notFound responde 404 con el mensaje de lo que no se encontro y el acceso para volver a
 // la lista de proyectos (RN-16). Si se estaba dentro de un proyecto, la barra lo sigue
 // mostrando.

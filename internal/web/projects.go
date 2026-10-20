@@ -95,9 +95,7 @@ func (s *Server) createProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, "Se creó el proyecto "+project.Name())
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d", project.ID()), http.StatusSeeOther)
+	s.done(w, r, "Se creó el proyecto "+project.Name(), fmt.Sprintf("/proyectos/%d", project.ID()))
 }
 
 // findProject busca el proyecto del numero que viene en la direccion.
@@ -177,7 +175,5 @@ func (s *Server) updateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, "Se modificó el proyecto "+project.Name())
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d", project.ID()), http.StatusSeeOther)
+	s.done(w, r, "Se modificó el proyecto "+project.Name(), fmt.Sprintf("/proyectos/%d", project.ID()))
 }

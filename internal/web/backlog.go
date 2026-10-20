@@ -134,9 +134,7 @@ func (s *Server) createStory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, fmt.Sprintf("Se cargó la historia %d", story.ID()))
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/backlog", project.ID()), http.StatusSeeOther)
+	s.done(w, r, fmt.Sprintf("Se cargó la historia %d", story.ID()), fmt.Sprintf("/proyectos/%d/backlog", project.ID()))
 }
 
 // showStory muestra una historia del backlog con todos sus datos.
@@ -205,9 +203,7 @@ func (s *Server) updateStory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, fmt.Sprintf("Se modificó la historia %d", story.ID()))
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/historias/%d", project.ID(), story.ID()), http.StatusSeeOther)
+	s.done(w, r, fmt.Sprintf("Se modificó la historia %d", story.ID()), fmt.Sprintf("/proyectos/%d/historias/%d", project.ID(), story.ID()))
 }
 
 // pointOptions es la escala de story points que se ofrece para elegir, la misma con la que
@@ -276,9 +272,7 @@ func (s *Server) estimateStory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, fmt.Sprintf("Se estimó la historia %d en %d story points", story.ID(), points))
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/backlog", project.ID()), http.StatusSeeOther)
+	s.done(w, r, fmt.Sprintf("Se estimó la historia %d en %d story points", story.ID(), points), fmt.Sprintf("/proyectos/%d/backlog", project.ID()))
 }
 
 // removeEstimateConfirmation es la pagina que pide confirmar antes de quitar la estimacion.
@@ -328,7 +322,5 @@ func (s *Server) removeEstimate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, fmt.Sprintf("Se quitó la estimación de la historia %d", story.ID()))
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/backlog", project.ID()), http.StatusSeeOther)
+	s.done(w, r, fmt.Sprintf("Se quitó la estimación de la historia %d", story.ID()), fmt.Sprintf("/proyectos/%d/backlog", project.ID()))
 }

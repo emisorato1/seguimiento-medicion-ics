@@ -80,9 +80,7 @@ func (s *Server) createMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, "Se agregó a "+member.Name())
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/integrantes", project.ID()), http.StatusSeeOther)
+	s.done(w, r, "Se agregó a "+member.Name(), fmt.Sprintf("/proyectos/%d/integrantes", project.ID()))
 }
 
 // findMember busca el integrante con el nombre que viene en el pedido. Compara el nombre
@@ -139,7 +137,5 @@ func (s *Server) removeMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saver.Save(s.registry)
-	setFlash(w, "Se quitó a "+name)
-	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/integrantes", project.ID()), http.StatusSeeOther)
+	s.done(w, r, "Se quitó a "+name, fmt.Sprintf("/proyectos/%d/integrantes", project.ID()))
 }
