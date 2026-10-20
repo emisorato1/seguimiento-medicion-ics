@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
@@ -39,8 +38,12 @@ func (s *Server) renderProjectForm(w http.ResponseWriter, r *http.Request, statu
 // mostrar el formulario con lo escrito y el mensaje junto a su campo (RN-12, D6).
 func (s *Server) createProject(w http.ResponseWriter, r *http.Request) {
 	f := readForm(r, projectFields...)
-	start, _ := time.Parse("2006-01-02", f.Values["inicio"])
-	end, _ := time.Parse("2006-01-02", f.Values["fin"])
+	start := f.date("inicio")
+	end := f.date("fin")
+	if f.hasErrors() {
+		s.renderProjectForm(w, r, http.StatusUnprocessableEntity, f)
+		return
+	}
 
 	project, err := s.registry.Create(domain.ProjectData{
 		Name:        f.Values["nombre"],
