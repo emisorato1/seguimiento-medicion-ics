@@ -166,3 +166,42 @@ Si el ritmo no da, el **domingo 25 a la noche** se recorta con el criterio escri
 
 El plan completo —calendario, reparto por persona, dependencias y riesgos— está en
 [docs/plan-final-al-2-de-noviembre.md](../plan-final-al-2-de-noviembre.md).
+
+### Historias nuevas: la interfaz web
+
+El mismo 20/10, día de la planning, Emiliano sumó dos historias al tablero:
+
+| # | Historia | Sprint | SP |
+|---|---|---|---|
+| 77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | Sprint 2 | sin estimar |
+| 78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | Sprint 3 | sin estimar |
+
+**Por qué.** La consigna pide una interfaz usable y un dashboard con gráficos, y la consola
+sola no alcanza para eso.
+
+**Están sin estimar.** No tienen story points ni horas estimadas cargadas. Las estima el
+equipo por chat y, hasta entonces, no suman al compromiso del sprint ni a las métricas.
+
+### Horas estimadas del Sprint 2
+
+Se cargaron en el tablero el 20/10, antes de empezar cada historia, con la conversión de
+**2,6 horas por story point** que sale del Sprint 1 (ver arriba). No se usó el 2,0 del plan
+porque es una meta, no algo medido.
+
+| # | Historia | SP | Horas estimadas |
+|---|---|---|---|
+| 5 | Consultar el estado de un proyecto | 3 | 7,8 |
+| 7 | Priorizar el Product Backlog | 2 | 5,2 |
+| 8 | Crear un sprint con su Sprint Goal | 3 | 7,8 |
+| 9 | Asignar historias a un sprint | 5 | 13 |
+| 14 | Registrar el esfuerzo real | 3 | 7,8 |
+| 15 | Gestionar defectos | 5 | 13 |
+| 12 | Estimar con Story Points | 2 | 6 |
+| 24 | Interfaz de consola | 3 | 9 |
+| | **Total** | **26** | **69,6** |
+
+La #12 y la #24 conservan las horas que se les cargaron en el Sprint 1, a 3 horas por punto:
+ya estaban estimadas antes de empezar y cambiarlas ahora no sería una estimación honesta.
+
+**Cada responsable puede ajustar las horas de su historia al empezarla**, antes de cargar
+horas reales. La #77 queda sin horas hasta que tenga story points.
