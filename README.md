@@ -97,6 +97,7 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [Contrato del dominio](docs/diseno-dominio.md) — las entidades compartidas, acordadas antes de implementarlas, para que nadie espere a nadie.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
+- [Informe de métricas y cobertura](docs/informe-de-metricas.md) — las métricas del propio proyecto, sprint por sprint, y la cobertura de los tests.
 - [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — el análisis de dependencias previo a la planning del Sprint 2.
 - [Replanificación al 2 de noviembre](docs/replan-al-2-de-noviembre.md) — el análisis de recorte que se descartó, conservado como registro de la decisión.
 
