@@ -3,6 +3,7 @@ package domain
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -114,9 +115,9 @@ func registryFromJSON(data []byte) (*ProjectRegistry, error) {
 	decoder.DisallowUnknownFields()
 	var in registryJSON
 	if err := decoder.Decode(&in); err != nil {
-		// el detalle de encoding/json viene en ingles: se deja entre parentesis, para quien
-		// tenga que arreglar el archivo
-		return nil, fmt.Errorf("no tienen la forma esperada (%v)", err)
+		// el detalle de encoding/json viene en ingles y el mensaje es para el usuario
+		// (AGENTS.md): no se arrastra
+		return nil, errors.New("el archivo está dañado, incompleto o tiene datos que el sistema no conoce")
 	}
 	// Decode lee solo el primer valor: si despues viene algo mas que espacios, el archivo
 	// no es lo que el sistema escribio y tampoco se acepta.

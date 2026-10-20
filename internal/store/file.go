@@ -38,7 +38,8 @@ func (f *File) Load() (*domain.ProjectRegistry, error) {
 		return domain.NewProjectRegistry(), nil
 	}
 	if err != nil {
-		return nil, fmt.Errorf("%w: %v", domain.ErrSavedDataInvalid, err)
+		// el error del sistema operativo viene en ingles: el mensaje dice que archivo fallo
+		return nil, fmt.Errorf("%w: no se pudo abrir el archivo %s", domain.ErrSavedDataInvalid, f.path)
 	}
 	return domain.RegistryFromJSON(data)
 }
