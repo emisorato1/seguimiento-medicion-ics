@@ -483,6 +483,36 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			fueraDeLista: []string{"puntos"},
 		},
 		{
+			// Las tres que siguen no estan en los Ejemplos: los mismos rechazos al modificar
+			// un proyecto y al quitar una estimacion.
+			nombre: "modificar un proyecto con el nombre vacio",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/editar",
+			datos:      url.Values{"nombre": {""}, "inicio": {"2026-11-01"}},
+			campo:      "nombre",
+			err:        domain.ErrProjectNameRequired,
+		},
+		{
+			nombre: "modificar un proyecto con una fecha que no es fecha",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/editar",
+			datos:      url.Values{"nombre": {"Metricas ICS"}, "inicio": {"2026-11-01"}, "fin": {"pronto"}},
+			campo:      "fin",
+			err:        errInvalidDate,
+		},
+		{
+			nombre:     "quitar la estimacion de una historia Terminada",
+			inicial:    doneStoryRegistry,
+			formulario: "/proyectos/1/historias/1/quitar-estimacion",
+			datos:      url.Values{},
+			campo:      "",
+			err:        domain.ErrStoryEstimateDone,
+		},
+		{
 			nombre:     "modificar una historia Terminada",
 			inicial:    doneStoryRegistry,
 			formulario: "/proyectos/1/historias/1/editar",
@@ -717,6 +747,16 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		// No esta en los Ejemplos: una direccion que no es de ninguna pagina tambien se
 		// informa en castellano, con el mismo acceso a la lista.
 		{pedido: "/proyectos/1/cualquiera", err: errPageNotFound},
+		// Tampoco estan en los Ejemplos: la misma regla en cada pantalla del proyecto.
+		{pedido: "/proyectos/99/editar", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/integrantes", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/integrantes/nuevo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/backlog", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/historias/nueva", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/historias/99/editar", err: domain.ErrStoryNotFound},
+		{pedido: "/proyectos/1/historias/99/estimar", err: domain.ErrStoryNotFound},
+		{pedido: "/proyectos/1/historias/99/quitar-estimacion", err: domain.ErrStoryNotFound},
+		{pedido: "/proyectos/1/integrantes/quitar?nombre=Nadie", err: domain.ErrMemberNotFound},
 	}
 
 	for _, caso := range casos {
