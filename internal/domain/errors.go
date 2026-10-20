@@ -41,4 +41,6 @@ var (
 	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
 	// Terminada (historia #12, RN-8).
 	ErrStoryEstimateDone = errors.New("la estimación de una historia terminada no se modifica")
+	// ErrEstimatedHoursInvalid: cargar horas estimadas en cero o negativas (historia #16, RN-18).
+	ErrEstimatedHoursInvalid = errors.New("las horas estimadas tienen que ser mayores que cero")
 )
