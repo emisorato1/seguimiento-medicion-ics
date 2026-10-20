@@ -179,3 +179,22 @@ func TestAgregarYListarIntegrantes(t *testing.T) {
 		t.Fatalf("se esperaba ver a Juliana Bustos en la lista de integrantes, salio: %q", out.String())
 	}
 }
+
+// Escenario: Listar un backlog vacio
+// Cubre: RN-1
+func TestListarUnBacklogVacio(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := "crear-proyecto\nSistema de metricas\n\n01/10/2026\n\n" +
+		"listar-backlog\n1\n" +
+		"salir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), "No hay historias cargadas") {
+		t.Fatalf("se esperaba ver que el backlog no tiene historias, salio: %q", out.String())
+	}
+}
