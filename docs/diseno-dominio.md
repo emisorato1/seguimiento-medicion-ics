@@ -38,6 +38,12 @@ Nada de esto se toca sin avisar: ya está implementado y con tests.
 Las operaciones cuelgan del proyecto: `p.AddStory(...)`, `p.Members()`, `p.Story(id)`.
 Lo nuevo sigue el mismo camino.
 
+**Cambio a lo que ya existe: `Story` suma `EstimatedHours`** (decimal, cero mientras no se
+cargue), con su operación `p.EstimateHours(id, hours)`. Lo agrega la #16, que es la que lo
+necesita para la desviación, y sigue las mismas reglas que los story points: mayor que cero,
+se puede reemplazar, no se toca si la historia está Terminada. **Es el único cambio a
+`story.go`**, y se avisa al grupo antes de hacerlo.
+
 ## Entidades nuevas
 
 ### `Sprint` — historias #8, #9, #10, #11
@@ -141,6 +147,9 @@ Es un resultado calculado, no algo que se guarda. Se pide por sprint o por proye
 
 Se pide así: `p.SprintMetrics(sprintNumber)` y `p.ProjectMetrics()`.
 
+**La velocidad del proyecto** es el promedio de la velocidad de los sprints cerrados,
+redondeado a entero. Sin sprints cerrados, es cero.
+
 **Un sprint abierto también tiene métricas**: las planificadas y las horas reales se
 calculan igual, y los completados y la velocidad dan cero hasta que cierra, porque
 `CompletedStories` recién se fija al cerrar.
@@ -169,7 +178,8 @@ Se pide: `p.ProjectReport()` y `p.SprintReport(sprintNumber)`.
 historias que llegue a `dev`, como pasó con `errors.go`.
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
-PDF **solo lo formatea**. No vuelve a calcular nada.
+PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.ExportPDF(path)`, y solo lee
+`Title`, `GeneratedOn` y `Sections`.
 
 ### `VotingRound` — historias #13 y #73
 
@@ -188,6 +198,20 @@ Se pide: `p.OpenVotingRound(storyID)`, `r.Vote(member, points)`, `r.Reveal()`,
 
 **La regla que define la historia #13:** mientras `Revealed` sea falso, **ningún voto se
 puede leer** desde afuera, ni siquiera el propio. Solo se sabe quién votó y quién no.
+
+## Dos decisiones transversales pendientes
+
+Aparecieron en varias specs a la vez. **Se deciden una sola vez, en la primera puerta que
+las toque**, y después se escriben en las *Decisiones de arquitectura* de `AGENTS.md` para
+que las demás specs se alineen:
+
+1. **¿El dominio puede leer el reloj del sistema?** La #14 lo necesita para rechazar días
+   futuros y la #18 para fechar el reporte. Hoy ninguna parte de `internal/domain` lo hace.
+   La alternativa es que el "hoy" lo pase quien llama (la consola), que deja los tests sin
+   depender del día en que se corren.
+2. **¿El núcleo puede formatear?** `AGENTS.md` dice que no, pero el dashboard (#17), el
+   reporte (#18) y el PDF (#19) proponen entregar el texto ya armado desde
+   `internal/domain`. La alternativa es un paquete aparte para la presentación.
 
 ## Qué puede empezar hoy sin esperar nada
 
