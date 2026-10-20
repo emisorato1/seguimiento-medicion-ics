@@ -10,13 +10,14 @@ import (
 )
 
 // Escenario: Crear un proyecto desde la web
-// Cubre: RN-1, RN-9
+// Cubre: RN-1, RN-8, RN-9
 func TestCrearUnProyectoDesdeLaWeb(t *testing.T) {
 	registry := domain.NewProjectRegistry()
 	saver := &fakeSaver{}
-	server := NewServer(registry, saver)
+	navegador := newBrowser(t, NewServer(registry, saver))
+	mensaje := "Se creó el proyecto Sistema de metricas"
 
-	res := post(t, server, "/proyectos/nuevo", url.Values{
+	res := navegador.post("/proyectos/nuevo", url.Values{
 		"nombre": {"Sistema de metricas"},
 		"inicio": {"2026-11-01"},
 	})
@@ -29,11 +30,22 @@ func TestCrearUnProyectoDesdeLaWeb(t *testing.T) {
 		t.Fatalf("se esperaba ir a /proyectos/1, salio %q", destino)
 	}
 
-	// El navegador sigue la redireccion, y despues se recarga la pagina.
-	for i := 0; i < 2; i++ {
-		if res := get(t, server, destino); res.Code != http.StatusOK {
-			t.Fatalf("se esperaba ver el proyecto con el estado %d, salio %d", http.StatusOK, res.Code)
-		}
+	// El navegador sigue la redireccion: ve el mensaje.
+	res = navegador.get(destino)
+	if res.Code != http.StatusOK {
+		t.Fatalf("se esperaba ver el proyecto con el estado %d, salio %d", http.StatusOK, res.Code)
+	}
+	if html := res.Body.String(); !strings.Contains(html, mensaje) {
+		t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", mensaje, html)
+	}
+
+	// Se recarga la pagina: el mensaje ya no aparece.
+	res = navegador.get(destino)
+	if res.Code != http.StatusOK {
+		t.Fatalf("se esperaba ver el proyecto con el estado %d, salio %d", http.StatusOK, res.Code)
+	}
+	if html := res.Body.String(); strings.Contains(html, mensaje) {
+		t.Errorf("al recargar no se esperaba el mensaje %q, y aparece en:\n%s", mensaje, html)
 	}
 
 	if cantidad := len(registry.Projects()); cantidad != 1 {
@@ -43,7 +55,7 @@ func TestCrearUnProyectoDesdeLaWeb(t *testing.T) {
 		t.Errorf("se esperaba que el registro se guardara una vez, se guardo %d", saver.saves)
 	}
 
-	lista := get(t, server, "/proyectos").Body.String()
+	lista := navegador.get("/proyectos").Body.String()
 	for _, texto := range []string{"<td>1</td>", `<a href="/proyectos/1">Sistema de metricas</a>`} {
 		if !strings.Contains(lista, texto) {
 			t.Errorf("se esperaba el proyecto en la lista con el numero 1 (%s), y no esta en:\n%s", texto, lista)

@@ -36,13 +36,44 @@ func get(t *testing.T, server http.Handler, path string) *httptest.ResponseRecor
 	return res
 }
 
-// post envia un formulario a la web, como lo haria el navegador.
-func post(t *testing.T, server http.Handler, path string, form url.Values) *httptest.ResponseRecorder {
-	t.Helper()
+// browser es un navegador de prueba: guarda las cookies que manda la web y las devuelve en
+// cada pedido siguiente, como el navegador de verdad. Hace falta para el mensaje de una sola
+// vez (D8), que viaja en una cookie.
+type browser struct {
+	t       *testing.T
+	server  http.Handler
+	cookies map[string]*http.Cookie
+}
+
+func newBrowser(t *testing.T, server http.Handler) *browser {
+	return &browser{t: t, server: server, cookies: make(map[string]*http.Cookie)}
+}
+
+func (b *browser) get(path string) *httptest.ResponseRecorder {
+	b.t.Helper()
+	return b.do(httptest.NewRequest(http.MethodGet, path, nil))
+}
+
+func (b *browser) post(path string, form url.Values) *httptest.ResponseRecorder {
+	b.t.Helper()
 	req := httptest.NewRequest(http.MethodPost, path, strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	return b.do(req)
+}
+
+func (b *browser) do(req *http.Request) *httptest.ResponseRecorder {
+	for _, cookie := range b.cookies {
+		req.AddCookie(cookie)
+	}
 	res := httptest.NewRecorder()
-	server.ServeHTTP(res, req)
+	b.server.ServeHTTP(res, req)
+	for _, cookie := range res.Result().Cookies() {
+		if cookie.MaxAge < 0 {
+			delete(b.cookies, cookie.Name)
+		} else {
+			b.cookies[cookie.Name] = cookie
+		}
+	}
 	return res
 }
 
