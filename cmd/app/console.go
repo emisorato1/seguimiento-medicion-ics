@@ -33,6 +33,7 @@ var operations = []operation{
 	{"crear-proyecto", createProject},
 	{"agregar-integrante", addMember},
 	{"listar-integrantes", listMembers},
+	{"cargar-historia", addStory},
 	{"listar-backlog", listBacklog},
 }
 
@@ -188,4 +189,56 @@ func listBacklog(scanner *bufio.Scanner, out io.Writer, registry *domain.Project
 	if len(project.Backlog()) == 0 {
 		fmt.Fprintln(out, "No hay historias cargadas en el backlog.")
 	}
+	for _, story := range project.Backlog() {
+		fmt.Fprintf(out, "- #%d %s (%s, %s, %s)\n",
+			story.ID(), story.Title(), story.Priority(), story.State(), pointsText(story))
+	}
+}
+
+// pointsText muestra los story points de una historia, o "sin estimar" si tiene 0 (Fase 2).
+func pointsText(story *domain.Story) string {
+	if !story.IsEstimated() {
+		return "sin estimar"
+	}
+	return fmt.Sprintf("%d story points", story.StoryPoints())
+}
+
+// addStory carga una historia en el backlog de un proyecto. Pide todos los datos antes de
+// llamar al núcleo; los criterios van uno por línea y una línea vacía termina la lista.
+func addStory(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) {
+	project := askProject(scanner, out, registry)
+	if project == nil {
+		return
+	}
+	title := ask(scanner, out, "Título: ")
+	description := ask(scanner, out, "Descripción: ")
+	priorityText := ask(scanner, out, "Prioridad (Alta, Media o Baja): ")
+	criteria := askList(scanner, out, "Criterios de aceptación (uno por línea, línea vacía para terminar):")
+	priority, err := domain.ParsePriority(priorityText)
+	if err != nil {
+		fmt.Fprintln(out, err)
+		return
+	}
+	story, err := project.AddStory(domain.StoryData{
+		Title: title, Description: description, Priority: priority, AcceptanceCriteria: criteria,
+	})
+	if err != nil {
+		fmt.Fprintln(out, err)
+		return
+	}
+	fmt.Fprintf(out, "Historia cargada con identificador %d\n", story.ID())
+}
+
+// askList pide una lista de textos, uno por línea, hasta una línea vacía o el fin de la entrada.
+func askList(scanner *bufio.Scanner, out io.Writer, label string) []string {
+	fmt.Fprintln(out, label)
+	var items []string
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			break
+		}
+		items = append(items, line)
+	}
+	return items
 }
