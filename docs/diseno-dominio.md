@@ -193,8 +193,15 @@ PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.ExportPDF
 | `Revealed` | booleano | si ya se mostraron los votos |
 | `Agreed` | entero | estimación acordada; vacío hasta que se acuerda |
 
-Se pide: `p.OpenVotingRound(storyID)`, `r.Vote(member, points)`, `r.Reveal()`,
-`r.Agree(points)`.
+Además guarda `Participants`: los nombres de los integrantes que tenía el proyecto al abrir
+la ronda. Se fijan ahí y no cambian aunque después se sume o se vaya alguien.
+
+Se pide: `p.OpenVotingRound(storyID)`, `r.Vote(member, points)` —`member` es el nombre y
+apellido, como en la #14—, `r.Reveal()`, `r.Voted()` y `r.Pending()` (solo nombres),
+`r.Votes()` (los valores; **con la ronda sin revelar devuelve error**, no una lista vacía),
+y para la #73 `r.Differences()`, `r.Agree(points)` y `p.VotingRounds(storyID)`.
+
+`Agreed` vacío se guarda como 0, igual que "sin estimar" en la #12.
 
 **La regla que define la historia #13:** mientras `Revealed` sea falso, **ningún voto se
 puede leer** desde afuera, ni siquiera el propio. Solo se sabe quién votó y quién no.
