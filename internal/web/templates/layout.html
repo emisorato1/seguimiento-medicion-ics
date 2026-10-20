@@ -1,0 +1,24 @@
+{{define "layout"}}<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} · Seguimiento y Medición ICS</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="barra">
+  <nav aria-label="Navegación principal">
+    <a class="marca" href="/proyectos">Seguimiento y Medición ICS</a>
+    <ul>
+      <li><a href="/proyectos">Proyectos</a></li>
+    </ul>
+  </nav>
+</header>
+<main id="contenido" tabindex="-1">
+{{template "content" .}}
+</main>
+</body>
+</html>
+{{end}}
