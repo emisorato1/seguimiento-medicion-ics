@@ -545,9 +545,13 @@ Ninguno de comportamiento. Tres agregados y una nota:
 - **Los contadores se controlan al reconstruir**: el próximo número tiene que ser al menos 1
   y mayor que todos los usados, y ninguno se repite. Sale de la D15 y de la RN-22: si no, un
   archivo editado a mano podía repartir un número ya usado.
-- **Un dato que el sistema no conoce rechaza la carga** en vez de ignorarse. La D16 no lo
-  dice: se decidió porque, si no, un programa viejo que abre un archivo con datos de una
-  historia posterior (por ejemplo los sprints) los perdería en silencio al volver a guardar.
+- **Desvío respecto de la D16: un dato que el sistema no conoce rechaza la carga** en vez de
+  ignorarse. La D16 solo dice que un dato que falta se carga vacío y no habla de los que
+  sobran. Se decidió rechazarlos porque, si se ignoraran, un programa viejo que abre un
+  archivo con datos de una historia posterior (por ejemplo los sprints) los cargaría sin
+  ellos y los borraría en silencio al volver a guardar. Rechazarlos es lo que pide la RN-24
+  para un archivo con algo que el núcleo no acepta. Confirmado el 20/10 en la revisión del
+  PR #92.
 - **`internal/store` queda en 95,5%**: lo único sin probar es el error de convertir el
   registro a texto, que con textos, números y listas `encoding/json` no puede dar. Se dejó
   igual, para que se avise si algún día un dato nuevo sí puede fallar.
