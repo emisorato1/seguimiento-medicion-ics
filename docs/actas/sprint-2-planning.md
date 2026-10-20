@@ -228,4 +228,5 @@ horas reales. La #77 queda sin horas hasta que tenga story points.
 El 20/10 el equipo confirmó por el grupo las dos decisiones de este anexo: **entregar el
 alcance completo** con el plan al 2 de noviembre, y **sumar la interfaz web** (#77 y #78).
 
-- **Respondieron:** [completar con quiénes confirmaron en el grupo]
+- **Confirmaron:** Agustín Salinas, Juliana Bustos y Maximiliano Eula, los tres Product
+  Builders. Lo registra Emiliano Sorato, que llevó la propuesta al grupo.
