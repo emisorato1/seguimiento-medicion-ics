@@ -180,7 +180,7 @@ El mismo 20/10, día de la planning, Emiliano sumó dos historias al tablero:
 sola no alcanza para eso.
 
 **Están sin estimar.** No tienen story points ni horas estimadas cargadas. Las estima el
-equipo por chat y, hasta entonces, no suman al compromiso del sprint ni a las métricas.
+equipo por chat y, hasta entonces, no suman puntos ni horas al compromiso del sprint.
 
 ### Horas estimadas del Sprint 2
 
