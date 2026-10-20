@@ -6,7 +6,9 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
-  revisa, lo corrige si hace falta y lo presenta a las puertas.
+  revisa, lo corrige si hace falta y lo presenta a las puertas. Revisado por el
+  responsable el 20/10: decidió los seis puntos de la puerta y sumó la persistencia
+  y el número del sprint abierto en el error de la RN-8.
 - **Depende de:** #3 (el sprint pertenece a un proyecto)
 - **La necesitan:** #9 (asignar historias al sprint), #10 (cerrar el sprint),
   #11 (consultar sprints anteriores), #16 (métricas)
@@ -250,7 +252,9 @@ Esquema del escenario: Operar sobre un proyecto que no existe
     | "pedir el sprint abierto" |
 ```
 
-**Para decidir en la puerta:**
+**Decidido por el responsable antes de la puerta (20/10).** Los seis puntos que el
+borrador dejaba abiertos quedan como estaban propuestos. Si quien aprueba la puerta no está
+de acuerdo con alguno, es el momento de decirlo:
 
 1. **RN-1 — el número lo pone el sistema, no quien crea el sprint.** La issue dice "crear un
    sprint con numero", y acá se interpretó que el sprint *tiene* número, no que se escribe a
@@ -321,6 +325,8 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
 | `internal/domain/sprint_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/project.go` | se modifica | el proyecto pasa a contener sus sprints y el contador de números |
 | `internal/domain/errors.go` | se modifica | los cinco errores de esta historia |
+| `internal/domain/registry_json.go` | se modifica | los sprints se guardan y se vuelven a cargar con el proyecto |
+| `internal/domain/registry_json_test.go` | se modifica | el caso de los sprints en el test de ida y vuelta |
 
 ### Decisiones
 
@@ -333,6 +339,8 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
 | La RN-8 se verifica con la misma consulta de la RN-10 | guardar aparte cuál es el sprint abierto del proyecto | un dato aparte puede contradecir a la lista de sprints; con una sola fuente eso no puede pasar |
 | Las fechas del sprint se guardan por día, reusando la normalización que ya hace el proyecto | guardarlas tal como llegan, con hora y zona | los casos límite de la Fase 1 piden que dos fechas del mismo día sean la misma fecha; reusar lo de la #3 evita que el sprint compare distinto que el proyecto (defecto #59) |
 | La entidad se crea completa, con los datos del contrato que esta historia no usa | crear solo el número, el goal, las fechas y el estado | el contrato ya los fija, y si no están, la #9 y la #10 tienen que volver a tocar la entidad y chocan entre ellas en el mismo archivo |
+| El rechazo por sprint abierto **envuelve el error del dominio con el número** del sprint que está abierto | un error fijo sin el número, o un error distinto por cada número | la RN-8 pide informar cuál está abierto, y un error del paquete es un valor fijo. Envuelto, `errors.Is` lo sigue reconociendo y el mensaje que ve el usuario dice el número |
+| Los sprints se guardan en el archivo de datos junto con su proyecto, y al cargarlos pasan por las mismas validaciones que al crearlos | dejarlos solo en memoria | desde la #77 la web guarda todo en un archivo, y `AGENTS.md` pide que toda entidad nueva entre en esa conversión con su caso de ida y vuelta: si no, la web perdería los sprints al cerrarse sin que ningún test lo note. Esta historia guarda los datos que crea; los del cierre los suma la #10 |
 | Lo de esta historia va en `sprint.go`; la #9, la #10 y la #11 agregan archivos propios | que las cuatro historias del sprint escriban en `sprint.go` | es el criterio que ya se aprobó en la Puerta 2 de la #12 para `story_estimation.go`: separar por funcionalidad para que dos personas no editen el mismo archivo |
 
 ### Dependencias y restricciones
@@ -341,6 +349,9 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
   #3 esté en `dev`.
 - **`errors.go` es compartido.** Los errores de esta historia se agregan ahí, al final, para
   achicar el conflicto con las otras historias del sprint.
+- **`registry_json.go` también es compartido.** La conversión del sprint va en funciones
+  propias, y del código que ya existe solo se toca lo mínimo para que el proyecto guarde y
+  cargue sus sprints.
 - **No se toca nada de las historias:** ni el backlog, ni el estado, ni la estimación. El
   sprint nace sin historias asignadas y quien las asigna es la #9.
 - **No se escribe el cierre.** El pase a Cerrado y la fecha de cierre son de la #10: esta
@@ -380,6 +391,7 @@ quedó con los mismos sprints que antes: es la RN-12.
 | 12 | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | RN-11 | pendiente |
 | 13 | Dos proyectos tienen cada uno su sprint número 1, y el sprint abierto de uno no impide crear el del otro | Cada proyecto puede tener su propio sprint abierto | RN-9 | pendiente |
 | 14 | Crear un sprint o pedir el sprint abierto de un proyecto que no existe informa que no se encontró el proyecto | Operar sobre un proyecto que no existe | RN-13 | pendiente |
+| 15 | Los sprints de un proyecto se conservan al guardar y volver a cargar el registro, con su número, goal, fechas y estado, y el contador sigue desde donde estaba | — (caso en el test de ida y vuelta de `registry_json_test.go`) | RN-1, RN-2 | pendiente |
 
 ### Por qué este orden
 
@@ -393,10 +405,13 @@ quedó con los mismos sprints que antes: es la RN-12.
   del sprint abierto esté cerrada: son las que prueban que el número sigue avanzando.
 - **La 13 y la 14 van al final** porque miran el borde de afuera —otro proyecto, o ninguno— y
   solo tienen sentido cuando lo de adentro ya funciona.
+- **La 15 cierra la historia**: guarda en el archivo todo lo que las anteriores dejaron
+  armado. No sale de un escenario de la Fase 1 sino de la regla de persistencia de
+  `AGENTS.md`, y por eso es un caso del test de ida y vuelta que ya existe.
 
 ### Cobertura
 
-Las catorce reglas quedan cubiertas: RN-1 (2, 10), RN-2 (2, 10), RN-3 (2), RN-4 (4),
+Las catorce reglas quedan cubiertas: RN-1 (2, 10, 15), RN-2 (2, 10, 15), RN-3 (2), RN-4 (4),
 RN-5 (5), RN-6 (6, 7), RN-7 (8), RN-8 (9), RN-9 (13), RN-10 (1, 3, 11), RN-11 (12),
 RN-12 (4, 5, 6, 9), RN-13 (14), RN-14 (7).
 
