@@ -71,7 +71,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | 📝 Borrador completo — pendiente de las tres puertas |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
-| Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes | #78 | sin estimar | Emiliano Sorato | ⏳ spec pendiente |
+| [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | sin estimar | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
 
 ### Sprint 4 — 31 de octubre y 1 de noviembre (10 SP)
 
