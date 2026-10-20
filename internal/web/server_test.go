@@ -319,3 +319,79 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: Cada operacion se confirma con un mensaje
+// Cubre: RN-1, RN-8
+func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
+	casos := []struct {
+		nombre     string
+		preparar   func(t *testing.T, registry *domain.ProjectRegistry)
+		formulario string
+		precargado []string
+		datos      url.Values
+		mensaje    string
+		figura     string
+	}{
+		{
+			nombre: "cambiar el nombre de un proyecto",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/editar",
+			precargado: []string{`value="Sistema de metricas"`, `value="2026-11-01"`},
+			datos:      url.Values{"nombre": {"Metricas ICS"}, "inicio": {"2026-11-01"}},
+			mensaje:    "Se modificó el proyecto Metricas ICS",
+			figura:     "<h1>Metricas ICS</h1>",
+		},
+		{
+			nombre: "borrar la descripcion de un proyecto",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				_, err := registry.Create(domain.ProjectData{
+					Name:        "Sistema de metricas",
+					Description: "Tablero del curso",
+					Start:       time.Date(2026, 11, 1, 0, 0, 0, 0, time.UTC),
+				})
+				if err != nil {
+					t.Fatalf("no se pudo preparar el proyecto: %v", err)
+				}
+			},
+			formulario: "/proyectos/1/editar",
+			precargado: []string{">Tablero del curso</textarea>"},
+			datos:      url.Values{"nombre": {"Sistema de metricas"}, "descripcion": {""}, "inicio": {"2026-11-01"}},
+			mensaje:    "Se modificó el proyecto Sistema de metricas",
+			figura:     "sin descripción",
+		},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			caso.preparar(t, registry)
+			navegador := newBrowser(t, newTestServer(t, registry))
+
+			// El formulario se abre con lo que ya tiene cargado.
+			res := navegador.get(caso.formulario)
+			if res.Code != http.StatusOK {
+				t.Fatalf("se esperaba abrir el formulario con el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			for _, texto := range caso.precargado {
+				if html := res.Body.String(); !strings.Contains(html, texto) {
+					t.Errorf("se esperaba el formulario precargado con %s, y no esta en:\n%s", texto, html)
+				}
+			}
+
+			res = navegador.post(caso.formulario, caso.datos)
+			if res.Code != http.StatusSeeOther {
+				t.Fatalf("se esperaba el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
+			}
+
+			html := between(navegador.get(res.Header().Get("Location")).Body.String(), "<main", "</main>")
+			if !strings.Contains(html, caso.mensaje) {
+				t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", caso.mensaje, html)
+			}
+			if !strings.Contains(html, caso.figura) {
+				t.Errorf("se esperaba que figure %s, y no esta en:\n%s", caso.figura, html)
+			}
+		})
+	}
+}
