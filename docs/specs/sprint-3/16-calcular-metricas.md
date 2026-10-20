@@ -358,7 +358,7 @@ Esquema del escenario: Pedir algo que no existe
    pero una historia a medias no suma velocidad. Y como ahí, el redondeo es de quien muestra.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #16. La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que otro integrante la ratifique en el PR de la historia. Antes de aprobar se corrigió: la velocidad del proyecto se redondea, como dice el contrato (10 y 13 dan 12); se agregaron el criterio y el escenario de los puntos de un sprint cerrado (RN-3), que ningún escenario probaba; y se actualizó el punto 1, porque las horas estimadas ya estaban en el contrato.
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #16. La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #16, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación. Antes de aprobar se corrigió: la velocidad del proyecto se redondea, como dice el contrato (10 y 13 dan 12); se agregaron el criterio y el escenario de los puntos de un sprint cerrado (RN-3), que ningún escenario probaba; y se actualizó el punto 1, porque las horas estimadas ya estaban en el contrato.
 
 ## Fase 2 — Diseño
 
