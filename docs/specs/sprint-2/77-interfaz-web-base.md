@@ -309,6 +309,12 @@ Escenario: Usar la pagina en un celular y con el teclado
    marca el primero que informa el núcleo y, al corregirlo, aparece el otro. Se pierde un
    aviso instantáneo, pero el mensaje es siempre el del núcleo, igual que en la consola.
 
+**Resolución del responsable (20/10).** Emiliano Sorato, como responsable de la historia y
+Agile Enabler, acepta los siete puntos tal como están planteados arriba, y también la
+estructura nueva que `AGENTS.md` pide consultar antes de crear: `cmd/web`, `internal/web` e
+`internal/store`. **Esto no es la aprobación de la puerta**: es la posición con la que el
+responsable presenta la spec. Las tres puertas las aprueba otro integrante.
+
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
 
