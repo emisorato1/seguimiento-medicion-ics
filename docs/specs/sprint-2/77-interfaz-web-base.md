@@ -602,6 +602,28 @@ Nombres que la Fase 2 no fija: la web es `web.NewServer(registro, guardado)`, y 
 es la interfaz `web.Saver`, con el `Save(registro)` que cumple `store.File`. El comando
 separa `parseOptions`, `open` y `showAddress` para probarlos sin abrir el puerto.
 
+De cada escenario a su test. Los esquemas que cruzan pantallas están en
+`internal/web/server_test.go`, y cada pantalla les suma sus filas; por eso no hicieron falta
+`members_test.go`, `backlog_test.go` ni `forms_test.go`, que la Fase 2 listaba.
+
+| Escenario | Test |
+|---|---|
+| Crear un proyecto desde la web | `TestCrearUnProyectoDesdeLaWeb` (`internal/web/projects_test.go`) |
+| Cada operacion se confirma con un mensaje | `TestCadaOperacionSeConfirmaConUnMensaje` (`server_test.go`) |
+| Consultar un proyecto | `TestConsultarUnProyecto` (`projects_test.go`) |
+| Las opciones para elegir son las del sistema | `TestLasOpcionesParaElegirSonLasDelSistema` (`server_test.go`) |
+| Confirmar o cancelar antes de quitar | `TestConfirmarOCancelarAntesDeQuitar` (`server_test.go`) |
+| Mostrar el rechazo sin perder lo escrito | `TestMostrarElRechazoSinPerderLoEscrito` (`server_test.go`) |
+| Las listas vacias dicen que hacer | `TestLasListasVaciasDicenQueHacer` (`server_test.go`) y `TestSinDatosGuardadosSeArrancaSinProyectos` (`internal/store`) |
+| Pedir algo que no existe | `TestPedirAlgoQueNoExiste` (`server_test.go`) |
+| Un texto con signos se muestra tal cual | `TestUnTextoConSignosSeMuestraTalCual` (`projects_test.go`) |
+| Abrir el sistema con un solo comando y sin internet | `TestAbrirElSistemaConUnSoloComandoYSinInternet`, en `internal/web` (la página) y en `cmd/web` (el comando) |
+| Los datos siguen al cerrar y volver a abrir | `TestLosDatosSiguenAlCerrarYVolverAAbrir` en `internal/web` (con el archivo real) y en `internal/domain`, y `TestLoGuardadoSeVuelveALeerIgual` (`internal/store`) |
+| Los datos guardados estan danados | `TestLosDatosGuardadosEstanDanados` en `cmd/web` y en `internal/domain`, y `TestUnArchivoDanadoQuedaComoEstaba` (`internal/store`) |
+| Un cambio que no se pudo guardar se avisa | `TestUnCambioQueNoSePudoGuardarSeAvisa`, en `internal/web` y en `internal/store` |
+| Dos pestanas a la vez | `TestDosPestanasALaVez` (`server_test.go`) |
+| Usar la pagina en un celular y con el teclado | `TestUsarLaPaginaEnUnCelularYConElTeclado` (`server_test.go`) y la verificación manual |
+
 ### Desvíos de la web respecto de la spec
 
 - **Una fila más en «Pedir algo que no existe»**: una dirección que no es de ninguna página
