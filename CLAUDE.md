@@ -347,13 +347,44 @@ buena memoria de nadie:
 
 - No se puede pushear directo: hace falta un pull request.
 - El PR necesita **1 aprobación** y el **CI en verde** para poder mergearse.
-- Si se suben commits nuevos, las aprobaciones anteriores se descartan.
+- **Las aprobaciones ya no se descartan al subir commits nuevos.** Estaba activado y lo
+  desactivamos el 20/10: traer `dev` a una rama para resolver un conflicto descartaba la
+  aprobación y obligaba a pedirla de nuevo. Pasó seis veces en el Sprint 1 y nunca por un
+  cambio de contenido. Quien revisa tiene que mirar si hubo commits nuevos después de su
+  aprobación.
 - No se permite `push --force` ni borrar la rama.
 - Solo se puede mergear con **merge commit**: squash y rebase están desactivados.
 - Los comentarios del PR tienen que estar resueltos antes de mergear.
 
 El dueño del repositorio puede saltear la protección en una emergencia. Si alguna vez se
 usa, se avisa al equipo y se deja dicho por qué.
+
+### Modo sprint final (del 20/10 al 2/11)
+
+Las presentaciones arrancan el **2 de noviembre**. Quedan dos semanas y 72 story points de
+backlog, así que **el alcance completo no entra** y el plan es entregar unos 30 puntos bien
+hechos. El plan y su razonamiento están en
+[docs/replan-al-2-de-noviembre.md](docs/replan-al-2-de-noviembre.md).
+
+Mientras dure, cambian estas cuatro cosas y solo estas:
+
+1. **Una historia, un pull request**, con la spec, los tests y el código juntos. Las **tres
+   puertas se aprueban en esa única revisión**. El orden SDD se sigue demostrando en los
+   commits: spec, después test, después código, con sus fechas.
+2. **Un pull request puede cerrar más de una historia** cuando son eslabones seguidos de la
+   misma cadena y la segunda no tiene sentido sin la primera (por ejemplo `#8` y `#9`). Se
+   usa `Closes #8, Closes #9` y la spec de cada una va completa. Fuera de ese caso sigue
+   siendo una historia por PR.
+3. **Las Fases 2 y 3 se escriben juntas** en las historias de hasta 3 puntos, bajo el título
+   *Diseño y tareas*, y pasan una sola puerta. De 5 puntos para arriba siguen separadas.
+4. **Revisión en el día.** Un pull request abierto antes de las 18:00 se revisa ese mismo
+   día. Si a las 20:00 sigue sin revisar, el Agile Enabler lo revisa o consigue quién. Con
+   dos semanas de plazo, un PR parado un día se come el 10%.
+
+**Lo que no cambia: la Definición de Terminado.** Spec antes del código, escenarios BDD,
+tests que pasan, revisión de otra persona y cobertura. Se recorta alcance y ceremonia, nunca
+calidad: entregar menos funcionalidad bien hecha se defiende en la presentación, entregar más
+a medias no.
 
 ### Cuándo se puede partir una historia en varios pull requests
 
