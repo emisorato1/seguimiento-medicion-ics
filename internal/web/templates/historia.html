@@ -1,3 +1,28 @@
 {{define "content"}}
-<h1>{{.Data.Title}}</h1>
+{{with .Data.Story}}
+<h1>Historia {{.ID}}: {{.Title}}</h1>
+<dl class="datos">
+  <dt>Número</dt>
+  <dd>{{.ID}}</dd>
+  <dt>Título</dt>
+  <dd>{{.Title}}</dd>
+  <dt>Descripción</dt>
+  <dd class="texto-largo">{{.Description}}</dd>
+  <dt>Prioridad</dt>
+  <dd>{{.Priority}}</dd>
+  <dt>Estado</dt>
+  <dd>{{.State}}</dd>
+  <dt>Story points</dt>
+  <dd>{{if .IsEstimated}}{{.StoryPoints}}{{else}}<span class="sin-dato">sin estimar</span>{{end}}</dd>
+  <dt>Criterios de aceptación</dt>
+  <dd>
+    <ul class="criterios">
+      {{range .AcceptanceCriteria}}<li>{{.}}</li>{{end}}
+    </ul>
+  </dd>
+</dl>
+{{end}}
+<div class="acciones">
+  <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/backlog">Volver al backlog</a>
+</div>
 {{end}}

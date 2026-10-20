@@ -1,0 +1,39 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Product Backlog</h1>
+{{if not .Backlog}}
+<div class="vacio">
+  <p>El backlog está vacío.</p>
+  <a class="boton" href="/proyectos/{{.ID}}/historias/nueva">Cargar la primera historia</a>
+</div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ID}}/historias/nueva">Cargar historia</a>
+</div>
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Título</th>
+        <th scope="col">Prioridad</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Story points</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Backlog}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td><a href="/proyectos/{{$.Data.ID}}/historias/{{.ID}}">{{.Title}}</a></td>
+        <td>{{.Priority}}</td>
+        <td>{{.State}}</td>
+        <td>{{if .IsEstimated}}{{.StoryPoints}}{{else}}<span class="sin-dato">sin estimar</span>{{end}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
+{{end}}

@@ -84,6 +84,7 @@ var fieldErrors = []struct {
 	{domain.ErrMemberRoleInvalid, "rol"},
 	{domain.ErrMemberDuplicate, "nombre"},
 	{domain.ErrMemberAgileEnablerTaken, "rol"},
+	{domain.ErrStoryPriorityInvalid, "prioridad"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje

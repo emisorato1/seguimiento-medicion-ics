@@ -1,0 +1,41 @@
+{{define "content"}}
+<h1>Cargar historia</h1>
+{{template "error-formulario" .Data.Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/historias/nueva" novalidate>
+  {{with .Data.Form.Field "titulo"}}
+  <div class="campo">
+    <label for="titulo">Título</label>
+    <input type="text" id="titulo" name="titulo" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "descripcion"}}
+  <div class="campo">
+    <label for="descripcion">Descripción</label>
+    <textarea id="descripcion" name="descripcion"{{template "invalido" .}}>{{.Value}}</textarea>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "prioridad"}}
+  <div class="campo">
+    <label for="prioridad">Prioridad</label>
+    <select id="prioridad" name="prioridad"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí una prioridad" $.Data.Priorities .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "criterios"}}
+  <div class="campo">
+    <label for="criterios">Criterios de aceptación</label>
+    <span class="ayuda" id="criterios-ayuda">Uno por renglón.</span>
+    <textarea id="criterios" name="criterios" aria-describedby="criterios-ayuda"{{template "invalido" .}}>{{.Value}}</textarea>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Cargar historia</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/backlog">Cancelar</a>
+  </div>
+</form>
+{{end}}

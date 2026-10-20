@@ -243,6 +243,11 @@ th {
   white-space: pre-line;
 }
 
+.criterios {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
 /* Formularios: cada campo con su etiqueta visible y su error debajo (RN-12, RN-19). */
 form.formulario {
   max-width: 36rem;

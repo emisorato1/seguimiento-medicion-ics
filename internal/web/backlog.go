@@ -1,11 +1,28 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
+
+// priorityOptions son las prioridades que se ofrecen para elegir, con el nombre que les da
+// el dominio (RN-11, D10). El dominio convierte el texto elegido con ParsePriority.
+func priorityOptions() []string {
+	return []string{domain.PriorityHigh.String(), domain.PriorityMedium.String(), domain.PriorityLow.String()}
+}
+
+// storyFields son los campos del formulario de historia.
+var storyFields = []string{"titulo", "descripcion", "prioridad", "criterios"}
+
+// splitLines separa los criterios de aceptacion, que se escriben uno por renglon. Los
+// renglones en blanco los ignora el dominio, no la web.
+func splitLines(text string) []string {
+	return strings.Split(strings.ReplaceAll(text, "\r\n", "\n"), "\n")
+}
 
 // findStory busca el proyecto y la historia de los numeros que vienen en la direccion. Si
 // el proyecto existe lo devuelve aunque la historia no, para que la barra lo siga mostrando.
@@ -22,17 +39,97 @@ func (s *Server) findStory(r *http.Request) (*domain.Project, *domain.Story, err
 	return project, story, nil
 }
 
-// showStory muestra una historia del backlog.
+// listBacklog muestra el Product Backlog del proyecto, en el orden del nucleo (punto 6 de
+// la puerta). Sin historias muestra que esta vacio y ofrece cargar la primera (RN-7).
+func (s *Server) listBacklog(w http.ResponseWriter, r *http.Request) {
+	project, err := s.findProject(r)
+	if err != nil {
+		s.notFound(w, r, nil, err)
+		return
+	}
+	s.render(w, r, http.StatusOK, "backlog.html", page{
+		Title:   "Backlog de " + project.Name(),
+		Project: project,
+		Section: "backlog",
+		Data:    project,
+	})
+}
+
+// renderStoryForm muestra el formulario de historia con lo escrito y sus errores.
+func (s *Server) renderStoryForm(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, f *form) {
+	data := struct {
+		ProjectID  int
+		Priorities []string
+		Form       *form
+	}{
+		ProjectID:  project.ID(),
+		Priorities: priorityOptions(),
+		Form:       f,
+	}
+	s.render(w, r, status, "historia-form.html", page{
+		Title:   "Cargar historia",
+		Project: project,
+		Section: "backlog",
+		Data:    data,
+	})
+}
+
+// newStory muestra el formulario para cargar una historia.
+func (s *Server) newStory(w http.ResponseWriter, r *http.Request) {
+	project, err := s.findProject(r)
+	if err != nil {
+		s.notFound(w, r, nil, err)
+		return
+	}
+	s.renderStoryForm(w, r, http.StatusOK, project, newForm())
+}
+
+// createStory carga la historia en el backlog. La prioridad se convierte en el dominio y,
+// si no es valida, la rechaza AddStory en su propio orden (punto 7 de la puerta).
+func (s *Server) createStory(w http.ResponseWriter, r *http.Request) {
+	project, err := s.findProject(r)
+	if err != nil {
+		s.notFound(w, r, nil, err)
+		return
+	}
+
+	f := readForm(r, storyFields...)
+	priority, _ := domain.ParsePriority(f.Values["prioridad"])
+	story, err := project.AddStory(domain.StoryData{
+		Title:              f.Values["titulo"],
+		Description:        f.Values["descripcion"],
+		Priority:           priority,
+		AcceptanceCriteria: splitLines(f.Values["criterios"]),
+	})
+	if err != nil {
+		f.reject(err)
+		s.renderStoryForm(w, r, http.StatusUnprocessableEntity, project, f)
+		return
+	}
+
+	s.saver.Save(s.registry)
+	setFlash(w, fmt.Sprintf("Se cargó la historia %d", story.ID()))
+	http.Redirect(w, r, fmt.Sprintf("/proyectos/%d/backlog", project.ID()), http.StatusSeeOther)
+}
+
+// showStory muestra una historia del backlog con todos sus datos.
 func (s *Server) showStory(w http.ResponseWriter, r *http.Request) {
 	project, story, err := s.findStory(r)
 	if err != nil {
 		s.notFound(w, r, project, err)
 		return
 	}
+	data := struct {
+		ProjectID int
+		Story     *domain.Story
+	}{
+		ProjectID: project.ID(),
+		Story:     story,
+	}
 	s.render(w, r, http.StatusOK, "historia.html", page{
 		Title:   story.Title(),
 		Project: project,
 		Section: "backlog",
-		Data:    story,
+		Data:    data,
 	})
 }
