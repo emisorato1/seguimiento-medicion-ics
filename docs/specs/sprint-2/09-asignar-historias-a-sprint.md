@@ -6,7 +6,8 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a las puertas.
+  falta y lo presenta a las puertas. Revisado por el responsable el 20/10: decidió los cinco
+  puntos de la puerta y sumó la persistencia del Sprint Backlog.
 - **Depende de:** #8 (tiene que existir el sprint abierto), #6 (las historias y su estado) y
   #12 (solo entran historias estimadas); por la #6 y la #8, también de la #3
 - **La necesitan:** #10 (cierra el sprint sobre las historias que esta historia le asignó),
@@ -233,7 +234,9 @@ Esquema del escenario: Operar sobre algo que no existe
     | "1 en el proyecto 99, que no existe"| "el proyecto" |
 ```
 
-**Para decidir en la puerta:**
+**Decidido por el responsable antes de la puerta (20/10).** Los cinco puntos que el borrador
+dejaba abiertos quedan como estaban propuestos. Si quien aprueba la puerta no está de acuerdo
+con alguno, es el momento de decirlo:
 
 1. **La asignación es siempre al sprint abierto; no se elige a qué sprint.** La issue pide
    que una historia no esté en dos sprints abiertos a la vez, y con la regla de la #8 —un
@@ -296,6 +299,8 @@ rechazada deja todo como estaba (RN-14) sin tener que deshacer nada.
 | `internal/domain/sprint_backlog.go` | se crea | asignar y quitar una historia del sprint abierto, y consultar el Sprint Backlog |
 | `internal/domain/sprint_backlog_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/errors.go` | se modifica | los cuatro errores nuevos de esta historia |
+| `internal/domain/registry_json.go` | se modifica | el Sprint Backlog se guarda y se vuelve a cargar con su sprint |
+| `internal/domain/registry_json_test.go` | se modifica | el caso del Sprint Backlog en el test de ida y vuelta |
 
 ### Decisiones
 
@@ -309,6 +314,7 @@ rechazada deja todo como estaba (RN-14) sin tener que deshacer nada.
 | Quitar es una operación propia | una sola operación que recibe el sprint destino, o vacío para sacarla | son dos reglas distintas con dos errores distintos (RN-5 y RN-8); juntarlas obliga a adivinar cuál se quiso hacer |
 | Se reutiliza el error de historia terminada que ya declaró la #6 | un error propio "no se puede asignar una historia terminada" | es el mismo caso y el mismo mensaje; con dos errores para lo mismo, quien consume tiene que acordarse de mirar los dos |
 | El error de "no hay sprint abierto" lo declara esta historia y lo reusa la #10 | que cada historia declare el suyo | es la misma situación para las dos, y es la primera que lo necesita |
+| El Sprint Backlog se guarda en el archivo de datos con su sprint, y al cargarlo se verifica que cada historia exista en el proyecto | dejar que lo guarde la #8 | la #8 guarda los datos que crea, y ahí la lista nace vacía: quien la llena es esta historia. Sin esto, la web perdería el Sprint Backlog al cerrarse, que es lo que `AGENTS.md` pide evitar con el test de ida y vuelta |
 
 ### Dependencias y restricciones
 
@@ -324,6 +330,8 @@ rechazada deja todo como estaba (RN-14) sin tener que deshacer nada.
   dependen de eso.
 - **`errors.go` es compartido**: los errores nuevos se agregan al final para achicar el
   conflicto con las otras historias del Sprint 2.
+- **`registry_json.go` también es compartido**: se suma el Sprint Backlog a la conversión del
+  sprint que arma la #8, sin tocar lo de las otras entidades.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -353,6 +361,7 @@ Backlog y el estado de la historia quedaron como estaban (RN-14).
 | 11 | Una historia que quedó sin completar en un sprint cerrado se asigna al sprint siguiente, y el sprint cerrado la sigue teniendo entre las suyas | Una historia que quedo sin completar se puede asignar al sprint siguiente | RN-11, RN-12 | pendiente |
 | 12 | Asignar en un proyecto no cambia el Sprint Backlog de otro | Cada proyecto arma su propio Sprint Backlog | RN-10 | pendiente |
 | 13 | Asignar o quitar una historia o un proyecto que no existen informa que no se encontró | Operar sobre algo que no existe | RN-13, RN-16 | pendiente |
+| 14 | El Sprint Backlog se conserva al guardar y volver a cargar el registro, en el mismo orden, y una historia que no existe en el proyecto se rechaza al cargar | — (caso en el test de ida y vuelta de `registry_json_test.go`) | RN-1, RN-9 | pendiente |
 
 ### Por qué este orden
 
@@ -365,11 +374,14 @@ Backlog y el estado de la historia quedaron como estaban (RN-14).
 - **La 8 abre la segunda operación**, y la 9 y la 10 la completan.
 - **La 11, la 12 y la 13 van al final** porque miran los bordes —el sprint anterior, otro
   proyecto, algo que no existe— y solo tienen sentido con lo de adentro ya andando.
+- **La 14 cierra la historia**: guarda el Sprint Backlog que armaron las anteriores. No sale
+  de un escenario de la Fase 1 sino de la regla de persistencia de `AGENTS.md`, y por eso es
+  un caso del test de ida y vuelta que ya existe.
 
 ### Cobertura
 
-Las dieciséis reglas quedan cubiertas: RN-1 (2), RN-2 (7), RN-3 (4), RN-4 (2), RN-5 (5),
-RN-6 (6), RN-7 (8, 9), RN-8 (10), RN-9 (1, 3, 9), RN-10 (12), RN-11 (11), RN-12 (11),
+Las dieciséis reglas quedan cubiertas: RN-1 (2, 14), RN-2 (7), RN-3 (4), RN-4 (2), RN-5 (5),
+RN-6 (6), RN-7 (8, 9), RN-8 (10), RN-9 (1, 3, 9, 14), RN-10 (12), RN-11 (11), RN-12 (11),
 RN-13 (13), RN-14 (4, 5, 6, 10), RN-15 (3), RN-16 (13).
 
 | Criterio de aceptación | Tareas |
