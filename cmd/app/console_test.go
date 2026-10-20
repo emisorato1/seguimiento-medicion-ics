@@ -367,3 +367,77 @@ func TestOperarSobreUnIdentificadorQueNoExiste(t *testing.T) {
 		t.Fatalf("se esperaba que el programa siguiera funcionando y creara el proyecto, salio: %q", out.String())
 	}
 }
+
+// Sin escenario: cobertura de la RN-2 en cada operación
+// Cubre: RN-2, RN-7
+//
+// Pasa sin código nuevo: cada operación ya muestra el mensaje del núcleo cuando rechaza. Se
+// agregó para que todas las ramas de rechazo de la consola tengan un test.
+func TestCadaOperacionMuestraElRechazoDelNucleo(t *testing.T) {
+	cases := []struct {
+		name  string
+		input string
+		want  error
+	}{
+		{"rol invalido", unProyectoConUnaHistoria + "agregar-integrante\n1\nJuliana Bustos\nScrum Master\nsalir\n",
+			domain.ErrMemberRoleInvalid},
+		{"integrante duplicado", unProyectoConUnaHistoria +
+			"agregar-integrante\n1\nJuliana Bustos\nProduct Builder\n" +
+			"agregar-integrante\n1\njuliana bustos\nProduct Builder\nsalir\n",
+			domain.ErrMemberDuplicate},
+		{"prioridad invalida", unProyectoConUnaHistoria + "cargar-historia\n1\nTitulo\nDescripcion\nurgente\nUn criterio\n\nsalir\n",
+			domain.ErrStoryPriorityInvalid},
+		{"historia sin titulo", unProyectoConUnaHistoria + "cargar-historia\n1\n\nDescripcion\nMedia\nUn criterio\n\nsalir\n",
+			domain.ErrStoryTitleRequired},
+		{"agregar integrante a un proyecto inexistente", "agregar-integrante\n99\nsalir\n", domain.ErrProjectNotFound},
+		{"listar integrantes de un proyecto inexistente", "listar-integrantes\n99\nsalir\n", domain.ErrProjectNotFound},
+		{"cargar una historia en un proyecto inexistente", "cargar-historia\n99\nsalir\n", domain.ErrProjectNotFound},
+		{"estimar en un proyecto inexistente", "estimar\n99\nsalir\n", domain.ErrProjectNotFound},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var out strings.Builder
+
+			err := runConsole(strings.NewReader(tc.input), &out, domain.NewProjectRegistry())
+
+			if err != nil {
+				t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+			}
+			if !strings.Contains(out.String(), tc.want.Error()) {
+				t.Fatalf("se esperaba ver el mensaje del nucleo %q, salio: %q", tc.want, out.String())
+			}
+		})
+	}
+}
+
+// Sin escenario: decisión de la Fase 2 (una historia estimada muestra sus story points)
+// Cubre: RN-1
+//
+// Pasa sin código nuevo: el listado de la tarea 8 ya distingue una historia estimada.
+func TestElBacklogMuestraLosStoryPointsDeUnaHistoriaEstimada(t *testing.T) {
+	var out strings.Builder
+	in := unProyectoConUnaHistoria + "estimar\n1\n1\n8\nlistar-backlog\n1\nsalir\n"
+
+	err := runConsole(strings.NewReader(in), &out, domain.NewProjectRegistry())
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), "#1 Registrar esfuerzo (Alta, Pendiente, 8 story points)") {
+		t.Fatalf("se esperaba ver la historia estimada en 8 en el backlog, salio: %q", out.String())
+	}
+}
+
+// Sin escenario: la entrada se termina sin la operación de salir (por ejemplo, con Ctrl+D)
+// Cubre: RN-6
+//
+// Pasa sin código nuevo: la tarea 1 ya termina la consola cuando no hay más entrada.
+func TestLaEntradaTerminaSinSalir(t *testing.T) {
+	var out strings.Builder
+
+	err := runConsole(strings.NewReader("listar-backlog\n99\n"), &out, domain.NewProjectRegistry())
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error al acabarse la entrada, salio: %v", err)
+	}
+}
