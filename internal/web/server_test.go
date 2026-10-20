@@ -206,6 +206,7 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 		"/proyectos/1/backlog",
 		"/proyectos/1/historias/nueva",
 		"/proyectos/1/historias/1",
+		"/proyectos/1/historias/1/editar",
 	}
 
 	for _, pagina := range paginas {
@@ -489,6 +490,23 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 					t.Errorf("se esperaban los criterios %q, salieron %q", criterios, story.AcceptanceCriteria())
 				}
 			},
+		},
+		{
+			nombre: "cambiar la prioridad de una historia",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityMedium)
+			},
+			formulario: "/proyectos/1/historias/1/editar",
+			precargado: []string{`value="Registrar esfuerzo"`, `<option value="Media" selected>`, ">Se puede registrar esfuerzo</textarea>"},
+			datos: url.Values{
+				"titulo":      {"Registrar esfuerzo"},
+				"descripcion": {"Como integrante quiero registrar esfuerzo"},
+				"prioridad":   {"Alta"},
+				"criterios":   {"Se puede registrar esfuerzo"},
+			},
+			mensaje: "Se modificó la historia 1",
+			figura:  []string{"<dd>Alta</dd>"},
 		},
 		{
 			nombre: "cambiar el nombre de un proyecto",
