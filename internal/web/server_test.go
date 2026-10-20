@@ -395,3 +395,40 @@ func TestCadaOperacionSeConfirmaConUnMensaje(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: Pedir algo que no existe
+// Cubre: RN-16
+func TestPedirAlgoQueNoExiste(t *testing.T) {
+	casos := []struct {
+		pedido string
+		err    error
+	}{
+		{pedido: "/proyectos/99", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/abc", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/historias/99", err: domain.ErrStoryNotFound},
+		// No esta en los Ejemplos: una direccion que no es de ninguna pagina tambien se
+		// informa en castellano, con el mismo acceso a la lista.
+		{pedido: "/proyectos/1/cualquiera", err: errPageNotFound},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.pedido, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			addProject(t, registry, "Sistema de metricas")
+			server := newTestServer(t, registry)
+
+			res := get(t, server, caso.pedido)
+
+			if res.Code != http.StatusNotFound {
+				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusNotFound, res.Code)
+			}
+			contenido := between(res.Body.String(), "<main", "</main>")
+			if mensaje := template.HTMLEscapeString(caso.err.Error()); !strings.Contains(contenido, mensaje) {
+				t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", mensaje, contenido)
+			}
+			if !strings.Contains(contenido, `href="/proyectos"`) {
+				t.Errorf("se esperaba el acceso para volver a la lista de proyectos, y no esta en:\n%s", contenido)
+			}
+		})
+	}
+}
