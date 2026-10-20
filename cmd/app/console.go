@@ -35,6 +35,7 @@ var operations = []operation{
 	{"listar-integrantes", listMembers},
 	{"cargar-historia", addStory},
 	{"listar-backlog", listBacklog},
+	{"estimar", estimateStory},
 }
 
 // operationNames devuelve las operaciones disponibles, en el orden en que se muestran.
@@ -227,6 +228,22 @@ func addStory(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectReg
 		return
 	}
 	fmt.Fprintf(out, "Historia cargada con identificador %d\n", story.ID())
+}
+
+// estimateStory asigna story points a una historia del backlog. El valor lo valida el
+// núcleo con su escala (RN-7): si lo rechaza, se muestra su mensaje tal cual (RN-2).
+func estimateStory(scanner *bufio.Scanner, out io.Writer, registry *domain.ProjectRegistry) {
+	project := askProject(scanner, out, registry)
+	if project == nil {
+		return
+	}
+	id, _ := strconv.Atoi(ask(scanner, out, "Historia (identificador): "))
+	points, _ := strconv.Atoi(ask(scanner, out, "Story points: "))
+	if err := project.EstimateStory(id, points); err != nil {
+		fmt.Fprintln(out, err)
+		return
+	}
+	fmt.Fprintf(out, "Historia %d estimada en %d story points\n", id, points)
 }
 
 // askList pide una lista de textos, uno por línea, hasta una línea vacía o el fin de la entrada.
