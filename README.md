@@ -45,10 +45,10 @@ go run ./cmd/app              # ejecutar la aplicación
 
 ### Qué funciona hoy
 
-El **núcleo del dominio** está implementado y cubierto por tests: crear y modificar
-proyectos, registrar integrantes, administrar el Product Backlog. Se puede ver funcionando
-corriendo los tests, que están escritos con el nombre de cada escenario de las
-especificaciones:
+El **núcleo del dominio** está implementado y **cubierto al 100% por tests**: crear y
+modificar proyectos, registrar integrantes, administrar el Product Backlog y estimar con
+Story Points. Se puede ver funcionando corriendo los tests, que están escritos con el nombre
+de cada escenario de las especificaciones:
 
 ```bash
 go test ./internal/domain/ -v
@@ -93,10 +93,12 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [AGENTS.md](AGENTS.md) — comandos, estructura, estilo, flujo de git y límites del proyecto.
 - [Índice de especificaciones](docs/specs/README.md) — **qué historia le toca a cada uno, en qué estado está y en qué orden**. Es por donde se empieza para trabajar.
 - [Plantilla de especificación SDD](docs/specs/PLANTILLA.md) — el flujo de cuatro fases con sus puertas de aprobación.
+- [Plan final al 2 de noviembre](docs/plan-final-al-2-de-noviembre.md) — **el plan vigente**: calendario de los sprints que quedan, reparto por persona y riesgos.
+- [Contrato del dominio](docs/diseno-dominio.md) — las entidades compartidas, acordadas antes de implementarlas, para que nadie espere a nadie.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
-- [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — lo que queda del backlog con sus dependencias.
-- [Replanificación al 2 de noviembre](docs/replan-al-2-de-noviembre.md) — qué entra y qué no en las dos semanas que quedan.
+- [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — el análisis de dependencias previo a la planning del Sprint 2.
+- [Replanificación al 2 de noviembre](docs/replan-al-2-de-noviembre.md) — el análisis de recorte que se descartó, conservado como registro de la decisión.
 
 ## Tablero
 

@@ -60,8 +60,26 @@ for spec in docs/specs/sprint-[1-9]*/[0-9]*.md; do
     esac
   done
 
-  # la fase siguiente no puede estar escrita si la puerta anterior no se aprobo
-  if grep -q '^### Enfoque' "$spec"; then
+  # La fase siguiente no puede estar escrita si la puerta anterior no se aprobo.
+  # Excepcion: un "borrador completo" declara en su encabezado que tiene las tres
+  # fases escritas y ninguna puerta pasada todavia. Es el modo acordado del 20/10 al
+  # 2/11 (ver "Modo sprint final" en CLAUDE.md): la spec se redacta entera por
+  # adelantado y las tres puertas se aprueban en una sola revision, para que nadie
+  # quede esperando una puerta. El encabezado tiene que decirlo explicitamente, asi
+  # nunca se confunde un borrador con una spec aprobada.
+  es_borrador="no"
+  case "$estado" in
+    *[Bb]orrador\ completo*) es_borrador="si" ;;
+  esac
+  if [ "$es_borrador" = "si" ]; then
+    for n in 1 2 3; do
+      linea=$(grep -A1 "^> \*\*Puerta $n\*\*" "$spec" | grep '^> Aprobó:' || true)
+      case "$linea" in
+        *"[pendiente]"*|"") ;;
+        *) fallo "$nombre se declara 'borrador completo' pero tiene la Puerta $n ya aprobada: actualiza el Estado" ;;
+      esac
+    done
+  elif grep -q '^### Enfoque' "$spec"; then
     linea1=$(grep -A1 '^> \*\*Puerta 1\*\*' "$spec" | grep '^> Aprobó:' || true)
     case "$linea1" in
       *"[pendiente]"*|"") fallo "$nombre tiene la Fase 2 escrita pero la Puerta 1 no esta aprobada" ;;

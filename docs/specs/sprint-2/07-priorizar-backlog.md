@@ -2,11 +2,11 @@
 
 - **Historia:** #7
 - **Sprint:** 2
-- **Responsable:** a definir en la planning
-- **Estado:** Requisitos — **borrador, pendiente de Puerta 1**
+- **Responsable:** Agustín Salinas
+- **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a la Puerta 1
+  falta y lo presenta a las puertas.
 - **Depende de:** #6 (el backlog y la prioridad de cada historia viven ahí), y por lo tanto
   también de #3
 - **La necesitan:** #9 (en la planning se eligen primero las historias más prioritarias) y
@@ -248,19 +248,146 @@ Escenario: Pedir el backlog ordenado de un proyecto que no existe
    guardarla. Si alguna vez se pudiera, habría que decidir dónde va en el listado.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
 
 ## Fase 2 — Diseño
 
-_Se escribe después de que la Puerta 1 esté aprobada._
+Las decisiones transversales del proyecto están en [AGENTS.md](../../../AGENTS.md) y no se
+repiten acá. El diseño se apoya en la Fase 2 de la #6: el backlog vive dentro del proyecto y
+la prioridad es un tipo propio con sus tres valores. Esta fase registra solo lo propio del
+orden.
+
+### Enfoque
+
+Ordenar es **una consulta**: arma una lista nueva con las historias del backlog, la ordena y
+la devuelve. La lista que guarda el proyecto no se toca, así que el backlog sin ordenar de la
+#6 sigue devolviendo lo mismo (RN-7 y punto 3 de "Para decidir en la puerta").
+
+El orden usa dos criterios, en este orden: la importancia de la prioridad (RN-1, RN-2) y, a
+igual prioridad, el identificador de menor a mayor (RN-3). **No se guarda nada**: el orden se
+arma cada vez que se pide, y por eso una prioridad que se cambia con la modificación de la #6
+aparece en su nuevo lugar en el listado siguiente, sin trabajo extra (RN-6).
+
+La lista es nueva, pero las historias son las mismas que guarda el backlog, igual que en el
+listado de la #6: agregar o quitar elementos de lo que se recibe no cambia el backlog, y los
+datos de cada historia solo cambian con sus operaciones (RN-5).
+
+### Archivos afectados
+
+| Archivo | Se crea o se modifica | Para qué |
+|---|---|---|
+| `internal/domain/story_priority.go` | se crea | el listado del backlog ordenado por prioridad |
+| `internal/domain/story_priority_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
+
+No se modifica `errors.go`: el único error posible es el proyecto inexistente, que ya informa
+el registro de la #3.
+
+### Decisiones
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| La importancia sale del orden en que la #6 declaró las prioridades: Alta, Media, Baja | una lista propia de esta historia que diga qué prioridad va primero | con dos fuentes podrían decir cosas distintas. El costo es que ese orden pasa a importar: si alguien reordena las prioridades, el test de la tarea 3 falla y lo avisa |
+| El desempate por identificador se hace explícito | confiar en que el backlog está guardado en orden de identificador y ordenar respetando el orden original | hoy coinciden porque el identificador crece con cada alta, pero el día que haya borrado o reordenamiento dejan de coincidir y el listado cambiaría sin que ningún escenario lo note. Lo protege un test propio de la tarea 4 |
+| El listado es una lista nueva; el backlog guardado no se reordena | ordenar el backlog guardado, y que la #6 lo devuelva ordenado | rompe la RN-7 y cambia lo que la #6 ya tiene aprobado y testeado |
+| El orden se arma en cada pedido | guardar el backlog ordenado y reordenarlo al cambiar una prioridad | obligaría a la modificación de la #6 a acordarse de reordenar, y un olvido no da error; armándolo cada vez, la RN-6 sale sola. Son decenas de historias: no hace falta ahorrarse el ordenamiento |
+| El listado va en `story_priority.go` | agregarlo a `story.go` | mismo criterio que la estimación de la #12: no pisar el archivo de la #6 y dejar la trazabilidad directa |
+
+### Dependencias y restricciones
+
+- **Solo depende de lo que ya está en `dev`**: el backlog, la prioridad y la modificación de
+  una historia (#6), y el registro de proyectos (#3). Se puede empezar apenas pase la Puerta 3.
+- **No se modifica `story.go`** ni ninguna operación de la #6.
+- **No es una entidad nueva del contrato del dominio**: es una operación más del proyecto
+  sobre el backlog que ya existe, como dice el contrato ("lo nuevo sigue el mismo camino").
+- **La usan la #9**, para elegir en la planning, y la interfaz, para mostrar el backlog.
+
+> **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
 
 ## Fase 3 — Tareas
 
-_Se escribe después de que la Puerta 2 esté aprobada._
+Cada tarea es un ciclo de TDD completo: el test que falla en un commit, la implementación que
+lo hace pasar en otro. Van en el orden en que hay que hacerlas, y cada una deja el código
+compilando y los tests en verde.
+
+Los tests siguen la convención de [AGENTS.md](../../../AGENTS.md): un test por escenario, con
+el nombre del escenario.
+
+**Son cuatro tareas para catorce escenarios, a propósito.** En la #12 seis tareas pasaron en
+verde sin código nuevo porque separaban en ciclos lo que salía del mismo código, y su Fase 4
+lo anotó como un error de la Fase 3. Acá cada tarea agrupa los escenarios que dependen de la
+misma implementación, y cada una tiene al menos un test que falla antes de escribirla.
+
+| # | Tarea | Escenario BDD | Reglas | Estado |
+|---|---|---|---|---|
+| 1 | El listado ordenado de un proyecto sin historias es una lista vacía, sin error; el de un proyecto inexistente informa que no se encontró | Backlog ordenado de un proyecto sin historias; Pedir el backlog ordenado de un proyecto que no existe | RN-8, RN-9 | pendiente |
+| 2 | El listado trae todas las historias del backlog con todos sus datos, cualquiera sea su estado y estén estimadas o no, sin omitir ni repetir ninguna | El listado incluye las historias en cualquier estado; Las historias del listado traen todos sus datos; Backlog ordenado de un proyecto con una sola historia | RN-4, RN-5 | pendiente |
+| 3 | El listado va de Alta a Baja, sin huecos si falta una prioridad; se arma en cada pedido, así que un cambio de prioridad se ve en el siguiente; y no toca el backlog guardado | Listar el backlog ordenado por prioridad; No hay historias de prioridad alta; El orden se actualiza al cambiar una prioridad; Bajar la prioridad de la historia que estaba primera; Cambiar una prioridad por la que ya tenia; Pedir el listado ordenado no cambia el backlog | RN-1, RN-2, RN-6, RN-7 | pendiente |
+| 4 | A igual prioridad, el listado desempata por identificador de menor a mayor aunque el backlog esté guardado en otro orden, y dos listados seguidos dan lo mismo | Desempatar por identificador dentro de la misma prioridad; Todas las historias tienen la misma prioridad; Dos listados seguidos devuelven lo mismo | RN-3 | pendiente |
+
+**Dónde falla cada una antes de implementarse.**
+
+- **La 1**, porque el listado no existe. El test del proyecto inexistente pasa solo, porque lo
+  resuelve el registro de la #3, y por eso va acá y no en una tarea propia.
+- **La 2**, porque la tarea 1 devuelve siempre la lista vacía.
+- **La 3**, porque la tarea 2 devuelve las historias en el orden en que se cargaron: fallan el
+  primer escenario, el de "no hay prioridad alta", el esquema y el de bajar la prioridad.
+  "Cambiar una prioridad por la que ya tenia" y "Pedir el listado ordenado no cambia el
+  backlog" pasarían solos: van acá porque protegen *cómo* se ordena, sobre una lista nueva y
+  en cada pedido. Para que pase alcanza con ordenar por prioridad respetando el orden en que
+  vienen las historias; el desempate explícito es de la 4.
+- **La 4 es la delicada**: con los escenarios de la Fase 1 solos no falla, porque las
+  historias que se cargan con la operación de la #6 quedan guardadas en orden de
+  identificador. Por eso lleva además un test que arma, desde dentro del paquete, un backlog
+  guardado fuera de orden (`TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden`,
+  encabezado con `// Tarea 4:` y la decisión de la Fase 2 que protege). Ese es el que falla.
+
+### Por qué este orden
+
+- **La 1 va primero** porque crea la operación, con el caso que no necesita ninguna historia.
+- **La 2 antes que la 3**: primero que estén todas, después en qué orden. Al revés, un test de
+  orden en rojo podría estar fallando por una historia que falta, y no se sabría cuál de las
+  dos cosas anda mal.
+- **La 3 antes que la 4**: el desempate solo tiene sentido cuando ya hay un orden que
+  desempatar.
+
+### Cobertura
+
+Las nueve reglas quedan cubiertas: RN-1 (3), RN-2 (3), RN-3 (4), RN-4 (2), RN-5 (2),
+RN-6 (3), RN-7 (3), RN-8 (1), RN-9 (1).
+
+| Criterio de aceptación | Tareas |
+|---|---|
+| El backlog ordenado devuelve primero Alta, después Media y por último Baja | 3 |
+| Dentro de una misma prioridad, por identificador de menor a mayor | 4 |
+| La misma cantidad de historias que el backlog, sin omitir ni repetir | 2 |
+| Las historias aparecen cualquiera sea su estado y estén estimadas o no | 2 |
+| Cada historia trae todos sus datos | 2 |
+| Al cambiar la prioridad, el listado siguiente la ubica en su nuevo lugar | 3 |
+| Cambiar una prioridad por la misma deja el listado igual | 3 |
+| Pedir el listado no cambia los datos ni el orden del backlog sin ordenar | 3 |
+| Dos listados seguidos devuelven exactamente lo mismo | 4 |
+| Un proyecto sin historias devuelve el listado vacío, sin error | 1 |
+| Un proyecto con una sola historia devuelve esa historia | 2 |
+| Con todas las historias de la misma prioridad, el orden es por identificador | 4 |
+| Un proyecto inexistente informa que no se encontró | 1 |
+
+Los catorce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+
+### Dependencias
+
+- **Ninguna tarea espera a otra historia**: todo lo que necesitan ya está en `dev`.
+- **La tarea 2 necesita historias En curso y Terminadas**, y esos cambios de estado son de la
+  #9 y la #10: el test fija el estado desde dentro del paquete, como hizo la #12.
+- **La tarea 3 cambia prioridades con la modificación de una historia de la #6**, sin agregar
+  ninguna forma nueva de hacerlo (punto 4 de "Para decidir en la puerta").
+
+> **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
+> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
 
 ## Fase 4 — Implementación
 
-_Se escribe después de que la Puerta 3 esté aprobada._
+_Se completa durante la implementación._
 
 ## Trazabilidad
 
@@ -270,5 +397,5 @@ _Se escribe después de que la Puerta 3 esté aprobada._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | se completa en la Fase 3 |
-| Código Go | se completa en la Fase 2 |
+| Tests | `internal/domain/story_priority_test.go` |
+| Código Go | `internal/domain/story_priority.go` |
