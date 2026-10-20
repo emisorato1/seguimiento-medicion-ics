@@ -9,10 +9,11 @@ import (
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
 
-// newTestServer arma una web nueva sobre un registro vacio. Cada test arranca de cero.
-func newTestServer(t *testing.T) *Server {
+// newTestServer arma una web nueva sobre el registro que recibe. Cada test arma el suyo y
+// arranca de cero.
+func newTestServer(t *testing.T, registry *domain.ProjectRegistry) *Server {
 	t.Helper()
-	return NewServer(domain.NewProjectRegistry())
+	return NewServer(registry)
 }
 
 // get pide una pagina a la web, como lo haria el navegador.
@@ -26,7 +27,7 @@ func get(t *testing.T, server http.Handler, path string) *httptest.ResponseRecor
 // Escenario: Abrir el sistema con un solo comando y sin internet
 // Cubre: RN-3, RN-4. Esta es la parte de la web; el comando lo prueba cmd/web.
 func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
-	server := newTestServer(t)
+	server := newTestServer(t, domain.NewProjectRegistry())
 
 	t.Run("la raiz lleva a la lista de proyectos", func(t *testing.T) {
 		res := get(t, server, "/")
@@ -86,6 +87,47 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 				if strings.Contains(html, afuera) {
 					t.Errorf("la pagina no deberia pedir nada de afuera, y tiene %q", afuera)
 				}
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Las listas vacias dicen que hacer
+// Cubre: RN-7, RN-23
+func TestLasListasVaciasDicenQueHacer(t *testing.T) {
+	casos := []struct {
+		nombre   string
+		preparar func(t *testing.T, registry *domain.ProjectRegistry)
+		pagina   string
+		mensaje  string
+		acceso   string
+	}{
+		{
+			nombre:   "el sistema sin datos guardados",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {},
+			pagina:   "/proyectos",
+			mensaje:  "Todavía no hay proyectos",
+			acceso:   `href="/proyectos/nuevo"`,
+		},
+	}
+
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			caso.preparar(t, registry)
+			server := newTestServer(t, registry)
+
+			res := get(t, server, caso.pagina)
+
+			if res.Code != http.StatusOK {
+				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			html := res.Body.String()
+			if !strings.Contains(html, caso.mensaje) {
+				t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", caso.mensaje, html)
+			}
+			if !strings.Contains(html, caso.acceso) {
+				t.Errorf("se esperaba el acceso %s, y no esta en:\n%s", caso.acceso, html)
 			}
 		})
 	}
