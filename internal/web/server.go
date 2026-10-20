@@ -60,6 +60,9 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s.mux.HandleFunc("GET /proyectos/{id}", s.showProject)
 	s.mux.HandleFunc("GET /proyectos/{id}/editar", s.editProject)
 	s.mux.HandleFunc("POST /proyectos/{id}/editar", s.updateProject)
+	s.mux.HandleFunc("GET /proyectos/{id}/integrantes", s.listMembers)
+	s.mux.HandleFunc("GET /proyectos/{id}/integrantes/nuevo", s.newMember)
+	s.mux.HandleFunc("POST /proyectos/{id}/integrantes/nuevo", s.createMember)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}", s.showStory)
 	return s
 }
@@ -76,7 +79,21 @@ func (s *Server) home(w http.ResponseWriter, r *http.Request) {
 
 // templateFuncs son las funciones que pueden usar las plantillas.
 var templateFuncs = template.FuncMap{
-	"fecha": formatDate,
+	"fecha":   formatDate,
+	"choices": newChoices,
+}
+
+// choices es una lista para elegir: el texto de la opcion vacia que pide elegir, las
+// opciones y la que esta elegida.
+type choices struct {
+	Prompt   string
+	Options  []string
+	Selected string
+}
+
+// newChoices arma una lista para elegir desde una plantilla.
+func newChoices(prompt string, options []string, selected string) choices {
+	return choices{Prompt: prompt, Options: options, Selected: selected}
 }
 
 // formatDate muestra una fecha como dd/mm/aaaa (RN-5).

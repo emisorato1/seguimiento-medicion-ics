@@ -37,3 +37,6 @@
 {{define "invalido"}}{{if .Error}} aria-invalid="true" aria-describedby="{{.Name}}-error"{{end}}{{end}}
 {{define "error"}}{{if .Error}}<span class="error" id="{{.Name}}-error">{{.Error}}</span>{{end}}{{end}}
 {{define "error-formulario"}}{{with .}}<div class="aviso aviso-error" role="alert" id="error-formulario">{{.}}</div>{{end}}{{end}}
+{{/* "opciones" arma las opciones de una lista para elegir, con una primera opcion vacia que
+     pide elegir: sin ella el navegador elegiria la primera solo. */}}
+{{define "opciones"}}<option value="">{{.Prompt}}</option>{{range .Options}}<option value="{{.}}"{{if eq . $.Selected}} selected{{end}}>{{.}}</option>{{end}}{{end}}

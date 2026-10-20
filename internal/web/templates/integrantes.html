@@ -1,0 +1,33 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Integrantes</h1>
+{{if not .Members}}
+<div class="vacio">
+  <p>Este proyecto todavía no tiene integrantes.</p>
+  <a class="boton" href="/proyectos/{{.ID}}/integrantes/nuevo">Agregar el primer integrante</a>
+</div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ID}}/integrantes/nuevo">Agregar integrante</a>
+</div>
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Nombre y apellido</th>
+        <th scope="col">Rol</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Members}}
+      <tr>
+        <td>{{.Name}}</td>
+        <td>{{.Role}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
+{{end}}

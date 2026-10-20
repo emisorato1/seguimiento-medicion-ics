@@ -80,6 +80,8 @@ var fieldErrors = []struct {
 	{domain.ErrProjectNameRequired, "nombre"},
 	{domain.ErrProjectStartRequired, "inicio"},
 	{domain.ErrProjectDatesInconsistent, "fin"},
+	{domain.ErrMemberNameRequired, "nombre"},
+	{domain.ErrMemberRoleInvalid, "rol"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje
