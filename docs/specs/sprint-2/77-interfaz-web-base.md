@@ -515,11 +515,46 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 |---|---|---|
 | Lista de todos los proyectos (dependencia, sin número) | `1f94f7a` | `3e81aca` |
 | 1 | `4227227` | `5a6d632` |
+| 2 | `1a885f0` | `61077ba` |
+| 3 | `ff7d24f` | `2ecdfad` |
+| 4 | `9e9ec91` | `fc414fb` |
+| 5 | `6d73f7a` | `a83bfc5` |
 
-Los dos RED fueron por compilación: la consulta y la lectura de la escala todavía no
-existían. La lista de proyectos la pide la Fase 2 sin ponerle nombre; se llama
-`r.Projects()`, como en el contrato, y su test usa doce proyectos para que el orden no salga
-bien por casualidad.
+Los RED de la lista de proyectos y de las tareas 1, 2, 4 y 5 fueron por compilación (la
+operación o el error todavía no existían); el de la tarea 3, por comportamiento: 13 de sus
+14 casos se cargaban sin error. La lista de proyectos la pide la Fase 2 sin ponerle nombre;
+se llama `r.Projects()`, como en el contrato, y su test usa doce proyectos para que el orden
+no salga bien por casualidad.
+
+Nombres que la Fase 2 no fija: la conversión es `r.ToJSON()` y `RegistryFromJSON(texto)`;
+el archivo, `store.NewFile(ruta)` con `Load()` y `Save(registro)`. Los errores son
+`ErrSavedDataInvalid` en el dominio (datos guardados que no se pueden leer o no se aceptan)
+y `ErrNotSaved` en `internal/store` («el cambio no quedó guardado»). Un rechazo por una
+regla del dominio cumple `errors.Is` con los dos: con `ErrSavedDataInvalid` y con el error
+de esa regla.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Tres agregados y una nota:
+
+- **La tarea 3 tiene más casos que los cinco de la Fase 3**: fechas que no son fechas,
+  número de proyecto repetido, contadores que retroceden o están en cero, historia sin
+  título, prioridad y estado inexistentes. Cada uno prueba un control distinto de la
+  reconstrucción; sin ellos el dominio no llegaba al 100%. El del estado inexistente pasó sin
+  código nuevo: leer el estado por su nombre ya lo rechazaba desde la tarea 2.
+- **Los contadores se controlan al reconstruir**: el próximo número tiene que ser al menos 1
+  y mayor que todos los usados, y ninguno se repite. Sale de la D15 y de la RN-22: si no, un
+  archivo editado a mano podía repartir un número ya usado.
+- **Un dato que el sistema no conoce rechaza la carga** en vez de ignorarse. La D16 no lo
+  dice: se decidió porque, si no, un programa viejo que abre un archivo con datos de una
+  historia posterior (por ejemplo los sprints) los perdería en silencio al volver a guardar.
+- **`internal/store` queda en 95,5%**: lo único sin probar es el error de convertir el
+  registro a texto, que con textos, números y listas `encoding/json` no puede dar. Se dejó
+  igual, para que se avise si algún día un dato nuevo sí puede fallar.
+
+Nota para la #16: si el PR #81 (horas estimadas) entra a `dev` antes que esta conversión, o
+después, la que llegue segunda suma `estimatedHours` a `registry_json.go` con su caso en el
+test de ida y vuelta, como pide la regla de Dependencias.
 
 ## Trazabilidad
 
