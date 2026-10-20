@@ -169,7 +169,7 @@ Plan de la cátedra, con las fechas que fijó el equipo el 20/10 para llegar al 
 | Sprint | Objetivo | Fechas | SP |
 |---|---|---|---|
 | 0 | preparación: repositorio, tablero, backlog inicial | cerrado | — |
-| 1 | MVP | cerrado | 11 |
+| 1 | MVP | cerrado | 16 (velocidad 6) |
 | 2 | interfaz usable: sprints, esfuerzo, defectos y consola | mar 20 → dom 25/10 | 26 |
 | 3 | funcionalidad y calidad: métricas, dashboard, Planning Poker y reportes | lun 26 → vie 30/10 | 36 |
 | 4 | cierre, informe en PDF y review final | sáb 31/10 → dom 1/11 | 10 |
@@ -385,8 +385,8 @@ usa, se avisa al equipo y se deja dicho por qué.
 
 ### Modo sprint final (del 20/10 al 2/11)
 
-Las presentaciones arrancan el **2 de noviembre** y el Agile Enabler decidió el 20/10 **entregar
-el proyecto completo**: todas las historias, los 83 story points, los nueve requerimientos
+Las presentaciones arrancan el **2 de noviembre** y el Agile Enabler propuso el 20/10 **entregar
+el proyecto completo**, y el equipo lo confirmó ese mismo día por el grupo: todas las historias, los 83 story points, los nueve requerimientos
 terminados. Son 72 puntos en 13 días, unas **3,7 horas por persona por día, sábados y
 domingos incluidos**.
 

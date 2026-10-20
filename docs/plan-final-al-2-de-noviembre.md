@@ -10,8 +10,8 @@ análisis previo.
 requerimientos mínimos terminados. Nada se presenta como "backlog pendiente".
 
 El replan del 20/10 proponía recortar a unos 30 puntos y defender el resto como backlog. Se
-descarta: el Agile Enabler decide subir el ritmo en vez de bajar el alcance, y se lo plantea
-al equipo.
+descarta: el Agile Enabler propone subir el ritmo en vez de bajar el alcance, y **el equipo lo
+confirma el 20/10** por el grupo.
 
 ## El número, sin maquillar
 
@@ -28,8 +28,11 @@ al equipo.
 > Terminado no cuenta en ese sprint: la velocidad medida es **6, no 11**, y la conversión
 > pasa a 2,7 h por punto. El detalle está en el [acta de review](actas/sprint-1-review.md).
 
-En el Sprint 1 cada uno puso unas **9,5 horas por semana** (≈1,4 h por día). Este plan pide
-**dos veces y media eso, trece días seguidos**.
+En el Sprint 1 cada uno cargó unas **9,5 horas en todo el sprint**, que duró tres semanas: unas
+**3 horas por semana, media hora por día**. *(La primera versión de este plan decía 9,5 por
+semana: era un error de cuenta.)* Solo cuentan las horas cargadas en las historias; las
+reuniones, las revisiones y las specs de otros no están. Aun así, este plan pide
+**unas ocho veces eso por día, trece días seguidos**.
 
 **Por qué igual cierra.** Las 2,7 h por punto midieron un proceso con cuatro o cinco pull
 requests por historia y revisiones que tardaban un día. Con una historia por pull request,
@@ -108,8 +111,8 @@ Es el sprint más cargado y el que decide la presentación.
 
 ## Interfaz web (agregada el 20/10)
 
-El mismo 20/10 el Agile Enabler decidió que la aplicación tenga **una interfaz web
-profesional**, y se lo planteó al equipo,
+El mismo 20/10 el Agile Enabler propuso que la aplicación tenga **una interfaz web
+profesional**, y el equipo lo confirmó,
 además de la consola de la #24. La consigna permite web, escritorio o consola, pero pide una
 *"interfaz usable"* en el Sprint 2 y *"representaciones gráficas"* en el dashboard, y las dos
 cosas se defienden mucho mejor en el navegador que en una terminal.
