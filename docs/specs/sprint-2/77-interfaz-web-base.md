@@ -3,7 +3,7 @@
 - **Historia:** #77
 - **Sprint:** 2
 - **Responsable:** Emiliano Sorato
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar** (las aprobó el responsable como excepción; falta que un compañero las ratifique en la issue #77)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
@@ -312,11 +312,11 @@ Escenario: Usar la pagina en un celular y con el teclado
 **Resolución del responsable (20/10).** Emiliano Sorato, como responsable de la historia y
 Agile Enabler, acepta los siete puntos tal como están planteados arriba, y también la
 estructura nueva que `AGENTS.md` pide consultar antes de crear: `cmd/web`, `internal/web` e
-`internal/store`. **Esto no es la aprobación de la puerta**: es la posición con la que el
-responsable presenta la spec. Las tres puertas las aprueba otro integrante.
+`internal/store`. Las tres puertas las aprobó después el propio responsable, como excepción, porque el resto
+del equipo no estaba disponible (ver las líneas de cada puerta).
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
 
 ## Fase 2 — Diseño
 
@@ -360,7 +360,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
 | `internal/store/file.go` y `file_test.go` | se crean | leer el archivo de datos al arrancar y reescribirlo entero sin dejarlo a medias |
 | `internal/domain/registry_json.go` y su test | se crean | convertir el registro completo a JSON y reconstruirlo validando |
 | `internal/domain/story_estimation.go` y su test | se modifican | leer la escala, como copia, para ofrecerla como opciones |
-| `internal/domain/project_registry.go` | se modifica, **lo hace ics-back** | la consulta que lista todos los proyectos del registro, que hoy no existe y que la página de inicio necesita. No es una tarea de esta historia (ver Dependencias) |
+| `internal/domain/project_registry.go` | se modifica, **lo hace Emiliano Sorato** | la consulta que lista todos los proyectos del registro, que hoy no existe y que la página de inicio necesita. No es una tarea de esta historia (ver Dependencias) |
 | `.github/workflows/cd.yml` | se modifica | compilar cada comando con su nombre: con dos `main`, `go build -o archivo ./cmd/...` falla y el CD se rompe |
 | `.gitignore` y `README.md` | se modifican | no versionar el archivo de datos; cómo se abre la web |
 | `AGENTS.md` | se modifica | la persistencia reemplaza a "datos en memoria"; la estructura suma `internal/web`, `internal/store` y `cmd/web`; la regla de sumar cada dato nuevo a la conversión; `go run ./cmd/web` en los comandos |
@@ -397,7 +397,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
 
 - **Depende de la #3, la #4, la #6 y la #12**, ya en `dev`, y de **una consulta nueva del
   dominio que liste todos los proyectos del registro**: hoy el registro solo crea, obtiene y
-  modifica, y la página de inicio es esa lista. La agrega ics-back en `project_registry.go`,
+  modifica, y la página de inicio es esa lista. La agrega Emiliano Sorato en `project_registry.go`,
   con su test y su lugar en el contrato; esta spec no le pone nombre.
 - **No se toca `cmd/app`**, que la #24 modifica para arrancar la consola (D4).
 - **Dos cambios chicos más en el dominio, que sí son de esta historia**: la lectura de la
@@ -411,7 +411,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
   la página de confirmación, el candado y el guardado.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
 
 ## Fase 3 — Tareas
 
@@ -499,13 +499,13 @@ Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD"
 
 ### Dependencias
 
-- **La lista de todos los proyectos** (la consulta que agrega ics-back) tiene que estar en
+- **La lista de todos los proyectos** (la consulta que agrega Emiliano Sorato) tiene que estar en
   `dev` antes de la tarea 6: la página de inicio es esa lista. Las tareas 1 a 5 no la usan.
 - **La 1 toca `story_estimation.go`, de la #12**: se avisa al grupo antes y, si la #12 sigue
   en review, se escribe después de su merge para no chocar.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
 
 ## Fase 4 — Implementación
 

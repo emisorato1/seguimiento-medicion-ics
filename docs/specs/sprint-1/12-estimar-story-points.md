@@ -3,7 +3,7 @@
 - **Historia:** #12
 - **Sprint:** 1
 - **Responsable:** Maximiliano Eula
-- **Estado:** Implementada — **en review**
+- **Estado:** Terminada en el Sprint 2 — **mergeada a `dev`** el 20/10 (PR #70)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a la Puerta 1. Corregido por el
