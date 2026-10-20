@@ -95,3 +95,28 @@ func TestNoCambiarLasHorasEstimadasDeUnaHistoriaTerminada(t *testing.T) {
 		t.Fatalf("se esperaba que la historia siguiera con 4 horas estimadas, salio %v", story.EstimatedHours())
 	}
 }
+
+// Sin escenario: caso límite de la RN-18, hallazgo de la revisión del PR #81
+// Cubre: RN-18
+//
+// NaN ("no es un número") no es mayor que cero, así que la regla lo rechaza. Puede llegar
+// desde la consola, porque strconv.ParseFloat acepta el texto "NaN".
+func TestRechazarHorasEstimadasQueNoSonUnNumero(t *testing.T) {
+	project := unProyecto(t)
+	story, err := project.AddStory(unosDatos())
+	if err != nil {
+		t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+	}
+	if err := project.EstimateHours(story.ID(), 4); err != nil {
+		t.Fatalf("no se pudieron cargar las 4 horas estimadas de prueba: %v", err)
+	}
+
+	err = project.EstimateHours(story.ID(), math.NaN())
+
+	if !errors.Is(err, ErrEstimatedHoursInvalid) {
+		t.Fatalf("se esperaba ErrEstimatedHoursInvalid al cargar NaN horas, salio: %v", err)
+	}
+	if !mismasHoras(story.EstimatedHours(), 4) {
+		t.Fatalf("se esperaba que la historia siguiera con 4 horas estimadas, salio %v", story.EstimatedHours())
+	}
+}
