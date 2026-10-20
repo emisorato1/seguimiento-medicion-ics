@@ -231,3 +231,31 @@ func TestCargarUnaHistoriaYListarElBacklog(t *testing.T) {
 		t.Fatalf("se esperaba ver la historia como sin estimar, salio: %q", out.String())
 	}
 }
+
+// unProyectoConUnaHistoria es la entrada que crea el proyecto 1 y le carga la historia 1, el
+// "Dado un proyecto con una historia cargada" de los escenarios de estimar.
+const unProyectoConUnaHistoria = "crear-proyecto\nSistema de metricas\n\n01/10/2026\n\n" +
+	"cargar-historia\n1\nRegistrar esfuerzo\nCargar las horas trabajadas\nalta\n" +
+	"Se cargan las horas de una historia\n\n"
+
+// Escenario: Estimar una historia desde la consola
+// Cubre: RN-1
+func TestEstimarUnaHistoriaDesdeLaConsola(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := unProyectoConUnaHistoria + "estimar\n1\n1\n5\nsalir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	project, _ := registry.Get(1)
+	story, _ := project.Story(1)
+	if story.StoryPoints() != 5 {
+		t.Fatalf("se esperaba la historia 1 estimada en 5, salio %d", story.StoryPoints())
+	}
+	if !strings.Contains(out.String(), "estimada en 5") {
+		t.Fatalf("se esperaba ver que la historia quedo estimada en 5, salio: %q", out.String())
+	}
+}
