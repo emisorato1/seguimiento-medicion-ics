@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"time"
 )
 
@@ -116,6 +117,11 @@ func registryFromJSON(data []byte) (*ProjectRegistry, error) {
 		// el detalle de encoding/json viene en ingles: se deja entre parentesis, para quien
 		// tenga que arreglar el archivo
 		return nil, fmt.Errorf("no tienen la forma esperada (%v)", err)
+	}
+	// Decode lee solo el primer valor: si despues viene algo mas que espacios, el archivo
+	// no es lo que el sistema escribio y tampoco se acepta.
+	if _, err := decoder.Token(); err != io.EOF {
+		return nil, fmt.Errorf("tienen texto de más después de los datos")
 	}
 
 	ids := make([]int, 0, len(in.Projects))
