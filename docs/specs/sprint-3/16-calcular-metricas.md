@@ -518,9 +518,20 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 2 | `eb4ad3d` | `e636a5c` |
 | 3 | `4d24c31` | `9d00e6f` |
 | 16 (fila de la historia) | `15a8336` | — (sin RED, ver Desvíos) |
+| 2 (NaN, hallazgo de la revisión) | `4708708` | `9dd7309` |
 
 Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
 existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
+
+### Hallazgo de la revisión
+
+**La carga aceptaba NaN ("no es un número") como horas estimadas.** La RN-18 pide rechazar
+lo que no sea mayor que cero, y NaN no lo es, pero la condición estaba escrita como "menor o
+igual que cero", que con NaN da falso. Puede llegar desde la consola, porque la conversión de
+texto a número de Go acepta "NaN". Se encontró en la revisión del PR #81, antes de entrar a
+`dev`, así que no se abrió defecto: se agregó un test sin escenario que lo rechaza (RED por
+comportamiento) y la condición pasó a "no es mayor que cero". El infinito sí es mayor que
+cero y cumple la regla tal como está escrita, así que no se rechaza.
 
 ### Desvíos respecto de la spec
 
