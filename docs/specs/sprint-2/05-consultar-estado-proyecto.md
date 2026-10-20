@@ -6,7 +6,8 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a las puertas.
+  falta y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las
+  tres puertas por pull request.
 - **Depende de:** #3 (el proyecto y sus datos), #4 (los integrantes), #6 (el backlog y el
   estado de cada historia) y #8 (el sprint abierto); los cambios de estado de las historias
   los hacen la #9 y la #10
@@ -207,6 +208,12 @@ Escenario: Consultar el estado de un proyecto que no existe
    sprint ya existe (#9 para el abierto, #11 para los cerrados).
 5. **Los integrantes salen en el orden en que se cargaron**, que es como los devuelve la #4.
    No se ordenan por rol ni por nombre.
+6. **La tarea 4 espera al `Sprint` de la #8 en `dev`.** El borrador decía que su test "arma
+   el sprint dentro del paquete" mientras la #8 no esté, pero en Go un test no puede armar un
+   sprint si el tipo todavía no existe: no compila. Las tareas 1 a 3 no lo necesitan, porque
+   el estado guarda una copia propia de los datos del sprint y no el sprint en sí. La tarea 4
+   se programa cuando estén en `dev` el `Sprint` y la consulta del sprint abierto de la #8,
+   que se le pidió adelantar a Agustín.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -258,8 +265,9 @@ existe. Esta historia no agrega errores.
 
 - **La #3, la #4 y la #6 ya están en `dev`**: los datos, los integrantes y el backlog se leen
   con lo que existe.
-- **El sprint abierto es de la #8**, que todavía no está en `dev`. No se la espera: los tests
-  arman el sprint dentro del paquete, contra el contrato.
+- **El sprint abierto es de la #8**, que todavía no está en `dev`. Las tareas 1 a 3 no lo
+  necesitan; la tarea 4 sí, y espera a que el `Sprint` y la consulta del sprint abierto estén
+  en `dev` (punto 6 de la puerta).
 - **Los estados En curso y Terminada los ponen la #9 y la #10.** Mientras no existan, los
   tests fijan el estado de la historia desde dentro del paquete, como ya hizo la #12.
 - **No se modifica ningún archivo existente.** Esta historia solo lee.
@@ -332,8 +340,9 @@ Los diez escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 - **Las tareas 1 a 3 solo necesitan lo que ya está en `dev`** (#3, #4 y #6).
 - **La tarea 3 necesita historias En curso y Terminadas**, y esos cambios de estado son de la
   #9 y la #10: el test los fija desde dentro del paquete.
-- **La tarea 4 necesita el sprint abierto de la #8**, que todavía no está en `dev`. No se la
-  espera: el test arma los sprints dentro del paquete, contra el contrato del dominio.
+- **La tarea 4 necesita el `Sprint` y la consulta del sprint abierto de la #8** en `dev`. Sin
+  el tipo, su test no compila. Se le pidió a Agustín adelantarlos (punto 6 de la puerta);
+  mientras tanto se programan las tareas 1 a 3.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
