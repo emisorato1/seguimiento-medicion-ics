@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"math"
 	"testing"
 )
@@ -36,5 +37,38 @@ func TestCargarYReemplazarLasHorasEstimadasDeUnaHistoria(t *testing.T) {
 	}
 	if !mismasHoras(story.EstimatedHours(), 8) {
 		t.Fatalf("se esperaba la historia con 8 horas estimadas, salio %v", story.EstimatedHours())
+	}
+}
+
+// Escenario: Rechazar horas estimadas que no son mayores que cero
+// Cubre: RN-18
+func TestRechazarHorasEstimadasQueNoSonMayoresQueCero(t *testing.T) {
+	cases := []struct {
+		name  string
+		hours float64
+	}{
+		{"0", 0},
+		{"-2", -2},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyecto(t)
+			story, err := project.AddStory(unosDatos())
+			if err != nil {
+				t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+			}
+			if err := project.EstimateHours(story.ID(), 4); err != nil {
+				t.Fatalf("no se pudieron cargar las 4 horas estimadas de prueba: %v", err)
+			}
+
+			err = project.EstimateHours(story.ID(), tc.hours)
+
+			if !errors.Is(err, ErrEstimatedHoursInvalid) {
+				t.Fatalf("se esperaba ErrEstimatedHoursInvalid al cargar %v horas, salio: %v", tc.hours, err)
+			}
+			if !mismasHoras(story.EstimatedHours(), 4) {
+				t.Fatalf("se esperaba que la historia siguiera con 4 horas estimadas, salio %v", story.EstimatedHours())
+			}
+		})
 	}
 }
