@@ -13,6 +13,12 @@
 # Para un sprint cerrado, el registro que vale es su acta de review
 # (docs/actas/sprint-N-review.md), que se escribe al cierre y no cambia. Este script sirve
 # para el sprint abierto y para armar esa acta el dia del cierre.
+#
+# Otra limitacion: el tablero guarda un solo total de horas por historia. Si una historia
+# viene de un sprint anterior, sus horas estimadas y reales se suman enteras en el sprint
+# actual, aunque una parte ya se conto en el anterior (la #12 y la #24 traen 9,25 h reales
+# del Sprint 1). Para no contarlas dos veces, se resta lo que dice el acta de review del
+# sprint anterior; la regla esta en docs/informe-de-metricas.md.
 
 set -u
 
@@ -23,6 +29,16 @@ REPO="emisorato1/seguimiento-medicion-ics"
 
 command -v gh >/dev/null || { echo "Falta gh. Instalar: brew install gh"; exit 1; }
 command -v jq >/dev/null || { echo "Falta jq. Instalar: brew install jq"; exit 1; }
+
+# Fechas de cada sprint, las de CLAUDE.md y las actas de planning. Sirven para saber en que
+# sprint se detecto y se resolvio cada defecto. Un sprint que no esta aca cuenta todos.
+case "$SPRINT" in
+  "Sprint 1") DESDE="2026-09-28"; HASTA="2026-10-16" ;;
+  "Sprint 2") DESDE="2026-10-20"; HASTA="2026-10-25" ;;
+  "Sprint 3") DESDE="2026-10-26"; HASTA="2026-10-30" ;;
+  "Sprint 4") DESDE="2026-10-31"; HASTA="2026-11-01" ;;
+  *)          DESDE="0000-00-00"; HASTA="9999-99-99" ;;
+esac
 
 ITEMS=$(gh project item-list "$PROYECTO" --owner "$OWNER" --limit 200 --format json)
 
@@ -73,18 +89,28 @@ echo "$ITEMS" | jq -r --arg s "$SPRINT" '
 echo
 echo "## Defectos"
 echo
-DETECTADOS=$(gh issue list --repo "$REPO" --label defecto --state all --json number --jq 'length')
-RESUELTOS=$(gh issue list --repo "$REPO" --label defecto --state closed --json number --jq 'length')
-echo "| Metrica | Valor |"
-echo "|---|---|"
-echo "| Defectos detectados | $DETECTADOS |"
-echo "| Defectos resueltos | $RESUELTOS |"
-echo "| Defectos abiertos | $((DETECTADOS - RESUELTOS)) |"
-echo
-gh issue list --repo "$REPO" --label defecto --state all \
-  --json number,title,state --jq '.[] | "- #\(.number) [\(if .state == "CLOSED" then "resuelto" else "abierto" end)] \(.title)"'
+DEFECTOS=$(gh issue list --repo "$REPO" --label defecto --state all --limit 200 \
+  --json number,title,createdAt,closedAt)
+# Un defecto se detecta el dia que se abre su issue y se resuelve el dia que se cierra. El
+# dia se toma en la hora de Argentina (UTC-3): uno cerrado a las 22 h del ultimo dia del
+# sprint es de ese sprint, aunque en UTC ya sea el dia siguiente.
+echo "$DEFECTOS" | jq -r --arg desde "$DESDE" --arg hasta "$HASTA" '
+  def dia: if . == null then null else (fromdate - 10800 | strftime("%Y-%m-%d")) end;
+  def en_el_sprint: . != null and . >= $desde and . <= $hasta;
+  [.[] | . + {detectado: (.createdAt | dia), resuelto: (.closedAt | dia)}] as $todos
+  | [$todos[] | select(.detectado | en_el_sprint)] as $detectados
+  | [$todos[] | select(.resuelto | en_el_sprint)] as $resueltos
+  | [$todos[] | select(.detectado <= $hasta and (.resuelto == null or .resuelto > $hasta))] as $abiertos
+  | "| Metrica | Valor |\n|---|---|"
+  + "\n| Defectos detectados en el sprint | \($detectados | length) |"
+  + "\n| Defectos resueltos en el sprint | \($resueltos | length) |"
+  + "\n| Defectos abiertos al cierre | \($abiertos | length) |\n"
+  + ($todos | sort_by(.number) | map("\n- #\(.number) detectado \(.detectado), "
+      + "\(if .resuelto == null then "abierto" else "resuelto \(.resuelto)" end): \(.title)") | join(""))'
 
 echo
 echo "_La velocidad, la desviacion y las horas por story point solo cuentan historias en estado"
 echo "Hecho: una historia a medias no suma story points, aunque tenga horas cargadas. Para un"
-echo "sprint cerrado vale su acta de review: este script usa el Sprint que cada historia tiene hoy._"
+echo "sprint cerrado vale su acta de review: este script usa el Sprint que cada historia tiene hoy."
+echo "Las horas de una historia que viene de un sprint anterior se suman enteras: lo que ya se"
+echo "conto en ese sprint hay que restarlo a mano._"
