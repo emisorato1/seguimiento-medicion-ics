@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 16:23. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-20 17:16. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,7 +14,9 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
 
@@ -49,7 +51,6 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Product Backlog
@@ -64,18 +65,18 @@ _No hay historias en este estado._
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
-| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
+| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-487e560 2026-10-20 docs: registrar las tareas 1 a 3 de la #16 en su fase 4
-15a8336 2026-10-20 test: cargar horas estimadas en una historia que no existe (historia 16, tarea 16, sin RED)
-9d00e6f 2026-10-20 feat: no cambiar las horas estimadas de una historia terminada (historia 16, tarea 3)
-4d24c31 2026-10-20 test: no cambiar las horas estimadas de una historia terminada (historia 16, tarea 3)
-e636a5c 2026-10-20 feat: rechazar horas estimadas que no son mayores que cero (historia 16, tarea 2)
-eb4ad3d 2026-10-20 test: rechazar horas estimadas que no son mayores que cero (historia 16, tarea 2)
-7e4e3b8 2026-10-20 feat: cargar y reemplazar las horas estimadas de una historia (historia 16, tarea 1)
-56ff0bc 2026-10-20 test: cargar y reemplazar las horas estimadas de una historia (historia 16, tarea 1)
+419d247 2026-10-20 Merge pull request #93 from emisorato1/docs-spec-historia-78
+6aee8be 2026-10-20 docs: la #78 usa el contrato ajustado en el PR #94
+8084c1f 2026-10-20 Merge pull request #94 from emisorato1/contrato-78
+62b09df 2026-10-20 docs: ajustar el contrato con lo que encontro la spec de la #78
+7b00a2a 2026-10-20 docs: borrador completo de la spec de la #78
+b1aabdf 2026-10-20 Merge pull request #91 from emisorato1/chore-estado-77-en-progreso
+c62de8e 2026-10-20 chore: regenerar ESTADO.md con la historia 77 en progreso
+31cc781 2026-10-20 Merge pull request #87 from emisorato1/sprint-1-sin-historia-6
 ```

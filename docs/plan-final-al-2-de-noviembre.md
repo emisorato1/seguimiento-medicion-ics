@@ -6,11 +6,12 @@ análisis previo.
 
 ## La decisión
 
-**Se entrega el alcance completo.** Las 20 historias, los 83 story points, los nueve
+**Se entrega el alcance completo.** Todas las historias del backlog, los 83 story points, los nueve
 requerimientos mínimos terminados. Nada se presenta como "backlog pendiente".
 
 El replan del 20/10 proponía recortar a unos 30 puntos y defender el resto como backlog. Se
-descarta: el equipo decide subir el ritmo en vez de bajar el alcance.
+descarta: el Agile Enabler propone subir el ritmo en vez de bajar el alcance, y **el equipo lo
+confirma el 20/10** por el grupo.
 
 ## El número, sin maquillar
 
@@ -18,14 +19,22 @@ descarta: el equipo decide subir el ritmo en vez de bajar el alcance.
 |---|---|
 | Story points que quedan | **72** de 83 |
 | Días hasta la presentación | **13** (20/10 al 1/11) |
-| Costo medido en el Sprint 1 | 2,6 h por story point |
-| Horas necesarias a ese costo | **187** |
-| Por persona, por día, sábados y domingos incluidos | **~3,6 h** |
+| Costo medido en el Sprint 1 | 2,7 h por story point |
+| Horas necesarias a ese costo | **194** |
+| Por persona, por día, sábados y domingos incluidos | **~3,7 h** |
 
-En el Sprint 1 cada uno puso unas **9,5 horas por semana** (≈1,4 h por día). Este plan pide
-**dos veces y media eso, trece días seguidos**.
+> **Corregido el 20/10.** La primera versión decía 2,6 h por punto, 187 horas y 3,6 h por
+> día. La #6 se mergeó el 19/10, después del cierre del Sprint 1, y por la Definición de
+> Terminado no cuenta en ese sprint: la velocidad medida es **6, no 11**, y la conversión
+> pasa a 2,7 h por punto. El detalle está en el [acta de review](actas/sprint-1-review.md).
 
-**Por qué igual cierra.** Las 2,6 h por punto midieron un proceso con cuatro o cinco pull
+En el Sprint 1 cada uno cargó unas **9,5 horas en todo el sprint**, que duró tres semanas: unas
+**3 horas por semana, media hora por día**. *(La primera versión de este plan decía 9,5 por
+semana: era un error de cuenta.)* Solo cuentan las horas cargadas en las historias; las
+reuniones, las revisiones y las specs de otros no están. Aun así, este plan pide
+**unas ocho veces eso por día, trece días seguidos**.
+
+**Por qué igual cierra.** Las 2,7 h por punto midieron un proceso con cuatro o cinco pull
 requests por historia y revisiones que tardaban un día. Con una historia por pull request,
 las specs escritas de antemano y revisión en el día, el costo por punto tiene que bajar a
 unas **2,0 h**. A ese costo hacen falta 144 horas: **2,8 h por persona por día**, y aparecen
@@ -38,7 +47,7 @@ ritmo. Si alguien no puede, se dice ahora y se recorta con tiempo, no el 31 a la
 
 | | Fechas | Días | SP | Objetivo |
 |---|---|---|---|---|
-| **Sprint 2** | mar 20 → dom 25/10 | 6 | 26 | Sprints, esfuerzo, defectos y consola |
+| **Sprint 2** | mar 20 → dom 25/10 | 6 | 31 | Sprints, esfuerzo, defectos y consola |
 | **Sprint 3** | lun 26 → vie 30/10 | 5 | 36 | Métricas, dashboard, Planning Poker y reportes |
 | **Sprint 4** | sáb 31/10 → dom 1/11 | 2 | 10 | PDF, informe, manual y presentación |
 | **Presentación** | lun 2/11 | — | — | Defensa |
@@ -54,17 +63,21 @@ Reparto total, pensado para que nadie espere a nadie:
 | **Agustín Salinas** | #7, #8, #9, #11, #18 | 17 |
 | **Juliana Bustos** | #5, #14, #15, #17 | 19 |
 | **Maximiliano Eula** | #12, #24, #13, #73 | 18 |
-| **Emiliano Sorato** | #10, #16, #19 | 18 |
-| | **Total** | **72** |
+| **Emiliano Sorato** | #10, #16, #19 + interfaz web (#77, #78) | 18 + web |
+| | **Total** | **72 + web** |
 
-### Sprint 2 — del 20 al 25 de octubre (26 SP)
+### Sprint 2 — del 20 al 25 de octubre (31 SP)
+
+Son 26 puntos de historias nuevas más los 5 de la #6, que se terminó el 19/10, después del
+cierre del Sprint 1, y por eso cuenta en este (ver el [acta de review](actas/sprint-1-review.md)).
+El trabajo que queda en el sprint sigue siendo de 26.
 
 | Quién | Historias | SP |
 |---|---|---|
 | Agustín | #7 Priorizar el backlog (2), #8 Crear un sprint (3), #9 Asignar historias (5) | 10 |
 | Juliana | #5 Consultar el estado (3), #14 Registrar el esfuerzo real (3), #15 Gestionar defectos (5) | 11 |
 | Maximiliano | #12 Story Points (2), #24 Interfaz de consola (3) | 5 |
-| Emiliano | **las specs de las 15 historias** y las revisiones | — |
+| Emiliano | **las specs de las 15 historias** y las revisiones; después, la base de la interfaz web (#77) | web |
 
 **Sprint Goal:** que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda
 operar desde la consola.
@@ -80,7 +93,7 @@ espere una puerta. Es el cuello de botella que mató al Sprint 1.
 
 | Quién | Historias | SP |
 |---|---|---|
-| Emiliano | #10 Cerrar un sprint (5), #16 Calcular las métricas (8) | 13 |
+| Emiliano | #10 Cerrar un sprint (5), #16 Calcular las métricas (8), y las pantallas web que faltan (#78) | 13 + web |
 | Juliana | #17 Mostrar el dashboard (8) | 8 |
 | Maximiliano | #13 Votar en secreto en una ronda (8) | 8 |
 | Agustín | #11 Consultar sprints anteriores (2), #18 Generar el reporte (5) | 7 |
@@ -99,6 +112,33 @@ Es el sprint más cargado y el que decide la presentación.
 | Juliana | presentación final | — |
 
 **Sprint Goal:** cerrar el producto y tener todo lo que se entrega listo para presentar.
+
+## Interfaz web (agregada el 20/10)
+
+El mismo 20/10 el Agile Enabler propuso que la aplicación tenga **una interfaz web
+profesional**, y el equipo lo confirmó,
+además de la consola de la #24. La consigna permite web, escritorio o consola, pero pide una
+*"interfaz usable"* en el Sprint 2 y *"representaciones gráficas"* en el dashboard, y las dos
+cosas se defienden mucho mejor en el navegador que en una terminal.
+
+| # | Historia | Sprint | Responsable |
+|---|---|---|---|
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | 2 | Emiliano |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 3 | Emiliano |
+| #17 | El dashboard pasa a mostrarse en la web, con gráficos de verdad | 3 | Juliana |
+
+- **Las dos historias nuevas no tienen story points todavía.** Se estiman con el equipo,
+  como cualquier otra: nadie estima solo.
+- **Emiliano las toma porque es el que tiene más tiempo libre**, y queda con más carga que el
+  resto. Es voluntario y no frena a nadie, porque la web *consume* lo que hacen los demás:
+  ninguna otra historia depende de ella. Aun así, **sus historias de dominio van primero**:
+  la #16 está en el camino crítico y la web no.
+- **La web no reemplaza a la consola, pero la consola no se amplía.** Maximiliano termina la
+  #24 como está especificada (proyectos, integrantes, backlog y estimación). Todo lo nuevo
+  —sprints, esfuerzo, defectos, Planning Poker, reportes y PDF— se usa desde la web (#78).
+  Ninguna historia le prometía eso a la consola, así que no cambia el alcance.
+- **Si el ritmo no da**, en el punto de control del 25 la #78 se reduce a las pantallas de lo
+  que ya esté en `dev`. La #77 no se recorta: es la base.
 
 ## Entregables que no son historias
 

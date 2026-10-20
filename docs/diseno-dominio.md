@@ -38,6 +38,12 @@ Nada de esto se toca sin avisar: ya está implementado y con tests.
 Las operaciones cuelgan del proyecto: `p.AddStory(...)`, `p.Members()`, `p.Story(id)`.
 Lo nuevo sigue el mismo camino.
 
+**Agregados de la #77 (interfaz web):** el registro suma `r.Projects()`, que lista todos los
+proyectos en orden de número, y el dominio suma `StoryPointScale()`, que entrega una copia de
+la escala válida para ofrecerla como opciones. Los dos los implementa Emiliano, como parte de la #77. La conversión
+a JSON vive en `internal/domain/registry_json.go`: **toda entidad nueva entra ahí** (ver
+`AGENTS.md`).
+
 **Cambio a lo que ya existe: `Story` suma `EstimatedHours`** (decimal, cero mientras no se
 cargue), con su operación `p.EstimateHours(id, hours)`. Lo agrega la #16, que es la que lo
 necesita para la desviación, y sigue las mismas reglas que los story points: mayor que cero,
@@ -176,16 +182,40 @@ sin que la historia #16 esté implementada.
 | `Metrics` | `Metrics` | los números |
 | `Sections` | lista de `Section` | ver abajo |
 
-Se pide: `p.ProjectReport()` y `p.SprintReport(sprintNumber)`.
+Se pide: `p.ProjectReport(today)` y `p.SprintReport(sprintNumber, today)`: el día lo pasa quien
+llama, porque el dominio no lee el reloj.
 
-**`Section` es compartida con el dashboard (#17).** Tiene `Heading` (texto) y `Lines`
-(lista de textos ya armados). El dashboard entrega `p.Dashboard()` como una lista de
-`Section`, con las barras ya dibujadas en las líneas. La declara la primera de las dos
-historias que llegue a `dev`, como pasó con `errors.go`.
+**`Section` es del reporte.** Tiene `Heading` (texto) y `Lines` (lista de textos ya armados).
+Lo que comparten el reporte (#18) y el dashboard (#17) es **la regla de formato de los
+números** (horas con "h", el signo de la desviación, los decimales): la escribe la primera de
+las dos historias que llegue a `dev`, como pasó con `errors.go`, y la otra la reutiliza. Así
+un número se lee igual en el dashboard, en el reporte y en el PDF.
+
+### `Dashboard` — historia #17
+
+**Dueño:** Juliana. Cambió el 20/10, cuando el dashboard pasó a mostrarse en la web con
+gráficos de verdad: el dominio entrega los valores ya escritos y **la web dibuja las barras**.
+
+| Dato | Tipo | Qué es |
+|---|---|---|
+| `HasSprints` | booleano | si el proyecto tiene algún sprint; sin sprints, la página muestra solo el aviso |
+| `Overview` | lista de `Figure` | el estado general del proyecto |
+| `CurrentSprint` | el sprint abierto, o nada | `Number`, `Goal`, `Start`, `End` y `Figures` (sin completados ni velocidad) |
+| `Charts` | lista de `Chart` | los cuatro gráficos, en orden |
+
+- `Chart`: `Title`, `Bars` (lista de `Bar`) y `Empty` (el aviso cuando no tiene barras, por
+  ejemplo "Todavía no hay sprints cerrados").
+- `Bar`: `Label`, `Value` (decimal, para medir la barra) y `Text` (el valor ya escrito con la
+  regla de formato).
+- `Figure`: `Label` y `Text` (ya escrito).
+
+Se pide con `p.Dashboard()`, que no falla: si el proyecto no existe, lo informa el registro.
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
-PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.ExportPDF(path)`, y solo lee
-`Title`, `GeneratedOn` y `Sections`.
+PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.WritePDF(w)`, que **escribe el PDF en un
+`io.Writer`** y solo lee `Title`, `GeneratedOn` y `Sections`. El dominio no toca archivos: la
+consola lo graba en disco y la web lo manda como descarga (decidido el 20/10, al escribir la
+spec de la #78; reemplaza a `r.ExportPDF(path)`).
 
 ### `VotingRound` — historias #13 y #73
 
@@ -205,7 +235,9 @@ la ronda. Se fijan ahí y no cambian aunque después se sume o se vaya alguien.
 Se pide: `p.OpenVotingRound(storyID)`, `r.Vote(member, points)` —`member` es el nombre y
 apellido, como en la #14—, `r.Reveal()`, `r.Voted()` y `r.Pending()` (solo nombres),
 `r.Votes()` (los valores; **con la ronda sin revelar devuelve error**, no una lista vacía),
-y para la #73 `r.Differences()`, `r.Agree(points)` y `p.VotingRounds(storyID)`.
+y `p.CurrentVotingRound(storyID)` (la última ronda de la historia, para volver a encontrarla
+entre un pedido y otro de la web); para la #73, `r.Differences()`, `r.Agree(points)` y
+`p.VotingRounds(storyID)`. Las rondas entran en la conversión a JSON como toda entidad nueva.
 
 `Agreed` vacío se guarda como 0, igual que "sin estimar" en la #12.
 

@@ -9,6 +9,15 @@ import (
 // la validación y el mensaje de error, así el mensaje nunca dice algo distinto (Fase 2, D3).
 var storyPointScale = []int{1, 2, 3, 5, 8, 13, 21}
 
+// StoryPointScale devuelve la escala válida de story points, para que una interfaz la
+// ofrezca como opciones (historia #77, RN-11). Es una copia: cambiar lo que se recibe no
+// cambia la escala con la que se valida.
+func StoryPointScale() []int {
+	scale := make([]int, len(storyPointScale))
+	copy(scale, storyPointScale)
+	return scale
+}
+
 // Estimate asigna story points a la historia. Sirve tanto para la primera estimación
 // como para reestimar (RN-5, RN-6). Una historia Terminada no se estima (RN-8). Controla
 // el estado antes que el valor (Fase 2, D5) y valida antes de cambiar: si algo falla, la
