@@ -1,3 +1,9 @@
 {{define "content"}}
 <h1>Proyectos</h1>
+{{if not .Data.Projects}}
+<div class="vacio">
+  <p>Todavía no hay proyectos.</p>
+  <a class="boton" href="/proyectos/nuevo">Crear el primer proyecto</a>
+</div>
+{{end}}
 {{end}}
