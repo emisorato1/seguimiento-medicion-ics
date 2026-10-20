@@ -1,14 +1,14 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 15:58. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-20 16:23. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 21
-- Sin estimar: 2
+- Historias en el tablero: 23
+- Sin estimar: 4
 - Story points cargados: 83
 - Terminadas: 6
 
@@ -20,13 +20,12 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -48,7 +47,10 @@ _No hay historias en este estado._
 
 ## Sprint Backlog
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Product Backlog
 
@@ -68,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-59cbe81 2026-10-20 docs: corregir la spec de la #16 y registrar sus tres puertas
-229dc88 2026-10-20 Merge pull request #76 from emisorato1/chore-estado-specs-escritas
-37ad6d0 2026-10-20 chore: regenerar ESTADO.md con las 14 historias en especificacion
-1df458d 2026-10-20 Merge pull request #75 from emisorato1/specs-sprint-2-3-4
-d467e9e 2026-10-20 Merge pull request #72 from emisorato1/plan-final-2-noviembre
-284e9be 2026-10-20 docs: completar la retrospectiva del Sprint 1
-6bda516 2026-10-20 docs: acta de la retrospectiva del Sprint 1
-cbbcb65 2026-10-20 docs: congelar los story points de un sprint al cerrarlo
+487e560 2026-10-20 docs: registrar las tareas 1 a 3 de la #16 en su fase 4
+15a8336 2026-10-20 test: cargar horas estimadas en una historia que no existe (historia 16, tarea 16, sin RED)
+9d00e6f 2026-10-20 feat: no cambiar las horas estimadas de una historia terminada (historia 16, tarea 3)
+4d24c31 2026-10-20 test: no cambiar las horas estimadas de una historia terminada (historia 16, tarea 3)
+e636a5c 2026-10-20 feat: rechazar horas estimadas que no son mayores que cero (historia 16, tarea 2)
+eb4ad3d 2026-10-20 test: rechazar horas estimadas que no son mayores que cero (historia 16, tarea 2)
+7e4e3b8 2026-10-20 feat: cargar y reemplazar las horas estimadas de una historia (historia 16, tarea 1)
+56ff0bc 2026-10-20 test: cargar y reemplazar las horas estimadas de una historia (historia 16, tarea 1)
 ```
