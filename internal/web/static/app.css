@@ -42,6 +42,17 @@ body {
   outline-offset: 2px;
 }
 
+/* Los campos muestran el foco siempre que lo tienen, tambien en sus partes internas. Hace
+   falta para los de fecha: en Chromium el boton del calendario es una parada aparte del
+   Tab, y ahi el campo no cuenta como enfocado (hallazgo de la verificacion con el teclado). */
+input:focus,
+input:focus-within,
+select:focus,
+textarea:focus {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
 .barra :focus-visible {
   outline-color: var(--foco-barra);
 }
