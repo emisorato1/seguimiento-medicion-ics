@@ -259,3 +259,30 @@ func TestEstimarUnaHistoriaDesdeLaConsola(t *testing.T) {
 		t.Fatalf("se esperaba ver que la historia quedo estimada en 5, salio: %q", out.String())
 	}
 }
+
+// Escenario: El nucleo rechaza un valor fuera de la escala
+// Cubre: RN-2, RN-7
+//
+// Desvío: este test pasa sin código nuevo, porque la tarea 9 ya muestra el mensaje del
+// núcleo cuando rechaza la estimación. Queda anotado en la Fase 4.
+func TestElNucleoRechazaUnValorFueraDeLaEscala(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	var out strings.Builder
+	in := unProyectoConUnaHistoria + "estimar\n1\n1\n4\nlistar-backlog\n1\nsalir\n"
+
+	err := runConsole(strings.NewReader(in), &out, registry)
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), domain.ErrStoryPointsInvalid.Error()) {
+		t.Fatalf("se esperaba ver el mensaje del nucleo con los valores validos, salio: %q", out.String())
+	}
+	if !strings.Contains(out.String(), "#1 Registrar esfuerzo") {
+		t.Fatalf("se esperaba que el programa siguiera funcionando y listara el backlog, salio: %q", out.String())
+	}
+	project, _ := registry.Get(1)
+	if story, _ := project.Story(1); story.IsEstimated() {
+		t.Fatalf("se esperaba que la historia siguiera sin estimar, salio estimada en %d", story.StoryPoints())
+	}
+}
