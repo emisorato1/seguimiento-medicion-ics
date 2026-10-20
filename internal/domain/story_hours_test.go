@@ -72,3 +72,26 @@ func TestRechazarHorasEstimadasQueNoSonMayoresQueCero(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: No cambiar las horas estimadas de una historia terminada
+// Cubre: RN-19
+func TestNoCambiarLasHorasEstimadasDeUnaHistoriaTerminada(t *testing.T) {
+	project := unProyecto(t)
+	story, err := project.AddStory(unosDatos())
+	if err != nil {
+		t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+	}
+	// Terminar una historia es de la #10, que todavia no esta en dev: el test la prepara
+	// desde dentro del paquete, como la #12 en su tarea 9.
+	story.state = StoryDone
+	story.estimatedHours = 4
+
+	err = project.EstimateHours(story.ID(), 6)
+
+	if !errors.Is(err, ErrStoryEstimateDone) {
+		t.Fatalf("se esperaba ErrStoryEstimateDone, salio: %v", err)
+	}
+	if !mismasHoras(story.EstimatedHours(), 4) {
+		t.Fatalf("se esperaba que la historia siguiera con 4 horas estimadas, salio %v", story.EstimatedHours())
+	}
+}
