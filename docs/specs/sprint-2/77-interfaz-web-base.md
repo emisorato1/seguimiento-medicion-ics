@@ -519,6 +519,29 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 3 | `ff7d24f` | `2ecdfad` |
 | 4 | `9e9ec91` | `fc414fb` |
 | 5 | `6d73f7a` | `a83bfc5` |
+| 6 | `11939e0` | `6669ec3` |
+| 7 | `e9570b7` | `650752f` |
+| 8 | `8de188c` | `9723e86` |
+| 9 | `fbb3d02` | `9ad0bbf` |
+| 10 | `99d8188` | `20180ce` |
+| 11 | `241efec` | `46b2b01` |
+| 12 | `c7624af` | `1e8dbd2` |
+| 13 | `b13d561` | `6160b7d` |
+| 14 | `b90a385` | `e3dec70` |
+| 15 | `413660d` (sin RED) | — |
+| 16 | `e9ded37` | `2a95134` |
+| 17 | `dc84823` | `520b864` |
+| 18 | `7907b18` | `e990442` |
+| 19 | `5cf28f2` | `1ed1de3` |
+| 20 | `2a07c3b` | `292bdeb` |
+| 21 | `7736c88`; la historia Terminada, `248cb7a` (sin RED) | `bf8058d` |
+| 22 | `ef74e94` y el ajuste `5ab4419` | `3e127d2` |
+| 23 | `77ff4f0` | `de429a3` |
+| 24 | `ca19590` | `a811698` |
+| 25 | `722d1f1` (sin RED) | — |
+| 26 | `4c925e3` | `1e7a4b1` |
+| 27 | `4ab0d49` | `add6a34` |
+| 28 | `9c5ff72` | `d588282` |
 
 Los RED de la lista de proyectos y de las tareas 1, 2, 4 y 5 fueron por compilación (la
 operación o el error todavía no existían); el de la tarea 3, por comportamiento: 13 de sus
@@ -555,6 +578,86 @@ Ninguno de comportamiento. Tres agregados y una nota:
 - **`internal/store` queda en 95,5%**: lo único sin probar es el error de convertir el
   registro a texto, que con textos, números y listas `encoding/json` no puede dar. Se dejó
   igual, para que se avise si algún día un dato nuevo sí puede fallar.
+
+### La web (tareas 6 a 28)
+
+Los RED de las tareas 6, 8 y 28 fueron por compilación: no existían la web, el guardado
+que recibe ni el comando. Los de la 11, la 14 y la 22 también, porque faltaba el error de
+forma que el test toma del propio error; antes de escribir el código se declaró solo ese
+error y el test falló por comportamiento (la fecha de fin mal escrita creaba el proyecto).
+El resto fallaron por comportamiento. El de la 26 fue con `go test -race`: seis carreras de
+datos entre pedidos a la vez.
+
+Tres pasaron sin código nuevo, y se comprobó que el test sí puede fallar rompiendo el
+código a propósito:
+
+- **La 15**: `html/template` escapa los textos solo (D1).
+- **La parte Terminada de la 21**: el rechazo que no es de ningún campo ya iba arriba
+  desde la tarea 10 (D6). Falla si el error se asocia a un campo.
+- **La 25**: el guardado después de cada operación ya existía desde la 8 y la 24, y el
+  archivo de `internal/store` cumple la misma interfaz que el guardado falso. Falla si la
+  web no guarda.
+
+Nombres que la Fase 2 no fija: la web es `web.NewServer(registro, guardado)`, y el guardado
+es la interfaz `web.Saver`, con el `Save(registro)` que cumple `store.File`. El comando
+separa `parseOptions`, `open` y `showAddress` para probarlos sin abrir el puerto.
+
+### Desvíos de la web respecto de la spec
+
+- **Una fila más en «Pedir algo que no existe»**: una dirección que no es de ninguna página
+  responde 404 con «no se encontró la página» y el acceso a la lista. Sin esto, Go responde
+  `404 page not found`, en inglés, y la RN-5 pide los textos en castellano. Está solo en el
+  test, no en la Fase 1: **queda para que la ratifique quien ratifique las puertas**.
+- **Las listas para elegir empiezan con una opción vacía** («Elegí un rol», «Elegí una
+  prioridad», «Elegí los story points»), que no es ningún valor del núcleo. Sin ella el
+  navegador elige solo la primera, y una historia quedaría en Alta o un integrante en Agile
+  Enabler sin que nadie lo haya elegido. Es lo mismo que evita `priorityUnspecified` en el
+  dominio. Si no se elige rol o prioridad, rechaza el dominio junto al campo. Los story points
+  vacíos, o con letras, son un error de forma de la web, «hay que elegir los story points de
+  la lista», como una fecha mal escrita (RN-14), y no se llama al dominio. El test de las
+  opciones compara exactamente los valores que se pueden elegir, sin la opción vacía. Lo
+  aceptó el manager el 20/10; queda para la ratificación.
+- **Una lista no conserva un valor que no ofrece.** En «Mostrar el rechazo», un 4 o
+  «cinco» enviados igual no tienen opción que los muestre, así que en esas filas el test no
+  controla que se conserve lo escrito (`5ab4419`). El mensaje junto al campo sí se controla.
+- **Filas que no están en los Ejemplos**, para probar cosas que la Fase 3 sí pide: la fecha
+  de fin mal escrita en la tarea 11 (si llegara al dominio como «sin fecha», el proyecto se
+  crearía: es la que prueba que no se lo llama), estimar una historia Terminada en la 21
+  (caso límite) y los story points sin elegir o con letras en la 22.
+- **Filas para la cobertura, sin RED** (`ec54dba`): «Pedir algo que no existe» en cada pantalla
+  del proyecto (editar, integrantes, backlog, cargar, estimar, quitar la estimación, quitar
+  a un integrante que no está), y «Mostrar el rechazo» al modificar un proyecto y al quitar
+  la estimación de una Terminada. Son las mismas reglas (RN-12, RN-13, RN-14, RN-16) en
+  pantallas donde no estaban probadas; el código ya existía, por eso no hubo RED. Con ellas
+  `internal/web` pasa de 85,5% a 93,2%. `cmd/web` queda en 48,9%: lo que no se recorre es
+  `main` y la lista de direcciones de `-red`, que abren el puerto y leen la red de la
+  computadora.
+- **La web tiene tres errores propios**, todos de forma o de navegación y ninguno de
+  negocio: la fecha que no es fecha, los story points que no son un número y la página que
+  no existe.
+- **Detalles de implementación**: la barra marca con `aria-current` la sección abierta, y
+  la página que avisa que un cambio no se guardó (tarea 24) muestra el mensaje del guardado
+  tal cual, con el acceso para seguir.
+
+### Hallazgo de la tarea 27
+
+El test de accesibilidad encontró un error antes del PR, así que no se abrió defecto: el
+campo de criterios repetía `aria-describedby` cuando tenía un error (uno para su ayuda y
+otro para el error). El navegador solo usa el primero, y el error quedaba sin enlazar para
+los lectores de pantalla. Ahora va un solo atributo con las dos referencias (`add6a34`).
+
+### Verificación manual
+
+| Qué | Cómo | Resultado |
+|---|---|---|
+| Contraste de 4,5 a 1 | fórmula de WCAG sobre cada par de colores del CSS | el más bajo es 5,75 a 1 (el error sobre su fondo); el foco, 14,7 a 1, y 10,2 en la barra |
+| 360 de ancho | capturas con Chromium sin ventana a 360×800 de la lista, el proyecto, el backlog, un formulario y una confirmación | la página no se desplaza de costado y la tabla se recorre en su recuadro. Se ajustó el CSS (`833abf5`): en el celular el nombre del proyecto va en un renglón en la barra y los títulos largos pasan de renglón |
+| El binario y los datos | `go build ./cmd/web`, crear un proyecto, mirar el archivo; abrirlo con un archivo cortado | guarda después de cada operación; con el archivo dañado termina con el motivo y el archivo queda igual |
+| Teclado y foco, Chrome, Firefox y Safari, red desconectada | a mano | **pendiente**: lo hace una persona antes del merge |
+
+Las dos primeras filas las corrió Claude Code y no reemplazan la prueba a mano: falta
+recorrer los formularios con el teclado mirando el foco en los tres navegadores, y abrir el
+binario con la red desconectada.
 
 ### Hallazgos de la revisión del PR #92
 
