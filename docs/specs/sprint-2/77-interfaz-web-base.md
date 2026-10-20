@@ -509,7 +509,17 @@ Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD"
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| Lista de todos los proyectos (dependencia, sin número) | `1f94f7a` | `3e81aca` |
+| 1 | `4227227` | `5a6d632` |
+
+Los dos RED fueron por compilación: la consulta y la lectura de la escala todavía no
+existían. La lista de proyectos la pide la Fase 2 sin ponerle nombre; se llama
+`r.Projects()`, como en el contrato, y su test usa doce proyectos para que el orden no salga
+bien por casualidad.
 
 ## Trazabilidad
 
