@@ -3,7 +3,7 @@
 - **Historia:** #77
 - **Sprint:** 2
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **lista para implementar** (las aprobó el responsable como excepción; falta que un compañero las ratifique en la issue #77)
+- **Estado:** Puerta 3 aprobada — **lista para implementar**. Las aprobó el responsable como excepción y **las ratificó Maximiliano Eula el 2026-10-20** en la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279). Tres cosas se agregaron después de lo que él vio y esperan que las acepte en la issue: la D16 (un dato desconocido rechaza la carga), la opción vacía de las listas y el 404 en castellano (Fase 4, "Desvíos")
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
@@ -317,6 +317,7 @@ del equipo no estaba disponible (ver las líneas de cada puerta).
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279), desde su cuenta. Ratifica las tres puertas y acepta los siete puntos de "Para decidir en la puerta".
 
 ## Fase 2 — Diseño
 
@@ -385,7 +386,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
 | **D13** Los datos se guardan en un archivo JSON con `encoding/json`, reescrito entero después de cada operación aceptada **(AGENTS.md)** | una base de datos (SQLite); guardar al cerrar; un registro de cambios | SQLite es una dependencia externa; guardar al cerrar pierde todo si el programa se corta; los datos son pocos y reescribir entero es lo más simple de probar |
 | **D14** La conversión vive en `internal/domain`, con tipos intermedios no exportados; leer y escribir el archivo es de `internal/store` **(AGENTS.md)** | la conversión en la web o en `internal/store` | los datos de las entidades están ocultos fuera del paquete: afuera no se pueden leer ni reconstruir sin exportarlos, y exportarlos permitiría saltear las validaciones. El dominio sigue sin tocar archivos: convierte a texto y desde texto |
 | **D15** Al reconstruir, cada entidad pasa por las mismas validaciones que al crearla, se conservan los números y los contadores, y un dato inválido rechaza la carga entera | confiar en el archivo | el archivo es texto y se puede editar o romper a mano; un proyecto sin nombre o 4 story points romperían reglas que el resto da por ciertas. Guardar los contadores es lo que hace que la numeración no retroceda (RN-22) |
-| **D16** En el archivo, las fechas van como día (aaaa-mm-dd) y el rol, la prioridad y el estado con su nombre. No lleva número de versión: un dato que falta se carga vacío. **Un dato que el sistema no conoce rechaza la carga** | guardar la fecha con hora y zona, los números de las constantes y una versión del formato; **ignorar los datos que el sistema no conoce** | el día evita el defecto #59; con nombres el archivo se lee y no se rompe si se reordenan las constantes. Sin versión, un archivo de antes de los sprints carga con cero sprints, que es correcto. **Ignorar lo desconocido haría que una versión vieja del programa cargue un archivo con datos de una historia posterior (por ejemplo los sprints) sin ellos, y los borre en silencio al volver a guardar.** Lo de los datos desconocidos lo aceptó el responsable el 20/10, después de las puertas, a partir de la revisión del PR #92: queda para la ratificación |
+| **D16** En el archivo, las fechas van como día (aaaa-mm-dd) y el rol, la prioridad y el estado con su nombre. No lleva número de versión: un dato que falta se carga vacío. **Un dato que el sistema no conoce rechaza la carga** | guardar la fecha con hora y zona, los números de las constantes y una versión del formato; **ignorar los datos que el sistema no conoce** | el día evita el defecto #59; con nombres el archivo se lee y no se rompe si se reordenan las constantes. Sin versión, un archivo de antes de los sprints carga con cero sprints, que es correcto. **Ignorar lo desconocido haría que una versión vieja del programa cargue un archivo con datos de una historia posterior (por ejemplo los sprints) sin ellos, y los borre en silencio al volver a guardar.** Lo de los datos desconocidos lo aceptó el responsable el 20/10, después de las puertas, a partir de la revisión del PR #92: queda para que lo acepte en la issue #77 quien ratificó las puertas |
 | **D17** Se escribe en un archivo temporal de la misma carpeta y se renombra | escribir encima del archivo | un corte a mitad de la escritura dejaría un archivo roto y, por D15 y D18, el sistema no volvería a arrancar |
 | **D18** Al arrancar: sin archivo, se empieza vacío; con un archivo que no se puede leer, el comando termina con el motivo y no lo toca | empezar vacío en los dos casos | el primer guardado pisaría los datos (RN-24) |
 | **D19** Si el guardado falla, el cambio queda en memoria y se avisa con estado 500; el siguiente guardado exitoso lo incluye | deshacer el cambio | el dominio no tiene cómo deshacer, y como se guarda el registro entero nada se pierde si el siguiente guardado funciona |
@@ -412,6 +413,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279), desde su cuenta. Ratifica las tres puertas y acepta los siete puntos de "Para decidir en la puerta".
 
 ## Fase 3 — Tareas
 
@@ -506,6 +508,7 @@ Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD"
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279), desde su cuenta. Ratifica las tres puertas y acepta los siete puntos de "Para decidir en la puerta".
 
 ## Fase 4 — Implementación
 
@@ -574,7 +577,8 @@ Ninguno de comportamiento. Tres agregados y una nota:
   archivo con datos de una historia posterior (por ejemplo los sprints) los cargaría sin
   ellos y los borraría en silencio al volver a guardar. Rechazarlos es lo que pide la RN-24
   para un archivo con algo que el núcleo no acepta. Lo aceptó el responsable el 20/10 y
-  quedó escrito en la D16 de la Fase 2; queda para la ratificación.
+  quedó escrito en la D16 de la Fase 2; queda para que lo acepte en la issue #77 quien
+  ratificó las puertas.
 - **`internal/store` queda en 95,5%**: lo único sin probar es el error de convertir el
   registro a texto, que con textos, números y listas `encoding/json` no puede dar. Se dejó
   igual, para que se avise si algún día un dato nuevo sí puede fallar.
@@ -629,7 +633,8 @@ De cada escenario a su test. Los esquemas que cruzan pantallas están en
 - **Una fila más en «Pedir algo que no existe»**: una dirección que no es de ninguna página
   responde 404 con «no se encontró la página» y el acceso a la lista. Sin esto, Go responde
   `404 page not found`, en inglés, y la RN-5 pide los textos en castellano. Está solo en el
-  test, no en la Fase 1: **queda para que la ratifique quien ratifique las puertas**.
+  test, no en la Fase 1: **queda para que la acepte en la issue #77 quien ratificó las
+  puertas**.
 - **Las listas para elegir empiezan con una opción vacía** («Elegí un rol», «Elegí una
   prioridad», «Elegí los story points»), que no es ningún valor del núcleo. Sin ella el
   navegador elige solo la primera, y una historia quedaría en Alta o un integrante en Agile
@@ -638,8 +643,8 @@ De cada escenario a su test. Los esquemas que cruzan pantallas están en
   vacíos, o con letras, son un error de forma de la web, «hay que elegir los story points de
   la lista», como una fecha mal escrita (RN-14), y no se llama al dominio. El test de las
   opciones compara exactamente los valores que se pueden elegir, sin la opción vacía. Se
-  propuso en la implementación el 20/10 y queda para que lo acepte quien ratifique las
-  puertas.
+  propuso en la implementación el 20/10 y queda para que lo acepte en la issue #77 quien
+  ratificó las puertas.
 - **Una lista no conserva un valor que no ofrece.** En «Mostrar el rechazo», un 4 o
   «cinco» enviados igual no tienen opción que los muestre, así que en esas filas el test no
   controla que se conserve lo escrito (`5ab4419`). El mensaje junto al campo sí se controla.
