@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 16:52. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-20 17:16. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,7 +14,9 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
 
@@ -22,7 +24,6 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
-| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## Lista para implementar
 
@@ -70,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+419d247 2026-10-20 Merge pull request #93 from emisorato1/docs-spec-historia-78
+6aee8be 2026-10-20 docs: la #78 usa el contrato ajustado en el PR #94
+8084c1f 2026-10-20 Merge pull request #94 from emisorato1/contrato-78
+62b09df 2026-10-20 docs: ajustar el contrato con lo que encontro la spec de la #78
+7b00a2a 2026-10-20 docs: borrador completo de la spec de la #78
+b1aabdf 2026-10-20 Merge pull request #91 from emisorato1/chore-estado-77-en-progreso
+c62de8e 2026-10-20 chore: regenerar ESTADO.md con la historia 77 en progreso
 31cc781 2026-10-20 Merge pull request #87 from emisorato1/sprint-1-sin-historia-6
-e8a5252 2026-10-20 Merge pull request #89 from emisorato1/puertas-77
-7d1f7c0 2026-10-20 docs: una fila por historia en el indice de specs, con la 6 y la 12 en el sprint 2
-4e56d3b 2026-10-20 docs: lo que se mergea o se cierra entre dos sprints cuenta en el siguiente
-92aae27 2026-10-20 docs: registrar las puertas de la #77 y alinear el compromiso del Sprint 2
-bf01058 2026-10-20 Merge remote-tracking branch 'origin/dev' into sprint-1-sin-historia-6
-535e5e7 2026-10-20 docs: quienes confirmaron el plan y la interfaz web en el grupo
-a070e68 2026-10-20 docs: el incremento del sprint 1 va a main por el PR #88
 ```
