@@ -315,3 +315,82 @@ func TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintAbierto(t *testing.T) 
 		t.Fatalf("se esperaba que el proyecto no tuviera sprint abierto, salio que si")
 	}
 }
+
+// Escenario: Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas
+// Cubre: RN-11
+func TestDosSprintsDelMismoProyectoPuedenTenerElMismoGoalYLasMismasFechas(t *testing.T) {
+	project := unProyecto(t)
+	data := SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)}
+	first, err := project.AddSprint(data)
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
+	}
+	cerrarSprint(first)
+
+	second, err := project.AddSprint(data)
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el sprint con el mismo goal y fechas sin error, salio: %v", err)
+	}
+	if second.Number() != 2 {
+		t.Errorf("se esperaba el sprint numero 2, salio el %d", second.Number())
+	}
+	if first.Goal() != second.Goal() {
+		t.Errorf("se esperaba el mismo goal en los dos sprints, salio %q y %q", first.Goal(), second.Goal())
+	}
+}
+
+// Escenario: Cada proyecto puede tener su propio sprint abierto
+// Cubre: RN-9
+func TestCadaProyectoPuedeTenerSuPropioSprintAbierto(t *testing.T) {
+	registry := NewProjectRegistry()
+	a, err := registry.Create(ProjectData{Name: "Proyecto A", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto A: %v", err)
+	}
+	b, err := registry.Create(ProjectData{Name: "Proyecto B", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto B: %v", err)
+	}
+	data := SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)}
+	if _, err := a.AddSprint(data); err != nil {
+		t.Fatalf("no se pudo crear el sprint del proyecto A: %v", err)
+	}
+
+	sprint, err := b.AddSprint(data)
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el sprint del proyecto B sin error, salio: %v", err)
+	}
+	if sprint.Number() != 1 {
+		t.Errorf("se esperaba el sprint numero 1 en el proyecto B, salio el %d", sprint.Number())
+	}
+	if _, ok := a.OpenSprint(); !ok {
+		t.Errorf("se esperaba que el proyecto A siguiera con su sprint abierto")
+	}
+}
+
+// Esquema del escenario: Operar sobre un proyecto que no existe
+// Cubre: RN-13
+//
+// Crear un sprint y pedir el sprint abierto se le piden al proyecto, y el unico camino para
+// llegar a un proyecto es el registro de la #3: un proyecto que no existe se informa ahi,
+// antes de cualquiera de las dos operaciones. Por eso las dos filas son la misma busqueda.
+// El nombre del test agrega "Sprints" porque la #6 tiene un escenario con el mismo nombre.
+func TestOperarSprintsSobreUnProyectoQueNoExiste(t *testing.T) {
+	cases := []string{"crear un sprint", "pedir el sprint abierto"}
+	for _, operation := range cases {
+		t.Run(operation, func(t *testing.T) {
+			registry := NewProjectRegistry()
+
+			project, err := registry.Get(99)
+
+			if !errors.Is(err, ErrProjectNotFound) {
+				t.Fatalf("se esperaba ErrProjectNotFound para %s en el proyecto 99, salio: %v", operation, err)
+			}
+			if project != nil {
+				t.Fatalf("se esperaba no recibir ningun proyecto, salio el %d", project.ID())
+			}
+		})
+	}
+}
