@@ -56,6 +56,17 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 	// desde dentro del paquete.
 	done.storyPoints = 3
 	done.state = StoryDone
+
+	// Los sprints son de la #8: el 1 cerrado y el 2 abierto. Cerrar es de la #10, asi que el
+	// test fija el estado desde dentro del paquete.
+	closed, err := first.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 10, 1), End: unDia(2026, 10, 14)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
+	}
+	closed.state = SprintClosed
+	if _, err := first.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 10, 15), End: unDia(2026, 10, 28)}); err != nil {
+		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
+	}
 	return registry
 }
 
@@ -108,6 +119,24 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 				}
 			}
 		}
+
+		// Los sprints de la #8, con su numero, goal, fechas y estado, y el contador.
+		wantSprints, gotSprints := w.Sprints(), g.Sprints()
+		if len(gotSprints) != len(wantSprints) {
+			t.Fatalf("proyecto %d: se esperaban %d sprints, salieron %d", w.ID(), len(wantSprints), len(gotSprints))
+		}
+		for j, ws := range wantSprints {
+			gs := gotSprints[j]
+			if gs.Number() != ws.Number() || gs.Goal() != ws.Goal() || gs.State() != ws.State() ||
+				!gs.Start().Equal(ws.Start()) || !gs.End().Equal(ws.End()) {
+				t.Fatalf("proyecto %d: se esperaba el sprint %d %q (%v, %v a %v), salio %d %q (%v, %v a %v)",
+					w.ID(), ws.Number(), ws.Goal(), ws.State(), ws.Start(), ws.End(),
+					gs.Number(), gs.Goal(), gs.State(), gs.Start(), gs.End())
+			}
+		}
+		if g.lastSprintNumber != w.lastSprintNumber {
+			t.Fatalf("proyecto %d: se esperaba el contador de sprints en %d, salio en %d", w.ID(), w.lastSprintNumber, g.lastSprintNumber)
+		}
 	}
 }
 
@@ -158,6 +187,11 @@ func unosDatosGuardados() registryJSON {
 						StoryPoints: 5, AcceptanceCriteria: []string{"Valida las horas"}},
 					{ID: 2, Title: "Crear proyectos", Description: "Alta de proyectos", Priority: "Baja", State: "Terminada",
 						StoryPoints: 3, AcceptanceCriteria: []string{"Pide el nombre"}},
+				},
+				LastSprintNumber: 2,
+				Sprints: []sprintJSON{
+					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado"},
+					{Number: 2, Goal: "Medir la velocidad", Start: "2026-10-15", End: "2026-10-28", State: "Abierto"},
 				}},
 			{ID: 2, Name: "Otro proyecto", Start: "2026-10-05", NextStoryID: 1},
 		},
@@ -199,6 +233,15 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "historia sin titulo", change: func(d *registryJSON) { d.Projects[0].Stories[0].Title = "" }, want: ErrStoryTitleRequired},
 		{name: "prioridad inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[0].Priority = "Urgente" }, want: ErrStoryPriorityInvalid},
 		{name: "estado inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[1].State = "Cerrada" }, want: ErrSavedDataInvalid},
+		// Los sprints de la #8 (tarea 15): lo mismo que se controla al crear, mas lo que solo
+		// puede venir mal de un archivo.
+		{name: "sprint sin Sprint Goal", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Goal = "   " }, want: ErrSprintGoalRequired},
+		{name: "sprint sin fecha de inicio", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Start = "" }, want: ErrSprintStartRequired},
+		{name: "sprint con las fechas al reves", change: func(d *registryJSON) { d.Projects[0].Sprints[0].End = "2026-09-30" }, want: ErrSprintDatesInconsistent},
+		{name: "dos sprints abiertos", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Abierto" }, want: ErrSprintAlreadyOpen},
+		{name: "numero de sprint repetido", change: func(d *registryJSON) { d.Projects[0].Sprints[1].Number = 1 }, want: ErrSavedDataInvalid},
+		{name: "contador de sprints que no llega a los numeros usados", change: func(d *registryJSON) { d.Projects[0].LastSprintNumber = 1 }, want: ErrSavedDataInvalid},
+		{name: "estado de sprint inexistente", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Planificado" }, want: ErrSavedDataInvalid},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
