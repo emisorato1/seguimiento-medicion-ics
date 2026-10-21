@@ -246,3 +246,59 @@ func TestPedirElListadoOrdenadoNoCambiaElBacklog(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Desempatar por identificador dentro de la misma prioridad
+// Cubre: RN-3
+func TestDesempatarPorIdentificadorDentroDeLaMismaPrioridad(t *testing.T) {
+	project, _ := conHistorias(t, PriorityMedium, PriorityHigh, PriorityHigh)
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 2, 3, 1) {
+		t.Fatalf("se esperaba el orden [2 3 1], salio: %v", identificadores(listed))
+	}
+}
+
+// Escenario: Todas las historias tienen la misma prioridad
+// Cubre: RN-3
+func TestTodasLasHistoriasTienenLaMismaPrioridad(t *testing.T) {
+	project, _ := conHistorias(t, PriorityMedium, PriorityMedium, PriorityMedium)
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 1, 2, 3) {
+		t.Fatalf("se esperaba el orden [1 2 3], salio: %v", identificadores(listed))
+	}
+}
+
+// Escenario: Dos listados seguidos devuelven lo mismo
+// Cubre: RN-3
+func TestDosListadosSeguidosDevuelvenLoMismo(t *testing.T) {
+	project, _ := conHistorias(t, PriorityLow, PriorityHigh, PriorityMedium)
+
+	first := identificadores(project.PrioritizedBacklog())
+	second := identificadores(project.PrioritizedBacklog())
+
+	if !mismoOrden(second, first...) {
+		t.Fatalf("se esperaba el mismo orden las dos veces, salio %v y despues %v", first, second)
+	}
+}
+
+// Tarea 4: desempatar por identificador aunque el backlog este guardado en otro orden
+// Cubre: RN-3 y la decision de la Fase 2 "El desempate por identificador se hace explicito"
+//
+// Con los escenarios de la Fase 1 solos el desempate no falla, porque las historias que se
+// cargan con la operacion de la #6 quedan guardadas en orden de identificador. Este test
+// arma desde dentro del paquete un backlog guardado al reves, que es lo que pasaria si algun
+// dia hay borrado o reordenamiento, y comprueba que el listado no depende de eso.
+func TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden(t *testing.T) {
+	project, stories := conHistorias(t, PriorityHigh, PriorityHigh, PriorityHigh)
+	project.backlog = []*Story{stories[2], stories[0], stories[1]}
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 1, 2, 3) {
+		t.Fatalf("se esperaba el orden [1 2 3] aunque el backlog este guardado como [3 1 2], salio: %v",
+			identificadores(listed))
+	}
+}
