@@ -477,6 +477,25 @@ que es justamente lo que el ciclo TDD evita. Se agregaron sus tests en el commit
 100%. Queda anotado porque el historial lo muestra igual: es mejor que figure como lo que
 fue.
 
+### Corrección de trazabilidad (20/10)
+
+Después del merge, para la matriz de trazabilidad del proyecto, se corrigieron **solo los
+comentarios** de los tests. No cambió el código ni lo que verifica ningún test, así que no
+hubo ciclo RED:
+
+- **Las dos observaciones que dejó Juliana Bustos el 17/10 en el PR #58**, que habían quedado
+  sin aplicar. `TestLosIdentificadoresDeLasHistoriasNoSeRepiten` ahora cita su escenario,
+  "Los identificadores no se repiten", en lugar de decir que no tiene escenario propio.
+  `TestModificarUnaHistoria` citaba "Modificar una historia sin cambiar nada", que es un caso
+  límite y no un escenario: se sacó, porque ese caso es de
+  `TestModificarUnaHistoriaSinCambiarNada`. También se sacó "Reemplazar los criterios de
+  aceptacion", que ese test no prueba y ya cita `TestReemplazarLosCriteriosDeAceptacion`.
+- **Todo test declara si tiene escenario**, como pide AGENTS.md: los que salían de una tarea
+  y no de un escenario ahora empiezan con `// Sin escenario: ...` y dicen de qué tarea
+  salen. Son 14 en `story_test.go` (esta historia) y 11 en `member_test.go` (la #4), más el
+  test del defecto #60 en `errors_test.go`.
+- Cada escenario de la Fase 1 de esta historia y de la #4 tiene al menos un test que lo cita.
+
 ## Trazabilidad
 
 | Eslabón | Dónde está |
