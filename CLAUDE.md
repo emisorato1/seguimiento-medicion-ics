@@ -501,6 +501,9 @@ es parte de la documentación que se evalúa, no un trámite.
   resolviendo los conflictos de su rama. **Hacia `main`** hace falta la aprobación de una
   persona.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
+- **Y se cierra su issue a mano**, con sus criterios tildados y un comentario con el PR y el
+  sprint en que cuenta: `Closes #N` solo actúa cuando el PR llega a `main`, y las historias se
+  integran en `dev`. Lo hace la sesión que mantiene el tablero.
 
 ### Quién aprueba
 
