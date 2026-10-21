@@ -46,6 +46,12 @@ func prepareSprint(data SprintData) (SprintData, error) {
 	if strings.TrimSpace(data.Goal) == "" {
 		return SprintData{}, ErrSprintGoalRequired
 	}
+	if data.Start.IsZero() {
+		return SprintData{}, ErrSprintStartRequired
+	}
+	if data.End.IsZero() {
+		return SprintData{}, ErrSprintEndRequired
+	}
 	return data, nil
 }
 

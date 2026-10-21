@@ -51,4 +51,8 @@ var (
 	// ErrSprintGoalRequired: crear un sprint sin Sprint Goal, o con uno de solo espacios
 	// (historia #8, RN-4).
 	ErrSprintGoalRequired = errors.New("el Sprint Goal es obligatorio")
+	// ErrSprintStartRequired: crear un sprint sin fecha de inicio (historia #8, RN-5).
+	ErrSprintStartRequired = errors.New("la fecha de inicio del sprint es obligatoria")
+	// ErrSprintEndRequired: crear un sprint sin fecha de fin (historia #8, RN-5).
+	ErrSprintEndRequired = errors.New("la fecha de fin del sprint es obligatoria")
 )
