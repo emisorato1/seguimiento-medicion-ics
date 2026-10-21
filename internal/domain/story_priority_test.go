@@ -302,3 +302,20 @@ func TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden(t *tes
 			identificadores(listed))
 	}
 }
+
+// Escenario: Las historias terminadas van al final
+// Cubre: RN-10
+func TestLasHistoriasTerminadasVanAlFinal(t *testing.T) {
+	project, stories := conHistorias(t, PriorityHigh, PriorityLow, PriorityMedium, PriorityLow)
+	// Cerrar un sprint (#10) todavia no existe: el test fija el estado desde dentro del
+	// paquete, como en "El listado incluye las historias en cualquier estado".
+	stories[0].state = StoryDone
+	stories[2].state = StoryInProgress
+	stories[3].state = StoryDone
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 3, 2, 1, 4) {
+		t.Fatalf("se esperaba el orden [3 2 1 4], con las terminadas al final, salio: %v", identificadores(listed))
+	}
+}
