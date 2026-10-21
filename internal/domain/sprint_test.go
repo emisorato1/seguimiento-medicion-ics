@@ -269,3 +269,32 @@ func TestNoSePuedeAbrirUnSegundoSprintHabiendoUnoAbierto(t *testing.T) {
 		t.Fatalf("se esperaba el proyecto con 1 sprint, salio con %d", len(sprints))
 	}
 }
+
+// cerrarSprint deja el sprint en Cerrado desde dentro del paquete, porque cerrar es de la
+// #10, que todavia no existe. Es lo mismo que hace la #12 con las historias Terminadas.
+func cerrarSprint(sprint *Sprint) {
+	sprint.state = SprintClosed
+}
+
+// Escenario: El sprint nuevo recibe el numero siguiente
+// Cubre: RN-1, RN-2
+func TestElSprintNuevoRecibeElNumeroSiguiente(t *testing.T) {
+	project := unProyecto(t)
+	first, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
+	}
+	cerrarSprint(first)
+
+	sprint, err := project.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 11, 15), End: unDia(2026, 11, 28)})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el sprint nuevo sin error, salio: %v", err)
+	}
+	if sprint.Number() != 2 {
+		t.Errorf("se esperaba el sprint numero 2, salio el %d", sprint.Number())
+	}
+	if sprints := project.Sprints(); len(sprints) != 2 {
+		t.Errorf("se esperaba el proyecto con 2 sprints, salio con %d", len(sprints))
+	}
+}
