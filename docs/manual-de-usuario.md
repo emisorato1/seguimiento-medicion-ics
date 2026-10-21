@@ -15,7 +15,7 @@ go run ./cmd/app
 El programa muestra su versión y las operaciones disponibles, y queda esperando:
 
 ```
-Seguimiento y Medicion ICS 0.1.0
+Seguimiento y Medición ICS 0.1.0
 Escribí el nombre de una operación. Operaciones disponibles: crear-proyecto, agregar-integrante, listar-integrantes, cargar-historia, listar-backlog, estimar, salir
 >
 ```

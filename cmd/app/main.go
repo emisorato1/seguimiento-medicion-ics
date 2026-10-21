@@ -15,7 +15,7 @@ const version = "0.1.0"
 // main arranca la consola conectada al teclado y la pantalla, con un registro de proyectos
 // nuevo (tarea 15 de la historia 24). Los datos viven en memoria mientras el programa corre.
 func main() {
-	fmt.Printf("Seguimiento y Medicion ICS %s\n", version)
+	fmt.Printf("Seguimiento y Medición ICS %s\n", version)
 	fmt.Printf("Escribí el nombre de una operación. Operaciones disponibles: %s\n",
 		strings.Join(operationNames(), ", "))
 	if err := runConsole(os.Stdin, os.Stdout, domain.NewProjectRegistry()); err != nil {
