@@ -434,8 +434,8 @@ escrito en el plan. Se decide ese día y se avisa: no se patea al 31.
 ### Cuándo se puede partir una historia en varios pull requests
 
 Por defecto **la historia entra en un solo pull request**, con todas sus tareas. Eso es lo
-que hace que el PR cierre la historia con `Closes #N`, que la tarjeta se mueva sola y que
-quien revisa pueda contrastar el código contra la spec entera, tarea por tarea. Un PR
+que hace que el PR cierre la historia con `Closes #N` (que actúa recién cuando llega a
+`main`: hasta entonces el issue se cierra a mano, ver más abajo) y que quien revisa pueda contrastar el código contra la spec entera, tarea por tarea. Un PR
 parcial no cierra nada y deja la historia a medias en el tablero.
 
 Se puede partir en dos casos, y solo en esos:
@@ -488,7 +488,8 @@ El PR se abre cuando la historia cumple la Definición de Terminado. La plantill
 ([.github/pull_request_template.md](.github/pull_request_template.md)) se completa entera:
 es parte de la documentación que se evalúa, no un trámite.
 
-- El PR enlaza la **historia** y la **spec**, y usa `Closes #N` para que la issue se cierre sola.
+- El PR enlaza la **historia** y la **spec**, y usa `Closes #N`. Ojo: eso cierra el issue recién
+  cuando el PR llega a `main`; al mergear a `dev` se cierra a mano (ver abajo).
 - **Revisa alguien que no escribió el código.** Es la puerta de calidad del flujo.
 - Quien revisa mira: que el código haga lo que dice la spec, que los tests cubran los
   escenarios BDD, y que se entienda. Si no se entiende, se pide que se aclare.
