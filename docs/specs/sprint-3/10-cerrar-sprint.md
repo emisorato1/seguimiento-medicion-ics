@@ -8,7 +8,9 @@
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
 - **Depende de:** #8 (el sprint abierto), #9 (las historias que se le asignaron) y #6 (los
-  estados de una historia); por ellas, también de la #3
+  estados de una historia); por ellas, también de la #3. Además, de la #77 (la conversión del
+  registro, donde se guardan los datos del cierre). El código de la #8 y la #9 tiene que estar
+  en `dev` antes de empezar (ver Dependencias de la Fase 2)
 - **La necesitan:** #11 (lista los sprints cerrados y su detalle), #16 (calcula velocidad,
   puntos completados y porcentaje de historias completas), y detrás de la #16 la #17 y la #18
 
@@ -92,9 +94,9 @@ como Pendientes. El proyecto deja de tener sprint abierto.
     aunque una de las historias vuelva al Product Backlog y se reestime.
 
 Los estados de una historia —Pendiente, En curso y Terminada— son los que define la
-historia #6. Esta historia usa las dos transiciones que faltaban: de En curso a Terminada y
-de En curso de vuelta a Pendiente. Una vez Terminada, la historia ya no se modifica ni se
-reestima (#6 RN-10, #12 RN-8).
+historia #6. Esta historia usa dos transiciones: de En curso a Terminada, que es solo suya, y
+de En curso de vuelta a Pendiente, que también usa la #9 al quitar una historia del sprint.
+Una vez Terminada, la historia ya no se modifica ni se reestima (#6 RN-10, #12 RN-8).
 
 ### Casos límite
 
@@ -112,6 +114,10 @@ reestima (#6 RN-10, #12 RN-8).
   las fechas (RN-11).
 - Cerrar dos veces seguidas: el segundo cierre se rechaza, porque ya no hay sprint abierto.
 - Después de cerrar, crear un sprint nuevo: funciona, y recibe el número siguiente.
+- Una historia del sprint que está sin estimar al cerrar (la #12 permite quitarle la
+  estimación mientras está En curso): queda registrada con 0 story points. Si se la indica
+  como completada, se acepta y queda Terminada con 0 puntos (punto 9 de "Para decidir en la
+  puerta").
 
 ### Condiciones de error
 
@@ -235,42 +241,55 @@ Escenario: Cerrar el sprint de un proyecto que no existe
   Dado que no existe ningun proyecto con identificador 99
   Cuando intento cerrar el sprint del proyecto 99
   Entonces se informa que no se encontro el proyecto
+
+Escenario: Una historia sin estimar al cerrar registra cero puntos
+  Dado un sprint abierto con la historia 4 asignada y sin estimar
+  Cuando cierro el sprint indicando la historia 4 como completada
+  Entonces el sprint cerrado registra 0 story points para la historia 4
+  Y la historia 4 queda en estado "Terminada"
 ```
 
 **Para decidir en la puerta:**
 
-1. **Falta un dato en el contrato del dominio: dónde queda registrado qué historias se
-   completaron (RN-2).** Hoy el sprint guarda las historias que se le asignaron y la fecha
-   de cierre, nada más. No alcanza con mirar el estado de cada historia: una historia que no
-   se completó vuelve al Product Backlog y se puede terminar en el sprint siguiente, y
-   entonces figuraría como completada **en los dos sprints**, inflando la velocidad del
-   primero. Hace falta agregarle al sprint la lista de historias completadas, avisando al
-   grupo antes de implementar, como pide la regla 3 del contrato. **Sin ese dato, la #16 no
-   puede calcular ni los puntos completados ni la velocidad por sprint.**
-2. **"Al cerrarlo quedan calculados los story points completados" se interpretó como "quedan
-   registrados los datos para calcularlos".** El cálculo es de la #16, que es donde viven
-   todas las métricas. Si el equipo prefiere guardar el número en el sprint, hay que
-   agregarlo también al contrato y decidir qué pasa si alguien reestima una historia después
-   del cierre.
+1. **Resuelto en el contrato: el sprint guarda qué historias se completaron (RN-2).** No
+   alcanza con mirar el estado de cada historia: una historia que no se completó vuelve al
+   Product Backlog y se puede terminar en el sprint siguiente, y entonces figuraría como
+   completada **en los dos sprints**, inflando la velocidad del primero. El dato
+   (`CompletedStories`) está en el contrato del dominio desde el 20/10.
+2. **Resuelto en el contrato: los story points se calculan en la #16 y los de cada historia
+   quedan fijos al cerrar (RN-16).** "Al cerrarlo quedan calculados los story points
+   completados" se interpretó como "quedan registrados los datos para calcularlos": el
+   cálculo es de la #16. Y como una historia que volvió al backlog se puede reestimar, el
+   cierre registra los puntos que tenía cada una (`PointsAtClose`), así el número de un
+   sprint viejo no cambia solo. Está en el contrato desde el 20/10.
 3. **El cierre recibe una sola lista: las historias completadas.** Las demás son, por
    definición, las que no se completaron. Recibir las dos listas permitiría que se
-   contradigan o que quede una historia en ninguna de las dos.
+   contradigan o que quede una historia en ninguna de las dos. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 4. **La fecha de cierre es una entrada y no la fecha de hoy.** Es lo mismo que hizo la #8 con
    las fechas del sprint, y es lo que permite escribir tests que no dependan del día en que
-   se corren. Si el equipo prefiere que la ponga el sistema, cambia la RN-10 y hay que
-   decidir cómo se prueba.
+   se corren. Además, ya lo impone AGENTS.md desde el 20/10: el dominio no lee el reloj.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 5. **La fecha de cierre no se compara con nada (RN-11)**, ni siquiera con el inicio del
    sprint. Es el mismo criterio de la RN-14 de la #8. Se acepta incluso una fecha anterior al
    inicio, que es raro pero no rompe nada de lo que se mide; si el equipo quiere, se agrega
-   la validación contra la fecha de inicio.
+   la validación contra la fecha de inicio. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 6. **Cerrar no exige que el sprint esté "terminado".** No hay ningún control de que no queden
    historias en curso: justamente lo normal es que queden, y ese es el dato que importa.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 7. **Una historia que vuelve al Product Backlog sigue figurando entre las del sprint
    (RN-5).** Es lo que permite que la #16 sepa cuánto se había comprometido. Si se la sacara,
-   todos los sprints cerrados parecerían haber completado el 100%.
+   todos los sprints cerrados parecerían haber completado el 100%. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 8. **No existe reabrir un sprint.** Si el equipo cierra con los datos equivocados, hoy no hay
    forma de corregirlo. Agregar una corrección implica decidir qué pasa con las historias que
    ya volvieron al backlog y se reasignaron, así que se deja afuera a propósito.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
+9. **Una historia sin estimar al cerrar se acepta como completada, con 0 puntos.** La #9 solo
+   asigna historias estimadas, pero la #12 deja quitar la estimación mientras la historia
+   está En curso, así que al cerrar puede haber una sin estimar. El borrador la acepta como
+   completada y registra 0 puntos: rechazarla sería una regla nueva que obliga a reestimar
+   antes de cerrar, y con 0 puntos la #16 la cuenta como historia completada sin sumar
+   velocidad. **Agregado el 21/10 en la revisión de puertas: queda para decidir en la
+   puerta.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -297,14 +316,23 @@ El orden es el de siempre, de lo más general a lo más particular:
 3. **Todas las historias indicadas pertenecen al sprint** (RN-7). Se controla **la lista
    entera antes de tocar una sola historia**: si no, un cierre rechazado dejaría la mitad de
    las historias Terminadas y la otra mitad sin cambiar.
-4. **Aplicar**: se arma la lista de completadas sin repetidos (RN-8), se les cambia el estado
-   a las historias —Terminada a las completadas, Pendiente a las demás—, y se marca el sprint
-   como Cerrado con su fecha.
+4. **Aplicar**: se arma la lista de completadas sin repetidos (RN-8), se registran los story
+   points que tiene en ese momento cada historia asignada —0 si está sin estimar— (RN-16), se
+   les cambia el estado a las historias —Terminada a las completadas, Pendiente a las
+   demás—, y se marca el sprint como Cerrado con su fecha.
 
 La lista de historias asignadas **no se toca**: "volver al Product Backlog" (RN-4) es un
 cambio de estado de la historia, no una baja del registro del sprint. El sprint queda como
 la foto de lo que se comprometió y de lo que se logró, que es exactamente lo que la #16 y la
 #11 necesitan leer después.
+
+**Lo que se guarda.** La #8 suma el sprint a la conversión del registro de la #77 con los
+datos que crea, y deja los del cierre para esta historia. El cierre le suma la fecha de
+cierre, las historias completadas y los puntos al cerrar, con su caso en el test de ida y
+vuelta. Al cargar, como pide la D15 de la #77, se valida que los datos del cierre sean
+coherentes: un sprint Cerrado tiene fecha de cierre y uno Abierto no tiene ningún dato del
+cierre; las completadas no se repiten y están todas entre las asignadas; y los puntos al
+cerrar tienen una entrada por cada historia asignada, con un valor de la escala o 0.
 
 ### Archivos afectados
 
@@ -312,30 +340,40 @@ la foto de lo que se comprometió y de lo que se logró, que es exactamente lo q
 |---|---|---|
 | `internal/domain/sprint_close.go` | se crea | la operación de cierre y la lectura de las historias completadas de un sprint |
 | `internal/domain/sprint_close_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
-| `internal/domain/sprint.go` | se modifica | el sprint pasa a tener el dato de las historias completadas |
+| `internal/domain/registry_json.go` y su test | se modifican | los datos del cierre se guardan y se validan al cargar, con su caso de ida y vuelta |
 | `internal/domain/errors.go` | se modifica | el error de la fecha de cierre obligatoria |
-| `docs/diseno-dominio.md` | se modifica | agregar al contrato el dato de las historias completadas, avisando al grupo antes |
+
+**`sprint.go` no se modifica**: la #8 declara la entidad completa, con todos los datos del
+contrato —también los del cierre—, y deja que la #9, la #10 y la #11 sumen archivos propios
+(Fase 2 de la #8, en revisión en su rama). Si al llegar a `dev` le faltara algún dato del
+cierre, se agrega en `sprint.go` avisándole antes a Agustín Salinas.
 
 ### Decisiones
 
 | Decisión | Alternativa descartada | Por qué |
 |---|---|---|
-| El sprint guarda su propia lista de historias completadas | deducir lo completado mirando qué historias del sprint quedaron Terminadas | una historia que no se completó vuelve al backlog y puede terminarse en el sprint siguiente: deducirlo la contaría como completada en los dos, y la velocidad de cada sprint quedaría mal. **Es un dato que el contrato del dominio no tiene: hay que agregarlo y avisar al grupo antes de implementar** |
+| El sprint guarda su propia lista de historias completadas | deducir lo completado mirando qué historias del sprint quedaron Terminadas | una historia que no se completó vuelve al backlog y puede terminarse en el sprint siguiente: deducirlo la contaría como completada en los dos, y la velocidad de cada sprint quedaría mal. Es `CompletedStories`, del contrato |
+| **Al cerrar se registran los story points de cada historia asignada** (`PointsAtClose`), 0 para una sin estimar | calcular los puntos de un sprint cerrado con los puntos actuales de sus historias; guardar solo el total | una historia que volvió al backlog se puede reestimar (#12), y con los puntos actuales el número de un sprint viejo cambiaría sin que nadie lo toque. Con solo el total, la #16 no podría separar planificados de completados ni la #18 mostrar los puntos de cada historia. Decidido el 20/10 en el contrato |
+| **Los datos del cierre se suman a la conversión del registro y se validan al cargar** (ver Enfoque) | guardar solo el estado y deducir el resto; cargarlos sin validar | AGENTS.md y la #77 piden que todo dato nuevo entre en la conversión con su caso de ida y vuelta, y la #8 deja los del cierre para esta historia. Sin validar, un archivo editado a mano podría traer un sprint cerrado sin fecha o completadas que no estaban en el sprint, y la #16 mediría mal sin aviso (D15 de la #77) |
 | La lista de historias asignadas no se modifica al cerrar | sacarle al sprint las historias que volvieron al Product Backlog | sin ellas no se puede saber cuánto se había comprometido, que es la mitad de lo que mide la #16 |
 | El cierre es una sola operación que recibe las completadas | marcar historia por historia y después cerrar | con dos pasos, un cierre a medias deja historias Terminadas en un sprint que sigue abierto, y no hay forma de volver atrás |
 | Se valida toda la lista de completadas antes de cambiar cualquier estado | ir aplicando a medida que se recorre la lista | es la única forma de cumplir la RN-13 sobre varias historias a la vez, sin tener que deshacer cambios ya hechos |
 | La fecha de cierre se guarda por día, como el resto de las fechas | guardarla con hora | es la convención que ya fijaron la #3 y la #8 (defecto #59); si el cierre guardara la hora, dos fechas del mismo día dejarían de ser iguales |
 | No se agrega ninguna operación para reabrir o corregir un sprint cerrado | dejarla por si acaso | ninguna regla la pide, y abriría la puerta a cambiar un sprint que la #16 ya midió. Que un sprint cerrado no se pueda modificar sale de que no exista la operación, no de un control |
-| Lo de esta historia va en `sprint_close.go` | agregarlo a `sprint.go` | mismo criterio que la #9: cuatro historias tocan el sprint y conviene que no se pisen |
-| Se reutiliza el error de "no hay sprint abierto" que declara la #9 | un error propio para el cierre | es la misma situación, y con dos errores quien consume tiene que mirar los dos |
+| Lo de esta historia va en `sprint_close.go` | agregarlo a `sprint.go` | mismo criterio que la #8 y la #9: cuatro historias tocan el sprint y conviene que no se pisen |
+| Se reutilizan los errores de la #9: «no hay sprint abierto» (RN-6) y «la historia no está en el sprint» (RN-7) | errores propios del cierre | son las mismas situaciones, y con dos errores para lo mismo quien consume tiene que mirar los dos. El único error nuevo es el de la fecha de cierre |
 
 ### Dependencias y restricciones
 
-- **Depende de la #8 y de la #9.** No se espera a que estén en `dev`: los tests arman el
-  sprint abierto y sus historias asignadas dentro del paquete, contra el contrato.
-- **Cambia el contrato del dominio.** Agregar la lista de historias completadas al sprint es
-  un cambio del contrato: se avisa al grupo y se actualiza `docs/diseno-dominio.md` **en el
-  mismo pull request**. La #11 y la #16 lo consumen.
+- **El código espera el PR temprano de la #8 en `dev`**: la entidad `Sprint` con los datos
+  del contrato, los sprints del proyecto, el sprint abierto, `p.Sprint(number)` y su
+  conversión en `registry_json.go`. **Y de la #9**, la asignación y sus errores «no hay
+  sprint abierto» y «la historia no está en el sprint». Sin eso no compila: un test no puede
+  armar un sprint con un tipo que todavía no existe.
+- **No cambia el contrato.** `CompletedStories`, `PointsAtClose` y `ClosedOn` ya están en
+  `docs/diseno-dominio.md` desde el 20/10. La #11 y la #16 los consumen.
+- **`registry_json.go` es compartido**: la conversión del sprint la crea la #8; esta historia
+  solo le suma los datos del cierre y sus controles.
 - **No se toca la asignación.** Agregar y quitar historias es de la #9, y después del cierre
   ya no se puede hacer porque no hay sprint abierto.
 - **No se calcula ninguna métrica.** Ni puntos completados, ni velocidad, ni porcentajes: son
@@ -358,18 +396,20 @@ siguió abierto y que ninguna historia cambió de estado (RN-13).
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
 | 1 | Cerrar el sprint lo deja Cerrado, con su fecha de cierre, y el proyecto queda sin sprint abierto | Despues de cerrar se puede crear el sprint siguiente | RN-1, RN-14 | pendiente |
-| 2 | Cerrar registra las historias completadas y deja Terminadas a esas, y Pendientes a las demás | Cerrar el sprint registrando que se completo y que no | RN-2, RN-3, RN-4 | pendiente |
+| 2 | Cerrar registra las historias completadas y deja Terminadas a esas, y Pendientes a las demás; el sprint queda Cerrado con la fecha indicada | Cerrar el sprint registrando que se completo y que no | RN-1, RN-2, RN-3, RN-4 | pendiente |
 | 3 | El sprint cerrado conserva la lista de las historias que se le habían asignado | El sprint cerrado conserva lo que se le habia comprometido | RN-5 | pendiente |
 | 4 | Cerrar con ninguna, con algunas y con todas las historias completadas | Cerrar con distinta cantidad de historias completadas | RN-3, RN-4, RN-9 | pendiente |
 | 5 | Cerrar un sprint sin ninguna historia asignada | Cerrar un sprint sin ninguna historia asignada | RN-9 | pendiente |
-| 6 | La misma historia indicada dos veces se registra una sola vez | La misma historia indicada dos veces cuenta una sola vez | RN-8 | pendiente |
+| 6 | La misma historia indicada dos veces se registra una sola vez | La misma historia indicada dos veces cuenta una sola vez | RN-2, RN-8 | pendiente |
 | 7 | Rechazar el cierre si una historia indicada no está en el sprint, sin cambiar ninguna historia | Rechazar el cierre si una historia completada no esta en el sprint | RN-7, RN-13 | pendiente |
 | 8 | Rechazar el cierre sin fecha de cierre | Rechazar el cierre sin fecha de cierre | RN-10, RN-13 | pendiente |
 | 9 | Rechazar el cierre cuando el proyecto no tiene sprint abierto | Rechazar el cierre si no hay sprint abierto | RN-6 | pendiente |
 | 10 | Cerrar dos veces se rechaza y el sprint conserva lo que había quedado registrado | No se puede cerrar dos veces el mismo sprint | RN-12, RN-13 | pendiente |
 | 11 | Una fecha de cierre distinta de la fecha de fin del sprint se acepta | Una fecha de cierre distinta de la fecha de fin se acepta | RN-11 | pendiente |
 | 12 | Cerrar el sprint de un proyecto que no existe informa que no se encontró | Cerrar el sprint de un proyecto que no existe | RN-15 | pendiente |
-| 13 | Al cerrar se registran los puntos de cada historia, y reestimarla después no los cambia | Los puntos registrados al cerrar no cambian si se reestima la historia | RN-16 | pendiente |
+| 13 | Al cerrar se registran los puntos de cada historia, y reestimarla después no los cambia; una historia sin estimar registra 0 y se puede completar | Los puntos registrados al cerrar no cambian si se reestima la historia / Una historia sin estimar al cerrar registra cero puntos | RN-16 | pendiente |
+| 14 | Un sprint cerrado —estado, fecha de cierre, completadas y puntos al cerrar— se guarda y se reconstruye igual | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | RN-1, RN-2, RN-16 | pendiente |
+| 15 | Al cargar se rechazan los datos del cierre incoherentes: cerrado sin fecha, abierto con datos de cierre, completadas repetidas o fuera de las asignadas, puntos que no corresponden a las asignadas o fuera de la escala | — (regla de la #77: Los datos guardados estan danados) | RN-2, RN-5, RN-16 | pendiente |
 
 ### Por qué este orden
 
@@ -380,18 +420,22 @@ siguió abierto y que ninguna historia cambió de estado (RN-13).
 - **La 5 y la 6 son los casos raros del camino feliz** y no necesitan ningún rechazo escrito.
 - **De la 7 a la 10 van los rechazos**, de a uno, y recién ahí la 10 puede probar que el
   cierre no se repite.
-- **La 11 y la 12 van al final** porque miran los bordes de afuera: la fecha y el proyecto.
+- **La 11 y la 12** miran los bordes de afuera: la fecha y el proyecto.
+- **La 13 agrega un dato más al cierre ya probado**: los puntos de cada historia, también de
+  una sin estimar.
+- **La 14 y la 15 van al final**: guardan y validan todo lo que el cierre ya registra, como
+  pide la regla de la #77.
 
 ### Cobertura
 
-Las dieciséis reglas quedan cubiertas: RN-1 (1), RN-2 (2, 6), RN-3 (2, 4), RN-4 (2, 4),
-RN-5 (3), RN-6 (9), RN-7 (7), RN-8 (6), RN-9 (4, 5), RN-10 (8), RN-11 (11), RN-12 (10),
-RN-13 (7, 8, 10), RN-14 (1), RN-15 (12), RN-16 (13).
+Las dieciséis reglas quedan cubiertas: RN-1 (1, 2, 11, 14), RN-2 (2, 6, 14, 15),
+RN-3 (2, 4), RN-4 (2, 4), RN-5 (3, 15), RN-6 (9), RN-7 (7), RN-8 (6), RN-9 (4, 5), RN-10 (8),
+RN-11 (11), RN-12 (10), RN-13 (7, 8, 10), RN-14 (1), RN-15 (12), RN-16 (13, 14, 15).
 
 | Criterio de aceptación | Tareas |
 |---|---|
-| Se puede cerrar el sprint abierto y queda Cerrado con su fecha | 1 |
-| Los story points registrados al cerrar no cambian si se reestima una historia | 13 |
+| Se puede cerrar el sprint abierto y queda Cerrado con su fecha | 1, 2 |
+| Los story points registrados al cerrar no cambian si se reestima una historia | 13, 14 |
 | Las historias completadas quedan Terminadas | 2, 4 |
 | Las que no se indicaron quedan Pendientes | 2, 4 |
 | El sprint conserva las historias que se le habían asignado | 3 |
@@ -405,16 +449,18 @@ RN-13 (7, 8, 10), RN-14 (1), RN-15 (12), RN-16 (13).
 | Después de cerrar no hay sprint abierto y se puede crear el siguiente | 1 |
 | Cerrar en un proyecto que no existe informa que no se encontró | 12 |
 
-Los doce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los catorce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD". La 14 y
+la 15 no tienen escenario propio: cumplen la regla de la #77 de sumar cada dato nuevo a lo
+que se guarda y validarlo al cargar.
 
 ### Dependencias
 
-- **Todas las tareas necesitan la #8 y la #9**: el sprint abierto y sus historias asignadas.
-  Mientras no estén en `dev`, los tests los arman dentro del paquete.
+- **Ninguna tarea empieza sin el PR temprano de la #8 y la asignación de la #9 en `dev`**
+  (Dependencias de la Fase 2): sin la entidad `Sprint` el código no compila.
 - **La tarea 1 necesita además la creación de sprints de la #8** para verificar que, cerrado
   el primero, se puede crear el siguiente.
-- **El dato de las historias completadas tiene que estar agregado al contrato del dominio
-  antes de la tarea 2**, con el aviso al grupo.
+- **La 14 y la 15 necesitan la conversión de los sprints de la #8**, a la que le suman los
+  datos del cierre.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -431,5 +477,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/sprint_close_test.go` |
-| Código Go | `internal/domain/sprint_close.go`, con el dato de las historias completadas en `internal/domain/sprint.go` y su error en `internal/domain/errors.go` |
+| Tests | `internal/domain/sprint_close_test.go` y los casos del cierre en `internal/domain/registry_json_test.go` |
+| Código Go | `internal/domain/sprint_close.go`, los datos del cierre en `internal/domain/registry_json.go` y su error en `internal/domain/errors.go` |
