@@ -50,7 +50,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | Agustín Salinas | ⚙️ En implementación |
+| [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | Agustín Salinas | 🔍 Implementada — en review |
 | [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Registrar el esfuerzo real](sprint-2/14-registrar-esfuerzo-real.md) | #14 | 3 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |

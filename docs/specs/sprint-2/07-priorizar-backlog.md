@@ -3,7 +3,7 @@
 - **Historia:** #7
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 20/10: decidió los cinco
@@ -344,11 +344,11 @@ misma implementación, y cada una tiene al menos un test que falla antes de escr
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | El listado ordenado de un proyecto sin historias es una lista vacía, sin error; el de un proyecto inexistente informa que no se encontró | Backlog ordenado de un proyecto sin historias; Pedir el backlog ordenado de un proyecto que no existe | RN-8, RN-9 | pendiente |
-| 2 | El listado trae todas las historias del backlog con todos sus datos, cualquiera sea su estado y estén estimadas o no, sin omitir ni repetir ninguna | El listado incluye las historias en cualquier estado; Las historias del listado traen todos sus datos; Backlog ordenado de un proyecto con una sola historia | RN-4, RN-5 | pendiente |
-| 3 | El listado va de Alta a Baja, sin huecos si falta una prioridad; se arma en cada pedido, así que un cambio de prioridad se ve en el siguiente; y no toca el backlog guardado | Listar el backlog ordenado por prioridad; No hay historias de prioridad alta; El orden se actualiza al cambiar una prioridad; Bajar la prioridad de la historia que estaba primera; Cambiar una prioridad por la que ya tenia; Pedir el listado ordenado no cambia el backlog | RN-1, RN-2, RN-6, RN-7 | pendiente |
-| 4 | A igual prioridad, el listado desempata por identificador de menor a mayor aunque el backlog esté guardado en otro orden, y dos listados seguidos dan lo mismo | Desempatar por identificador dentro de la misma prioridad; Todas las historias tienen la misma prioridad; Dos listados seguidos devuelven lo mismo | RN-3 | pendiente |
-| 5 | Las historias Terminadas van al final del listado, ordenadas entre sí por prioridad e identificador | Las historias terminadas van al final | RN-10 | pendiente |
+| 1 | El listado ordenado de un proyecto sin historias es una lista vacía, sin error; el de un proyecto inexistente informa que no se encontró | Backlog ordenado de un proyecto sin historias; Pedir el backlog ordenado de un proyecto que no existe | RN-8, RN-9 | hecha |
+| 2 | El listado trae todas las historias del backlog con todos sus datos, cualquiera sea su estado y estén estimadas o no, sin omitir ni repetir ninguna | El listado incluye las historias en cualquier estado; Las historias del listado traen todos sus datos; Backlog ordenado de un proyecto con una sola historia | RN-4, RN-5 | hecha |
+| 3 | El listado va de Alta a Baja, sin huecos si falta una prioridad; se arma en cada pedido, así que un cambio de prioridad se ve en el siguiente; y no toca el backlog guardado | Listar el backlog ordenado por prioridad; No hay historias de prioridad alta; El orden se actualiza al cambiar una prioridad; Bajar la prioridad de la historia que estaba primera; Cambiar una prioridad por la que ya tenia; Pedir el listado ordenado no cambia el backlog | RN-1, RN-2, RN-6, RN-7 | hecha |
+| 4 | A igual prioridad, el listado desempata por identificador de menor a mayor aunque el backlog esté guardado en otro orden, y dos listados seguidos dan lo mismo | Desempatar por identificador dentro de la misma prioridad; Todas las historias tienen la misma prioridad; Dos listados seguidos devuelven lo mismo | RN-3 | hecha |
+| 5 | Las historias Terminadas van al final del listado, ordenadas entre sí por prioridad e identificador | Las historias terminadas van al final | RN-10 | hecha |
 
 **Dónde falla cada una antes de implementarse.**
 
@@ -417,7 +417,39 @@ Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD"
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.**
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `41f2471` | `d194fa8` |
+| 2 | `ab5ea38` | `5c75d88` |
+| 3 | `eb1c628` | `f11be53` |
+| 4 | `50a9d3f` | `deef1b0` |
+| 5 | `cc4e1f9` | `ba0c908` |
+
+Cada commit de test dice en su mensaje qué falló, y todos fallaron antes de su
+implementación. Los tests que pasaron solos son los que la Fase 3 anticipó, y cada uno va
+en la tarea de la implementación que lo sostiene:
+
+- **Tarea 1:** "Pedir el backlog ordenado de un proyecto que no existe" pasa sin código de
+  esta historia, porque lo resuelve el registro de la #3. El RED de la tarea es el otro
+  escenario: el listado no existía.
+- **Tarea 3:** "Cambiar una prioridad por la que ya tenia", "Pedir el listado ordenado no
+  cambia el backlog" y las filas "Media" y "Baja" del esquema pasan con la tarea 2. Fallan los
+  otros cuatro.
+- **Tarea 4:** los tres escenarios pasan con la tarea 3, porque la #6 guarda las historias en
+  orden de identificador. El RED es el test que arma un backlog guardado fuera de orden
+  (`TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden`).
+
+### Desvíos respecto de la spec
+
+- **El listado se llama `PrioritizedBacklog()`** y cuelga del proyecto, como las demás
+  operaciones del backlog. La spec no fijaba el nombre y el contrato del dominio tampoco lo
+  nombra, porque no es una entidad nueva.
+- **La tarea 3 se implementó con un ordenamiento estable solo por prioridad**, y la tarea 4
+  lo reemplazó por uno con el desempate explícito. Es lo que pedía la Fase 3: cada tarea
+  agrega un criterio y su test falla antes.
+- No hubo otros desvíos.
 
 ## Trazabilidad
 
@@ -427,5 +459,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/story_priority_test.go` |
-| Código Go | `internal/domain/story_priority.go` |
+| Tests | `internal/domain/story_priority_test.go`: un test por escenario, 15 en total, más el de la tarea 4 que arma un backlog guardado fuera de orden |
+| Código Go | `PrioritizedBacklog()` en `internal/domain/story_priority.go` |

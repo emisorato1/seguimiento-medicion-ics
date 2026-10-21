@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 14:21. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 14:25. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,13 +16,13 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 
 ## Lista para implementar
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-5135176 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-7-priorizar-backlog
-1ecb95c 2026-10-21 docs: registrar las tres puertas de la historia 7
-34a4154 2026-10-21 Merge pull request #118 from emisorato1/trazabilidad-web
-067e282 2026-10-21 docs: regenerar la trazabilidad con el arreglo del defecto 108
-2200507 2026-10-21 fix: la trazabilidad cuenta como codigo las plantillas y el css de la web
-308e488 2026-10-21 Merge pull request #117 from emisorato1/chore-historia-24-hecha
-a72e56b 2026-10-21 Merge remote-tracking branch 'origin/dev' into trazabilidad-web
-10933a8 2026-10-21 Merge pull request #116 from emisorato1/defecto-108-tests-store-windows
+ba0c908 2026-10-21 feat: las historias terminadas van al final del listado (tarea 5, historia 7)
+cc4e1f9 2026-10-21 test: las historias terminadas van al final (tarea 5, historia 7)
+deef1b0 2026-10-21 feat: desempatar por identificador dentro de la misma prioridad (tarea 4, historia 7)
+50a9d3f 2026-10-21 test: desempatar por identificador dentro de la misma prioridad (tarea 4, historia 7)
+f11be53 2026-10-21 feat: ordenar el backlog de Alta a Baja (tarea 3, historia 7)
+eb1c628 2026-10-21 test: el listado va de Alta a Baja y se arma en cada pedido (tarea 3, historia 7)
+5c75d88 2026-10-21 feat: el listado ordenado trae todas las historias del backlog (tarea 2, historia 7)
+ab5ea38 2026-10-21 test: el listado trae todas las historias con sus datos (tarea 2, historia 7)
 ```
