@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"strings"
 	"testing"
 )
 
@@ -242,5 +243,29 @@ func TestGuardarElSprintGoalSinEspaciosEnLosExtremos(t *testing.T) {
 	}
 	if sprint.Goal() != "Tener el backlog estimado" {
 		t.Errorf("se esperaba el goal %q, salio %q", "Tener el backlog estimado", sprint.Goal())
+	}
+}
+
+// Escenario: No se puede abrir un segundo sprint habiendo uno abierto
+// Cubre: RN-8, RN-12
+//
+// Ademas de errors.Is, mira el texto: la RN-8 pide que el aviso diga cual es el sprint
+// abierto, y eso es lo unico que agrega el error envuelto (decision de la Fase 2).
+func TestNoSePuedeAbrirUnSegundoSprintHabiendoUnoAbierto(t *testing.T) {
+	project := unProyecto(t)
+	if _, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)}); err != nil {
+		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
+	}
+
+	_, err := project.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 11, 15), End: unDia(2026, 11, 28)})
+
+	if !errors.Is(err, ErrSprintAlreadyOpen) {
+		t.Fatalf("se esperaba ErrSprintAlreadyOpen, salio: %v", err)
+	}
+	if !strings.Contains(err.Error(), "sprint 1") {
+		t.Errorf("se esperaba que el aviso dijera que el sprint 1 esta abierto, salio: %q", err.Error())
+	}
+	if sprints := project.Sprints(); len(sprints) != 1 {
+		t.Fatalf("se esperaba el proyecto con 1 sprint, salio con %d", len(sprints))
 	}
 }
