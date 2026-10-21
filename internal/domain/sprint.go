@@ -94,6 +94,18 @@ func (p *Project) Sprints() []*Sprint {
 	return sprints
 }
 
+// Sprint devuelve el sprint del proyecto con ese numero, abierto o cerrado, el guardado y no
+// una copia. Si el proyecto no tiene ningun sprint con ese numero, informa que no se
+// encontro (RN-15).
+func (p *Project) Sprint(number int) (*Sprint, error) {
+	for _, sprint := range p.sprints {
+		if sprint.number == number {
+			return sprint, nil
+		}
+	}
+	return nil, ErrSprintNotFound
+}
+
 // OpenSprint devuelve el sprint abierto del proyecto, y si hay alguno. Que no haya ninguno no
 // es un error (RN-10): se informa aparte, para que quien consulta no tenga que distinguir
 // "no hay" de "fallo".
