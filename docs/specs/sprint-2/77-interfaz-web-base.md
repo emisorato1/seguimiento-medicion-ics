@@ -717,6 +717,34 @@ este PR:
   CSS (`ff7ce79`). No tiene test en Go: `httptest` no aplica estilos; lo prueba el recorrido
   con el teclado.
 
+### Hallazgos de la revisión de Maximiliano Eula en Windows
+
+Maximiliano revisó el PR #95 en Windows y lo aprobó con una condición, que bloqueaba, y un
+pedido que no bloqueaba. Los dos se arreglaron con su ciclo de TDD, y la salida del RED va
+en el commit del test:
+
+- **En Windows el aviso de puerto ocupado no funcionaba**, y por eso
+  `TestAbrirElSistemaConUnSoloComandoYSinInternet` daba rojo ahí. Windows avisa el puerto
+  ocupado y la falta de permiso con sus códigos de Winsock (10048 y 10013), que no son
+  `syscall.EADDRINUSE` ni `syscall.EACCES`, así que el error caía al caso por defecto, con el
+  texto del sistema. Ahora se reconocen los dos (commits en la tabla de abajo). Se
+  reconocen en cualquier sistema y no solo cuando corre en Windows: ningún otro sistema usa
+  esos números, y así el test que arma el error de Windows corre también en el CI, que es
+  Linux. Se compila el test para Windows (`GOOS=windows go test -c`), pero no se pudo correr
+  ahí desde esta máquina. El permiso tiene ahora su propio aviso, que sugiere otro puerto.
+- **Protección contra pedidos de otro sitio.** Sin usuarios ni contraseñas (D20), otra página
+  abierta en el mismo navegador podía enviar un formulario a la web y cambiar los datos. Ahora
+  la web pasa por `http.NewCrossOriginProtection()` de la biblioteca estándar: un pedido que
+  cambia algo y viene de otro sitio recibe un 403 con el aviso en castellano, y no cambia
+  nada. Los formularios de la propia web siguen andando, también en los tres motores (52 bien
+  después del cambio). No es un escenario de la spec: el test lo dice en su comentario.
+
+| Qué | Commit del test | Commit del arreglo |
+|---|---|---|
+| Puerto ocupado en Windows | `d0ee320` | `1cec6f8` |
+| Sin permiso para el puerto, también en Windows | `0dceabd` | `e8c5213` |
+| Pedido de otro sitio | `7e4fdb9` | `d2fa1e9` |
+
 ### Hallazgos de la revisión del PR #92
 
 Se encontraron antes de que entrara a `dev`, así que no se abrió defecto:
