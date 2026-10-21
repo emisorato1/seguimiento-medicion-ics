@@ -3,7 +3,7 @@
 - **Historia:** #7
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 20/10: decidió los cinco
@@ -270,7 +270,7 @@ alguno, es el momento de decirlo:
    guardarla. Si alguna vez se pudiera, habría que decidir dónde va en el listado.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada sin cambios en el PR #105 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/105#issuecomment-6303588269). Verificó a mano los órdenes esperados de los 15 escenarios.
 
 ## Fase 2 — Diseño
 
@@ -326,7 +326,7 @@ el registro de la #3.
 - **La usan la #9**, para elegir en la planning, y la interfaz, para mostrar el backlog.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada sin cambios en el PR #105 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/105#issuecomment-6303588269). Coincide con el orden de las constantes de prioridad de `story.go`.
 
 ## Fase 3 — Tareas
 
@@ -413,7 +413,7 @@ Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD"
   ninguna forma nueva de hacerlo (punto 4 de "Para decidir en la puerta").
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada sin cambios en el PR #105 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/105#issuecomment-6303588269). Destacó que cada tarea explica dónde falla antes de implementarse.
 
 ## Fase 4 — Implementación
 
