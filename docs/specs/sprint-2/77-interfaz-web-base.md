@@ -385,7 +385,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
 | **D13** Los datos se guardan en un archivo JSON con `encoding/json`, reescrito entero después de cada operación aceptada **(AGENTS.md)** | una base de datos (SQLite); guardar al cerrar; un registro de cambios | SQLite es una dependencia externa; guardar al cerrar pierde todo si el programa se corta; los datos son pocos y reescribir entero es lo más simple de probar |
 | **D14** La conversión vive en `internal/domain`, con tipos intermedios no exportados; leer y escribir el archivo es de `internal/store` **(AGENTS.md)** | la conversión en la web o en `internal/store` | los datos de las entidades están ocultos fuera del paquete: afuera no se pueden leer ni reconstruir sin exportarlos, y exportarlos permitiría saltear las validaciones. El dominio sigue sin tocar archivos: convierte a texto y desde texto |
 | **D15** Al reconstruir, cada entidad pasa por las mismas validaciones que al crearla, se conservan los números y los contadores, y un dato inválido rechaza la carga entera | confiar en el archivo | el archivo es texto y se puede editar o romper a mano; un proyecto sin nombre o 4 story points romperían reglas que el resto da por ciertas. Guardar los contadores es lo que hace que la numeración no retroceda (RN-22) |
-| **D16** En el archivo, las fechas van como día (aaaa-mm-dd) y el rol, la prioridad y el estado con su nombre. No lleva número de versión: un dato que falta se carga vacío | guardar la fecha con hora y zona, los números de las constantes y una versión del formato | el día evita el defecto #59; con nombres el archivo se lee y no se rompe si se reordenan las constantes. Sin versión, un archivo de antes de los sprints carga con cero sprints, que es correcto |
+| **D16** En el archivo, las fechas van como día (aaaa-mm-dd) y el rol, la prioridad y el estado con su nombre. No lleva número de versión: un dato que falta se carga vacío. **Un dato que el sistema no conoce rechaza la carga** | guardar la fecha con hora y zona, los números de las constantes y una versión del formato; **ignorar los datos que el sistema no conoce** | el día evita el defecto #59; con nombres el archivo se lee y no se rompe si se reordenan las constantes. Sin versión, un archivo de antes de los sprints carga con cero sprints, que es correcto. **Ignorar lo desconocido haría que una versión vieja del programa cargue un archivo con datos de una historia posterior (por ejemplo los sprints) sin ellos, y los borre en silencio al volver a guardar.** Lo de los datos desconocidos lo aceptó el responsable el 20/10, después de las puertas, a partir de la revisión del PR #92: queda para la ratificación |
 | **D17** Se escribe en un archivo temporal de la misma carpeta y se renombra | escribir encima del archivo | un corte a mitad de la escritura dejaría un archivo roto y, por D15 y D18, el sistema no volvería a arrancar |
 | **D18** Al arrancar: sin archivo, se empieza vacío; con un archivo que no se puede leer, el comando termina con el motivo y no lo toca | empezar vacío en los dos casos | el primer guardado pisaría los datos (RN-24) |
 | **D19** Si el guardado falla, el cambio queda en memoria y se avisa con estado 500; el siguiente guardado exitoso lo incluye | deshacer el cambio | el dominio no tiene cómo deshacer, y como se guarda el registro entero nada se pierde si el siguiente guardado funciona |
@@ -515,11 +515,69 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 |---|---|---|
 | Lista de todos los proyectos (dependencia, sin número) | `1f94f7a` | `3e81aca` |
 | 1 | `4227227` | `5a6d632` |
+| 2 | `1a885f0` | `61077ba` |
+| 3 | `ff7d24f` | `2ecdfad` |
+| 4 | `9e9ec91` | `fc414fb` |
+| 5 | `6d73f7a` | `a83bfc5` |
 
-Los dos RED fueron por compilación: la consulta y la lectura de la escala todavía no
-existían. La lista de proyectos la pide la Fase 2 sin ponerle nombre; se llama
-`r.Projects()`, como en el contrato, y su test usa doce proyectos para que el orden no salga
-bien por casualidad.
+Los RED de la lista de proyectos y de las tareas 1, 2, 4 y 5 fueron por compilación (la
+operación o el error todavía no existían); el de la tarea 3, por comportamiento: 13 de sus
+14 casos se cargaban sin error. La lista de proyectos la pide la Fase 2 sin ponerle nombre;
+se llama `r.Projects()`, como en el contrato, y su test usa doce proyectos para que el orden
+no salga bien por casualidad.
+
+Nombres que la Fase 2 no fija: la conversión es `r.ToJSON()` y `RegistryFromJSON(texto)`;
+el archivo, `store.NewFile(ruta)` con `Load()` y `Save(registro)`. Los errores son
+`ErrSavedDataInvalid` en el dominio (datos guardados que no se pueden leer o no se aceptan)
+y `ErrNotSaved` en `internal/store` («el cambio no quedó guardado»). Un rechazo por una
+regla del dominio cumple `errors.Is` con los dos: con `ErrSavedDataInvalid` y con el error
+de esa regla.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Tres agregados y una nota:
+
+- **La tarea 3 tiene más casos que los cinco de la Fase 3**: fechas que no son fechas,
+  número de proyecto repetido, contadores que retroceden o están en cero, historia sin
+  título, prioridad y estado inexistentes. Cada uno prueba un control distinto de la
+  reconstrucción; sin ellos el dominio no llegaba al 100%. El del estado inexistente pasó sin
+  código nuevo: leer el estado por su nombre ya lo rechazaba desde la tarea 2.
+- **Los contadores se controlan al reconstruir**: el próximo número tiene que ser al menos 1
+  y mayor que todos los usados, y ninguno se repite. Sale de la D15 y de la RN-22: si no, un
+  archivo editado a mano podía repartir un número ya usado.
+- **Desvío respecto de la D16: un dato que el sistema no conoce rechaza la carga** en vez de
+  ignorarse. La D16 solo dice que un dato que falta se carga vacío y no habla de los que
+  sobran. Se decidió rechazarlos porque, si se ignoraran, un programa viejo que abre un
+  archivo con datos de una historia posterior (por ejemplo los sprints) los cargaría sin
+  ellos y los borraría en silencio al volver a guardar. Rechazarlos es lo que pide la RN-24
+  para un archivo con algo que el núcleo no acepta. Lo aceptó el responsable el 20/10 y
+  quedó escrito en la D16 de la Fase 2; queda para la ratificación.
+- **`internal/store` queda en 95,5%**: lo único sin probar es el error de convertir el
+  registro a texto, que con textos, números y listas `encoding/json` no puede dar. Se dejó
+  igual, para que se avise si algún día un dato nuevo sí puede fallar.
+
+### Hallazgos de la revisión del PR #92
+
+Se encontraron antes de que entrara a `dev`, así que no se abrió defecto:
+
+- **Se aceptaba texto sobrante después de los datos** («{…} basura» cargaba sin error),
+  porque la lectura de JSON se detiene en el primer valor. Se agregó ese caso al test de la
+  tarea 3 (`312cc45`, RED por comportamiento) y ahora se rechaza (`19ccd1b`).
+- **El temporal no se forzaba al disco antes de renombrarlo**: un corte de luz justo después
+  del renombre podía dejar el archivo vacío. Se agregó la sincronización (`Sync`, `6a39f92`) antes de
+  cerrarlo. **No tiene test**: un corte de luz no se puede simular desde un test, y en el
+  camino normal la línea ya queda cubierta por el test de la tarea 4.
+- **Los mensajes arrastraban texto en inglés** (lo encontró front): un archivo cortado decía
+  «(unexpected EOF)», que viene de `encoding/json`, y un archivo sin permiso o un guardado
+  que fallaba traían el error del sistema operativo («permission denied»). Los mensajes son
+  para el usuario y van en castellano (AGENTS.md). Ahora dicen «el archivo está dañado,
+  incompleto o tiene datos que el sistema no conoce», «no se pudo abrir el archivo …» y «no
+  se pudo escribir el archivo …», con la ruta. Tests en `ff2b683` y `6f761d9` (RED por
+  comportamiento), arreglos en `d0f0a49` y `3854359`.
+
+Nota para la #16: si el PR #81 (horas estimadas) entra a `dev` antes que esta conversión, o
+después, la que llegue segunda suma `estimatedHours` a `registry_json.go` con su caso en el
+test de ida y vuelta, como pide la regla de Dependencias.
 
 ## Trazabilidad
 
