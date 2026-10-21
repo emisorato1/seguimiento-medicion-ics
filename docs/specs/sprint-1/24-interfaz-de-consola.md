@@ -343,6 +343,7 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 14 | `e48de53` | `42cfe49` |
 | 15 | — (sin test unitario, ver Fase 3) | `ac4a4d3` |
 | tests de cobertura | `43fface` | — (sin RED: prueban código que ya existe) |
+| integrantes vacíos (revisión del PR #106) | `f0ca0e9` | `6120035` |
 
 ### Desvíos respecto de la spec
 
@@ -376,6 +377,13 @@ Ninguno de comportamiento. Notas de proceso:
   cada operación), el listado de una historia estimada y la entrada que se termina sin
   `salir`. Pasan sin código nuevo. Llevan la cobertura de `cmd/app` a 96,2%: solo queda
   afuera `main`.
+- **La tarea 7 cubría solo el backlog vacío.** Los casos límite de la Fase 1 piden lo mismo
+  para los integrantes ("listar los integrantes o el backlog cuando no hay ninguno: muestra
+  que está vacío"), y la consola no mostraba nada. Lo encontró la revisión del PR #106, y se
+  cerró con su ciclo TDD (`f0ca0e9` y `6120035`). En la misma revisión, el refactor `70ac198`
+  renombra una variable de `estimar` que tapaba a la función `pointsText`.
+- Antes de esas correcciones se volvió a traer `dev` (merge `dbab5e3`) para resolver el
+  conflicto de `ESTADO.md`.
 
 ### Decisiones tomadas al implementar
 
