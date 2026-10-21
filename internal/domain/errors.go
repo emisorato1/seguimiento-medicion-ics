@@ -58,4 +58,8 @@ var (
 	// ErrSprintDatesInconsistent: fecha de fin del sprint anterior a la de inicio (historia #8,
 	// RN-6).
 	ErrSprintDatesInconsistent = errors.New("las fechas del sprint son incoherentes: la fecha de fin es anterior a la de inicio")
+	// ErrSprintAlreadyOpen: crear un sprint mientras el proyecto tiene otro abierto (historia
+	// #8, RN-8). Se devuelve envuelto con el numero del sprint abierto, asi el aviso dice cual
+	// es; errors.Is lo sigue reconociendo.
+	ErrSprintAlreadyOpen = errors.New("ya hay un sprint abierto en el proyecto")
 )

@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -104,6 +105,11 @@ func (p *Project) AddSprint(data SprintData) (*Sprint, error) {
 	data, err := prepareSprint(data)
 	if err != nil {
 		return nil, err
+	}
+	// Un solo sprint abierto por proyecto (RN-8). Se pregunta con la misma consulta del
+	// sprint abierto: una sola fuente, que no se puede contradecir con la lista de sprints.
+	if open, ok := p.OpenSprint(); ok {
+		return nil, fmt.Errorf("%w: el sprint %d", ErrSprintAlreadyOpen, open.number)
 	}
 
 	sprint := &Sprint{
