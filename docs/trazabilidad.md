@@ -27,18 +27,20 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#4 Registrar integrantes de un proyecto](#4-registrar-integrantes-de-un-proyecto) | 13 | 13 | 0 | 11 |
 | [#6 Administrar el Product Backlog](#6-administrar-el-product-backlog) | 18 | 18 | 0 | 13 |
 | [#12 Estimar historias con Story Points](#12-estimar-historias-con-story-points) | 10 | 10 | 0 | 3 |
+| [#24 Operar el sistema desde una interfaz de consola](#24-operar-el-sistema-desde-una-interfaz-de-consola) | 13 | 13 | 0 | 5 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 4 | 11 | 6 |
 
 ## Qué dice el historial de TDD
 
 Cada test tiene en la columna *RED → GREEN* lo que muestra el historial de commits. Hay
-cuatro casos posibles:
+cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 77 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 6 |
-| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 88 |
+| `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 9 |
+| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 15 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
 ## #3 Crear y modificar proyectos
@@ -252,6 +254,52 @@ cuatro casos posibles:
 | `TestQuitarLaEstimacionDeUnaHistoriaYaSinEstimar` [story_estimation_test.go:140](../internal/domain/story_estimation_test.go#L140) | RN-7 | el que ya estaba | `ef2fd72` (sin RED: ya pasaba) |
 | `TestQuitarLaEstimacionDeUnaHistoriaInexistente` [story_estimation_test.go:208](../internal/domain/story_estimation_test.go#L208) | RN-9 | [story_estimation.go](../internal/domain/story_estimation.go) | `f4e9086` → `4e93db8` |
 | `TestConMasDeUnProblemaSeInformaElPrimero` [story_estimation_test.go:220](../internal/domain/story_estimation_test.go#L220) | RN-8, RN-9 | el que ya estaba | `ae2a6cc` (sin RED: ya pasaba) |
+
+## #24 Operar el sistema desde una interfaz de consola
+
+- **Historia:** issue #24
+- **Spec:** [docs/specs/sprint-1/24-interfaz-de-consola.md](specs/sprint-1/24-interfaz-de-consola.md)
+- **Código según la spec:** `cmd/app/console.go`, `cmd/app/main.go`
+
+<details><summary>Criterios de aceptación (9)</summary>
+
+- Se puede crear un proyecto desde la consola y se ve su identificador.
+- Se pueden agregar integrantes a un proyecto y listarlos.
+- Se pueden cargar historias en el backlog y listarlas.
+- Se le pueden asignar story points a una historia.
+- Cuando una operación se rechaza, se ve el motivo y el programa sigue andando.
+- Listar algo vacío no es un error.
+- Una operación incompleta o con un dato mal escrito se informa sin ejecutarla.
+- Se puede salir del programa.
+- La consola no contiene ninguna validación de negocio propia.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Crear un proyecto desde la consola](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L103) | `TestCrearUnProyectoDesdeLaConsola` [console_test.go:74](../cmd/app/console_test.go#L74) | [console.go](../cmd/app/console.go) | `799f9e8` → `07c23ff` (el test trae lo justo para compilar) |
+| [Mostrar el motivo de un rechazo](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L109) | `TestMostrarElMotivoDeUnRechazo` [console_test.go:106](../cmd/app/console_test.go#L106) | [console.go](../cmd/app/console.go) | `b1bf255` → `4cd8d97` |
+| [Agregar y listar integrantes](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L115) | `TestAgregarYListarIntegrantes` [console_test.go:160](../cmd/app/console_test.go#L160) | [console.go](../cmd/app/console.go) | `385645f` → `ae3ffa5` |
+| [Listar un backlog vacio](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L121) | `TestListarUnBacklogVacio` [console_test.go:185](../cmd/app/console_test.go#L185) | [console.go](../cmd/app/console.go) | `11a3b48` → `01b3b07` |
+| [Cargar una historia y listar el backlog](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L126) | `TestCargarUnaHistoriaYListarElBacklog` [console_test.go:204](../cmd/app/console_test.go#L204) | [console.go](../cmd/app/console.go) | `3f578a2` → `fc3fa30` |
+| [Estimar una historia desde la consola](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L132) | `TestEstimarUnaHistoriaDesdeLaConsola` [console_test.go:243](../cmd/app/console_test.go#L243) | [console.go](../cmd/app/console.go) | `0d8941c` → `4d2fe0e` |
+| [El nucleo rechaza un valor fuera de la escala](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L137) | `TestElNucleoRechazaUnValorFueraDeLaEscala` [console_test.go:268](../cmd/app/console_test.go#L268) | ⚠️ ningún commit de código después del test | `383dcf7` → ⚠️ sin GREEN |
+| [Operacion incompleta](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L143) | `TestOperacionIncompleta` [console_test.go:292](../cmd/app/console_test.go#L292) | [console.go](../cmd/app/console.go) | `bedd456` → `28b8aef` |
+| [Dato con forma invalida](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L149) | `TestDatoConFormaInvalida` [console_test.go:313](../cmd/app/console_test.go#L313) | [console.go](../cmd/app/console.go) | `7e64570` → `de946a6` |
+| [Operar sobre un identificador que no existe](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L155) | `TestOperarSobreUnIdentificadorQueNoExiste` [console_test.go:353](../cmd/app/console_test.go#L353) | [main.go](../cmd/app/main.go) | `fb5bad5` → `ac4a4d3` |
+| [Operacion inexistente](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L161) | `TestOperacionInexistente` [console_test.go:54](../cmd/app/console_test.go#L54) | [console.go](../cmd/app/console.go) | `35173b0` → `69fbd58` (el test trae lo justo para compilar) |
+| [Entrada vacia](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L166) | `TestEntradaVacia` [console_test.go:38](../cmd/app/console_test.go#L38) | [console.go](../cmd/app/console.go) | `44eaaf7` → `d9e27a8` (el test trae lo justo para compilar) |
+| [Salir del programa](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L172) | `TestSalirDelPrograma` [console_test.go:16](../cmd/app/console_test.go#L16) | [console.go](../cmd/app/console.go) | `7d31b89` → `cd3c73b` |
+
+**Tests que no citan un escenario de la Fase 1 (5).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestUnaFechaMalEscritaSeInformaYLaOperacionNoSeEjecuta` [console_test.go:130](../cmd/app/console_test.go#L130) | RN-5 | [console.go](../cmd/app/console.go) | `e48de53` → `42cfe49` |
+| `TestCadaOperacionMuestraElRechazoDelNucleo` [console_test.go:376](../cmd/app/console_test.go#L376) | RN-2, RN-7 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
+| `TestElBacklogMuestraLosStoryPointsDeUnaHistoriaEstimada` [console_test.go:417](../cmd/app/console_test.go#L417) | RN-1 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
+| `TestLaEntradaTerminaSinSalir` [console_test.go:435](../cmd/app/console_test.go#L435) | RN-6 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
+| `TestListarLosIntegrantesDeUnProyectoSinIntegrantes` [console_test.go:448](../cmd/app/console_test.go#L448) | RN-1 | [console.go](../cmd/app/console.go) | `f0ca0e9` → `6120035` |
 
 ## #77 Interfaz web: proyectos, integrantes y backlog
 
