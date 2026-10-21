@@ -197,23 +197,30 @@ Escenario: Consultar el estado de un proyecto que no existe
    eligió que "pendiente" quiera decir "todavía no terminada", que es lo que le importa a
    quien pregunta cómo viene el proyecto. Si el equipo quiere ver las En curso aparte, es un
    número más en el resumen y cambia la RN-6, pero ya no se cumpliría la RN-7 tal como está.
+   **Decidido el 21/10: las En curso cuentan como pendientes.**
 2. **No se muestra el porcentaje de historias completas.** Sale fácil de los dos números, pero
    es una de las métricas de la #16, y el equipo decidió que las métricas se calculen en un
    solo lugar. Si se lo agrega acá, hay dos cálculos que pueden dar distinto.
+   **Decidido el 21/10: no se muestra; el porcentaje queda en la #16.**
 3. **Las completadas se cuentan por el estado actual de cada historia**, no por lo que quedó
    registrado al cerrar cada sprint. Para el proyecto entero da lo mismo: cada historia está
    una sola vez en el backlog, así que no se cuenta dos veces aunque haya pasado por dos
    sprints. Lo registrado al cerrar importa para medir sprint por sprint, que es la #16.
+   **Decidido el 21/10: se acepta como está.**
 4. **Del sprint en curso se muestra cuántas historias tiene, no cuáles.** El detalle de un
    sprint ya existe (#9 para el abierto, #11 para los cerrados).
+   **Decidido el 21/10: se acepta como está.**
 5. **Los integrantes salen en el orden en que se cargaron**, que es como los devuelve la #4.
    No se ordenan por rol ni por nombre.
+   **Decidido el 21/10: se acepta como está.**
 6. **La tarea 4 espera al `Sprint` de la #8 en `dev`.** El borrador decía que su test "arma
    el sprint dentro del paquete" mientras la #8 no esté, pero en Go un test no puede armar un
    sprint si el tipo todavía no existe: no compila. Las tareas 1 a 3 no lo necesitan, porque
    el estado guarda una copia propia de los datos del sprint y no el sprint en sí. La tarea 4
    se programa cuando estén en `dev` el `Sprint` y la consulta del sprint abierto de la #8,
    que se le pidió adelantar a Agustín.
+   **Decidido el 21/10: las tareas 1 a 3 arrancan ya, y la 4 espera el PR temprano de la
+   #8.** Cómo arma el test los sprints que necesita está en las Dependencias de la Fase 3.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -342,7 +349,14 @@ Los diez escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
   #9 y la #10: el test los fija desde dentro del paquete.
 - **La tarea 4 necesita el `Sprint` y la consulta del sprint abierto de la #8** en `dev`. Sin
   el tipo, su test no compila. Se le pidió a Agustín adelantarlos (punto 6 de la puerta);
-  mientras tanto se programan las tareas 1 a 3.
+  mientras tanto se programan las tareas 1 a 3. Maxi confirmó en el PR #104 que
+  `p.OpenSprint()` es una consulta del sprint abierto y no la acción de abrir uno.
+- **La tarea 4 necesita además un sprint Cerrado y un sprint con 3 historias asignadas.**
+  Cerrar es de la #10 y asignar es de la #9, que todavía no existen. Con el `Sprint` en
+  `dev`, el test crea los sprints con el alta de la #8 y, desde dentro del paquete, le fija
+  el estado Cerrado a uno y le carga los 3 identificadores de historia en su lista de
+  historias asignadas al otro. Es lo mismo que se hace con las historias En curso y
+  Terminadas, y lo mismo que hace la #8 en sus tareas 10 a 12.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
