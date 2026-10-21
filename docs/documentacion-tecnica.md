@@ -37,20 +37,26 @@ El código se divide en tres capas, con una regla que no se rompe: **las depende
 siempre hacia el dominio**, y el dominio no depende de nadie.
 
 ```
-cmd/app            interfaz: consola y web. Lee lo que escribe el usuario y muestra resultados
-   │
-   ▼
-internal/store     lee y escribe el archivo de datos (solo la web)
-   │
-   ▼
+cmd/app                        cmd/web + internal/web
+consola (#24), en memoria      web (#77), con los datos en un archivo
+        │                              │
+        │                              ▼
+        │                      internal/store     lee y escribe el archivo de datos
+        │                              │
+        ▼                              ▼
 internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métricas, errores
 ```
 
 | Paquete | Qué hace | Qué **no** hace |
 |---|---|---|
-| `internal/domain` | todas las reglas de negocio y validaciones; arma el texto del reporte y el dashboard | no imprime, no lee del teclado, no toca archivos, no lee el reloj del sistema |
+| `internal/domain` | todas las reglas de negocio y validaciones; arma el texto del reporte y del PDF, y los valores del dashboard ya escritos | no imprime, no lee del teclado, no toca archivos, no lee el reloj del sistema, no dibuja |
 | `internal/store` | lee y escribe el archivo de datos | no convierte ni valida datos: eso lo hace el dominio |
-| `cmd/app` | la interfaz con el usuario | no valida nada por su cuenta: le pregunta al dominio |
+| `cmd/app` | la consola: lee lo que escribe el usuario, llama al dominio y muestra el resultado | no valida nada por su cuenta: le pregunta al dominio |
+| `cmd/web` | arranca el servidor web | — |
+| `internal/web` *(en construcción, #77)* | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas; dibuja las barras del dashboard | no valida reglas: las valida el dominio |
+
+Las dos interfaces usan **el mismo dominio**: una regla se escribe y se testea una sola vez,
+y vale igual en la consola y en la web.
 
 **Por qué así.** Con el dominio aislado:
 
@@ -139,7 +145,7 @@ ErrProjectNameRequired = errors.New("el nombre del proyecto es obligatorio")
 | **Se devuelven, nunca `panic`** | un error de validación es parte normal del uso, no una falla del programa |
 | **Se comparan con `errors.Is`**, nunca por el texto | el mensaje se puede corregir (pasó con las tildes, defecto #60) sin romper ningún test ni ninguna interfaz |
 | **El nombre va en inglés y el mensaje en español** | el mensaje lo lee el usuario: la consola y la web lo muestran tal cual |
-| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más, por ejemplo cuál es el sprint que ya está abierto |
+| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más. Por ejemplo, cuando el archivo de datos no se puede abrir o escribir, el error dice cuál es el archivo (`internal/store/file.go`); y el rechazo por sprint abierto va a decir cuál es *(en construcción, #8)* |
 | **Cada error tiene un comentario con la historia y la regla que lo originan** | se puede rastrear de dónde sale sin buscar |
 | **Lo que no es un error no se informa como error** | un backlog vacío o un proyecto sin sprint abierto son situaciones normales y devuelven una lista vacía o un "no hay", no un error |
 
@@ -253,6 +259,7 @@ Historia (issue) → Spec SDD → Criterio de aceptación → Escenario BDD → 
 | Evidencia TDD | commit `1e45818` (test en rojo) y `13e9e68` (implementación) |
 | Código | `prepare` en `internal/domain/project.go` y `ErrProjectNameRequired` en `errors.go` |
 
+El recorrido de **todas** las historias está en [docs/trazabilidad.md](trazabilidad.md).
 Cada spec cierra con su propia tabla de trazabilidad, y su Fase 4 tiene el commit del test y
 el de la implementación de cada tarea.
 
@@ -267,7 +274,8 @@ go test ./... -cover           # con cobertura
 go vet ./...                   # análisis estático
 gofmt -l .                     # archivos sin formatear (no tiene que devolver nada)
 scripts/coherencia.sh          # coherencia de las specs
-go run ./cmd/app               # la aplicación
+go run ./cmd/app               # la consola
+go run ./cmd/web               # la web, en http://127.0.0.1:8080 (cuando entre la #77)
 ```
 
 Antes de abrir un pull request: los tests en verde, `gofmt -l .` vacío y `dev` traído a la
