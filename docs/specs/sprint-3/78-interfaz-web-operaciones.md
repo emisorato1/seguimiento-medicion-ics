@@ -409,30 +409,36 @@ Escenario: Los datos nuevos siguen al cerrar y volver a abrir
    secreto frente a la pantalla —nadie lo ve hasta revelar (RN-4)—, pero nada impide elegir el
    nombre de otro. Para un equipo que vota junto alcanza; impedirlo exige usuarios, que la
    #77 dejó afuera.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 2. **Los votos sin revelar quedan en el archivo de datos**, porque las rondas entran en lo que
    se guarda (contrato, PR #94). Quien abra el archivo con un editor los ve. La alternativa
-   —no guardar las rondas abiertas— las pierde al cerrar el sistema. **Resuelto en la #13**
-   (su spec, punto 8, en el PR #115): las rondas sin revelar se guardan con sus votos. El
-   secreto vale dentro del sistema —ninguna pantalla muestra un voto antes de revelar—, y el
-   archivo de datos no es una interfaz. La web no cambia.
+   —no guardar las rondas abiertas— las pierde al cerrar el sistema. Lo que se guarde de los
+   votos sin revelar lo decide la #13 en su puerta (su spec propone guardarlas con sus votos,
+   en el PR #115); la #78 lo respeta, y la web no cambia en ningún caso.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 3. **Las listas para elegir no filtran por reglas** (RN-16). Para asignar se ofrecen todas
    las historias, aunque la #9 rechace las que no están estimadas, las Terminadas y las ya
    asignadas: filtrarlas en la web copiaría reglas de la #9 fuera del núcleo. Ofrecer solo
    las que se pueden asignar exige una consulta nueva en el núcleo, que el contrato no tiene.
    La excepción es votar (RN-7): la lista de los que faltan sí la da el núcleo (#13).
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 4. **Un filtro de defectos por vez** (RN-13). El núcleo filtra por estado o por severidad,
    cada uno por su lado; combinarlos sería una regla en la web.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 5. **Confirmación también antes de cerrar un sprint y de resolver un defecto** (RN-9), que no
    se deshacen (#10, #15). La #77 la pedía solo para quitar. No se pide antes de revelar
    —solo se puede con todos los votos— ni antes de acordar —se puede abrir otra ronda y
    acordar de nuevo—.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 6. **Las horas estimadas (#16) y el resumen del proyecto (#5) entran acá.** La #77 dejó el
    resumen para la #78 (su punto 6), y sin cargar horas estimadas desde la web la desviación
    de horas da siempre cero. El resumen depende de que la #5 llegue a `dev` (RN-20).
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 7. **Cada pantalla se conecta cuando su historia de dominio está en `dev`.** La issue dice
    que hasta entonces «se prueba contra el contrato», pero una pantalla llama al núcleo y no
    se puede conectar a una operación que todavía no existe. Las tareas siguen el orden
    en que llegan las historias de dominio, y se pueden entregar por partes (D13).
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -497,7 +503,7 @@ falta algo del núcleo, se pide en la historia de dominio que corresponde (ver D
 | **D7** El filtro de defectos va en la dirección, como parámetro, y es uno por vez | un formulario por POST; combinar los dos filtros | filtrar no cambia nada, así que se pide por GET y la página filtrada se puede recargar o guardar. Combinarlos sería una regla nueva fuera del núcleo (punto 4) |
 | **D8** Cerrar el sprint es un solo formulario con la fecha y una casilla por historia, y la confirmación muestra cuáles quedan completadas y cuáles vuelven al backlog | marcar las completadas una por una y cerrar aparte | la #10 recibe todo junto, en una sola lista (su punto 3), y marcar de a una dejaría un estado intermedio que el núcleo no tiene |
 | **D9** La confirmación de la #77 (D9) se usa también para cerrar un sprint y resolver un defecto | confirmar solo al quitar | no se deshacen (#10, #15). Es la misma página intermedia, sin JavaScript |
-| **D10** Las listas para elegir salen de las consultas del núcleo sin filtrar por reglas: el backlog para asignar, abrir rondas o registrar esfuerzo; los integrantes; los sprints; las severidades y los estados con su nombre. Las del backlog van en el orden del listado ordenado de la #7 —por prioridad, con las Terminadas al final (su RN-10, en el PR #105)— cuando la #7 esté en `dev`; mientras, en el orden del núcleo | filtrar en la web las que el núcleo va a rechazar; ordenarlas en la web | es la D7 y la D10 de la #77 aplicadas a las listas nuevas (punto 3). La única lista filtrada, la de los que faltan votar, la filtra el núcleo. El orden de la #7 pone primero lo que queda por hacer, que es lo que se elige al planificar, y ordenar en la web copiaría su regla fuera del núcleo |
+| **D10** Las listas para elegir salen de las consultas del núcleo sin filtrar por reglas: el backlog para asignar, abrir rondas o registrar esfuerzo; los integrantes; los sprints; las severidades y los estados con su nombre. Las del backlog van en el orden del listado ordenado de la #7, tal como quede en `dev`; mientras la #7 no esté, en el orden del núcleo | filtrar en la web las que el núcleo va a rechazar; ordenarlas en la web | es la D7 y la D10 de la #77 aplicadas a las listas nuevas (punto 3). La única lista filtrada, la de los que faltan votar, la filtra el núcleo. El orden de la #7 pone primero lo que queda por hacer, que es lo que se elige al planificar, y ordenar en la web copiaría su regla fuera del núcleo |
 | **D11** Las horas se leen como número con coma o con punto, y lo que no es número se marca junto al campo sin llamar al dominio. **«NaN» e «Inf» (y sus variantes, como «infinity») también se marcan como «no es un número»**, aunque la conversión de texto a número de Go los acepta | dejar pasar el texto y que lo rechace el dominio | es controlar la forma, como las fechas en la #77 (D7): el dominio recibe horas, no texto. Que sean mayores que cero lo decide el dominio, pero el infinito es mayor que cero y pasaría, y NaN no es una cantidad de horas: ninguno de los dos es un número que alguien escriba como horas |
 | **D12** El resumen del proyecto (#5) se suma a la página del proyecto de la #77 solo cuando la #5 está en `dev` | una página aparte; esperarla para empezar la #78 | la #77 lo dejó así (su punto 6), y el resto de la #78 no depende de ella |
 | **D13** Cada pantalla se entrega cuando su historia de dominio está en `dev`, en PRs con `Refs #78`, y el último cierra la historia | esperar a que estén todas para un solo PR | son cinco pantallas sobre nueve historias de dominio de cuatro personas. Esperarlas a todas deja la web entera para el último día. Es el caso 1 de CLAUDE.md para partir una historia |
