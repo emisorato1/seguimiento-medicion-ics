@@ -521,6 +521,7 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 2 (NaN, hallazgo de la revisión) | `4708708` | `9dd7309` |
 | Conversión: las horas estimadas se guardan (regla de la #77) | `ac4eb74` | `8b364b3` |
 | Conversión: horas estimadas negativas en los datos guardados | `a2dbb04` | `eea8b48` |
+| `Metrics` declarado como dato plano, antes que su cálculo | — (sin test, ver Desvíos) | `ab6d4e7` |
 
 Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
 existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
@@ -557,6 +558,15 @@ Ninguno de comportamiento. Uno de orden:
   #92 entró antes que este PR, le tocó a esta historia. Al reconstruir, las horas pasan por
   la misma regla que al cargarlas: cero es "sin horas estimadas" y un valor negativo rechaza
   la carga (RN-17, RN-18).
+
+- **`Metrics` se declaró antes que su cálculo, sin test** (`ab6d4e7`, en `metrics.go`). Es un
+  dato plano con las once métricas del contrato y sus campos son públicos, porque la #17, la
+  #18 y la #19 lo arman a mano en sus tests desde fuera del paquete. Sin el tipo, esas
+  historias no compilan, y el cálculo de esta historia (tareas 4 a 16) espera a que existan
+  el sprint, el esfuerzo y los defectos. Lo decidió el 21/10 el Agile Enabler y quedó en el
+  contrato (PR #122). No lleva test ni RED porque es una declaración sin comportamiento: no
+  hay nada que un test pueda verificar que falle antes y pase después. El comportamiento
+  llega con las tareas 4 a 16, cada una con su test primero.
 
 Nota de proceso: las tareas 4 a 16 necesitan `Sprint` (#8), `Effort` (#14) y `Defect` (#15).
 Como ninguna está en `dev` y esas entidades son de sus dueños, las tareas 1 a 3 entran en un
