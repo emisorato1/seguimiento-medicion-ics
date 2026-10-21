@@ -418,6 +418,7 @@ solo.
 | `internal/domain/defect_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/errors.go` | se modifica | los errores propios de esta historia |
 | `internal/domain/project.go` | se modifica | la lista de defectos y su contador dentro del proyecto |
+| `internal/domain/registry_json.go` y su test | se modifican | los defectos y su contador entran en la conversión del registro a JSON, con su caso en el test de ida y vuelta, para que no se pierdan al cerrar la web (regla de la #77 en AGENTS.md) |
 
 ### Decisiones
 
@@ -429,6 +430,7 @@ solo.
 | El texto de la severidad se convierte a severidad en el dominio | que la interfaz lo traduzca y rechace lo inválido | si la consola rechaza un texto inválido por su cuenta, la RN-6 queda duplicada fuera del dominio y sin tests, como ya se decidió en la #4 con los roles |
 | Las consultas filtradas recorren la lista en el momento | guardar los defectos agrupados por estado y por severidad | con el cambio de estado habría que mantener los grupos sincronizados, y el volumen no lo justifica |
 | Un error propio por cada rechazo | un único error de "defecto inválido" | la Fase 1 da siete mensajes distintos y los tests necesitan distinguir cuál salió |
+| Al cargar los datos guardados, cada defecto conserva su número, su estado y sus sprints, y pasa por las mismas reglas del alta y de la resolución | volver a registrarlo con el alta, que le daría un número nuevo y lo dejaría Abierto | es lo que hace la #77 con las historias: se valida con lo mismo y se conserva lo que ya tenía. Los sprints de detección y de resolución se validan contra los sprints del proyecto, así que la conversión carga los sprints antes que los defectos |
 
 ### Dependencias y restricciones
 
@@ -478,6 +480,7 @@ RN-18.
 | 13 | Consultar todos los defectos, los de un estado y los de una severidad, en orden de registro, y una consulta sin resultados devuelve lista vacía | Listar los defectos del proyecto | RN-15 | pendiente |
 | 14 | Los defectos de un proyecto no aparecen en otro, y cada proyecto numera desde 1 | Los defectos de un proyecto no aparecen en otro | RN-16 | pendiente |
 | 15 | Operar sobre un defecto o un proyecto que no existe informa que no se encontró y no cambia nada | Operar sobre algo que no existe | RN-19 | pendiente |
+| 16 | Los defectos entran en la conversión del registro: uno Abierto, uno En curso y uno Resuelto, con sus severidades y sus sprints, se reconstruyen iguales, con su número y el contador; uno inválido en el archivo (sin título, severidad desconocida, historia o sprint que no existen, Resuelto sin sprint de resolución) rechaza la carga | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
 
 ### Por qué este orden
 
@@ -491,13 +494,19 @@ RN-18.
   grupo porque necesita un defecto resuelto, que recién existe después de la 9.
 - **La 13 y la 14 son las consultas**, que necesitan varios defectos con estados y
   severidades distintas: por eso van cuando las tres operaciones ya funcionan.
-- **La 15 va al final** porque el defecto o el proyecto inexistente es el borde más externo.
+- **La 15** va después de las consultas porque el defecto o el proyecto inexistente es el
+  borde más externo.
+- **La 16 cierra la historia**: la conversión a JSON guarda lo que ya existe, así que va
+  cuando el defecto tiene todos sus datos y sus reglas. No tiene escenario propio en la
+  Fase 1, como la tarea 14 de la #13: es la regla de la #77 para toda entidad nueva.
 
 ### Cobertura
 
 Las diecinueve reglas quedan cubiertas: RN-1 (1, 2), RN-2 (1), RN-3 (1), RN-4 (3), RN-5 (3),
 RN-6 (4), RN-7 (5), RN-8 (6), RN-9 (7), RN-10 (8), RN-11 (9), RN-12 (10), RN-13 (11),
 RN-14 (12), RN-15 (13), RN-16 (14), RN-17 (2), RN-18 (3, 4, 5, 6, 8, 10, 11, 12), RN-19 (15).
+La tarea 16 no cubre una regla de la Fase 1: es la regla de la #77 de que los datos sigan al
+cerrar y volver a abrir.
 
 | Criterio de aceptación | Tareas |
 |---|---|
@@ -535,7 +544,9 @@ esta historia se parte en dos, que es el caso 1 de "Cuándo se puede partir una 
 1. **Primer PR (`Refs #15`):** esta spec con sus tres puertas y la **tarea 1**, que deja el
    `Defect`, su severidad, su estado, el registro y la lista. Necesita el `Sprint` de la #8
    en `dev`.
-2. **Segundo PR (`Closes #15`):** las tareas 2 a 15.
+2. **Segundo PR (`Closes #15`):** las tareas 2 a 16. La conversión a JSON (tarea 16) va en
+   este PR y necesita que los sprints de la #8 ya estén en la conversión, porque los defectos
+   se validan contra ellos al cargar.
 - **La tarea 5 necesita una historia Terminada**, y los cambios de estado son de la #9 y la
   #10. El test la prepara desde dentro del paquete, igual que hizo la #12 en su tarea 9.
 
