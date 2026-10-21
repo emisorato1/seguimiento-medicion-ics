@@ -12,6 +12,12 @@ func (p *Project) PrioritizedBacklog() []*Story {
 	stories := p.Backlog()
 	sort.Slice(stories, func(i, j int) bool {
 		a, b := stories[i], stories[j]
+		// Las Terminadas van al final, despues de todo lo que queda por hacer, que es para
+		// lo que se usa el listado al planificar (RN-10).
+		aDone, bDone := a.state == StoryDone, b.state == StoryDone
+		if aDone != bDone {
+			return bDone
+		}
 		// La importancia sale del orden en que la #6 declara las prioridades: Alta, Media,
 		// Baja (RN-1, RN-2).
 		if a.priority != b.priority {
