@@ -218,9 +218,14 @@ Se pide con `p.Dashboard()`, que no falla: si el proyecto no existe, lo informa 
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
 PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.WritePDF(w)`, que **escribe el PDF en un
-`io.Writer`** y solo lee `Title`, `GeneratedOn` y `Sections`. El dominio no toca archivos: la
-consola lo graba en disco y la web lo manda como descarga (decidido el 20/10, al escribir la
-spec de la #78; reemplaza a `r.ExportPDF(path)`).
+`io.Writer`** y solo lee `Title`, `GeneratedOn` y `Sections`. El dominio no toca archivos: **la web
+lo manda como descarga (#78)** y la consola no exporta, porque queda con lo de la #24
+(decidido el 20/10, al escribir la spec de la #78; reemplaza a `r.ExportPDF(path)`).
+
+**`Metrics` se declara antes que su cálculo.** Es un dato plano y sus campos son públicos, porque
+la #17 y la #18 lo arman a mano en sus tests. Lo declara la #16 en un PR chico, sin
+comportamiento y por lo tanto sin test, para que la #17, la #18 y la #19 no esperen a que
+existan el sprint, el esfuerzo y los defectos (decidido el 21/10).
 
 ### `VotingRound` — historias #13 y #73
 
