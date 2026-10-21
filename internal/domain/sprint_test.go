@@ -229,3 +229,18 @@ func TestUnSprintConFechasPasadasEsValido(t *testing.T) {
 		t.Errorf("se esperaban las fechas tal como se indicaron, salio %v y %v", sprint.Start(), sprint.End())
 	}
 }
+
+// Escenario: Guardar el Sprint Goal sin espacios en los extremos
+// Cubre: RN-7
+func TestGuardarElSprintGoalSinEspaciosEnLosExtremos(t *testing.T) {
+	project := unProyecto(t)
+
+	sprint, err := project.AddSprint(SprintData{Goal: "  Tener el backlog estimado  ", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el sprint sin error, salio: %v", err)
+	}
+	if sprint.Goal() != "Tener el backlog estimado" {
+		t.Errorf("se esperaba el goal %q, salio %q", "Tener el backlog estimado", sprint.Goal())
+	}
+}
