@@ -29,9 +29,46 @@ type Sprint struct {
 	closedOn         time.Time
 }
 
+// SprintData son los datos con los que se crea un sprint. El numero no es un dato: lo asigna
+// el sistema (RN-1).
+type SprintData struct {
+	Goal  string
+	Start time.Time
+	End   time.Time
+}
+
 // Number devuelve el numero del sprint dentro de su proyecto, que no cambia nunca.
 func (s *Sprint) Number() int {
 	return s.number
+}
+
+// State devuelve en que etapa esta el sprint.
+func (s *Sprint) State() SprintState {
+	return s.state
+}
+
+// Stories devuelve una copia de los identificadores de las historias asignadas al sprint:
+// cambiar lo que se recibe no cambia el sprint.
+func (s *Sprint) Stories() []int {
+	stories := make([]int, len(s.stories))
+	copy(stories, s.stories)
+	return stories
+}
+
+// AddSprint crea un sprint en el proyecto con los datos indicados. Recibe el numero que
+// sigue al del ultimo sprint creado en el proyecto, nace abierto y sin historias (RN-1,
+// RN-3).
+func (p *Project) AddSprint(data SprintData) (*Sprint, error) {
+	sprint := &Sprint{
+		number: p.lastSprintNumber + 1,
+		goal:   data.Goal,
+		start:  data.Start,
+		end:    data.End,
+		state:  SprintOpen,
+	}
+	p.sprints = append(p.sprints, sprint)
+	p.lastSprintNumber = sprint.number
+	return sprint, nil
 }
 
 // Sprints devuelve todos los sprints del proyecto, en orden de numero. La lista es nueva,
