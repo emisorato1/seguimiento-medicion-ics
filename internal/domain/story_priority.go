@@ -10,10 +10,16 @@ import "sort"
 // lugar sin trabajo extra (RN-6).
 func (p *Project) PrioritizedBacklog() []*Story {
 	stories := p.Backlog()
-	// La importancia sale del orden en que la #6 declara las prioridades: Alta, Media, Baja
-	// (RN-1, RN-2). SliceStable deja en el orden en que vienen las de igual prioridad.
-	sort.SliceStable(stories, func(i, j int) bool {
-		return stories[i].priority < stories[j].priority
+	sort.Slice(stories, func(i, j int) bool {
+		a, b := stories[i], stories[j]
+		// La importancia sale del orden en que la #6 declara las prioridades: Alta, Media,
+		// Baja (RN-1, RN-2).
+		if a.priority != b.priority {
+			return a.priority < b.priority
+		}
+		// A igual prioridad, por identificador, explicito: no depende del orden en que el
+		// backlog este guardado (RN-3).
+		return a.id < b.id
 	})
 	return stories
 }
