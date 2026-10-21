@@ -6,7 +6,9 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a las puertas.
+  falta y lo presenta a las puertas. Revisado por el responsable el 21/10: decidió los
+  puntos de la puerta, dio por resuelto el 7 con el contrato del PR #94, cerró todas las
+  formas de imprimir la ronda y escribió qué se valida al cargar las rondas guardadas.
 - **Depende de:** #4 (los integrantes son los que votan), #6 (la historia y su estado) y #12
   (la escala de story points); las tres ya están en `dev`
 - **La necesitan:** #73 (diferencias, rondas nuevas y estimación acordada)
@@ -300,24 +302,36 @@ Escenario: Consultar la ronda actual de una historia que no existe
    puede revelar; como acá no hay forma de cancelarla, la salida es estimar directo con la
    #12. La alternativa es tomar siempre los integrantes del momento: el que llega tiene que
    votar antes de revelar y el voto del que sale desaparece.
+   **Decidido el 21/10: se acepta como está, con su consecuencia escrita.** Como la ronda no
+   se puede cancelar y la RN-7 no deja abrir otra mientras haya una sin revelar, **esa
+   historia ya no se puede votar con Planning Poker**: se estima directo con la #12. Que
+   alguien salga del proyecto en medio de una ronda es raro, y cancelar rondas queda afuera
+   de esta historia.
 2. **Un solo integrante puede votar solo.** "Nadie estima solo" ([CLAUDE.md](../../../CLAUDE.md))
    es una regla del equipo, no del sistema, y un proyecto de una persona no podría usar el
    Planning Poker. Si se quiere un mínimo de dos, cambia la RN-6.
+   **Decidido el 21/10: se acepta como está.**
 3. **El voto no se cambia (RN-10)**, porque la issue dice "uno solo por ronda". Si el equipo
    quiere poder cambiarlo antes de revelar, el segundo reemplaza al primero y el secreto no se
    afecta.
+   **Decidido el 21/10: el voto no se cambia.**
 4. **Revelar es un pedido explícito (RN-14)**, no pasa solo con el último voto: como dice la
    guía, las cartas se dan vuelta juntas cuando alguien lo pide. Y **revelar dos veces es un
    error (RN-16)**, con el criterio que la #4 y la #9 aplicaron a los repetidos.
+   **Decidido el 21/10: se acepta como está.**
 5. **Sin "?" ni "café"**: la issue pide un valor válido de Fibonacci. Agregarlas obliga a
    decidir cómo se guardan y a dejarlas fuera del más bajo y el más alto de la #73.
+   **Decidido el 21/10: sin "?" ni "café".**
 6. **Una sola ronda por historia hasta que esté la #73.** Mientras tanto, pedir una segunda
    ronda se rechaza con el aviso de la RN-7 aunque la primera ya esté revelada. La RN-7 sigue
    valiendo después de la #73 para las rondas sin revelar.
-7. **Lo que le falta al contrato.** [`docs/diseno-dominio.md`](../../diseno-dominio.md) no
-   tiene los participantes de la ronda, y dice que "solo se sabe quién votó y quién no" pero
-   no nombra esas consultas ni la de ver los votos revelados. Acá no se les inventó nombre:
-   el dueño de la entidad los agrega al contrato antes de la tarea 1 (regla 1 del contrato).
+   **Decidido el 21/10: se acepta como está.** La #73 también es de Maximiliano y la afloja.
+7. **Lo que le faltaba al contrato.** El borrador marcaba que
+   [`docs/diseno-dominio.md`](../../diseno-dominio.md) no tenía los participantes de la ronda
+   ni nombraba las consultas de quién votó, quién falta y los votos revelados.
+   **Resuelto en el contrato (PR #94, 20/10):** ya tiene `Participants`, `r.Voted()`,
+   `r.Pending()`, `r.Votes()` y `p.CurrentVotingRound(storyID)`. No hace falta tocarlo antes
+   de implementar.
 8. **Agregados del contrato del 20/10 (PR #94), para que los revise Maximiliano en la
    puerta.** Los pidió la web (#78) y los escribió el Agile Enabler al ajustar el contrato;
    no son decisión de esta spec:
@@ -325,23 +339,32 @@ Escenario: Consultar la ronda actual de una historia que no existe
      volver a encontrar la ronda que está votando, y la lista de rondas de una historia es de
      la #73. Devuelve la última ronda, revelada o no. Sin ninguna ronda se informa y no es un
      error, igual que el sprint abierto de la #8.
+     **Decidido el 21/10: se acepta.**
    - **Las rondas entran en lo que se guarda**, como toda entidad nueva desde la #77 (tarea
      14). La consecuencia: los votos de una ronda sin revelar quedan escritos en el archivo de
      datos, y quien lo abra con un editor los ve. La alternativa —no guardar las rondas
      abiertas— las pierde al cerrar el sistema. **Lo decide esta puerta**; la web (#78) no
      cambia en ningún caso.
+     **Decidido el 21/10: las rondas sin revelar se guardan con sus votos.** El secreto de la
+     RN-12 vale **dentro del sistema**: ninguna pantalla, consulta ni aviso muestra un voto
+     antes de revelar. Quien abre el archivo de datos con un editor ve los votos, igual que
+     puede ver o cambiar cualquier otro dato: el archivo no es una interfaz del sistema. No
+     guardarlas haría perder una ronda a medio votar si se cierra la web, y cifrar los votos
+     sería una protección de mentira, porque la clave estaría en el mismo programa.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
 
 ## Fase 2 — Diseño
 
-Las decisiones transversales del proyecto —un solo paquete `internal/domain`, datos en
-memoria, errores como valores comparables con `errors.Is`, mensajes en castellano y validar
-todo antes de cambiar nada— están en [AGENTS.md](../../../AGENTS.md) y no se repiten acá. Los
-datos y las operaciones son los del [contrato del dominio](../../diseno-dominio.md):
-`VotingRound` con `StoryID`, `Number`, `Votes` y `Revealed`; `OpenVotingRound` sobre el
-proyecto, y `Vote` y `Reveal` sobre la ronda. `Agreed` y `Agree` son de la #73.
+Las decisiones transversales del proyecto —un solo paquete `internal/domain`, errores como
+valores comparables con `errors.Is`, mensajes en castellano, validar todo antes de cambiar
+nada y sumar cada entidad nueva a lo que se guarda— están en [AGENTS.md](../../../AGENTS.md) y
+no se repiten acá. Los datos y las operaciones son los del
+[contrato del dominio](../../diseno-dominio.md): `VotingRound` con `StoryID`, `Number`,
+`Participants`, `Votes` y `Revealed`; `OpenVotingRound` y `CurrentVotingRound` sobre el
+proyecto, y `Vote`, `Reveal`, `Voted`, `Pending` y `Votes` sobre la ronda. `Agreed`,
+`Agree`, `Differences` y `VotingRounds` son de la #73.
 
 ### Enfoque
 
@@ -367,7 +390,10 @@ sostiene con cuatro cosas, y cada una tiene su test:
    revelada responde con un error (RN-12). No hay consulta del voto de un integrante.
 2. **Quién votó y quién falta son consultas aparte** que devuelven solo nombres (RN-13).
 3. **Votar solo responde si se aceptó**, y ningún aviso lleva un valor (RN-10).
-4. **La ronda define cómo se imprime**: número, historia y cuántos votaron, sin valores (RN-17).
+4. **La ronda define cómo se imprime, en todas las formas de imprimir**: número, historia y
+   cuántos votaron, sin valores (RN-17). No alcanza con definir el texto de la ronda: Go tiene
+   una forma de imprimir pensada para depurar que lo saltea y muestra los datos ocultos tal
+   cual. La ronda controla también esa, y el test prueba cada una.
 
 Lo que no se protege, y conviene tenerlo claro para la defensa: **dentro** de
 `internal/domain` cualquier código puede leer los datos ocultos, como con toda entidad. El
@@ -384,7 +410,6 @@ consulta protegida.
 | `internal/domain/voting_round_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/project.go` | se modifica | la lista de rondas dentro del proyecto, al lado de los integrantes y el backlog |
 | `internal/domain/errors.go` | se modifica | los siete errores nuevos: sin integrantes, ronda en curso, no participa, ya votó, votos ocultos, faltan votos y ronda revelada |
-| `docs/diseno-dominio.md` | se modifica | los participantes de la ronda y los nombres de las tres consultas, antes del código (punto 7 de la puerta) |
 
 ### Decisiones
 
@@ -393,7 +418,8 @@ consulta protegida.
 | Los valores solo se leen por la consulta de los votos, que sin revelar responde con un error | que sin revelar devuelva una lista vacía, o los votos con el valor tapado | la lista vacía se confunde con "nadie votó" y una interfaz distraída la mostraría así; el valor tapado obliga a un valor especial que se puede tomar por un voto |
 | Quién votó y quién falta son consultas propias, que devuelven nombres | que la consulta de los votos, sin revelar, traiga los nombres sin el valor | ninguna consulta queda "a medias": la que da valores, o los da todos o rechaza |
 | Una sola entidad de ronda, con su indicador de revelada | un tipo para la ronda sin revelar, sin forma de leer votos, y otro para la revelada | daría la garantía al compilar, pero el contrato define una sola `VotingRound` con `Revealed`, y la #73 guarda rondas en los dos estados en la misma lista |
-| La ronda define cómo se imprime, sin valores | confiar en que los datos ocultos alcanzan | la impresión de Go recorre los datos ocultos: un print de depuración en la consola revelaría los votos sin que se rompa ninguna regla a la vista |
+| La ronda define cómo se imprime, sin valores, **en todas las formas de imprimir** | confiar en que los datos ocultos alcanzan, o definir solo el texto de la ronda | la impresión de Go recorre los datos ocultos: un print de depuración en la consola revelaría los votos sin que se rompa ninguna regla a la vista. Y definir solo el texto deja abierta la forma de imprimir para depurar, que no lo usa |
+| Al cargar las rondas guardadas se validan con las mismas reglas que al votar | confiar en el archivo | un archivo editado a mano podría traer un voto fuera de la escala o de alguien que no participa, y el dominio terminaría con datos que nunca habría aceptado. Es lo que hace la #77 con las demás entidades |
 | Se vota con el nombre y apellido, buscado como en la #4, y el voto guarda el nombre como está cargado | recibir el integrante ya buscado | es lo que hace la #14 con el esfuerzo: la consola tiene el texto, y fuera del dominio no hay una búsqueda de integrante por nombre |
 | Orden de los controles al votar: ronda revelada → participa → ya votó → valor | validar primero el valor | si la ronda ya se reveló nada más importa, y no tiene sentido validar el valor de quien no puede votar; es el criterio de la #9 y la #12 |
 | Se reutilizan la escala y los errores de la #12 (valor inválido, historia terminada) y el de historia inexistente de la #6 | escala y errores propios del Planning Poker | mismo caso y mismo mensaje; con dos escalas, cambiar una deja la otra mintiendo |
@@ -434,9 +460,9 @@ verificados con `errors.Is`. Cada rechazo comprueba además que la ronda quedó 
 | 9 | Rechazar el segundo voto de un integrante, antes que el control del valor y sin mostrar el primero, que es el que queda | Rechazar un segundo voto del mismo integrante | RN-10, RN-12, RN-18 | pendiente |
 | 10 | Rechazar el voto de quien no participa, antes que el control del valor; reconocer el nombre escrito distinto y guardarlo como está cargado; quien sale del proyecto sigue participando | Rechazar el voto de quien no participa de la ronda / Reconocer al integrante aunque el nombre venga escrito distinto / Quien sale del proyecto despues de abrir la ronda sigue participando | RN-2, RN-11, RN-18 | pendiente |
 | 11 | Rechazar votar o revelar de nuevo en una ronda revelada, antes que cualquier otro control | Una ronda revelada ya no acepta cambios | RN-16, RN-18 | pendiente |
-| 12 | Imprimir una ronda sin revelar muestra número, historia y cuántos votaron, sin ningún valor | Mostrar una ronda sin revelar no deja ver los votos | RN-17 | pendiente |
+| 12 | Imprimir una ronda sin revelar muestra número, historia y cuántos votaron, sin ningún valor, en todas las formas de imprimir de Go (`%v`, `%+v`, `%#v` y `%s`) | Mostrar una ronda sin revelar no deja ver los votos | RN-17 | pendiente |
 | 13 | La ronda actual de una historia: la última, revelada o no; sin rondas se informa y no es un error; historia inexistente | Consultar la ronda actual de una historia / Consultar la ronda actual de una historia que no existe | RN-19 | pendiente |
-| 14 | Las rondas entran en la conversión del registro: una sin revelar y una revelada, con sus participantes y sus votos, se reconstruyen iguales | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
+| 14 | Las rondas entran en la conversión del registro: una sin revelar y una revelada, con sus participantes y sus votos, se reconstruyen iguales. Una ronda inválida en el archivo rechaza la carga: historia que no existe, voto fuera de la escala, voto de quien no participa o dos votos de la misma persona, dos rondas sin revelar sobre la misma historia, o una ronda revelada a la que le faltan votos | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
 
 **Cómo se verifica que no se filtra ningún valor.** Los tests de las tareas 9 y 12 votan 13 y
 21, valores que no aparecen en ningún otro dato de la ronda (historia 1, ronda 1, nombres sin
@@ -490,8 +516,8 @@ guarda.
 - **Ninguna tarea espera a otra historia**: la #4, la #6 y la #12 ya están en `dev`. La
   tarea 2 necesita una historia Terminada, que es de la #10: el test fija el estado desde
   dentro del paquete, como hizo la #12.
-- **Los participantes y los nombres de las consultas tienen que estar en el contrato antes de
-  la tarea 1** (punto 7 de la puerta).
+- **El contrato ya tiene los participantes y los nombres de las consultas** (punto 7 de la
+  puerta), así que la tarea 1 no espera nada.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
