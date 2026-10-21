@@ -397,9 +397,9 @@ quedó con los mismos sprints que antes: es la RN-12.
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Un proyecto recién creado no tiene sprints y no tiene sprint abierto, y eso no es un error | Un proyecto sin sprints no tiene sprint abierto | RN-10 | pendiente |
-| 2 | Crear el primer sprint: queda con número 1, en Abierto y sin historias asignadas | Crear el primer sprint de un proyecto | RN-1, RN-2, RN-3 | pendiente |
-| 3 | La consulta del sprint abierto devuelve ese sprint con su goal, sus fechas y su estado | Consultar el sprint abierto de un proyecto | RN-10 | pendiente |
+| 1 | Un proyecto recién creado no tiene sprints y no tiene sprint abierto, y eso no es un error | Un proyecto sin sprints no tiene sprint abierto | RN-10 | hecha |
+| 2 | Crear el primer sprint: queda con número 1, en Abierto y sin historias asignadas | Crear el primer sprint de un proyecto | RN-1, RN-2, RN-3 | hecha |
+| 3 | La consulta del sprint abierto devuelve ese sprint con su goal, sus fechas y su estado | Consultar el sprint abierto de un proyecto | RN-10 | hecha |
 | 4 | Rechazar la creación sin Sprint Goal, con el goal de solo espacios incluido; el proyecto sigue sin sprints | Rechazar un sprint sin Sprint Goal | RN-4, RN-12 | pendiente |
 | 5 | Rechazar la creación sin fecha de inicio y sin fecha de fin, informando cuál de las dos falta | Rechazar un sprint sin las fechas obligatorias | RN-5, RN-12 | pendiente |
 | 6 | Rechazar la creación con la fecha de fin anterior a la de inicio | Rechazar un sprint con fechas incoherentes | RN-6, RN-12 | pendiente |
@@ -412,7 +412,7 @@ quedó con los mismos sprints que antes: es la RN-12.
 | 13 | Dos proyectos tienen cada uno su sprint número 1, y el sprint abierto de uno no impide crear el del otro | Cada proyecto puede tener su propio sprint abierto | RN-9 | pendiente |
 | 14 | Crear un sprint o pedir el sprint abierto de un proyecto que no existe informa que no se encontró el proyecto | Operar sobre un proyecto que no existe | RN-13 | pendiente |
 | 15 | Los sprints de un proyecto se conservan al guardar y volver a cargar el registro, con su número, goal, fechas y estado, y el contador sigue desde donde estaba. Un archivo con el goal vacío, fechas faltantes o al revés, dos sprints abiertos, o un número repetido, menor que 1 o no menor que el contador se rechaza al cargar | — (casos en el test de ida y vuelta y en el de datos dañados de `registry_json_test.go`) | RN-1, RN-2, RN-4 a RN-6, RN-8 | pendiente |
-| 16 | Consultar un sprint por su número, abierto o cerrado, y un número que no existe informa que no se encontró el sprint | Consultar un sprint por su numero; Consultar un sprint que no existe | RN-15 | pendiente |
+| 16 | Consultar un sprint por su número, abierto o cerrado, y un número que no existe informa que no se encontró el sprint | Consultar un sprint por su numero; Consultar un sprint que no existe | RN-15 | hecha |
 
 **Las tareas 1, 2, 3 y 16 van en un primer pull request**, que se mergea apenas esté: crean
 el sprint, la consulta del sprint abierto y la consulta por número, que es lo que necesitan la
@@ -476,6 +476,28 @@ Los diecisiete escenarios de la Fase 1 tienen su tarea en la columna "Escenario 
 > Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805). Las condiciones de la revisión de las puertas (de Maxi, Juliana y Emiliano) se aplicaron el 21/10 en 3c5acf2 y 5fbf1df: consulta por número (RN-15, tarea 16), qué se controla al cargar (tarea 15) y sacar "datos en memoria".
 
 ## Fase 4 — Implementación
+
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.**
+
+### Primer pull request (PR #104): tareas 1, 2, 3 y 16
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `5e2b377` | `ff3264e` |
+| 2 | `5d602fa` | `e3a9416` |
+| 3 | `6cf7475` | `de2ac50` |
+| 16 | `5de4cda` | `ee69eed` |
+
+Las cuatro fallaron antes de su implementación, y cada commit de test dice por qué.
+
+- **El contador de sprints guarda el último número asignado**, que arranca en cero, y no "el
+  próximo". Así un proyecto que se carga de un archivo que todavía no guarda sprints (la
+  tarea 15 va en el segundo pull request) numera igual desde 1, sin inicializar nada.
+- **Este pull request todavía no valida ni guarda en el archivo**: las validaciones son las
+  tareas 4 a 9 y la persistencia la 15. Nadie crea sprints desde la interfaz todavía (la
+  web es la #78), así que no hay forma de que entre un sprint inválido mientras tanto.
+
+### Segundo pull request: tareas 4 a 15
 
 _Se completa durante la implementación._
 
