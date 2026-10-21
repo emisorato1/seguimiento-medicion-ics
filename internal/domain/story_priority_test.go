@@ -146,3 +146,103 @@ func TestBacklogOrdenadoDeUnProyectoConUnaSolaHistoria(t *testing.T) {
 		t.Fatalf("se esperaba solo la historia 1, salio: %v", identificadores(listed))
 	}
 }
+
+// Escenario: Listar el backlog ordenado por prioridad
+// Cubre: RN-1, RN-2
+func TestListarElBacklogOrdenadoPorPrioridad(t *testing.T) {
+	project, _ := conHistorias(t, PriorityLow, PriorityHigh, PriorityMedium)
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 2, 3, 1) {
+		t.Fatalf("se esperaba el orden [2 3 1], salio: %v", identificadores(listed))
+	}
+}
+
+// Escenario: No hay historias de prioridad alta
+// Cubre: RN-2
+func TestNoHayHistoriasDePrioridadAlta(t *testing.T) {
+	project, _ := conHistorias(t, PriorityLow, PriorityMedium)
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 2, 1) {
+		t.Fatalf("se esperaba el orden [2 1], sin huecos, salio: %v", identificadores(listed))
+	}
+}
+
+// Esquema del escenario: El orden se actualiza al cambiar una prioridad
+// Cubre: RN-6
+func TestElOrdenSeActualizaAlCambiarUnaPrioridad(t *testing.T) {
+	cases := []struct {
+		name     string
+		priority Priority
+		want     []int
+	}{
+		{"Alta", PriorityHigh, []int{1, 3, 2}},
+		{"Media", PriorityMedium, []int{1, 2, 3}},
+		{"Baja", PriorityLow, []int{1, 2, 3}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, _ := conHistorias(t, PriorityHigh, PriorityMedium, PriorityLow)
+			if err := project.UpdateStory(3, StoryChanges{Priority: ptr(tc.priority)}); err != nil {
+				t.Fatalf("no se pudo cambiar la prioridad de la historia 3: %v", err)
+			}
+
+			listed := project.PrioritizedBacklog()
+
+			if !mismoOrden(identificadores(listed), tc.want...) {
+				t.Fatalf("se esperaba el orden %v, salio: %v", tc.want, identificadores(listed))
+			}
+		})
+	}
+}
+
+// Escenario: Bajar la prioridad de la historia que estaba primera
+// Cubre: RN-6
+func TestBajarLaPrioridadDeLaHistoriaQueEstabaPrimera(t *testing.T) {
+	project, _ := conHistorias(t, PriorityHigh, PriorityMedium, PriorityMedium)
+	if err := project.UpdateStory(1, StoryChanges{Priority: ptr(PriorityLow)}); err != nil {
+		t.Fatalf("no se pudo bajar la prioridad de la historia 1: %v", err)
+	}
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 2, 3, 1) {
+		t.Fatalf("se esperaba el orden [2 3 1], salio: %v", identificadores(listed))
+	}
+}
+
+// Escenario: Cambiar una prioridad por la que ya tenia
+// Cubre: RN-6
+func TestCambiarUnaPrioridadPorLaQueYaTenia(t *testing.T) {
+	project, _ := conHistorias(t, PriorityHigh, PriorityMedium, PriorityLow)
+	if err := project.UpdateStory(2, StoryChanges{Priority: ptr(PriorityMedium)}); err != nil {
+		t.Fatalf("no se pudo cambiar la prioridad de la historia 2: %v", err)
+	}
+
+	listed := project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(listed), 1, 2, 3) {
+		t.Fatalf("se esperaba el orden [1 2 3], salio: %v", identificadores(listed))
+	}
+}
+
+// Escenario: Pedir el listado ordenado no cambia el backlog
+// Cubre: RN-7
+func TestPedirElListadoOrdenadoNoCambiaElBacklog(t *testing.T) {
+	project, stories := conHistorias(t, PriorityLow, PriorityHigh, PriorityMedium)
+
+	project.PrioritizedBacklog()
+
+	if !mismoOrden(identificadores(project.Backlog()), 1, 2, 3) {
+		t.Fatalf("se esperaba el backlog sin ordenar en [1 2 3], salio: %v", identificadores(project.Backlog()))
+	}
+	want := []Priority{PriorityLow, PriorityHigh, PriorityMedium}
+	for i, story := range stories {
+		if story.Priority() != want[i] {
+			t.Errorf("se esperaba la historia %d con prioridad %s, salio %s", story.ID(), want[i], story.Priority())
+		}
+	}
+}
