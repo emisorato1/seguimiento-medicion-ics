@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Sin escenario: tarea 1 de la #6, la historia como dato
 // Tarea 1 de la Fase 3 de la historia #6. No tiene escenario BDD propio: los escenarios
 // empiezan en la tarea 4, cuando ya se puede crear una historia en un backlog.
 // Cubre: RN-2
@@ -45,6 +46,7 @@ func TestUnaHistoriaExponeTodosSusDatos(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 1 de la #6, los criterios que se entregan son una copia
 // Tarea 1: los criterios que se devuelven son una copia, asi nadie cambia los de la historia
 // sin pasar por sus validaciones (decision de encapsulamiento de AGENTS.md).
 // Cubre: RN-2
@@ -60,6 +62,7 @@ func TestCambiarLosCriteriosRecibidosNoCambiaLosDeLaHistoria(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 1 de la #6, el estado como tipo propio
 // Tarea 1: el estado es un tipo propio con los tres valores de la Fase 1, para que no se
 // pueda guardar un estado que no existe.
 // Cubre: RN-2
@@ -82,6 +85,7 @@ func TestLosTresEstadosDeUnaHistoriaSeDistinguen(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 2 de la #6, convertir el texto en una prioridad
 // Tarea 2 de la Fase 3: el dominio convierte el texto que escribe el usuario en una
 // prioridad, ignorando mayusculas y espacios de los extremos. Asi la consola (#24) no
 // duplica la RN-4: solo pasa el texto.
@@ -112,6 +116,7 @@ func TestConvertirElTextoEnUnaPrioridad(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 2 de la #6, hallazgo de la revisión del PR #58
 // Tarea 2 de la Fase 3: una prioridad que no es ninguna de las tres —el valor cero, o una
 // armada a mano— se muestra como "sin prioridad" y no como Alta. Es lo que evita que una
 // historia sin prioridad parezca tenerla (RN-5).
@@ -144,6 +149,7 @@ func TestRechazarUnaPrioridadInvalida(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 2 de la #6; completa lo que informa el escenario "Rechazar una prioridad invalida"
 // Tarea 2: el mensaje del error nombra las tres prioridades validas, asi la consola solo
 // tiene que mostrarlo (RN-2 de la #24).
 // Cubre: RN-4
@@ -157,6 +163,7 @@ func TestElErrorDePrioridadNombraLasValidas(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 2 de la #6, el nombre con que se muestra cada prioridad
 // Tarea 2: las tres prioridades se muestran con el nombre que usa la Fase 1, y es el mismo
 // texto que ParsePriority acepta: lo que se muestra se puede volver a escribir.
 // Cubre: RN-4
@@ -179,6 +186,7 @@ func TestLasTresPrioridadesSeMuestranYSeVuelvenAConvertir(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 1 de la #6, los story points como dato
 // Tarea 1: los story points son uno de los datos que se registran por la RN-2. El valor lo
 // carga la historia #12; aca solo se guarda y se lee.
 // Cubre: RN-2
@@ -283,8 +291,8 @@ func TestLosIdentificadoresSonUnicosDentroDeCadaProyecto(t *testing.T) {
 	}
 }
 
-// Tarea 5 de la Fase 3: el contador no retrocede. No tiene escenario propio en la
-// Fase 1, sale de la RN-1.
+// Escenario: Los identificadores no se repiten
+// Tarea 5 de la Fase 3: el contador no retrocede.
 // Cubre: RN-1
 func TestLosIdentificadoresDeLasHistoriasNoSeRepiten(t *testing.T) {
 	project := unProyecto(t)
@@ -364,6 +372,7 @@ func TestRechazarUnaHistoriaSinLosDatosObligatorios(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 8 de la #6, sale de la RN-14
 // Tarea 8 de la Fase 3: no tiene escenario propio en la Fase 1, sale de la RN-14.
 // Cubre: RN-14
 func TestDosHistoriasDelMismoProyectoPuedenTenerElMismoTitulo(t *testing.T) {
@@ -384,8 +393,6 @@ func TestDosHistoriasDelMismoProyectoPuedenTenerElMismoTitulo(t *testing.T) {
 }
 
 // Escenario: Modificar una historia pendiente
-// Escenario: Modificar una historia sin cambiar nada
-// Escenario: Reemplazar los criterios de aceptacion
 // Cubre: RN-8, RN-9
 func TestModificarUnaHistoria(t *testing.T) {
 	project := unProyecto(t)
@@ -405,6 +412,7 @@ func TestModificarUnaHistoria(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 9 de la #6, el caso En curso de la RN-8
 // Tarea 9 de la Fase 3: el caso En curso de la RN-8, que se agrego en la Puerta 3 a
 // pedido de Juliana Bustos. No tiene escenario propio en la Fase 1.
 // Cubre: RN-8
@@ -424,7 +432,7 @@ func TestModificarUnaHistoriaEnCurso(t *testing.T) {
 	}
 }
 
-// Caso limite de la Fase 1: modificar una historia sin cambiar nada.
+// Sin escenario: caso límite de la Fase 1 de la #6, modificar una historia sin cambiar nada
 // Cubre: RN-9
 func TestModificarUnaHistoriaSinCambiarNada(t *testing.T) {
 	project := unProyecto(t)
@@ -573,6 +581,7 @@ func TestCambiarElBacklogRecibidoNoCambiaElDelProyecto(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 12 de la #6, el camino feliz de buscar una historia
 // Tarea 12 de la Fase 3: el camino feliz de buscar una historia. No tiene escenario
 // propio en la Fase 1: los escenarios cubren el caso de la historia que no existe.
 // Cubre: RN-13
@@ -590,6 +599,7 @@ func TestBuscarUnaHistoriaDelBacklog(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 9 de la #6, el camino de la descripción
 // Tarea 9 de la Fase 3: el camino de la descripcion, que los demas tests no recorren.
 // No tiene escenario propio en la Fase 1.
 // Cubre: RN-9
