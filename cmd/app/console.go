@@ -180,6 +180,9 @@ func listMembers(scanner *bufio.Scanner, out io.Writer, registry *domain.Project
 	if project == nil {
 		return
 	}
+	if len(project.Members()) == 0 {
+		fmt.Fprintln(out, "No hay integrantes cargados en el proyecto.")
+	}
 	for _, member := range project.Members() {
 		fmt.Fprintf(out, "- %s (%s)\n", member.Name(), member.Role())
 	}
