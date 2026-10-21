@@ -288,8 +288,8 @@ Escenario: Una historia sin estimar al cerrar registra cero puntos
    está En curso, así que al cerrar puede haber una sin estimar. El borrador la acepta como
    completada y registra 0 puntos: rechazarla sería una regla nueva que obliga a reestimar
    antes de cerrar, y con 0 puntos la #16 la cuenta como historia completada sin sumar
-   velocidad. **Agregado el 21/10 en la revisión de puertas: queda para decidir en la
-   puerta.**
+   velocidad. Agregado el 21/10 en la revisión de puertas. **Decidido por el responsable
+   (Emiliano Sorato) el 21/10: se acepta como está.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
