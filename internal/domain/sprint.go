@@ -17,6 +17,27 @@ const (
 	SprintClosed
 )
 
+// String devuelve el nombre del estado tal como lo nombra la Fase 1, que es tambien como se
+// guarda en el archivo de datos.
+func (s SprintState) String() string {
+	if s == SprintClosed {
+		return "Cerrado"
+	}
+	return "Abierto"
+}
+
+// parseSprintState lee un estado guardado por su nombre. Un nombre que no es un estado no se
+// acepta.
+func parseSprintState(text string) (SprintState, error) {
+	switch text {
+	case "Abierto":
+		return SprintOpen, nil
+	case "Cerrado":
+		return SprintClosed, nil
+	}
+	return 0, fmt.Errorf("el estado de sprint %q no existe", text)
+}
+
 // Sprint es un sprint de un proyecto, con los datos que fija el contrato del dominio. Sus
 // datos estan ocultos fuera del paquete: solo se cambian con operaciones que validan. Esta
 // historia usa el numero, el goal, las fechas y el estado; las historias asignadas las llena
