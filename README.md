@@ -54,9 +54,9 @@ de cada escenario de las especificaciones:
 go test ./internal/domain/ -v
 ```
 
-La **interfaz de consola** está en curso (historia #24): por ahora `go run ./cmd/app`
-muestra el nombre y la versión. Cuando esté terminada, va a ser la forma de usar el sistema
-a mano.
+La **interfaz de consola** (historia #24) permite usar todo eso a mano: `go run ./cmd/app`
+abre el programa, que pide el nombre de cada operación y después sus datos, uno por línea.
+Cómo se usa, con un ejemplo completo, está en el [manual de usuario](docs/manual-de-usuario.md).
 
 ## Cómo trabajamos
 
@@ -95,6 +95,7 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [Plantilla de especificación SDD](docs/specs/PLANTILLA.md) — el flujo de cuatro fases con sus puertas de aprobación.
 - [Plan final al 2 de noviembre](docs/plan-final-al-2-de-noviembre.md) — **el plan vigente**: calendario de los sprints que quedan, reparto por persona y riesgos.
 - [Contrato del dominio](docs/diseno-dominio.md) — las entidades compartidas, acordadas antes de implementarlas, para que nadie espere a nadie.
+- [Manual de usuario](docs/manual-de-usuario.md) — cómo se usa el sistema, operación por operación.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
 - [Informe de métricas y cobertura](docs/informe-de-metricas.md) — las métricas del propio proyecto, sprint por sprint, y la cobertura de los tests.

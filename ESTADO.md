@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 22:40. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 08:27. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-887959b 2026-10-20 Merge pull request #110 from emisorato1/docs-trazabilidad-tests
-380e819 2026-10-20 docs: registrar la correccion de trazabilidad en la fase 4 de la #6
-a4bd5a6 2026-10-20 docs: los tests de la #4, la #6 y el defecto #60 declaran su escenario
-d6eafaf 2026-10-20 Merge pull request #103 from emisorato1/agents-persistencia-web
-a30165e 2026-10-20 docs: aclarar que el archivo de datos es de la web y la consola sigue en memoria
-2aceda2 2026-10-20 Merge pull request #92 from emisorato1/historia-77-guardado
-f9064af 2026-10-20 Merge pull request #99 from emisorato1/spec-17-dashboard-web
-62092bf 2026-10-20 Merge pull request #98 from emisorato1/plan-consola-y-web
+cbf4c64 2026-10-20 chore: regenerar ESTADO.md con la historia 24 en review
+03421cb 2026-10-20 docs: manual de usuario de la consola (historia 24)
+75ce9e6 2026-10-20 docs: registrar las tareas 7 a 15 de la historia 24
+43fface 2026-10-20 test: cubrir las ramas de rechazo y el fin de la entrada en la consola (historia 24)
+ac4a4d3 2026-10-20 feat: arrancar la consola conectada al teclado y la pantalla (historia 24, tarea 15)
+fb5bad5 2026-10-20 test: operar sobre un identificador que no existe (historia 24, tarea 13)
+de946a6 2026-10-20 feat: informar los datos con forma inválida en la consola (historia 24, tarea 12)
+7e64570 2026-10-20 test: dato con forma inválida en la consola (historia 24, tarea 12)
 ```
