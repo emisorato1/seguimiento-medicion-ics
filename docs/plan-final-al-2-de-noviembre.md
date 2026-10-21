@@ -133,7 +133,10 @@ cosas se defienden mucho mejor en el navegador que en una terminal.
   resto. Es voluntario y no frena a nadie, porque la web *consume* lo que hacen los demás:
   ninguna otra historia depende de ella. Aun así, **sus historias de dominio van primero**:
   la #16 está en el camino crítico y la web no.
-- **La web no reemplaza a la consola.** Maximiliano termina la #24 como está especificada.
+- **La web no reemplaza a la consola, pero la consola no se amplía.** Maximiliano termina la
+  #24 como está especificada (proyectos, integrantes, backlog y estimación). Todo lo nuevo
+  —sprints, esfuerzo, defectos, Planning Poker, reportes y PDF— se usa desde la web (#78).
+  Ninguna historia le prometía eso a la consola, así que no cambia el alcance.
 - **Si el ritmo no da**, en el punto de control del 25 la #78 se reduce a las pantallas de lo
   que ya esté en `dev`. La #77 no se recorta: es la base.
 
