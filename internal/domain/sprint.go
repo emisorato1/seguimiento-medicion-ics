@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 // SprintState es la etapa en la que esta un sprint (historia #8). Es un tipo propio para que
 // no se pueda guardar un estado que no existe.
@@ -35,6 +38,15 @@ type SprintData struct {
 	Goal  string
 	Start time.Time
 	End   time.Time
+}
+
+// prepareSprint normaliza y valida los datos de un sprint, sin tocar ningun sprint ni el
+// proyecto: si algo falla, no se agrega nada (RN-12).
+func prepareSprint(data SprintData) (SprintData, error) {
+	if strings.TrimSpace(data.Goal) == "" {
+		return SprintData{}, ErrSprintGoalRequired
+	}
+	return data, nil
 }
 
 // Number devuelve el numero del sprint dentro de su proyecto, que no cambia nunca.
@@ -74,6 +86,11 @@ func (s *Sprint) Stories() []int {
 // sigue al del ultimo sprint creado en el proyecto, nace abierto y sin historias (RN-1,
 // RN-3).
 func (p *Project) AddSprint(data SprintData) (*Sprint, error) {
+	data, err := prepareSprint(data)
+	if err != nil {
+		return nil, err
+	}
+
 	sprint := &Sprint{
 		number: p.lastSprintNumber + 1,
 		goal:   data.Goal,
