@@ -245,7 +245,7 @@ func estimateStory(scanner *bufio.Scanner, out io.Writer, registry *domain.Proje
 		return
 	}
 	idText := ask(scanner, out, "Historia (identificador): ")
-	pointsText := ask(scanner, out, "Story points: ")
+	pointsInput := ask(scanner, out, "Story points: ")
 	if strings.TrimSpace(idText) == "" {
 		fmt.Fprintln(out, "Falta indicar la historia: la operación no se ejecuta.")
 		return
@@ -255,7 +255,7 @@ func estimateStory(scanner *bufio.Scanner, out io.Writer, registry *domain.Proje
 		fmt.Fprintln(out, "El identificador de la historia tiene que ser un número: la operación no se ejecuta.")
 		return
 	}
-	points, ok := parseNumber(pointsText)
+	points, ok := parseNumber(pointsInput)
 	if !ok {
 		fmt.Fprintln(out, "Los story points tienen que ser un número: la operación no se ejecuta.")
 		return
