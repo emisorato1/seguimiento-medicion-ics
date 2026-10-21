@@ -24,6 +24,11 @@ import (
 // errPortInUse es el aviso de que otro programa ya usa el puerto.
 var errPortInUse = errors.New("ya lo está usando otro programa")
 
+// wsaeaddrinuse es como avisa Windows que el puerto esta ocupado: el codigo de Winsock
+// 10048, que no es syscall.EADDRINUSE. Ese numero no lo usa ningun otro sistema, asi que
+// se reconoce en todos, y el test lo prueba tambien en Linux y en macOS (revision de Maxi).
+const wsaeaddrinuse = syscall.Errno(10048)
+
 // options son las opciones del comando (D20).
 type options struct {
 	port     int
@@ -76,7 +81,7 @@ func listen(o options) (net.Listener, error) {
 // portError explica en castellano por que no se pudo tomar el puerto, y que hacer.
 func portError(port int, err error) error {
 	switch {
-	case errors.Is(err, syscall.EADDRINUSE):
+	case errors.Is(err, syscall.EADDRINUSE), errors.Is(err, wsaeaddrinuse):
 		return fmt.Errorf("el puerto %d %w. Probá con otro, por ejemplo: go run ./cmd/web -puerto %d", port, errPortInUse, port+1)
 	case errors.Is(err, syscall.EACCES):
 		return fmt.Errorf("no hay permiso para usar el puerto %d. Probá con uno mayor que 1024, por ejemplo: go run ./cmd/web -puerto 8081", port)
