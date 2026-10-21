@@ -43,6 +43,9 @@ type SprintData struct {
 // prepareSprint normaliza y valida los datos de un sprint, sin tocar ningun sprint ni el
 // proyecto: si algo falla, no se agrega nada (RN-12).
 func prepareSprint(data SprintData) (SprintData, error) {
+	// Las fechas son dias, sin hora ni zona, igual que las del proyecto (defecto #59).
+	data.Start = toDay(data.Start)
+	data.End = toDay(data.End)
 	if strings.TrimSpace(data.Goal) == "" {
 		return SprintData{}, ErrSprintGoalRequired
 	}
@@ -51,6 +54,9 @@ func prepareSprint(data SprintData) (SprintData, error) {
 	}
 	if data.End.IsZero() {
 		return SprintData{}, ErrSprintEndRequired
+	}
+	if data.End.Before(data.Start) {
+		return SprintData{}, ErrSprintDatesInconsistent
 	}
 	return data, nil
 }

@@ -55,4 +55,7 @@ var (
 	ErrSprintStartRequired = errors.New("la fecha de inicio del sprint es obligatoria")
 	// ErrSprintEndRequired: crear un sprint sin fecha de fin (historia #8, RN-5).
 	ErrSprintEndRequired = errors.New("la fecha de fin del sprint es obligatoria")
+	// ErrSprintDatesInconsistent: fecha de fin del sprint anterior a la de inicio (historia #8,
+	// RN-6).
+	ErrSprintDatesInconsistent = errors.New("las fechas del sprint son incoherentes: la fecha de fin es anterior a la de inicio")
 )
