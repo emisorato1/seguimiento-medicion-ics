@@ -199,3 +199,33 @@ func TestRechazarUnSprintConFechasIncoherentes(t *testing.T) {
 		t.Fatalf("se esperaba el proyecto sin sprints, salio con %d", len(sprints))
 	}
 }
+
+// Escenario: Un sprint de un solo dia es valido
+// Cubre: RN-6
+func TestUnSprintDeUnSoloDiaEsValido(t *testing.T) {
+	project := unProyecto(t)
+
+	sprint, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 1)})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el sprint de un dia sin error, salio: %v", err)
+	}
+	if sprint.Number() != 1 {
+		t.Errorf("se esperaba el sprint 1 registrado, salio el %d", sprint.Number())
+	}
+}
+
+// Escenario: Un sprint con fechas pasadas es valido
+// Cubre: RN-14
+func TestUnSprintConFechasPasadasEsValido(t *testing.T) {
+	project := unProyecto(t)
+
+	sprint, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 3, 1), End: unDia(2026, 3, 14)})
+
+	if err != nil {
+		t.Fatalf("se esperaba crear el sprint con fechas pasadas sin error, salio: %v", err)
+	}
+	if !sprint.Start().Equal(unDia(2026, 3, 1)) || !sprint.End().Equal(unDia(2026, 3, 14)) {
+		t.Errorf("se esperaban las fechas tal como se indicaron, salio %v y %v", sprint.Start(), sprint.End())
+	}
+}
