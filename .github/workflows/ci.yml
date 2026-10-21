@@ -59,3 +59,21 @@ jobs:
         with:
           name: cobertura
           path: cobertura.out
+
+  # Job aparte, y no una matriz del de arriba: la proteccion de dev exige exactamente el
+  # chequeo "Formato, analisis y tests", y una matriz le cambiaria el nombre. Este job no es
+  # obligatorio para mergear; existe porque parte del equipo trabaja en Windows y la
+  # presentacion puede ser ahi (defecto #108).
+  windows:
+    name: Tests en Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache: true
+
+      - name: Tests
+        run: go test ./...
