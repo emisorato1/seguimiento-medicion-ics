@@ -302,9 +302,9 @@ de acuerdo con alguno, es el momento de decirlo:
 
 ## Fase 2 — Diseño
 
-Las decisiones transversales del proyecto —un solo paquete `internal/domain`, datos en
-memoria, errores como valores del dominio comparables con `errors.Is`, mensajes en
-castellano y validar todo antes de cambiar nada— están en
+Las decisiones transversales del proyecto —un solo paquete `internal/domain`, errores como
+valores del dominio comparables con `errors.Is`, mensajes en castellano, la persistencia en
+un archivo desde la #77 y validar todo antes de cambiar nada— están en
 [AGENTS.md](../../../AGENTS.md) y no se repiten acá. Los datos del sprint y los nombres de
 sus operaciones ya están fijados en [el contrato del dominio](../../diseno-dominio.md).
 Esta fase registra solo lo propio de esta historia.
@@ -358,7 +358,7 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
 | Las fechas del sprint se guardan por día, reusando la normalización que ya hace el proyecto | guardarlas tal como llegan, con hora y zona | los casos límite de la Fase 1 piden que dos fechas del mismo día sean la misma fecha; reusar lo de la #3 evita que el sprint compare distinto que el proyecto (defecto #59) |
 | La entidad se crea completa, con los datos del contrato que esta historia no usa | crear solo el número, el goal, las fechas y el estado | el contrato ya los fija, y si no están, la #9 y la #10 tienen que volver a tocar la entidad y chocan entre ellas en el mismo archivo |
 | El rechazo por sprint abierto **envuelve el error del dominio con el número** del sprint que está abierto | un error fijo sin el número, o un error distinto por cada número | la RN-8 pide informar cuál está abierto, y un error del paquete es un valor fijo. Envuelto, `errors.Is` lo sigue reconociendo y el mensaje que ve el usuario dice el número |
-| Los sprints se guardan en el archivo de datos junto con su proyecto, y al cargarlos pasan por las mismas validaciones que al crearlos | dejarlos solo en memoria | desde la #77 la web guarda todo en un archivo, y `AGENTS.md` pide que toda entidad nueva entre en esa conversión con su caso de ida y vuelta: si no, la web perdería los sprints al cerrarse sin que ningún test lo note. Esta historia guarda los datos que crea; los del cierre los suma la #10 |
+| Los sprints se guardan en el archivo de datos junto con su proyecto, y al cargarlos se controla que el archivo sea coherente: el Sprint Goal no vacío y las fechas presentes y en orden (como en la RN-4 a la RN-6), **como mucho un sprint abierto por proyecto**, y números de sprint **únicos, desde 1 y menores que el contador** del proyecto. No se pueden usar literalmente "las mismas validaciones que al crear", porque crear siempre deja el sprint Abierto y un archivo puede traer sprints cerrados | dejarlos solo en memoria | desde la #77 la web guarda todo en un archivo, y `AGENTS.md` pide que toda entidad nueva entre en esa conversión con su caso de ida y vuelta: si no, la web perdería los sprints al cerrarse sin que ningún test lo note. Esta historia guarda los datos que crea; los del cierre los suma la #10 |
 | **La consulta de un sprint por su número y su error los adelanta esta historia**, aunque el contrato se los asignaba a la #11 | esperar a la #11 | la #15 los necesita desde su primera tarea para validar los sprints de detección y de resolución de un defecto, y la #11 está en el Sprint 3. Son pocas líneas, van en el PR temprano y la #11 las usa tal cual. Lo pidieron Maxi y Juliana en la revisión de las puertas (PR #104), y el contrato quedó actualizado |
 | Lo de esta historia va en `sprint.go`; la #9, la #10 y la #11 agregan archivos propios | que las cuatro historias del sprint escriban en `sprint.go` | es el criterio que ya se aprobó en la Puerta 2 de la #12 para `story_estimation.go`: separar por funcionalidad para que dos personas no editen el mismo archivo |
 
@@ -411,7 +411,7 @@ quedó con los mismos sprints que antes: es la RN-12.
 | 12 | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | RN-11 | pendiente |
 | 13 | Dos proyectos tienen cada uno su sprint número 1, y el sprint abierto de uno no impide crear el del otro | Cada proyecto puede tener su propio sprint abierto | RN-9 | pendiente |
 | 14 | Crear un sprint o pedir el sprint abierto de un proyecto que no existe informa que no se encontró el proyecto | Operar sobre un proyecto que no existe | RN-13 | pendiente |
-| 15 | Los sprints de un proyecto se conservan al guardar y volver a cargar el registro, con su número, goal, fechas y estado, y el contador sigue desde donde estaba | — (caso en el test de ida y vuelta de `registry_json_test.go`) | RN-1, RN-2 | pendiente |
+| 15 | Los sprints de un proyecto se conservan al guardar y volver a cargar el registro, con su número, goal, fechas y estado, y el contador sigue desde donde estaba. Un archivo con el goal vacío, fechas faltantes o al revés, dos sprints abiertos, o un número repetido, menor que 1 o no menor que el contador se rechaza al cargar | — (casos en el test de ida y vuelta y en el de datos dañados de `registry_json_test.go`) | RN-1, RN-2, RN-4 a RN-6, RN-8 | pendiente |
 | 16 | Consultar un sprint por su número, abierto o cerrado, y un número que no existe informa que no se encontró el sprint | Consultar un sprint por su numero; Consultar un sprint que no existe | RN-15 | pendiente |
 
 **Las tareas 1, 2, 3 y 16 van en un primer pull request**, que se mergea apenas esté: crean
