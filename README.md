@@ -32,8 +32,6 @@ El núcleo de la solución y todas las reglas de negocio están desarrollados en
 
 ## Cómo correrlo
 
-Para usar el sistema sin programar está el **[manual de usuario](docs/manual-de-usuario.md)**.
-
 Hace falta **Go 1.23 o posterior**. No hay dependencias externas: todo es biblioteca estándar.
 
 ```bash
