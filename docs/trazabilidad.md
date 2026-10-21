@@ -1,6 +1,7 @@
 # Trazabilidad
 
-_Generado por `scripts/trazabilidad.sh`. No editar a mano: se regenera con el script._
+_Generado por `scripts/trazabilidad.sh`. No editar a mano: se regenera con el script cada vez
+que entra a `dev` un pull request que toca tests o specs._
 
 En la defensa eligen una funcionalidad y piden el recorrido completo: **historia → spec →
 criterios de aceptación → escenario BDD → test → código**. Acá está ese recorrido para cada

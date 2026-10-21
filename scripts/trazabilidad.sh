@@ -286,7 +286,8 @@ awk -F'\t' -v dir="$TMP" '
   END {
     print "# Trazabilidad"
     print ""
-    print "_Generado por `scripts/trazabilidad.sh`. No editar a mano: se regenera con el script._"
+    print "_Generado por `scripts/trazabilidad.sh`. No editar a mano: se regenera con el script cada vez"
+    print "que entra a `dev` un pull request que toca tests o specs._"
     print ""
     print "En la defensa eligen una funcionalidad y piden el recorrido completo: **historia → spec →"
     print "criterios de aceptación → escenario BDD → test → código**. Acá está ese recorrido para cada"
