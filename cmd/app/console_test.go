@@ -441,3 +441,22 @@ func TestLaEntradaTerminaSinSalir(t *testing.T) {
 		t.Fatalf("se esperaba que la consola terminara sin error al acabarse la entrada, salio: %v", err)
 	}
 }
+
+// Sin escenario: caso límite de la Fase 1 (listar los integrantes cuando no hay ninguno),
+// hallazgo de la revisión del PR #106
+// Cubre: RN-1
+func TestListarLosIntegrantesDeUnProyectoSinIntegrantes(t *testing.T) {
+	var out strings.Builder
+	in := "crear-proyecto\nSistema de metricas\n\n01/10/2026\n\n" +
+		"listar-integrantes\n1\n" +
+		"salir\n"
+
+	err := runConsole(strings.NewReader(in), &out, domain.NewProjectRegistry())
+
+	if err != nil {
+		t.Fatalf("se esperaba que la consola terminara sin error, salio: %v", err)
+	}
+	if !strings.Contains(out.String(), "No hay integrantes cargados") {
+		t.Fatalf("se esperaba ver que el proyecto no tiene integrantes, salio: %q", out.String())
+	}
+}
