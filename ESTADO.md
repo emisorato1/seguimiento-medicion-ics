@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 09:50. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 14:21. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -22,6 +22,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 
 ## Lista para implementar
@@ -33,7 +34,6 @@ _No hay historias en este estado._
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
-| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-892cb34 2026-10-21 Merge pull request #106 from emisorato1/historia-24-interfaz-consola
-ebca791 2026-10-21 fix: el título de la consola lleva tilde, como el de la web (historia 24)
-ded81b7 2026-10-21 docs: registrar las correcciones de la revisión del PR #106 (historia 24)
-70ac198 2026-10-21 refactor: renombrar pointsText a pointsInput en estimar (historia 24)
-6120035 2026-10-21 feat: avisar cuando un proyecto no tiene integrantes (historia 24)
-f0ca0e9 2026-10-21 test: listar los integrantes de un proyecto sin integrantes (historia 24)
-dbab5e3 2026-10-21 Merge branch 'dev' into historia-24-interfaz-consola
-13991df 2026-10-20 Merge pull request #114 from emisorato1/trazabilidad-cabecera
+5135176 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-7-priorizar-backlog
+1ecb95c 2026-10-21 docs: registrar las tres puertas de la historia 7
+34a4154 2026-10-21 Merge pull request #118 from emisorato1/trazabilidad-web
+067e282 2026-10-21 docs: regenerar la trazabilidad con el arreglo del defecto 108
+2200507 2026-10-21 fix: la trazabilidad cuenta como codigo las plantillas y el css de la web
+308e488 2026-10-21 Merge pull request #117 from emisorato1/chore-historia-24-hecha
+a72e56b 2026-10-21 Merge remote-tracking branch 'origin/dev' into trazabilidad-web
+10933a8 2026-10-21 Merge pull request #116 from emisorato1/defecto-108-tests-store-windows
 ```
