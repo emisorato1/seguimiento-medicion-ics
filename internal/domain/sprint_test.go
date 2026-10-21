@@ -184,3 +184,18 @@ func TestRechazarUnSprintSinLasFechasObligatorias(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Rechazar un sprint con fechas incoherentes
+// Cubre: RN-6, RN-12
+func TestRechazarUnSprintConFechasIncoherentes(t *testing.T) {
+	project := unProyecto(t)
+
+	_, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 14), End: unDia(2026, 11, 1)})
+
+	if !errors.Is(err, ErrSprintDatesInconsistent) {
+		t.Fatalf("se esperaba ErrSprintDatesInconsistent, salio: %v", err)
+	}
+	if sprints := project.Sprints(); len(sprints) != 0 {
+		t.Fatalf("se esperaba el proyecto sin sprints, salio con %d", len(sprints))
+	}
+}
