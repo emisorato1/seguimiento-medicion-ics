@@ -24,6 +24,9 @@ import (
 //go:embed templates static
 var files embed.FS
 
+// errCrossOrigin es el aviso de que un pedido que cambia algo vino de otro sitio.
+var errCrossOrigin = errors.New("el pedido vino de otra página y no se aceptó: los cambios se hacen desde esta web")
+
 // errPageNotFound es para una direccion que no es de ninguna pagina. Lo que no existe en
 // el dominio, como un proyecto o una historia, se informa con el error del dominio.
 var errPageNotFound = errors.New("no se encontró la página")
@@ -40,7 +43,9 @@ type Server struct {
 	registry *domain.ProjectRegistry
 	saver    Saver
 	mux      *http.ServeMux
-	pages    map[string]*template.Template
+	// handler es el mux detras de la proteccion contra pedidos de otro sitio.
+	handler http.Handler
+	pages   map[string]*template.Template
 	// lock hace que los pedidos usen el registro de a uno (RN-20, D12): net/http atiende
 	// cada pedido en paralelo y el dominio no esta hecho para eso.
 	lock sync.RWMutex
@@ -79,7 +84,19 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/estimar", s.estimateStory)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/quitar-estimacion", s.confirmRemoveEstimate)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/quitar-estimacion", s.removeEstimate)
+
+	// Sin usuarios ni contraseñas (D20), otra pagina abierta en el mismo navegador podria
+	// enviar un formulario a la web. La proteccion de la biblioteca estandar rechaza todo
+	// pedido que cambia algo y viene de otro sitio (revision del PR #95).
+	protection := http.NewCrossOriginProtection()
+	protection.SetDenyHandler(http.HandlerFunc(s.crossOrigin))
+	s.handler = protection.Handler(s.mux)
 	return s
+}
+
+// crossOrigin responde 403 a un pedido de otro sitio, con el aviso en castellano.
+func (s *Server) crossOrigin(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, http.StatusForbidden, "rechazado.html", page{Title: "Pedido rechazado", Data: errCrossOrigin.Error()})
 }
 
 // ServeHTTP atiende cada pedido del navegador. Toma el candado alrededor de todo el pedido,
@@ -93,7 +110,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.lock.Lock()
 		defer s.lock.Unlock()
 	}
-	s.mux.ServeHTTP(w, r)
+	s.handler.ServeHTTP(w, r)
 }
 
 // home lleva a la lista de proyectos, que es la pagina de inicio.
