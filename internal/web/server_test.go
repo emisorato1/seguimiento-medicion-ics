@@ -1194,9 +1194,11 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	}
 }
 
-// No es un escenario de la spec: lo pidio la revision del PR #95. Sin usuarios ni
-// contraseñas (D20), otra pagina abierta en el mismo navegador podria enviar un formulario a
-// la web y cambiar los datos. Un pedido que cambia algo y viene de otro sitio se rechaza.
+// Sin escenario: hallazgo de la revisión de Maximiliano Eula (pedidos de otro sitio).
+// Cubre: #77, D20 (sin usuarios ni contraseñas)
+// Sin usuarios ni contraseñas, otra pagina abierta en el mismo navegador podria enviar un
+// formulario a la web y cambiar los datos. Un pedido que cambia algo y viene de otro sitio
+// se rechaza.
 func TestUnPedidoDeOtroSitioSeRechaza(t *testing.T) {
 	enviar := func(server http.Handler, encabezados map[string]string) *httptest.ResponseRecorder {
 		form := url.Values{"nombre": {"Proyecto ajeno"}, "inicio": {"2026-11-01"}}
