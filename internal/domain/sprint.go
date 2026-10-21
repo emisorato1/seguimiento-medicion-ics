@@ -42,6 +42,21 @@ func (s *Sprint) Number() int {
 	return s.number
 }
 
+// Goal devuelve el Sprint Goal: la meta del sprint, en una frase.
+func (s *Sprint) Goal() string {
+	return s.goal
+}
+
+// Start devuelve el dia de inicio del sprint.
+func (s *Sprint) Start() time.Time {
+	return s.start
+}
+
+// End devuelve el dia de fin planificado del sprint.
+func (s *Sprint) End() time.Time {
+	return s.end
+}
+
 // State devuelve en que etapa esta el sprint.
 func (s *Sprint) State() SprintState {
 	return s.state
@@ -83,5 +98,10 @@ func (p *Project) Sprints() []*Sprint {
 // es un error (RN-10): se informa aparte, para que quien consulta no tenga que distinguir
 // "no hay" de "fallo".
 func (p *Project) OpenSprint() (*Sprint, bool) {
+	for _, sprint := range p.sprints {
+		if sprint.state == SprintOpen {
+			return sprint, true
+		}
+	}
 	return nil, false
 }
