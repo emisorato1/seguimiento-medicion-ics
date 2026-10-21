@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"testing"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
@@ -88,6 +89,22 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 			}
 		})
 	}
+
+	// Revision del PR #95 en Windows: ahi el puerto ocupado llega con el codigo de Winsock
+	// WSAEADDRINUSE (10048), que no es syscall.EADDRINUSE, y el aviso salia con el texto del
+	// sistema. Se arma el error como lo devuelve Windows, asi se prueba en cualquier sistema.
+	t.Run("con el puerto ocupado en Windows tambien avisa en castellano", func(t *testing.T) {
+		deWindows := &net.OpError{Op: "listen", Net: "tcp", Err: os.NewSyscallError("bind", syscall.Errno(10048))}
+
+		err := portError(8080, deWindows)
+
+		if !errors.Is(err, errPortInUse) {
+			t.Fatalf("se esperaba errPortInUse, salio: %v", err)
+		}
+		if strings.Contains(err.Error(), syscall.Errno(10048).Error()) {
+			t.Errorf("no se esperaba el texto del sistema en el aviso, salio: %v", err)
+		}
+	})
 
 	t.Run("con el puerto libre escucha en esa direccion", func(t *testing.T) {
 		opts, _ := parseOptions([]string{"-puerto", "0"})
