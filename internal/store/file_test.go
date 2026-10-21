@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -110,12 +111,47 @@ func TestLoGuardadoSeVuelveALeerIgual(t *testing.T) {
 	}
 }
 
-// sinPermisos saltea el test si corre como administrador, que puede leer y escribir aunque
-// el archivo o la carpeta no lo permitan.
-func sinPermisos(t *testing.T) {
+// Los errores se fabrican con el lugar de las cosas y no con permisos de Unix: Windows ignora
+// los permisos de una carpeta y no impide leer un archivo de permiso 0o000, así que esos casos
+// no fallaban ahí (defecto #108). Que haya un archivo donde se espera una carpeta, o una
+// carpeta donde se espera un archivo, hace fallar la operación en cualquier sistema.
+
+// unaCarpetaEnLugarDelArchivo pone en la ruta del archivo de datos una carpeta con algo
+// adentro, y devuelve lo que tiene, para controlar después que quedó igual.
+func unaCarpetaEnLugarDelArchivo(t *testing.T, path string) []byte {
 	t.Helper()
-	if os.Geteuid() == 0 {
-		t.Skip("como administrador los permisos no frenan nada")
+	contenido := []byte(`{"projects": [ esto no es json`)
+	if err := os.Mkdir(path, 0o700); err != nil {
+		t.Fatalf("no se pudo crear la carpeta de prueba: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(path, "algo"), contenido, 0o600); err != nil {
+		t.Fatalf("no se pudo llenar la carpeta de prueba: %v", err)
+	}
+	return contenido
+}
+
+// unArchivoEnLugarDeLaCarpeta pone un archivo común donde tendría que estar la carpeta del
+// archivo de datos, y devuelve la ruta del archivo de datos: escribir ahí adentro no se puede.
+func unArchivoEnLugarDeLaCarpeta(t *testing.T, dir string) string {
+	t.Helper()
+	carpeta := filepath.Join(dir, "carpeta")
+	if err := os.WriteFile(carpeta, []byte("no soy una carpeta"), 0o600); err != nil {
+		t.Fatalf("no se pudo preparar el archivo de prueba: %v", err)
+	}
+	return filepath.Join(carpeta, "datos-ics.json")
+}
+
+// sinTemporales falla si en la carpeta quedó algún archivo temporal del guardado.
+func sinTemporales(t *testing.T, dir string) {
+	t.Helper()
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatalf("no se pudo leer la carpeta de prueba: %v", err)
+	}
+	for _, entry := range entries {
+		if strings.HasPrefix(entry.Name(), ".datos-") {
+			t.Fatalf("se esperaba que no quedara ningun temporal, quedo %q", entry.Name())
+		}
 	}
 }
 
@@ -123,22 +159,24 @@ func sinPermisos(t *testing.T) {
 // Cubre: #77 RN-24
 func TestUnArchivoDanadoQuedaComoEstaba(t *testing.T) {
 	cases := []struct {
-		name string
-		mode os.FileMode
+		name    string
+		prepare func(t *testing.T, path string) (string, []byte)
 	}{
-		{"texto que no es JSON", 0o600},
-		{"archivo que no se puede leer", 0o000},
+		{"texto que no es JSON", func(t *testing.T, path string) (string, []byte) {
+			original := []byte(`{"projects": [ esto no es json`)
+			if err := os.WriteFile(path, original, 0o600); err != nil {
+				t.Fatalf("no se pudo preparar el archivo de prueba: %v", err)
+			}
+			return path, original
+		}},
+		{"en el lugar del archivo hay una carpeta", func(t *testing.T, path string) (string, []byte) {
+			return filepath.Join(path, "algo"), unaCarpetaEnLugarDelArchivo(t, path)
+		}},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			if tc.mode == 0o000 {
-				sinPermisos(t)
-			}
 			path := filepath.Join(t.TempDir(), "datos-ics.json")
-			original := []byte(`{"projects": [ esto no es json`)
-			if err := os.WriteFile(path, original, tc.mode); err != nil {
-				t.Fatalf("no se pudo preparar el archivo de prueba: %v", err)
-			}
+			left, original := tc.prepare(t, path)
 
 			registry, err := NewFile(path).Load()
 
@@ -148,13 +186,12 @@ func TestUnArchivoDanadoQuedaComoEstaba(t *testing.T) {
 			if registry != nil {
 				t.Fatalf("se esperaba que no se cargara ningun registro")
 			}
-			os.Chmod(path, 0o600)
-			after, err := os.ReadFile(path)
+			after, err := os.ReadFile(left)
 			if err != nil {
-				t.Fatalf("no se pudo releer el archivo de prueba: %v", err)
+				t.Fatalf("no se pudo releer lo que habia: %v", err)
 			}
 			if !bytes.Equal(after, original) {
-				t.Fatalf("se esperaba que el archivo quedara igual, quedo:\n%s", after)
+				t.Fatalf("se esperaba que lo que habia quedara igual, quedo:\n%s", after)
 			}
 		})
 	}
@@ -167,22 +204,10 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 		name    string
 		prepare func(t *testing.T, dir string) string
 	}{
-		{"carpeta donde no se puede escribir", func(t *testing.T, dir string) string {
-			sinPermisos(t)
-			if err := os.Chmod(dir, 0o500); err != nil {
-				t.Fatalf("no se pudo quitar el permiso de escritura: %v", err)
-			}
-			t.Cleanup(func() { os.Chmod(dir, 0o700) })
-			return filepath.Join(dir, "datos-ics.json")
-		}},
+		{"la carpeta del archivo es un archivo", unArchivoEnLugarDeLaCarpeta},
 		{"en el lugar del archivo hay una carpeta", func(t *testing.T, dir string) string {
 			path := filepath.Join(dir, "datos-ics.json")
-			if err := os.Mkdir(path, 0o700); err != nil {
-				t.Fatalf("no se pudo crear la carpeta de prueba: %v", err)
-			}
-			if err := os.WriteFile(filepath.Join(path, "algo"), []byte("x"), 0o600); err != nil {
-				t.Fatalf("no se pudo llenar la carpeta de prueba: %v", err)
-			}
+			unaCarpetaEnLugarDelArchivo(t, path)
 			return path
 		}},
 	}
@@ -196,15 +221,7 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 			if !errors.Is(err, ErrNotSaved) {
 				t.Fatalf("se esperaba ErrNotSaved, salio: %v", err)
 			}
-			entries, err := os.ReadDir(dir)
-			if err != nil {
-				t.Fatalf("no se pudo leer la carpeta de prueba: %v", err)
-			}
-			for _, entry := range entries {
-				if entry.Name() != "datos-ics.json" {
-					t.Fatalf("se esperaba que no quedara ningun temporal, quedo %q", entry.Name())
-				}
-			}
+			sinTemporales(t, dir)
 		})
 	}
 }
@@ -212,14 +229,11 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 // Sin escenario: hallazgo de front en el PR #92, los mensajes van en castellano (AGENTS.md)
 // Cubre: #77 RN-24
 //
-// El error del sistema operativo viene en inglés («permission denied»): el mensaje dice que no
-// se pudo abrir el archivo y cuál, sin ese detalle.
+// El error del sistema operativo viene en inglés: el mensaje dice que no se pudo abrir el
+// archivo y cuál, sin ese detalle.
 func TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano(t *testing.T) {
-	sinPermisos(t)
 	path := filepath.Join(t.TempDir(), "datos-ics.json")
-	if err := os.WriteFile(path, []byte(`{}`), 0o000); err != nil {
-		t.Fatalf("no se pudo preparar el archivo de prueba: %v", err)
-	}
+	unaCarpetaEnLugarDelArchivo(t, path)
 	want := "los datos guardados no se pueden leer: no se pudo abrir el archivo " + path
 
 	_, err := NewFile(path).Load()
@@ -235,13 +249,7 @@ func TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano(t *testing.T) {
 // Lo mismo al guardar: el aviso que muestra la web dice qué archivo no se pudo escribir, sin
 // el detalle en inglés del sistema operativo.
 func TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano(t *testing.T) {
-	sinPermisos(t)
-	dir := t.TempDir()
-	if err := os.Chmod(dir, 0o500); err != nil {
-		t.Fatalf("no se pudo quitar el permiso de escritura: %v", err)
-	}
-	t.Cleanup(func() { os.Chmod(dir, 0o700) })
-	path := filepath.Join(dir, "datos-ics.json")
+	path := unArchivoEnLugarDeLaCarpeta(t, t.TempDir())
 	want := "el cambio no quedó guardado: no se pudo escribir el archivo " + path
 
 	err := NewFile(path).Save(unRegistro(t))

@@ -764,6 +764,26 @@ Se encontraron antes de que entrara a `dev`, así que no se abrió defecto:
   se pudo escribir el archivo …», con la ruta. Tests en `ff2b683` y `6f761d9` (RED por
   comportamiento), arreglos en `d0f0a49` y `3854359`.
 
+### Defecto #108: los tests de `internal/store` en Windows
+
+Lo abrió Agustín Salinas el 20/10 y lo reprodujo Maximiliano Eula el 21/10: en Windows
+fallaban tres tests de `internal/store/file_test.go`, aunque el CI, que corre en Linux, estaba
+en verde. Los tests fabricaban el error con **permisos de Unix** —una carpeta sin permiso de
+escritura y un archivo sin permiso de lectura—, y Windows los ignora: el guardado funcionaba y
+el archivo se leía. Un cuarto caso, «archivo que no se puede leer» del test de la tarea 5,
+pasaba igual en Windows, pero por el motivo equivocado: el archivo tampoco era JSON. **El
+código de `internal/store` estaba bien**: lo que no era portable era el test.
+
+- **Arreglo** (`28e623f`): los errores se fabrican con el lugar de las cosas, que falla en
+  cualquier sistema. Un archivo común donde tendría que estar la carpeta hace que no se pueda
+  escribir, y una carpeta donde tendría que estar el archivo hace que no se pueda leer. Ningún
+  caso quedó salteado, y como ya no dependen de permisos, también corren como administrador.
+- **CI** (`982aed8`): un job aparte, «Tests en Windows», que corre `go test ./...` en
+  `windows-latest`. Es aparte y no una matriz del job de siempre, porque la protección de `dev`
+  exige exactamente el chequeo «Formato, analisis y tests» y una matriz le cambiaría el nombre.
+  No es obligatorio para mergear. Entró antes del arreglo, así que su primera corrida muestra
+  el rojo del defecto; la salida está en el mensaje del commit del arreglo.
+
 Nota para la #16: si el PR #81 (horas estimadas) entra a `dev` antes que esta conversión, o
 después, la que llegue segunda suma `estimatedHours` a `registry_json.go` con su caso en el
 test de ida y vuelta, como pide la regla de Dependencias.
