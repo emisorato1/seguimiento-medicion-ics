@@ -157,3 +157,30 @@ func TestRechazarUnSprintSinSprintGoal(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: Rechazar un sprint sin las fechas obligatorias
+// Cubre: RN-5, RN-12
+func TestRechazarUnSprintSinLasFechasObligatorias(t *testing.T) {
+	cases := []struct {
+		name string
+		data SprintData
+		want error
+	}{
+		{"fecha de inicio", SprintData{Goal: "Tener el backlog estimado", End: unDia(2026, 11, 14)}, ErrSprintStartRequired},
+		{"fecha de fin", SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1)}, ErrSprintEndRequired},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyecto(t)
+
+			_, err := project.AddSprint(tc.data)
+
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+			if sprints := project.Sprints(); len(sprints) != 0 {
+				t.Fatalf("se esperaba el proyecto sin sprints, salio con %d", len(sprints))
+			}
+		})
+	}
+}
