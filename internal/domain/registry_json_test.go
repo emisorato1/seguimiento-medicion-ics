@@ -242,6 +242,8 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "numero de sprint repetido", change: func(d *registryJSON) { d.Projects[0].Sprints[1].Number = 1 }, want: ErrSavedDataInvalid},
 		{name: "contador de sprints que no llega a los numeros usados", change: func(d *registryJSON) { d.Projects[0].LastSprintNumber = 1 }, want: ErrSavedDataInvalid},
 		{name: "estado de sprint inexistente", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Planificado" }, want: ErrSavedDataInvalid},
+		{name: "fecha de inicio de sprint que no es fecha", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Start = "01/10/2026" }, want: ErrSavedDataInvalid},
+		{name: "fecha de fin de sprint que no es fecha", change: func(d *registryJSON) { d.Projects[0].Sprints[0].End = "mañana" }, want: ErrSavedDataInvalid},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
