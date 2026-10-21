@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 17:16. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 08:27. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,6 +16,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
@@ -23,7 +24,6 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
-| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 
 ## Lista para implementar
 
@@ -46,12 +46,11 @@ _No hay historias en este estado._
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Sprint Backlog
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
+_No hay historias en este estado._
 
 ## Product Backlog
 
@@ -71,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-419d247 2026-10-20 Merge pull request #93 from emisorato1/docs-spec-historia-78
-6aee8be 2026-10-20 docs: la #78 usa el contrato ajustado en el PR #94
-8084c1f 2026-10-20 Merge pull request #94 from emisorato1/contrato-78
-62b09df 2026-10-20 docs: ajustar el contrato con lo que encontro la spec de la #78
-7b00a2a 2026-10-20 docs: borrador completo de la spec de la #78
-b1aabdf 2026-10-20 Merge pull request #91 from emisorato1/chore-estado-77-en-progreso
-c62de8e 2026-10-20 chore: regenerar ESTADO.md con la historia 77 en progreso
-31cc781 2026-10-20 Merge pull request #87 from emisorato1/sprint-1-sin-historia-6
+cbf4c64 2026-10-20 chore: regenerar ESTADO.md con la historia 24 en review
+03421cb 2026-10-20 docs: manual de usuario de la consola (historia 24)
+75ce9e6 2026-10-20 docs: registrar las tareas 7 a 15 de la historia 24
+43fface 2026-10-20 test: cubrir las ramas de rechazo y el fin de la entrada en la consola (historia 24)
+ac4a4d3 2026-10-20 feat: arrancar la consola conectada al teclado y la pantalla (historia 24, tarea 15)
+fb5bad5 2026-10-20 test: operar sobre un identificador que no existe (historia 24, tarea 13)
+de946a6 2026-10-20 feat: informar los datos con forma inválida en la consola (historia 24, tarea 12)
+7e64570 2026-10-20 test: dato con forma inválida en la consola (historia 24, tarea 12)
 ```
