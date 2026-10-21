@@ -22,12 +22,23 @@ Los huecos se marcan con ⚠️ y no se tapan.
 
 | Historia | Escenarios | Con test | ⚠️ Sin test | Tests sin escenario |
 |---|---|---|---|---|
-| [#3 Crear y modificar proyectos](#3-crear-y-modificar-proyectos) | 20 | 20 | 0 | 0 |
+| [#3 Crear y modificar proyectos](#3-crear-y-modificar-proyectos) | 20 | 20 | 0 | 1 |
 | [#4 Registrar integrantes de un proyecto](#4-registrar-integrantes-de-un-proyecto) | 13 | 13 | 0 | 11 |
-| [#6 Administrar el Product Backlog](#6-administrar-el-product-backlog) | 18 | 17 | 1 | 14 |
+| [#6 Administrar el Product Backlog](#6-administrar-el-product-backlog) | 18 | 18 | 0 | 13 |
 | [#12 Estimar historias con Story Points](#12-estimar-historias-con-story-points) | 10 | 10 | 0 | 3 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 4 | 11 | 6 |
-| [Tests de ninguna historia](#tests-de-ninguna-historia) | — | — | — | 1 |
+
+## Qué dice el historial de TDD
+
+Cada test tiene en la columna *RED → GREEN* lo que muestra el historial de commits. Hay
+cuatro casos posibles:
+
+| Marca | Qué quiere decir | Tests |
+|---|---|---|
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 77 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 6 |
+| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
+| `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
 ## #3 Crear y modificar proyectos
 
@@ -75,6 +86,12 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [Modificar un proyecto que no existe](specs/sprint-1/03-crear-proyectos.md?plain=1#L218) | `TestModificarUnProyectoQueNoExiste` [project_test.go:296](../internal/domain/project_test.go#L296) | [errors.go](../internal/domain/errors.go), [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go) | `bcf6cb1` → `45d17a8` |
 | [Consultar un proyecto que no existe](specs/sprint-1/03-crear-proyectos.md?plain=1#L224) | `TestConsultarUnProyectoQueNoExiste` [project_test.go:284](../internal/domain/project_test.go#L284) | [errors.go](../internal/domain/errors.go), [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go) | `bcf6cb1` → `45d17a8` |
 
+**Tests que no citan un escenario de la Fase 1 (1).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestLosMensajesDeErrorLlevanTildes` [errors_test.go:12](../internal/domain/errors_test.go#L12) | los mensajes de la RN-4 y la RN-6 de la #3, y de la RN-5 y la RN-11 de la #4 | [errors.go](../internal/domain/errors.go) | `73d0160` → `d2ff81b` |
+
 ## #4 Registrar integrantes de un proyecto
 
 - **Historia:** issue #4
@@ -100,35 +117,35 @@ Los huecos se marcan con ⚠️ y no se tapan.
 
 | Escenario BDD | Test | Código | RED → GREEN |
 |---|---|---|---|
-| [Agregar el primer integrante](specs/sprint-1/04-registrar-integrantes.md?plain=1#L120) | `TestAgregarElPrimerIntegrante` [member_test.go:44](../internal/domain/member_test.go#L44) | [member.go](../internal/domain/member.go) | `8398ab5` → `c3ed475` |
-| [Rechazar un integrante sin nombre y apellido](specs/sprint-1/04-registrar-integrantes.md?plain=1#L126) | `TestRechazarUnIntegranteSinNombreYApellido` [member_test.go:94](../internal/domain/member_test.go#L94) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `27fa739` → `2f225f6` |
-| [Guardar el nombre sin espacios en los extremos](specs/sprint-1/04-registrar-integrantes.md?plain=1#L138) | `TestGuardarElNombreDelIntegranteSinEspaciosEnLosExtremos` [member_test.go:72](../internal/domain/member_test.go#L72) | [member.go](../internal/domain/member.go) | `1821eb3` → `ad6d7df` |
-| [Rechazar un rol invalido](specs/sprint-1/04-registrar-integrantes.md?plain=1#L143) | `TestRechazarUnRolInvalido` [member_test.go:122](../internal/domain/member_test.go#L122) | [member.go](../internal/domain/member.go) | `0216054` → `2e8beef` |
-| [Rechazar un integrante duplicado](specs/sprint-1/04-registrar-integrantes.md?plain=1#L150) | `TestRechazarUnIntegranteDuplicado` [member_test.go:170](../internal/domain/member_test.go#L170) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `598a735` → `db034c1` |
-| [La misma persona en dos proyectos](specs/sprint-1/04-registrar-integrantes.md?plain=1#L163) | `TestLaMismaPersonaEnDosProyectos` [member_test.go:244](../internal/domain/member_test.go#L244) | ⚠️ ningún commit de código después del test | `ac05cb0` → ⚠️ sin GREEN |
-| [Rechazar un segundo Agile Enabler](specs/sprint-1/04-registrar-integrantes.md?plain=1#L170) | `TestRechazarUnSegundoAgileEnabler` [member_test.go:273](../internal/domain/member_test.go#L273) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `5432431` → `1da3059` |
-| [Agregar un Agile Enabler despues de quitar al anterior](specs/sprint-1/04-registrar-integrantes.md?plain=1#L177) | `TestAgregarUnAgileEnablerDespuesDeQuitarAlAnterior` [member_test.go:418](../internal/domain/member_test.go#L418) | [member.go](../internal/domain/member.go) | `17736ed` → `c3b82b7` |
-| [Listar los integrantes de un proyecto](specs/sprint-1/04-registrar-integrantes.md?plain=1#L183) | `TestListarLosIntegrantesDeUnProyecto` [member_test.go:479](../internal/domain/member_test.go#L479) | ⚠️ ningún commit de código después del test | `5b56329` → ⚠️ sin GREEN |
-| [Listar un proyecto sin integrantes](specs/sprint-1/04-registrar-integrantes.md?plain=1#L189) | `TestListarUnProyectoSinIntegrantes` [member_test.go:28](../internal/domain/member_test.go#L28) | [member.go](../internal/domain/member.go), [project.go](../internal/domain/project.go) | `008b6ef` → `cc89760` |
-| [Quitar el ultimo integrante](specs/sprint-1/04-registrar-integrantes.md?plain=1#L194) | `TestQuitarElUltimoIntegrante` [member_test.go:366](../internal/domain/member_test.go#L366) | [member.go](../internal/domain/member.go) | `17736ed` → `c3b82b7` |
-| [Quitar un integrante que no pertenece al proyecto](specs/sprint-1/04-registrar-integrantes.md?plain=1#L199) | `TestQuitarUnIntegranteQueNoPerteneceAlProyecto` [member_test.go:447](../internal/domain/member_test.go#L447) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `a29c335` → `102ee66` |
-| [Operar sobre un proyecto que no existe](specs/sprint-1/04-registrar-integrantes.md?plain=1#L205) | `TestOperarSobreIntegrantesDeUnProyectoQueNoExiste` [member_test.go:550](../internal/domain/member_test.go#L550) | ⚠️ ningún commit de código después del test | `3e3d580` → ⚠️ sin GREEN |
+| [Agregar el primer integrante](specs/sprint-1/04-registrar-integrantes.md?plain=1#L120) | `TestAgregarElPrimerIntegrante` [member_test.go:45](../internal/domain/member_test.go#L45) | [member.go](../internal/domain/member.go) | `8398ab5` → `c3ed475` |
+| [Rechazar un integrante sin nombre y apellido](specs/sprint-1/04-registrar-integrantes.md?plain=1#L126) | `TestRechazarUnIntegranteSinNombreYApellido` [member_test.go:95](../internal/domain/member_test.go#L95) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `27fa739` → `2f225f6` |
+| [Guardar el nombre sin espacios en los extremos](specs/sprint-1/04-registrar-integrantes.md?plain=1#L138) | `TestGuardarElNombreDelIntegranteSinEspaciosEnLosExtremos` [member_test.go:73](../internal/domain/member_test.go#L73) | [member.go](../internal/domain/member.go) | `1821eb3` → `ad6d7df` |
+| [Rechazar un rol invalido](specs/sprint-1/04-registrar-integrantes.md?plain=1#L143) | `TestRechazarUnRolInvalido` [member_test.go:123](../internal/domain/member_test.go#L123) | [member.go](../internal/domain/member.go) | `0216054` → `2e8beef` |
+| [Rechazar un integrante duplicado](specs/sprint-1/04-registrar-integrantes.md?plain=1#L150) | `TestRechazarUnIntegranteDuplicado` [member_test.go:172](../internal/domain/member_test.go#L172) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `598a735` → `db034c1` |
+| [La misma persona en dos proyectos](specs/sprint-1/04-registrar-integrantes.md?plain=1#L163) | `TestLaMismaPersonaEnDosProyectos` [member_test.go:247](../internal/domain/member_test.go#L247) | ⚠️ ningún commit de código después del test | `ac05cb0` → ⚠️ sin GREEN |
+| [Rechazar un segundo Agile Enabler](specs/sprint-1/04-registrar-integrantes.md?plain=1#L170) | `TestRechazarUnSegundoAgileEnabler` [member_test.go:276](../internal/domain/member_test.go#L276) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `5432431` → `1da3059` |
+| [Agregar un Agile Enabler despues de quitar al anterior](specs/sprint-1/04-registrar-integrantes.md?plain=1#L177) | `TestAgregarUnAgileEnablerDespuesDeQuitarAlAnterior` [member_test.go:424](../internal/domain/member_test.go#L424) | [member.go](../internal/domain/member.go) | `17736ed` → `c3b82b7` |
+| [Listar los integrantes de un proyecto](specs/sprint-1/04-registrar-integrantes.md?plain=1#L183) | `TestListarLosIntegrantesDeUnProyecto` [member_test.go:485](../internal/domain/member_test.go#L485) | ⚠️ ningún commit de código después del test | `5b56329` → ⚠️ sin GREEN |
+| [Listar un proyecto sin integrantes](specs/sprint-1/04-registrar-integrantes.md?plain=1#L189) | `TestListarUnProyectoSinIntegrantes` [member_test.go:29](../internal/domain/member_test.go#L29) | [member.go](../internal/domain/member.go), [project.go](../internal/domain/project.go) | `008b6ef` → `cc89760` |
+| [Quitar el ultimo integrante](specs/sprint-1/04-registrar-integrantes.md?plain=1#L194) | `TestQuitarElUltimoIntegrante` [member_test.go:371](../internal/domain/member_test.go#L371) | [member.go](../internal/domain/member.go) | `17736ed` → `c3b82b7` |
+| [Quitar un integrante que no pertenece al proyecto](specs/sprint-1/04-registrar-integrantes.md?plain=1#L199) | `TestQuitarUnIntegranteQueNoPerteneceAlProyecto` [member_test.go:453](../internal/domain/member_test.go#L453) | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `a29c335` → `102ee66` |
+| [Operar sobre un proyecto que no existe](specs/sprint-1/04-registrar-integrantes.md?plain=1#L205) | `TestOperarSobreIntegrantesDeUnProyectoQueNoExiste` [member_test.go:557](../internal/domain/member_test.go#L557) | ⚠️ ningún commit de código después del test | `3e3d580` → ⚠️ sin GREEN |
 
 **Tests que no citan un escenario de la Fase 1 (11).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnIntegranteExponeSuNombreYSuRol` [member_test.go:12](../internal/domain/member_test.go#L12) | RN-1 | [member.go](../internal/domain/member.go) | `61fc94d` → `adf4e3a` |
-| `TestUnRolSinInicializarNoEsNingunoDeLosValidos` [member_test.go:154](../internal/domain/member_test.go#L154) ⚠️ no dice que no tiene escenario | RN-4 | [member.go](../internal/domain/member.go) | `0216054` → `2e8beef` |
-| `TestNoSonDuplicadosLosNombresQueDifierenEnTildesOEspaciosDelMedio` [member_test.go:210](../internal/domain/member_test.go#L210) ⚠️ no dice que no tiene escenario | RN-5 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `598a735` → `db034c1` |
-| `TestConUnAgileEnablerSePuedenAgregarProductBuilders` [member_test.go:297](../internal/domain/member_test.go#L297) ⚠️ no dice que no tiene escenario | RN-7 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `5432431` → `1da3059` |
-| `TestConVariosErroresSeInformaElPrimero` [member_test.go:322](../internal/domain/member_test.go#L322) | RN-2, RN-4, RN-5, RN-7, RN-12 | ⚠️ ningún commit de código después del test | `c95cd0c` → ⚠️ sin GREEN |
-| `TestQuitarUnIntegranteDejaALosDemas` [member_test.go:394](../internal/domain/member_test.go#L394) ⚠️ no dice que no tiene escenario | RN-9 | [member.go](../internal/domain/member.go) | `17736ed` → `c3b82b7` |
-| `TestCambiarLaListaRecibidaNoCambiaLosIntegrantesDelProyecto` [member_test.go:516](../internal/domain/member_test.go#L516) ⚠️ no dice que no tiene escenario | RN-8 | ⚠️ ningún commit de código después del test | `5b56329` → ⚠️ sin GREEN |
-| `TestConvertirElTextoEnUnRol` [member_test.go:597](../internal/domain/member_test.go#L597) ⚠️ no dice que no tiene escenario | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
-| `TestRechazarUnTextoQueNoEsUnRol` [member_test.go:626](../internal/domain/member_test.go#L626) ⚠️ no dice que no tiene escenario | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
-| `TestElErrorDeRolNombraLosValidos` [member_test.go:643](../internal/domain/member_test.go#L643) ⚠️ no dice que no tiene escenario | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
-| `TestLosDosRolesSeMuestranYSeVuelvenAConvertir` [member_test.go:659](../internal/domain/member_test.go#L659) ⚠️ no dice que no tiene escenario | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
+| `TestUnIntegranteExponeSuNombreYSuRol` [member_test.go:13](../internal/domain/member_test.go#L13) | RN-1 | [member.go](../internal/domain/member.go) | `61fc94d` → `adf4e3a` |
+| `TestUnRolSinInicializarNoEsNingunoDeLosValidos` [member_test.go:156](../internal/domain/member_test.go#L156) | RN-4 | [member.go](../internal/domain/member.go) | `0216054` → `2e8beef` |
+| `TestNoSonDuplicadosLosNombresQueDifierenEnTildesOEspaciosDelMedio` [member_test.go:213](../internal/domain/member_test.go#L213) | RN-5 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `598a735` → `db034c1` |
+| `TestConUnAgileEnablerSePuedenAgregarProductBuilders` [member_test.go:301](../internal/domain/member_test.go#L301) | RN-7 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `5432431` → `1da3059` |
+| `TestConVariosErroresSeInformaElPrimero` [member_test.go:327](../internal/domain/member_test.go#L327) | RN-2, RN-4, RN-5, RN-7, RN-12 | ⚠️ ningún commit de código después del test | `c95cd0c` → ⚠️ sin GREEN |
+| `TestQuitarUnIntegranteDejaALosDemas` [member_test.go:400](../internal/domain/member_test.go#L400) | RN-9 | [member.go](../internal/domain/member.go) | `17736ed` → `c3b82b7` |
+| `TestCambiarLaListaRecibidaNoCambiaLosIntegrantesDelProyecto` [member_test.go:523](../internal/domain/member_test.go#L523) | RN-8 | ⚠️ ningún commit de código después del test | `5b56329` → ⚠️ sin GREEN |
+| `TestConvertirElTextoEnUnRol` [member_test.go:605](../internal/domain/member_test.go#L605) | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
+| `TestRechazarUnTextoQueNoEsUnRol` [member_test.go:635](../internal/domain/member_test.go#L635) | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
+| `TestElErrorDeRolNombraLosValidos` [member_test.go:653](../internal/domain/member_test.go#L653) | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
+| `TestLosDosRolesSeMuestranYSeVuelvenAConvertir` [member_test.go:670](../internal/domain/member_test.go#L670) | RN-4 | [errors.go](../internal/domain/errors.go), [member.go](../internal/domain/member.go) | `1d5d160` → `0244f63` |
 
 ## #6 Administrar el Product Backlog
 
@@ -156,48 +173,44 @@ Los huecos se marcan con ⚠️ y no se tapan.
 
 | Escenario BDD | Test | Código | RED → GREEN |
 |---|---|---|---|
-| [Crear una historia en el backlog](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L144) | `TestCrearUnaHistoriaEnElBacklog` [story_test.go:243](../internal/domain/story_test.go#L243) | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
-| ⚠️ [Los identificadores no se repiten](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L151) | **sin test** | | |
-| [Rechazar una historia sin criterios de aceptacion](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L156) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:334](../internal/domain/story_test.go#L334) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| [Rechazar una prioridad invalida](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L162) | `TestRechazarUnaPrioridadInvalida` [story_test.go:133](../internal/domain/story_test.go#L133) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `4dc7d45` → `400a285` |
-| ″ | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:334](../internal/domain/story_test.go#L334) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| [Modificar una historia pendiente](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L168) | `TestModificarUnaHistoria` [story_test.go:390](../internal/domain/story_test.go#L390) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
-| [No modificar una historia terminada](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L173) | `TestNoModificarUnaHistoriaTerminada` [story_test.go:479](../internal/domain/story_test.go#L479) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
-| [Backlog de un proyecto sin historias](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L179) | `TestBacklogDeUnProyectoSinHistorias` [story_test.go:227](../internal/domain/story_test.go#L227) | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
-| [Rechazar una historia sin los datos obligatorios](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L184) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:334](../internal/domain/story_test.go#L334) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| [Un texto con solo espacios cuenta como vacio](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L198) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:334](../internal/domain/story_test.go#L334) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| [Descartar los criterios de aceptacion vacios](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L204) | `TestNormalizarLosDatosDeUnaHistoria` [story_test.go:303](../internal/domain/story_test.go#L303) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| [Rechazar si todos los criterios quedan vacios](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L209) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:334](../internal/domain/story_test.go#L334) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| [Guardar el titulo sin espacios en los extremos](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L215) | `TestNormalizarLosDatosDeUnaHistoria` [story_test.go:303](../internal/domain/story_test.go#L303) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| [Una modificacion rechazada no cambia nada](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L220) | `TestUnaModificacionRechazadaNoCambiaNada` [story_test.go:462](../internal/domain/story_test.go#L462) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
-| [Modificar una historia que no existe](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L226) | `TestModificarUnaHistoriaQueNoExiste` [story_test.go:499](../internal/domain/story_test.go#L499) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
-| [Reemplazar los criterios de aceptacion](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L232) | `TestModificarUnaHistoria` [story_test.go:390](../internal/domain/story_test.go#L390) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
-| ″ | `TestReemplazarLosCriteriosDeAceptacion` [story_test.go:445](../internal/domain/story_test.go#L445) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
-| [Los identificadores son unicos dentro de cada proyecto](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L237) | `TestLosIdentificadoresSonUnicosDentroDeCadaProyecto` [story_test.go:272](../internal/domain/story_test.go#L272) | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
-| [Pedir el backlog de un proyecto con historias](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L243) | `TestPedirElBacklogDeUnProyectoConHistorias` [story_test.go:532](../internal/domain/story_test.go#L532) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
-| ″ | `TestCambiarElBacklogRecibidoNoCambiaElDelProyecto` [story_test.go:564](../internal/domain/story_test.go#L564) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
-| [Operar sobre un proyecto que no existe](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L250) | `TestOperarSobreUnProyectoQueNoExiste` [story_test.go:520](../internal/domain/story_test.go#L520) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
+| [Crear una historia en el backlog](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L144) | `TestCrearUnaHistoriaEnElBacklog` [story_test.go:251](../internal/domain/story_test.go#L251) | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
+| [Los identificadores no se repiten](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L151) | `TestLosIdentificadoresDeLasHistoriasNoSeRepiten` [story_test.go:297](../internal/domain/story_test.go#L297) | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
+| [Rechazar una historia sin criterios de aceptacion](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L156) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:342](../internal/domain/story_test.go#L342) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| [Rechazar una prioridad invalida](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L162) | `TestRechazarUnaPrioridadInvalida` [story_test.go:138](../internal/domain/story_test.go#L138) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `4dc7d45` → `400a285` |
+| ″ | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:342](../internal/domain/story_test.go#L342) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| [Modificar una historia pendiente](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L168) | `TestModificarUnaHistoria` [story_test.go:397](../internal/domain/story_test.go#L397) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
+| [No modificar una historia terminada](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L173) | `TestNoModificarUnaHistoriaTerminada` [story_test.go:487](../internal/domain/story_test.go#L487) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
+| [Backlog de un proyecto sin historias](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L179) | `TestBacklogDeUnProyectoSinHistorias` [story_test.go:235](../internal/domain/story_test.go#L235) | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
+| [Rechazar una historia sin los datos obligatorios](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L184) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:342](../internal/domain/story_test.go#L342) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| [Un texto con solo espacios cuenta como vacio](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L198) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:342](../internal/domain/story_test.go#L342) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| [Descartar los criterios de aceptacion vacios](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L204) | `TestNormalizarLosDatosDeUnaHistoria` [story_test.go:311](../internal/domain/story_test.go#L311) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| [Rechazar si todos los criterios quedan vacios](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L209) | `TestRechazarUnaHistoriaSinLosDatosObligatorios` [story_test.go:342](../internal/domain/story_test.go#L342) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| [Guardar el titulo sin espacios en los extremos](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L215) | `TestNormalizarLosDatosDeUnaHistoria` [story_test.go:311](../internal/domain/story_test.go#L311) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| [Una modificacion rechazada no cambia nada](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L220) | `TestUnaModificacionRechazadaNoCambiaNada` [story_test.go:470](../internal/domain/story_test.go#L470) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
+| [Modificar una historia que no existe](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L226) | `TestModificarUnaHistoriaQueNoExiste` [story_test.go:507](../internal/domain/story_test.go#L507) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
+| [Reemplazar los criterios de aceptacion](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L232) | `TestReemplazarLosCriteriosDeAceptacion` [story_test.go:453](../internal/domain/story_test.go#L453) | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
+| [Los identificadores son unicos dentro de cada proyecto](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L237) | `TestLosIdentificadoresSonUnicosDentroDeCadaProyecto` [story_test.go:280](../internal/domain/story_test.go#L280) | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
+| [Pedir el backlog de un proyecto con historias](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L243) | `TestPedirElBacklogDeUnProyectoConHistorias` [story_test.go:540](../internal/domain/story_test.go#L540) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
+| ″ | `TestCambiarElBacklogRecibidoNoCambiaElDelProyecto` [story_test.go:572](../internal/domain/story_test.go#L572) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
+| [Operar sobre un proyecto que no existe](specs/sprint-1/06-administrar-product-backlog.md?plain=1#L250) | `TestOperarSobreUnProyectoQueNoExiste` [story_test.go:528](../internal/domain/story_test.go#L528) | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
 
-- ⚠️ `TestModificarUnaHistoria` también cita «Modificar una historia sin cambiar nada», que no es un escenario de la spec.
-
-**Tests que no citan un escenario de la Fase 1 (14).**
+**Tests que no citan un escenario de la Fase 1 (13).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnaHistoriaExponeTodosSusDatos` [story_test.go:13](../internal/domain/story_test.go#L13) | RN-2 | [story.go](../internal/domain/story.go) | `bde9c51` → `aded90a` |
-| `TestCambiarLosCriteriosRecibidosNoCambiaLosDeLaHistoria` [story_test.go:51](../internal/domain/story_test.go#L51) ⚠️ no dice que no tiene escenario | RN-2 | [story.go](../internal/domain/story.go) | `bde9c51` → `aded90a` |
-| `TestLosTresEstadosDeUnaHistoriaSeDistinguen` [story_test.go:66](../internal/domain/story_test.go#L66) ⚠️ no dice que no tiene escenario | RN-2 | [story.go](../internal/domain/story.go) | `bde9c51` → `aded90a` |
-| `TestConvertirElTextoEnUnaPrioridad` [story_test.go:89](../internal/domain/story_test.go#L89) ⚠️ no dice que no tiene escenario | RN-4 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `4dc7d45` → `400a285` |
-| `TestUnaPrioridadQueNoExisteNoSeMuestraComoAlta` [story_test.go:119](../internal/domain/story_test.go#L119) ⚠️ no dice que no tiene escenario | RN-4 | [story.go](../internal/domain/story.go) | `0d22bc7` ⚠️ test y código en el mismo commit |
-| `TestElErrorDePrioridadNombraLasValidas` [story_test.go:150](../internal/domain/story_test.go#L150) ⚠️ no dice que no tiene escenario | RN-4 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `4dc7d45` → `400a285` |
-| `TestLasTresPrioridadesSeMuestranYSeVuelvenAConvertir` [story_test.go:163](../internal/domain/story_test.go#L163) ⚠️ no dice que no tiene escenario | RN-4 | ⚠️ ningún commit de código después del test | `1d7326d` → ⚠️ sin GREEN |
-| `TestUnaHistoriaDevuelveSusStoryPoints` [story_test.go:185](../internal/domain/story_test.go#L185) ⚠️ no dice que no tiene escenario | RN-2 | ⚠️ ningún commit de código después del test | `1d7326d` → ⚠️ sin GREEN |
-| `TestLosIdentificadoresDeLasHistoriasNoSeRepiten` [story_test.go:289](../internal/domain/story_test.go#L289) | RN-1 | [project.go](../internal/domain/project.go), [project_registry.go](../internal/domain/project_registry.go), [story.go](../internal/domain/story.go) | `81382b9` → `3e5a29c` |
-| `TestDosHistoriasDelMismoProyectoPuedenTenerElMismoTitulo` [story_test.go:369](../internal/domain/story_test.go#L369) | RN-14 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
-| `TestModificarUnaHistoriaEnCurso` [story_test.go:411](../internal/domain/story_test.go#L411) | RN-8 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
-| `TestModificarUnaHistoriaSinCambiarNada` [story_test.go:429](../internal/domain/story_test.go#L429) | RN-9 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
-| `TestBuscarUnaHistoriaDelBacklog` [story_test.go:579](../internal/domain/story_test.go#L579) | RN-13 | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
-| `TestModificarLaDescripcionDeUnaHistoria` [story_test.go:596](../internal/domain/story_test.go#L596) | RN-9 | ⚠️ ningún commit de código después del test | `e946fda` → ⚠️ sin GREEN |
+| `TestUnaHistoriaExponeTodosSusDatos` [story_test.go:14](../internal/domain/story_test.go#L14) | RN-2 | [story.go](../internal/domain/story.go) | `bde9c51` → `aded90a` |
+| `TestCambiarLosCriteriosRecibidosNoCambiaLosDeLaHistoria` [story_test.go:53](../internal/domain/story_test.go#L53) | RN-2 | [story.go](../internal/domain/story.go) | `bde9c51` → `aded90a` |
+| `TestLosTresEstadosDeUnaHistoriaSeDistinguen` [story_test.go:69](../internal/domain/story_test.go#L69) | RN-2 | [story.go](../internal/domain/story.go) | `bde9c51` → `aded90a` |
+| `TestConvertirElTextoEnUnaPrioridad` [story_test.go:93](../internal/domain/story_test.go#L93) | RN-4 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `4dc7d45` → `400a285` |
+| `TestUnaPrioridadQueNoExisteNoSeMuestraComoAlta` [story_test.go:124](../internal/domain/story_test.go#L124) | RN-4 | [story.go](../internal/domain/story.go) | `0d22bc7` ⚠️ test y código en el mismo commit |
+| `TestElErrorDePrioridadNombraLasValidas` [story_test.go:156](../internal/domain/story_test.go#L156) | RN-4 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `4dc7d45` → `400a285` |
+| `TestLasTresPrioridadesSeMuestranYSeVuelvenAConvertir` [story_test.go:170](../internal/domain/story_test.go#L170) | RN-4 | ⚠️ ningún commit de código después del test | `1d7326d` → ⚠️ sin GREEN |
+| `TestUnaHistoriaDevuelveSusStoryPoints` [story_test.go:193](../internal/domain/story_test.go#L193) | RN-2 | ⚠️ ningún commit de código después del test | `1d7326d` → ⚠️ sin GREEN |
+| `TestDosHistoriasDelMismoProyectoPuedenTenerElMismoTitulo` [story_test.go:378](../internal/domain/story_test.go#L378) | RN-14 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `d2e8d9f` → `de00fc7` |
+| `TestModificarUnaHistoriaEnCurso` [story_test.go:419](../internal/domain/story_test.go#L419) | RN-8 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
+| `TestModificarUnaHistoriaSinCambiarNada` [story_test.go:437](../internal/domain/story_test.go#L437) | RN-9 | [errors.go](../internal/domain/errors.go), [story.go](../internal/domain/story.go) | `2bae7e0` → `13f6ad5` |
+| `TestBuscarUnaHistoriaDelBacklog` [story_test.go:588](../internal/domain/story_test.go#L588) | RN-13 | ⚠️ ningún commit de código después del test | `499eb03` → ⚠️ sin GREEN |
+| `TestModificarLaDescripcionDeUnaHistoria` [story_test.go:606](../internal/domain/story_test.go#L606) | RN-9 | ⚠️ ningún commit de código después del test | `e946fda` → ⚠️ sin GREEN |
 
 ## #12 Estimar historias con Story Points
 
@@ -294,13 +307,4 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:217](../internal/store/file_test.go#L217) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:237](../internal/store/file_test.go#L237) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
-
-## Tests de ninguna historia
-
-Ninguna tabla de trazabilidad lista su archivo, y el test no cita un escenario ni nombra
-una historia en `Cubre:`.
-
-| Test | Cubre | Código | RED → GREEN |
-|---|---|---|---|
-| `TestLosMensajesDeErrorLlevanTildes` [errors_test.go:9](../internal/domain/errors_test.go#L9) ⚠️ no dice que no tiene escenario | ⚠️ sin `Cubre:` | [errors.go](../internal/domain/errors.go) | `73d0160` → `d2ff81b` |
 
