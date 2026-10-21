@@ -321,6 +321,27 @@ awk -F'\t' -v dir="$TMP" '
     if (nt["-"] > 0) printf "| [Tests de ninguna historia](#tests-de-ninguna-historia) | — | — | — | %d |\n", contar_sin_escenario("-")
     print ""
 
+    # Las marcas del historial de TDD, contadas y explicadas
+    m_verde = 0; m_sin_red = 0; m_juntos = 0; m_sin_green = 0
+    for (nombre in red) {
+      if (nota_green[nombre] == "mismo-commit") m_juntos++
+      else if (nota_green[nombre] == "sin-red") m_sin_red++
+      else if (green[nombre] == "") m_sin_green++
+      else m_verde++
+    }
+    print "## Qué dice el historial de TDD"
+    print ""
+    print "Cada test tiene en la columna *RED → GREEN* lo que muestra el historial de commits. Hay"
+    print "cuatro casos posibles:"
+    print ""
+    print "| Marca | Qué quiere decir | Tests |"
+    print "|---|---|---|"
+    printf "| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | %d |\n", m_verde
+    printf "| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | %d |\n", m_sin_red
+    printf "| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | %d |\n", m_sin_green
+    printf "| `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | %d |\n", m_juntos
+    print ""
+
     for (k = 1; k <= n_inc; k++) {
       h = inc[k]
       printf "## #%s %s\n\n", h, titulo[h]
