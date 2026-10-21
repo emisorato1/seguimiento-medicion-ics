@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 19:29. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 08:27. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -46,12 +46,11 @@ _No hay historias en este estado._
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Sprint Backlog
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
+_No hay historias en este estado._
 
 ## Product Backlog
 
@@ -71,6 +70,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+cbf4c64 2026-10-20 chore: regenerar ESTADO.md con la historia 24 en review
 03421cb 2026-10-20 docs: manual de usuario de la consola (historia 24)
 75ce9e6 2026-10-20 docs: registrar las tareas 7 a 15 de la historia 24
 43fface 2026-10-20 test: cubrir las ramas de rechazo y el fin de la entrada en la consola (historia 24)
@@ -78,5 +78,4 @@ ac4a4d3 2026-10-20 feat: arrancar la consola conectada al teclado y la pantalla 
 fb5bad5 2026-10-20 test: operar sobre un identificador que no existe (historia 24, tarea 13)
 de946a6 2026-10-20 feat: informar los datos con forma inválida en la consola (historia 24, tarea 12)
 7e64570 2026-10-20 test: dato con forma inválida en la consola (historia 24, tarea 12)
-28b8aef 2026-10-20 feat: informar que falta indicar la historia al estimar (historia 24, tarea 11)
 ```

@@ -279,7 +279,8 @@ Las decisiones transversales están en [AGENTS.md](../../../AGENTS.md) y no se r
 nombres son los del [contrato del dominio](../../diseno-dominio.md): `Report`, con `Title`,
 `GeneratedOn`, `Scope` (`ScopeProject`, `ScopeSprint`), `Metrics` y `Sections`, pedido con
 `ProjectReport` y `SprintReport`. Cada sección es una `Section`, con `Heading` y `Lines`
-(textos ya armados), **compartida con el dashboard de la #17**.
+(textos ya armados). Con el dashboard (#17) se comparte **la regla de formato de los números**,
+no la sección (cambio de contrato del 20/10, cuando el dashboard pasó a la web).
 
 ### Enfoque
 
@@ -299,7 +300,7 @@ qué historias, qué defectos y qué va en el Resumen.
 
 | Archivo | Se crea o se modifica | Para qué |
 |---|---|---|
-| `internal/domain/report.go` | se crea | el reporte, el armado de sus secciones y las dos operaciones; también la `Section`, si la #18 llega a `dev` antes que la #17 |
+| `internal/domain/report.go` | se crea | el reporte, el armado de sus secciones y las dos operaciones; también la regla de formato de los números, si la #18 llega a `dev` antes que la #17 |
 | `internal/domain/report_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
 
 No se agregan errores: se reutilizan el de sprint no encontrado (#11) y el de proyecto no
@@ -316,7 +317,7 @@ encontrado, que ya está en `dev`.
 | Siempre las cuatro secciones, aunque estén vacías | omitir las vacías | el reporte tiene siempre la misma forma, y "no hay defectos" también es información |
 | La fecha de generación la recibe la operación como dato de quien llama | sacarla del reloj del sistema | decidido por el Agile Enabler el 20/10 y escrito en AGENTS.md: el dominio no lee el reloj, así los tests fijan la fecha que necesitan |
 | La situación de cada historia en un sprint sale del registro del cierre | del estado actual de la historia | ver el punto 2 de la puerta |
-| Las secciones usan la `Section` que comparte con el dashboard, y la declara la primera de las dos historias que llegue a `dev` | una sección propia del reporte | lo fija el contrato: la #19 y la interfaz leen las dos cosas igual, y es la misma regla que se usó con `errors.go` |
+| El formato de los números lo comparte con el dashboard, y lo declara la primera de las dos historias que llegue a `dev` | que cada uno formatee a su manera | un número tiene que leerse igual en el dashboard, en el reporte y en el PDF; es la misma regla que se usó con `errors.go` |
 
 ### Dependencias y restricciones
 
@@ -325,9 +326,9 @@ encontrado, que ya está en `dev`.
 - **También se leen sprints (#8 a #11) y defectos (#15)**, que tampoco están: los tests los
   arman dentro del paquete, contra el contrato.
 - **No se calcula ninguna métrica** ni se cambia ningún dato.
-- **`Section` es compartida con la #17**: si la #17 ya la declaró en `dev`, se usa tal como
-  está, sin cambiarla; si no, la declara esta historia y la #17 la reutiliza. Cualquier cambio
-  en su forma se avisa a las dos.
+- **La regla de formato de los números es compartida con la #17**: si la #17 ya la declaró en
+  `dev`, se usa tal como está; si no, la declara esta historia y la #17 la reutiliza. Cualquier
+  cambio se avisa a las dos.
 - **Lo necesita la #19**, que arma un reporte a mano en sus tests. Si cambia el formato de
   las secciones, se avisa.
 
