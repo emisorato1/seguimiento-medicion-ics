@@ -1193,3 +1193,57 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 		t.Errorf("el siguiente proyecto deberia recibir el numero 2, y la web fue a %q", destino)
 	}
 }
+
+// No es un escenario de la spec: lo pidio la revision del PR #95. Sin usuarios ni
+// contraseñas (D20), otra pagina abierta en el mismo navegador podria enviar un formulario a
+// la web y cambiar los datos. Un pedido que cambia algo y viene de otro sitio se rechaza.
+func TestUnPedidoDeOtroSitioSeRechaza(t *testing.T) {
+	enviar := func(server http.Handler, encabezados map[string]string) *httptest.ResponseRecorder {
+		form := url.Values{"nombre": {"Proyecto ajeno"}, "inicio": {"2026-11-01"}}
+		req := httptest.NewRequest(http.MethodPost, "http://127.0.0.1:8080/proyectos/nuevo", strings.NewReader(form.Encode()))
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		for nombre, valor := range encabezados {
+			req.Header.Set(nombre, valor)
+		}
+		res := httptest.NewRecorder()
+		server.ServeHTTP(res, req)
+		return res
+	}
+
+	casos := map[string]map[string]string{
+		"con el Origin de otro sitio":           {"Origin": "http://otro-sitio.example"},
+		"con Sec-Fetch-Site de otro sitio":      {"Sec-Fetch-Site": "cross-site"},
+		"con Sec-Fetch-Site de otro subdominio": {"Sec-Fetch-Site": "same-site"},
+	}
+	for nombre, encabezados := range casos {
+		t.Run(nombre, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			saver := &fakeSaver{}
+
+			res := enviar(NewServer(registry, saver), encabezados)
+
+			if res.Code != http.StatusForbidden {
+				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusForbidden, res.Code)
+			}
+			if mensaje := template.HTMLEscapeString(errCrossOrigin.Error()); !strings.Contains(res.Body.String(), mensaje) {
+				t.Errorf("se esperaba el aviso %q, y la respuesta es:\n%s", mensaje, res.Body.String())
+			}
+			if len(registry.Projects()) != 0 || saver.saves != 0 {
+				t.Errorf("no se esperaba ningun cambio, y hay %d proyectos y %d guardados", len(registry.Projects()), saver.saves)
+			}
+		})
+	}
+
+	t.Run("el mismo pedido desde la propia web se acepta", func(t *testing.T) {
+		registry := domain.NewProjectRegistry()
+
+		res := enviar(NewServer(registry, &fakeSaver{}), map[string]string{
+			"Origin":         "http://127.0.0.1:8080",
+			"Sec-Fetch-Site": "same-origin",
+		})
+
+		if res.Code != http.StatusSeeOther || len(registry.Projects()) != 1 {
+			t.Errorf("se esperaba crear el proyecto con el estado %d, salio %d y %d proyectos", http.StatusSeeOther, res.Code, len(registry.Projects()))
+		}
+	})
+}
