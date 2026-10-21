@@ -3,7 +3,7 @@
 - **Historia:** #8
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a las puertas. Revisado por el
@@ -298,7 +298,7 @@ de acuerdo con alguno, es el momento de decirlo:
    sprint asignar historias. La #11 consulta los **cerrados**.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805). Las condiciones de la revisión de las puertas (de Maxi, Juliana y Emiliano) se aplicaron el 21/10 en 3c5acf2 y 5fbf1df: consulta por número (RN-15, tarea 16), qué se controla al cargar (tarea 15) y sacar "datos en memoria".
 
 ## Fase 2 — Diseño
 
@@ -383,7 +383,7 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
   los sprints de detección y de resolución por su número).
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805). Las condiciones de la revisión de las puertas (de Maxi, Juliana y Emiliano) se aplicaron el 21/10 en 3c5acf2 y 5fbf1df: consulta por número (RN-15, tarea 16), qué se controla al cargar (tarea 15) y sacar "datos en memoria".
 
 ## Fase 3 — Tareas
 
@@ -473,7 +473,7 @@ Los diecisiete escenarios de la Fase 1 tienen su tarea en la columna "Escenario 
   directamente. Es lo mismo que hizo la #12 con las historias Terminadas.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805). Las condiciones de la revisión de las puertas (de Maxi, Juliana y Emiliano) se aplicaron el 21/10 en 3c5acf2 y 5fbf1df: consulta por número (RN-15, tarea 16), qué se controla al cargar (tarea 15) y sacar "datos en memoria".
 
 ## Fase 4 — Implementación
 

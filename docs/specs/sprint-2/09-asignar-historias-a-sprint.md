@@ -3,7 +3,7 @@
 - **Historia:** #9
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 20/10: decidió los cinco
@@ -274,7 +274,7 @@ con alguno, es el momento de decirlo:
    comprometido; si no, la #16 no podría decir cuántos puntos se habían planificado.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805) con cambios antes del código, aplicados el 21/10 en 5fbf1df: quitar una Terminada también se rechaza (RN-6), filas de quitar en "Operar sobre algo que no existe", el caso de la historia asignada que queda sin estimar y la dependencia del PR temprano de la #8.
 
 ## Fase 2 — Diseño
 
@@ -349,7 +349,7 @@ rechazada deja todo como estaba (RN-14) sin tener que deshacer nada.
   sprint que arma la #8, sin tocar lo de las otras entidades.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805) con cambios antes del código, aplicados el 21/10 en 5fbf1df: quitar una Terminada también se rechaza (RN-6), filas de quitar en "Operar sobre algo que no existe", el caso de la historia asignada que queda sin estimar y la dependencia del PR temprano de la #8.
 
 ## Fase 3 — Tareas
 
@@ -426,7 +426,7 @@ Los catorce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD
   historia (#6, RN-7): no hace falta nada de la #12 para prepararla.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805) con cambios antes del código, aplicados el 21/10 en 5fbf1df: quitar una Terminada también se rechaza (RN-6), filas de quitar en "Operar sobre algo que no existe", el caso de la historia asignada que queda sin estimar y la dependencia del PR temprano de la #8.
 
 ## Fase 4 — Implementación
 
