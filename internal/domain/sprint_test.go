@@ -47,3 +47,35 @@ func TestCrearElPrimerSprintDeUnProyecto(t *testing.T) {
 		t.Errorf("se esperaba el proyecto con ese unico sprint, salio con %d", len(sprints))
 	}
 }
+
+// Escenario: Consultar el sprint abierto de un proyecto
+// Cubre: RN-10
+func TestConsultarElSprintAbiertoDeUnProyecto(t *testing.T) {
+	project := unProyecto(t)
+	created, err := project.AddSprint(SprintData{
+		Goal:  "Tener el backlog estimado",
+		Start: unDia(2026, 11, 1),
+		End:   unDia(2026, 11, 14),
+	})
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint de prueba: %v", err)
+	}
+
+	sprint, ok := project.OpenSprint()
+
+	if !ok {
+		t.Fatalf("se esperaba que el proyecto tuviera sprint abierto, salio que no")
+	}
+	if sprint != created || sprint.Number() != 1 {
+		t.Fatalf("se esperaba el sprint 1 recien creado, salio otro")
+	}
+	if sprint.Goal() != "Tener el backlog estimado" {
+		t.Errorf("se esperaba el goal %q, salio %q", "Tener el backlog estimado", sprint.Goal())
+	}
+	if !sprint.Start().Equal(unDia(2026, 11, 1)) || !sprint.End().Equal(unDia(2026, 11, 14)) {
+		t.Errorf("se esperaban las fechas 01/11/2026 y 14/11/2026, salio %v y %v", sprint.Start(), sprint.End())
+	}
+	if sprint.State() != SprintOpen {
+		t.Errorf("se esperaba el sprint en estado Abierto, salio %v", sprint.State())
+	}
+}
