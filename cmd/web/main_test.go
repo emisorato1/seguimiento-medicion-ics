@@ -106,6 +106,21 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 		}
 	})
 
+	// Lo mismo con el permiso: Windows lo avisa con WSAEACCES (10013), por ejemplo cuando el
+	// puerto esta reservado por el sistema.
+	for _, sinPermiso := range []syscall.Errno{syscall.EACCES, syscall.Errno(10013)} {
+		t.Run("sin permiso para el puerto ("+sinPermiso.Error()+") avisa en castellano", func(t *testing.T) {
+			err := portError(8080, &net.OpError{Op: "listen", Net: "tcp", Err: os.NewSyscallError("bind", sinPermiso)})
+
+			if !errors.Is(err, errPortNotAllowed) {
+				t.Fatalf("se esperaba errPortNotAllowed, salio: %v", err)
+			}
+			if strings.Contains(err.Error(), sinPermiso.Error()) || !strings.Contains(err.Error(), "-puerto") {
+				t.Errorf("se esperaba el aviso en castellano con la sugerencia de -puerto, salio: %v", err)
+			}
+		})
+	}
+
 	t.Run("con el puerto libre escucha en esa direccion", func(t *testing.T) {
 		opts, _ := parseOptions([]string{"-puerto", "0"})
 
