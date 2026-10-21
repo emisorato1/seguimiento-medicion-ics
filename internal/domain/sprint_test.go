@@ -298,3 +298,20 @@ func TestElSprintNuevoRecibeElNumeroSiguiente(t *testing.T) {
 		t.Errorf("se esperaba el proyecto con 2 sprints, salio con %d", len(sprints))
 	}
 }
+
+// Escenario: Un proyecto con todos sus sprints cerrados no tiene sprint abierto
+// Cubre: RN-10
+func TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintAbierto(t *testing.T) {
+	project := unProyecto(t)
+	first, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
+	}
+	cerrarSprint(first)
+
+	sprint, ok := project.OpenSprint()
+
+	if ok || sprint != nil {
+		t.Fatalf("se esperaba que el proyecto no tuviera sprint abierto, salio que si")
+	}
+}
