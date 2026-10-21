@@ -334,15 +334,15 @@ cinco casos posibles:
 | ⚠️ [Las opciones para elegir son las del sistema](specs/sprint-2/77-interfaz-web-base.md?plain=1#L184) | **sin test** | | |
 | ⚠️ [Confirmar o cancelar antes de quitar](specs/sprint-2/77-interfaz-web-base.md?plain=1#L194) | **sin test** | | |
 | ⚠️ [Mostrar el rechazo sin perder lo escrito](specs/sprint-2/77-interfaz-web-base.md?plain=1#L207) | **sin test** | | |
-| [Las listas vacias dicen que hacer](specs/sprint-2/77-interfaz-web-base.md?plain=1#L225) | `TestSinDatosGuardadosSeArrancaSinProyectos` [file_test.go:53](../internal/store/file_test.go#L53) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
+| [Las listas vacias dicen que hacer](specs/sprint-2/77-interfaz-web-base.md?plain=1#L225) | `TestSinDatosGuardadosSeArrancaSinProyectos` [file_test.go:54](../internal/store/file_test.go#L54) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | ⚠️ [Pedir algo que no existe](specs/sprint-2/77-interfaz-web-base.md?plain=1#L237) | **sin test** | | |
 | ⚠️ [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | **sin test** | | |
 | ⚠️ [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | **sin test** | | |
 | [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:116](../internal/domain/registry_json_test.go#L116) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
-| ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:68](../internal/store/file_test.go#L68) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
+| ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:69](../internal/store/file_test.go#L69) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:172](../internal/domain/registry_json_test.go#L172) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
-| ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:124](../internal/store/file_test.go#L124) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
-| [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:165](../internal/store/file_test.go#L165) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
+| ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:160](../internal/store/file_test.go#L160) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
+| [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:202](../internal/store/file_test.go#L202) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | ⚠️ [Dos pestanas a la vez](specs/sprint-2/77-interfaz-web-base.md?plain=1#L276) | **sin test** | | |
 | ⚠️ [Usar la pagina en un celular y con el teclado](specs/sprint-2/77-interfaz-web-base.md?plain=1#L281) | **sin test** | | |
 
@@ -354,6 +354,6 @@ cinco casos posibles:
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:236](../internal/domain/registry_json_test.go#L236) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
-| `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:217](../internal/store/file_test.go#L217) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
-| `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:237](../internal/store/file_test.go#L237) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
+| `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
 

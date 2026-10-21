@@ -121,12 +121,13 @@ git log --reverse --no-color --format='@@%H' -p -- '*_test.go' | awk '
 git rev-list --parents HEAD | awk '{ print $2 "\t" $1 "\t" (NF - 1) }' \
   > "$TMP/hijos.tsv"
 
-# Archivos .go que cambia cada commit, separados en codigo y tests
+# Archivos de codigo que cambia cada commit, separados de los tests. Es codigo de produccion
+# todo .go que no es test y, en la web, las plantillas (.html) y el CSS (.css) de internal/web
 git log --no-color --format='@@%H' --name-only HEAD | awk '
   function cerrar() { if (commit != "") print commit "\t" codigo "\t" tests }
   /^@@[0-9a-f]+$/ { cerrar(); commit = substr($0, 3); codigo = ""; tests = 0; next }
   /_test\.go$/ { tests = 1; next }
-  /\.go$/ { codigo = codigo (codigo == "" ? "" : " ") $0 }
+  /\.go$/ || /^internal\/web\/.*\.(html|css)$/ { codigo = codigo (codigo == "" ? "" : " ") $0 }
   END { cerrar() }
 ' > "$TMP/archivos-commit.tsv"
 
