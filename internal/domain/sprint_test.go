@@ -131,3 +131,29 @@ func TestConsultarUnSprintQueNoExiste(t *testing.T) {
 		t.Fatalf("se esperaba no recibir ningun sprint, salio el %d", sprint.Number())
 	}
 }
+
+// Esquema del escenario: Rechazar un sprint sin Sprint Goal
+// Cubre: RN-4, RN-12
+func TestRechazarUnSprintSinSprintGoal(t *testing.T) {
+	cases := []struct {
+		name string
+		goal string
+	}{
+		{"vacio", ""},
+		{"solo espacios", "   "},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyecto(t)
+
+			_, err := project.AddSprint(SprintData{Goal: tc.goal, Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)})
+
+			if !errors.Is(err, ErrSprintGoalRequired) {
+				t.Fatalf("se esperaba ErrSprintGoalRequired, salio: %v", err)
+			}
+			if sprints := project.Sprints(); len(sprints) != 0 {
+				t.Fatalf("se esperaba el proyecto sin sprints, salio con %d", len(sprints))
+			}
+		})
+	}
+}
