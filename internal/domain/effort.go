@@ -107,8 +107,12 @@ func (p *Project) Efforts() []*Effort {
 }
 
 // StoryHours devuelve las horas reales de una historia: la suma de todos sus registros, de
-// cualquier integrante y día (RN-13).
+// cualquier integrante y día. Sin registros son cero, que no es un error; una historia que
+// no es del proyecto informa que no se encontró, para que no pase por "no se trabajó" (RN-13).
 func (p *Project) StoryHours(id int) (float64, error) {
+	if _, err := p.Story(id); err != nil {
+		return 0, err
+	}
 	total := 0.0
 	for _, effort := range p.efforts {
 		if effort.storyID == id {
