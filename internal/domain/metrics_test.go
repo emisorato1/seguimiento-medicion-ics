@@ -115,10 +115,10 @@ func conHorasEstimadas(t *testing.T, project *Project, id int, hours float64) {
 }
 
 // Escenario: Metricas de un sprint cerrado
-// Cubre: RN-3, RN-7, RN-12, RN-16
+// Cubre: RN-3, RN-7, RN-8, RN-12, RN-16
 //
 // El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
-// las horas y la desviación, y las tareas 6, 11 y 12 le suman su número. Asignar historias es de la #9 y
+// las horas, la desviación y los defectos, y las tareas 6 y 11 le suman su número. Asignar historias es de la #9 y
 // cerrar el sprint de la #10, que todavía no están en dev: el test arma el sprint dentro del
 // paquete.
 func TestMetricasDeUnSprintCerrado(t *testing.T) {
@@ -134,6 +134,14 @@ func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	sprint := unSprint(t, project)
 	sprint.stories = []int{1, 2, 3, 4}
 	sprint.state = SprintClosed
+	for i := 0; i < 2; i++ {
+		if _, err := project.AddDefect(unDefecto()); err != nil {
+			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+		}
+	}
+	if err := project.ResolveDefect(1, 1); err != nil {
+		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
+	}
 
 	got, err := project.SprintMetrics(1)
 
@@ -148,6 +156,9 @@ func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	}
 	if !mismasHoras(got.HoursDeviation, 25) {
 		t.Fatalf("se esperaba una desviacion de 25, salio %v", got.HoursDeviation)
+	}
+	if got.DefectsDetected != 2 || got.DefectsResolved != 1 {
+		t.Fatalf("se esperaban 2 defectos detectados y 1 resuelto, salieron %d y %d", got.DefectsDetected, got.DefectsResolved)
 	}
 }
 
@@ -228,5 +239,163 @@ func TestCalcularLaDesviacionDeHoras(t *testing.T) {
 				t.Fatalf("se esperaba una desviacion de %v, salio %v", tc.deviation, got.HoursDeviation)
 			}
 		})
+	}
+}
+
+// Escenario: Las metricas de un sprint abierto son parciales
+// Cubre: RN-6
+//
+// Un sprint abierto todavía no tiene registro de cierre, así que sus completados y su
+// velocidad valen cero, y eso no es un error. Lo planificado y las horas sí se calculan.
+func TestLasMetricasDeUnSprintAbiertoSonParciales(t *testing.T) {
+	project := unProyecto(t)
+	conIntegrante(t, project)
+	historiasEstimadas(t, project, 3)
+	cargar(t, project, 1, "Juliana Bustos", 2)
+	unSprint(t, project).stories = []int{1}
+
+	got, err := project.SprintMetrics(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+	if got.PlannedPoints != 3 || got.CompletedPoints != 0 || got.Velocity != 0 {
+		t.Fatalf("se esperaban 3 story points planificados, 0 completados y velocidad 0, salieron %d, %d y %d",
+			got.PlannedPoints, got.CompletedPoints, got.Velocity)
+	}
+	if !mismasHoras(got.ActualHours, 2) {
+		t.Fatalf("se esperaban 2 horas reales, salieron %v", got.ActualHours)
+	}
+}
+
+// Escenario: Defectos detectados y resueltos de cada sprint
+// Cubre: RN-8
+//
+// Un defecto cuenta como detectado en su sprint de detección y como resuelto en el de
+// resolución, aunque sean sprints distintos.
+func TestDefectosDetectadosYResueltosDeCadaSprint(t *testing.T) {
+	project := unProyectoConDefectos(t, 2)
+	for _, detectedIn := range []int{1, 2, 2} {
+		data := unDefecto()
+		data.DetectedIn = detectedIn
+		if _, err := project.AddDefect(data); err != nil {
+			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+		}
+	}
+	for _, id := range []int{1, 2} {
+		if err := project.ResolveDefect(id, 2); err != nil {
+			t.Fatalf("no se pudo resolver el defecto de prueba %d: %v", id, err)
+		}
+	}
+
+	cases := []struct {
+		sprint, detected, resolved int
+	}{
+		{1, 1, 0},
+		{2, 2, 2},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("sprint %d", tc.sprint), func(t *testing.T) {
+			got, err := project.SprintMetrics(tc.sprint)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if got.DefectsDetected != tc.detected || got.DefectsResolved != tc.resolved {
+				t.Fatalf("se esperaban %d defectos detectados y %d resueltos, salieron %d y %d",
+					tc.detected, tc.resolved, got.DefectsDetected, got.DefectsResolved)
+			}
+		})
+	}
+}
+
+// Escenario: Metricas del proyecto entero
+// Cubre: RN-9, RN-11, RN-12
+//
+// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
+// las horas, la desviación y los defectos. Los completados, el porcentaje y la velocidad salen
+// del registro del cierre de la #10 y los suman las tareas 6, 11 y 14. Asignar historias es de
+// la #9 y cerrar el sprint de la #10: el test arma los sprints dentro del paquete.
+func TestMetricasDelProyectoEntero(t *testing.T) {
+	project := unProyecto(t)
+	conIntegrante(t, project)
+	historiasEstimadas(t, project, 3, 5, 2, 3, 8)
+	for i, hours := range []float64{4, 6, 2, 8, 10} {
+		conHorasEstimadas(t, project, i+1, hours)
+	}
+	for i, hours := range []float64{5, 8, 3, 7, 10} {
+		cargar(t, project, i+1, "Juliana Bustos", hours)
+	}
+	first := unSprint(t, project)
+	first.stories = []int{1, 2, 3}
+	first.state = SprintClosed
+	unSprint(t, project).stories = []int{3}
+	for _, detectedIn := range []int{1, 1, 2} {
+		data := unDefecto()
+		data.DetectedIn = detectedIn
+		if _, err := project.AddDefect(data); err != nil {
+			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+		}
+	}
+	if err := project.ResolveDefect(1, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
+	}
+
+	got := project.ProjectMetrics()
+
+	if got.PlannedPoints != 21 || got.StoriesPlanned != 5 {
+		t.Fatalf("se esperaban 21 story points y 5 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+	if !mismasHoras(got.EstimatedHours, 30) || !mismasHoras(got.ActualHours, 33) || !mismasHoras(got.HoursDeviation, 10) {
+		t.Fatalf("se esperaban 30 horas estimadas, 33 reales y una desviacion de 10, salieron %v, %v y %v",
+			got.EstimatedHours, got.ActualHours, got.HoursDeviation)
+	}
+	if got.DefectsDetected != 3 || got.DefectsResolved != 1 {
+		t.Fatalf("se esperaban 3 defectos detectados y 1 resuelto, salieron %d y %d", got.DefectsDetected, got.DefectsResolved)
+	}
+}
+
+// Escenario: Las metricas reflejan los datos cargados despues
+// Cubre: RN-2
+//
+// Las métricas se calculan cada vez que se piden: la segunda vez ven las horas cargadas en el
+// medio. Y pedirlas no cambia nada: el registro entero, convertido a JSON, queda igual.
+func TestLasMetricasReflejanLosDatosCargadosDespues(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+	}
+	conIntegrante(t, project)
+	historiasEstimadas(t, project, 3)
+	cargar(t, project, 1, "Juliana Bustos", 5)
+	sprint := unSprint(t, project)
+	sprint.stories = []int{1}
+	sprint.state = SprintClosed
+	before, err := registry.ToJSON()
+	if err != nil {
+		t.Fatalf("no se pudieron convertir los datos: %v", err)
+	}
+
+	first, err := project.SprintMetrics(1)
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+	project.ProjectMetrics()
+	after, err := registry.ToJSON()
+	if err != nil {
+		t.Fatalf("no se pudieron convertir los datos: %v", err)
+	}
+	cargar(t, project, 1, "Juliana Bustos", 2)
+	second, err := project.SprintMetrics(1)
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+
+	if !mismasHoras(first.ActualHours, 5) || !mismasHoras(second.ActualHours, 7) {
+		t.Fatalf("se esperaban 5 horas reales la primera vez y 7 la segunda, salieron %v y %v", first.ActualHours, second.ActualHours)
+	}
+	if string(after) != string(before) {
+		t.Fatalf("se esperaba que pedir las metricas no cambiara ningun dato, y el registro cambio")
 	}
 }
