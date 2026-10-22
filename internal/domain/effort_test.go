@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"math"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -155,5 +156,43 @@ func TestRechazarUnRegistroSinFecha(t *testing.T) {
 	}
 	if len(project.Efforts()) != 0 {
 		t.Fatalf("se esperaba que el proyecto siguiera sin registros, tiene %d", len(project.Efforts()))
+	}
+}
+
+// Esquema del escenario: Rechazar un registro sin actividad realizada
+// Cubre: RN-6, RN-18
+func TestRechazarUnRegistroSinActividadRealizada(t *testing.T) {
+	for _, activity := range []string{"", "   "} {
+		t.Run(strconv.Quote(activity), func(t *testing.T) {
+			project := unProyectoConJuliana(t)
+			data := unEsfuerzo()
+			data.Activity = activity
+
+			_, err := project.LogEffort(data, hoy)
+
+			if !errors.Is(err, ErrEffortActivityRequired) {
+				t.Fatalf("se esperaba ErrEffortActivityRequired con la actividad %q, salio: %v", activity, err)
+			}
+			if len(project.Efforts()) != 0 {
+				t.Fatalf("se esperaba que el proyecto siguiera sin registros, tiene %d", len(project.Efforts()))
+			}
+		})
+	}
+}
+
+// Escenario: Guardar la actividad sin los espacios de los extremos
+// Cubre: RN-6
+func TestGuardarLaActividadSinLosEspaciosDeLosExtremos(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	data := unEsfuerzo()
+	data.Activity = "  Revisar el pull request  "
+
+	effort, err := project.LogEffort(data, hoy)
+
+	if err != nil {
+		t.Fatalf("se esperaba registrar el esfuerzo sin error, salio: %v", err)
+	}
+	if effort.Activity() != "Revisar el pull request" {
+		t.Fatalf("se esperaba la actividad %q, salio %q", "Revisar el pull request", effort.Activity())
 	}
 }
