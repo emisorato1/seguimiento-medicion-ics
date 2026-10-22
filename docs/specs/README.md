@@ -59,7 +59,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #70) |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #106) |
 | [Consultar el estado de un proyecto](sprint-2/05-consultar-estado-proyecto.md) | #5 | 3 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #102) |
-| [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | ✅ Lista para implementar — puertas aprobadas por el responsable como excepción, falta ratificar |
+| [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #95) |
 
 ### Sprint 3 — del 26 al 30 de octubre (36 SP)
 
@@ -68,7 +68,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
 | [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
 | [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
-| [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | 📝 Borrador completo — pendiente de las tres puertas |
+| [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Lista para implementar — puertas aprobadas en el PR #115 |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | sin estimar | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |

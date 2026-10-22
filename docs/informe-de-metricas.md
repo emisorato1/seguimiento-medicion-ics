@@ -231,8 +231,9 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 8 | Crear un sprint con su Sprint Goal | 3 | En progreso: las tareas 1, 2, 3 y 16 ya están en `dev` (PR #104) |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar |
 | 5 | Consultar el estado de un proyecto | 3 | Hecho |
-| 14 | Registrar el esfuerzo real | 3 | Especificación SDD |
-| 15 | Gestionar defectos | 5 | Especificación SDD |
+| 14 | Registrar el esfuerzo real | 3 | En progreso: la spec y el código van en el PR #100 |
+| 15 | Gestionar defectos | 5 | Lista para implementar |
+| 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
 
 - Completados al 21/10: **15 SP**, 5 de 9 historias. Tres llegaron del Sprint 1; la #7 y la #5
   son las primeras historias nuevas del sprint que se terminan.

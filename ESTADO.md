@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 22:01. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 22:24. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,13 +10,11 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 9
+- Terminadas: 10
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
+_No hay historias en este estado._
 
 ## En progreso
 
@@ -31,6 +29,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 
 ## Especificacion SDD
@@ -39,7 +38,6 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 |---|---|---|---|---|
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
@@ -67,16 +65,17 @@ _No hay historias en este estado._
 | #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-fdab025 2026-10-21 docs: la historia 15 lista para implementar en el indice de specs
-e86e3a7 2026-10-21 Merge remote-tracking branch 'origin/dev' into chore-estado-historias-juliana
-3169999 2026-10-21 Merge pull request #102 from emisorato1/historia-5-consultar-estado
-68934ef 2026-10-21 chore: regenerar ESTADO.md con la 5 en review, la 14 en progreso y la 15 lista para implementar
-2f1f36f 2026-10-21 Merge pull request #101 from emisorato1/historia-15-gestionar-defectos
-62fbf48 2026-10-21 docs: registrar las tareas 1 a 4 de la #5 en su fase 4
-96b9633 2026-10-21 feat: el estado trae el sprint en curso con la consulta de la #8 (historia 5, tarea 4)
-27cd558 2026-10-21 test: el estado trae el sprint en curso, y ninguno si estan todos cerrados (historia 5, tarea 4)
+ea0bda6 2026-10-21 Merge pull request #115 from emisorato1/historia-13-votar-en-secreto
+1a80571 2026-10-21 Merge remote-tracking branch 'origin/dev' into HEAD
+4a2a7fe 2026-10-21 Merge pull request #128 from emisorato1/historia-77-terminada
+c41f090 2026-10-21 chore: regenerar ESTADO.md y la trazabilidad con la historia 77 terminada
+cf16cd7 2026-10-21 docs: la historia 77 terminada en su spec, el indice, la review y el informe del sprint 2
+1f70d51 2026-10-21 Merge pull request #109 from emisorato1/docs-manual-web
+080d2d7 2026-10-21 Merge pull request #95 from emisorato1/historia-77-web
+ee69131 2026-10-21 docs: Maximiliano Eula acepto los tres agregados de la #77
 ```
