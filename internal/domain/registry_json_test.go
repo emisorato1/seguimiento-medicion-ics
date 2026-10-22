@@ -69,8 +69,14 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
 	}
 	closed.state = SprintClosed
+	// el sprint 1 tuvo la historia Terminada en su Sprint Backlog (#9); cerrarlo es de la #10
+	closed.stories = []int{done.ID()}
 	if _, err := first.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 10, 15), End: unDia(2026, 10, 28)}); err != nil {
 		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
+	}
+	// el Sprint Backlog del sprint abierto es de la #9, que lo suma a la conversion
+	if err := first.AssignStory(estimated.ID()); err != nil {
+		t.Fatalf("no se pudo asignar la historia de prueba al sprint 2: %v", err)
 	}
 
 	// el esfuerzo es de la #14, que lo suma a la conversion: dos registros, uno de media hora
@@ -152,6 +158,15 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 					w.ID(), ws.Number(), ws.Goal(), ws.State(), ws.Start(), ws.End(),
 					gs.Number(), gs.Goal(), gs.State(), gs.Start(), gs.End())
 			}
+			wantStories, gotStories := ws.Stories(), gs.Stories()
+			if len(gotStories) != len(wantStories) {
+				t.Fatalf("sprint %d: se esperaba el Sprint Backlog %v, salio %v", ws.Number(), wantStories, gotStories)
+			}
+			for k := range wantStories {
+				if gotStories[k] != wantStories[k] {
+					t.Fatalf("sprint %d: se esperaba el Sprint Backlog %v, salio %v", ws.Number(), wantStories, gotStories)
+				}
+			}
 		}
 		if g.lastSprintNumber != w.lastSprintNumber {
 			t.Fatalf("proyecto %d: se esperaba el contador de sprints en %d, salio en %d", w.ID(), w.lastSprintNumber, g.lastSprintNumber)
@@ -226,7 +241,7 @@ func unosDatosGuardados() registryJSON {
 				},
 				LastSprintNumber: 2,
 				Sprints: []sprintJSON{
-					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado"},
+					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado", Stories: []int{2}},
 					{Number: 2, Goal: "Medir la velocidad", Start: "2026-10-15", End: "2026-10-28", State: "Abierto"},
 				}},
 			{ID: 2, Name: "Otro proyecto", Start: "2026-10-05", NextStoryID: 1},
@@ -280,6 +295,8 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "estado de sprint inexistente", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Planificado" }, want: ErrSavedDataInvalid},
 		{name: "fecha de inicio de sprint que no es fecha", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Start = "01/10/2026" }, want: ErrSavedDataInvalid},
 		{name: "fecha de fin de sprint que no es fecha", change: func(d *registryJSON) { d.Projects[0].Sprints[0].End = "mañana" }, want: ErrSavedDataInvalid},
+		// El Sprint Backlog de la #9 (tarea 14): solo historias que existen en el proyecto.
+		{name: "sprint con una historia que no existe", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Stories = []int{99} }, want: ErrStoryNotFound},
 		{name: "horas estimadas negativas", change: func(d *registryJSON) { d.Projects[0].Stories[0].EstimatedHours = -2 }, want: ErrEstimatedHoursInvalid},
 		{name: "esfuerzo con horas en cero", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Hours = 0 }, want: ErrEffortHoursInvalid},
 		{name: "esfuerzo sin actividad", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Activity = "  " }, want: ErrEffortActivityRequired},
