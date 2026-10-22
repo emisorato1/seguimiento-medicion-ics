@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 09:50. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 21:32. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,29 +16,30 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 
 ## Lista para implementar
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
 
 ## Especificacion SDD
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
-| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
-| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
-| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
@@ -70,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-892cb34 2026-10-21 Merge pull request #106 from emisorato1/historia-24-interfaz-consola
-ebca791 2026-10-21 fix: el título de la consola lleva tilde, como el de la web (historia 24)
-ded81b7 2026-10-21 docs: registrar las correcciones de la revisión del PR #106 (historia 24)
-70ac198 2026-10-21 refactor: renombrar pointsText a pointsInput en estimar (historia 24)
-6120035 2026-10-21 feat: avisar cuando un proyecto no tiene integrantes (historia 24)
-f0ca0e9 2026-10-21 test: listar los integrantes de un proyecto sin integrantes (historia 24)
-dbab5e3 2026-10-21 Merge branch 'dev' into historia-24-interfaz-consola
-13991df 2026-10-20 Merge pull request #114 from emisorato1/trazabilidad-cabecera
+9b54cb5 2026-10-21 docs: registrar las tres puertas de la historia 13
+585c4cf 2026-10-21 Merge branch 'dev' into historia-13-votar-en-secreto
+d9a3185 2026-10-21 Merge pull request #121 from emisorato1/docs-puertas-historia-19
+2c85c5d 2026-10-21 Merge pull request #122 from emisorato1/contrato-pdf-descarga
+8c27857 2026-10-21 Merge pull request #120 from emisorato1/docs-puertas-historia-10
+56140be 2026-10-21 docs: el PDF se descarga desde la web y Metrics se declara antes de su calculo
+9ad5eef 2026-10-21 docs: la #19 mide el renglon con los anchos de Helvetica, espera el reporte en dev y suma las decisiones del responsable
+54244f5 2026-10-21 docs: el responsable acepta el punto 9 de la #10
 ```
