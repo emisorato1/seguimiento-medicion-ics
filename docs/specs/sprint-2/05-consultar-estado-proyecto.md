@@ -300,10 +300,10 @@ escribirla.
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | El estado de un proyecto recién creado trae sus datos, la lista de integrantes vacía, el backlog en cero y ningún sprint en curso; la descripción y la fecha de fin vacías figuran como no cargadas; un proyecto inexistente informa que no se encontró | Consultar el estado de un proyecto recien creado; Un proyecto sin descripcion ni fecha de finalizacion; Consultar el estado de un proyecto que no existe | RN-1, RN-2, RN-4, RN-9, RN-11 | pendiente |
-| 2 | El estado trae los integrantes con su nombre y su rol, en el orden en que se cargaron | El estado muestra los integrantes con su rol | RN-3 | pendiente |
-| 3 | El resumen cuenta totales, completadas y pendientes en cada consulta, las En curso cuentan como pendientes, solo cuenta lo del proyecto y consultar no cambia nada | Resumen del backlog segun el estado de las historias; El estado refleja los cambios del proyecto; Cada proyecto muestra solo lo suyo; Consultar el estado no cambia nada | RN-5, RN-6, RN-7, RN-10, RN-12, RN-13 | pendiente |
-| 4 | El estado trae el sprint abierto con su número, su goal, sus fechas y cuántas historias tiene; con todos los sprints cerrados informa que no hay sprint en curso | El estado muestra el sprint en curso; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-8, RN-9 | pendiente |
+| 1 | El estado de un proyecto recién creado trae sus datos, la lista de integrantes vacía, el backlog en cero y ningún sprint en curso; la descripción y la fecha de fin vacías figuran como no cargadas; un proyecto inexistente informa que no se encontró | Consultar el estado de un proyecto recien creado; Un proyecto sin descripcion ni fecha de finalizacion; Consultar el estado de un proyecto que no existe | RN-1, RN-2, RN-4, RN-9, RN-11 | hecha |
+| 2 | El estado trae los integrantes con su nombre y su rol, en el orden en que se cargaron | El estado muestra los integrantes con su rol | RN-3 | hecha |
+| 3 | El resumen cuenta totales, completadas y pendientes en cada consulta, las En curso cuentan como pendientes, solo cuenta lo del proyecto y consultar no cambia nada | Resumen del backlog segun el estado de las historias; El estado refleja los cambios del proyecto; Cada proyecto muestra solo lo suyo; Consultar el estado no cambia nada | RN-5, RN-6, RN-7, RN-10, RN-12, RN-13 | hecha |
+| 4 | El estado trae el sprint abierto con su número, su goal, sus fechas y cuántas historias tiene; con todos los sprints cerrados informa que no hay sprint en curso | El estado muestra el sprint en curso; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-8, RN-9 | hecha |
 
 **Dónde falla cada una antes de implementarse.** La 1 falla porque la consulta no existe. La
 2, porque la tarea 1 devuelve los integrantes vacíos. La 3, porque el resumen está en cero:
@@ -363,7 +363,43 @@ Los diez escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+**La implementó la sesión de Emiliano Sorato, con autorización de Juliana Bustos, el 21/10**,
+para adelantar sus historias. La responsable sigue siendo Juliana.
+
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro, con la salida
+del test fallando en el mensaje del commit del test, después de `RED:`.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `7de777d` | `718ae62` |
+| 2 | `d7aa701` | `674ff06` |
+| 3 | `a385451` | `431b247` |
+| 4 | `27cd558` | `96b9633` |
+
+Las cuatro fallaron antes de su implementación. La 1, por compilación: la consulta no existía.
+La 2, la 3 y la 4, por comportamiento: la tarea 1 devolvía los integrantes vacíos, el resumen
+en cero y ningún sprint. Cuatro tests pasaron solos, como preveía la Fase 3, y por eso van en
+el mismo commit que uno que falla:
+
+- **El proyecto que no existe** (tarea 1): lo resuelve el registro de la #3 al buscarlo.
+- **Consultar no cambia nada y cada proyecto muestra solo lo suyo** (tarea 3): la consulta
+  nunca escribe y cada proyecto cuenta lo suyo.
+- **Todos los sprints cerrados** (tarea 4): antes de la tarea, el estado nunca traía sprint.
+
+Nombres que la Fase 2 no fija: la consulta es `p.Status()`, y devuelve un `ProjectStatus`
+con `MemberStatus` (nombre y rol), `BacklogSummary` (`Total`, `Completed`, `Pending`) y
+`SprintSummary` (número, goal, fechas y `AssignedStories`). Los datos opcionales y el sprint
+en curso llevan su indicador aparte —`HasDescription`, `HasEnd`, `HasCurrentSprint`—, para que
+"no está cargado" y "no hay sprint en curso" se informen y no haya que deducirlos de un valor
+vacío (RN-2, RN-9). El sprint en curso sale de `p.OpenSprint()` de la #8, como pide la Fase 2.
+
+Los tests fijan el estado En curso y Terminada de las historias, y el sprint Cerrado con sus
+historias asignadas, desde dentro del paquete, como dicen las Dependencias de la Fase 3. No
+se modificó ningún archivo que ya existía. `internal/domain` sigue en 100% de cobertura.
+
+### Desvíos respecto de la spec
+
+Ninguno.
 
 ## Trazabilidad
 
