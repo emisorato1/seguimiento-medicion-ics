@@ -141,6 +141,10 @@ func (p *Project) AddDefect(data DefectData) (*Defect, error) {
 	if _, err := p.Story(data.StoryID); err != nil {
 		return nil, err
 	}
+	// el sprint de detección tiene que existir en el proyecto, abierto o cerrado (RN-8)
+	if _, err := p.Sprint(data.DetectedIn); err != nil {
+		return nil, err
+	}
 	// el título y la descripción se controlan ya sin los espacios de los extremos, así un
 	// texto de solo espacios cuenta como vacío, y se guardan así (RN-4, RN-5)
 	title := strings.TrimSpace(data.Title)
