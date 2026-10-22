@@ -419,3 +419,18 @@ func TestLasHorasCargadasEnUnProyectoNoSumanEnOtro(t *testing.T) {
 		t.Fatalf("se esperaba 1 hora en el proyecto B, salio %v (error: %v)", hours, err)
 	}
 }
+
+// Escenario: Registrar esfuerzo en un proyecto que no existe
+// Cubre: RN-19
+//
+// Las operaciones de esfuerzo son del proyecto, así que el único camino para llegar a ellas
+// es buscarlo en el registro de la #3: si no existe, se informa ahí y no se registra nada.
+func TestRegistrarEsfuerzoEnUnProyectoQueNoExiste(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	_, err := registry.Get(99)
+
+	if !errors.Is(err, ErrProjectNotFound) {
+		t.Fatalf("se esperaba ErrProjectNotFound para el proyecto 99, salio: %v", err)
+	}
+}
