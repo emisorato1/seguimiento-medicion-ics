@@ -53,6 +53,9 @@ var (
 	// ErrDefectResolvedBeforeDetected: resolver un defecto en un sprint de número menor al de
 	// detección (historia #15, RN-13).
 	ErrDefectResolvedBeforeDetected = errors.New("un defecto no se resuelve en un sprint anterior al de detección")
+	// ErrDefectAlreadyResolved: cambiarle el estado o volver a resolver un defecto Resuelto
+	// (historia #15, RN-14).
+	ErrDefectAlreadyResolved = errors.New("el defecto ya está resuelto")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.

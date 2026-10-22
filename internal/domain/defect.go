@@ -193,6 +193,10 @@ func (p *Project) ChangeDefectState(id int, state DefectState) error {
 	}
 	for _, defect := range p.defects {
 		if defect.id == id {
+			// un defecto resuelto no se reabre ni cambia de estado (RN-14)
+			if defect.state == DefectResolved {
+				return ErrDefectAlreadyResolved
+			}
 			defect.state = state
 		}
 	}
@@ -208,6 +212,9 @@ func (p *Project) ResolveDefect(id, sprintNumber int) error {
 	}
 	for _, defect := range p.defects {
 		if defect.id == id {
+			if defect.state == DefectResolved {
+				return ErrDefectAlreadyResolved
+			}
 			// "anterior" se compara por número de sprint; el mismo sprint vale (RN-13)
 			if sprintNumber < defect.detectedIn {
 				return ErrDefectResolvedBeforeDetected
