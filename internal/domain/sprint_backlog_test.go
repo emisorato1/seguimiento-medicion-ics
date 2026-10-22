@@ -110,3 +110,22 @@ func TestRechazarUnaHistoriaSinEstimar(t *testing.T) {
 		t.Errorf("se esperaba la historia todavia Pendiente, salio %v", story.State())
 	}
 }
+
+// Escenario: Rechazar una historia que ya esta en el sprint
+// Cubre: RN-5, RN-14
+func TestRechazarUnaHistoriaQueYaEstaEnElSprint(t *testing.T) {
+	project, sprint := unSprintAbierto(t)
+	story := unaHistoriaEstimada(t, project, 5)
+	if err := project.AssignStory(story.ID()); err != nil {
+		t.Fatalf("no se pudo asignar la historia de prueba: %v", err)
+	}
+
+	err := project.AssignStory(story.ID())
+
+	if !errors.Is(err, ErrStoryAlreadyInSprint) {
+		t.Fatalf("se esperaba ErrStoryAlreadyInSprint, salio: %v", err)
+	}
+	if stories := sprint.Stories(); len(stories) != 1 {
+		t.Errorf("se esperaba el Sprint Backlog con una sola historia, salio %v", stories)
+	}
+}
