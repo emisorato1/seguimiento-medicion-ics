@@ -91,7 +91,7 @@ func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
 		memberName: member.name,
 		activity:   activity,
 		hours:      data.Hours,
-		day:        data.Day,
+		day:        toDay(data.Day),
 	}
 	p.efforts = append(p.efforts, effort)
 	return effort, nil
@@ -104,4 +104,16 @@ func (p *Project) Efforts() []*Effort {
 	efforts := make([]*Effort, len(p.efforts))
 	copy(efforts, p.efforts)
 	return efforts
+}
+
+// StoryHours devuelve las horas reales de una historia: la suma de todos sus registros, de
+// cualquier integrante y día (RN-13).
+func (p *Project) StoryHours(id int) (float64, error) {
+	total := 0.0
+	for _, effort := range p.efforts {
+		if effort.storyID == id {
+			total += effort.hours
+		}
+	}
+	return total, nil
 }
