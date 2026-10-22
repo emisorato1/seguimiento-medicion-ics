@@ -41,6 +41,9 @@ var (
 	// no chocar con los que agregan otras historias al mismo tiempo.
 	ErrDefectTitleRequired       = errors.New("falta el título del defecto")
 	ErrDefectDescriptionRequired = errors.New("falta la descripción del defecto")
+	// ErrDefectSeverityInvalid: severidad que no es Crítica, Mayor ni Menor, o ninguna
+	// (historia #15, RN-6).
+	ErrDefectSeverityInvalid = errors.New("la severidad debe ser Crítica, Mayor o Menor")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.

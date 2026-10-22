@@ -16,6 +16,44 @@ const (
 	SeverityMinor
 )
 
+// String devuelve el nombre de la severidad tal como la nombra la Fase 1, o "sin severidad"
+// si no es ninguna de las tres.
+func (s Severity) String() string {
+	switch s {
+	case SeverityCritical:
+		return "Crítica"
+	case SeverityMajor:
+		return "Mayor"
+	case SeverityMinor:
+		return "Menor"
+	default:
+		return "sin severidad"
+	}
+}
+
+// isValid indica si la severidad es una de las tres válidas. Un valor armado a mano, como
+// Severity(9), no lo es (RN-6).
+func (s Severity) isValid() bool {
+	return s == SeverityCritical || s == SeverityMajor || s == SeverityMinor
+}
+
+// ParseSeverity convierte el texto que escribe el usuario en una severidad, sin distinguir
+// mayúsculas ni los espacios de los extremos, y acepta "critica" sin tilde, que es como se
+// escribe en un teclado sin tildes (Fase 2). Cualquier otro texto se rechaza con el error de
+// la RN-6. Vive en el dominio y no en la interfaz, para que la regla no quede duplicada.
+func ParseSeverity(text string) (Severity, error) {
+	switch strings.ToLower(strings.TrimSpace(text)) {
+	case "crítica", "critica":
+		return SeverityCritical, nil
+	case "mayor":
+		return SeverityMajor, nil
+	case "menor":
+		return SeverityMinor, nil
+	default:
+		return 0, ErrDefectSeverityInvalid
+	}
+}
+
 // DefectState es en qué anda un defecto. A diferencia de la severidad, no tiene un valor
 // "ninguno": el defecto siempre nace Abierto (RN-3).
 type DefectState int
@@ -107,6 +145,9 @@ func (p *Project) AddDefect(data DefectData) (*Defect, error) {
 	description := strings.TrimSpace(data.Description)
 	if description == "" {
 		return nil, ErrDefectDescriptionRequired
+	}
+	if !data.Severity.isValid() {
+		return nil, ErrDefectSeverityInvalid
 	}
 	defect := &Defect{
 		id:          p.lastDefectID + 1,
