@@ -3,7 +3,7 @@
 - **Historia:** #8
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
   revisa, lo corrige si hace falta y lo presenta a las puertas. Revisado por el
@@ -400,18 +400,18 @@ quedó con los mismos sprints que antes: es la RN-12.
 | 1 | Un proyecto recién creado no tiene sprints y no tiene sprint abierto, y eso no es un error | Un proyecto sin sprints no tiene sprint abierto | RN-10 | hecha |
 | 2 | Crear el primer sprint: queda con número 1, en Abierto y sin historias asignadas | Crear el primer sprint de un proyecto | RN-1, RN-2, RN-3 | hecha |
 | 3 | La consulta del sprint abierto devuelve ese sprint con su goal, sus fechas y su estado | Consultar el sprint abierto de un proyecto | RN-10 | hecha |
-| 4 | Rechazar la creación sin Sprint Goal, con el goal de solo espacios incluido; el proyecto sigue sin sprints | Rechazar un sprint sin Sprint Goal | RN-4, RN-12 | pendiente |
-| 5 | Rechazar la creación sin fecha de inicio y sin fecha de fin, informando cuál de las dos falta | Rechazar un sprint sin las fechas obligatorias | RN-5, RN-12 | pendiente |
-| 6 | Rechazar la creación con la fecha de fin anterior a la de inicio | Rechazar un sprint con fechas incoherentes | RN-6, RN-12 | pendiente |
-| 7 | Un sprint de un solo día y un sprint con las dos fechas en el pasado se aceptan | Un sprint de un solo dia es valido / Un sprint con fechas pasadas es valido | RN-6, RN-14 | pendiente |
-| 8 | El Sprint Goal se guarda sin los espacios del principio y del final | Guardar el Sprint Goal sin espacios en los extremos | RN-7 | pendiente |
-| 9 | Con un sprint abierto, crear otro se rechaza informando cuál está abierto, y el proyecto sigue con un solo sprint | No se puede abrir un segundo sprint habiendo uno abierto | RN-8, RN-12 | pendiente |
-| 10 | Cerrado el sprint 1, el sprint nuevo recibe el número 2 y el proyecto queda con dos sprints | El sprint nuevo recibe el numero siguiente | RN-1, RN-2 | pendiente |
-| 11 | Un proyecto con todos sus sprints cerrados no tiene sprint abierto | Un proyecto con todos sus sprints cerrados no tiene sprint abierto | RN-10 | pendiente |
-| 12 | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | RN-11 | pendiente |
-| 13 | Dos proyectos tienen cada uno su sprint número 1, y el sprint abierto de uno no impide crear el del otro | Cada proyecto puede tener su propio sprint abierto | RN-9 | pendiente |
-| 14 | Crear un sprint o pedir el sprint abierto de un proyecto que no existe informa que no se encontró el proyecto | Operar sobre un proyecto que no existe | RN-13 | pendiente |
-| 15 | Los sprints de un proyecto se conservan al guardar y volver a cargar el registro, con su número, goal, fechas y estado, y el contador sigue desde donde estaba. Un archivo con el goal vacío, fechas faltantes o al revés, dos sprints abiertos, o un número repetido, menor que 1 o no menor que el contador se rechaza al cargar | — (casos en el test de ida y vuelta y en el de datos dañados de `registry_json_test.go`) | RN-1, RN-2, RN-4 a RN-6, RN-8 | pendiente |
+| 4 | Rechazar la creación sin Sprint Goal, con el goal de solo espacios incluido; el proyecto sigue sin sprints | Rechazar un sprint sin Sprint Goal | RN-4, RN-12 | hecha |
+| 5 | Rechazar la creación sin fecha de inicio y sin fecha de fin, informando cuál de las dos falta | Rechazar un sprint sin las fechas obligatorias | RN-5, RN-12 | hecha |
+| 6 | Rechazar la creación con la fecha de fin anterior a la de inicio | Rechazar un sprint con fechas incoherentes | RN-6, RN-12 | hecha |
+| 7 | Un sprint de un solo día y un sprint con las dos fechas en el pasado se aceptan | Un sprint de un solo dia es valido / Un sprint con fechas pasadas es valido | RN-6, RN-14 | hecha |
+| 8 | El Sprint Goal se guarda sin los espacios del principio y del final | Guardar el Sprint Goal sin espacios en los extremos | RN-7 | hecha |
+| 9 | Con un sprint abierto, crear otro se rechaza informando cuál está abierto, y el proyecto sigue con un solo sprint | No se puede abrir un segundo sprint habiendo uno abierto | RN-8, RN-12 | hecha |
+| 10 | Cerrado el sprint 1, el sprint nuevo recibe el número 2 y el proyecto queda con dos sprints | El sprint nuevo recibe el numero siguiente | RN-1, RN-2 | hecha |
+| 11 | Un proyecto con todos sus sprints cerrados no tiene sprint abierto | Un proyecto con todos sus sprints cerrados no tiene sprint abierto | RN-10 | hecha |
+| 12 | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | RN-11 | hecha |
+| 13 | Dos proyectos tienen cada uno su sprint número 1, y el sprint abierto de uno no impide crear el del otro | Cada proyecto puede tener su propio sprint abierto | RN-9 | hecha |
+| 14 | Crear un sprint o pedir el sprint abierto de un proyecto que no existe informa que no se encontró el proyecto | Operar sobre un proyecto que no existe | RN-13 | hecha |
+| 15 | Los sprints de un proyecto se conservan al guardar y volver a cargar el registro, con su número, goal, fechas y estado, y el contador sigue desde donde estaba. Un archivo con el goal vacío, fechas faltantes o al revés, dos sprints abiertos, o un número repetido, menor que 1 o no menor que el contador se rechaza al cargar | — (casos en el test de ida y vuelta y en el de datos dañados de `registry_json_test.go`) | RN-1, RN-2, RN-4 a RN-6, RN-8 | hecha |
 | 16 | Consultar un sprint por su número, abierto o cerrado, y un número que no existe informa que no se encontró el sprint | Consultar un sprint por su numero; Consultar un sprint que no existe | RN-15 | hecha |
 
 **Las tareas 1, 2, 3 y 16 van en un primer pull request**, que se mergea apenas esté: crean
@@ -499,7 +499,42 @@ Las cuatro fallaron antes de su implementación, y cada commit de test dice por 
 
 ### Segundo pull request: tareas 4 a 15
 
-_Se completa durante la implementación._
+Va junto con la #9, en el mismo pull request, como permite el modo sprint final para dos
+eslabones seguidos de la misma cadena.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 4 | `07deed8` | `a2cadc9` |
+| 5 | `6991115` | `20eb08c` |
+| 6 | `8511e9d` | `734a903` |
+| 7 | `fcbd577` | — (ver abajo) |
+| 8 | `41396e9` | `eb536ef` |
+| 9 | `ffaada8` | `c59f3b2` |
+| 10 | `19394e3` | — (ver abajo) |
+| 11 | `7309747` | — (ver abajo) |
+| 12, 13 y 14 | `cfde49b` | — (ver abajo) |
+| 15 | `b2a1db5` y `89b90fb` | `8e05211` |
+
+### Desvíos respecto de la spec
+
+- **Tareas sin commit de implementación: la 7 y de la 10 a la 14.** Sus tests pasaron en
+  verde al escribirlos, como anticipaba el aviso de la Fase 3: la tarea 6 ya rechazaba solo
+  un fin *anterior* al inicio y nada compara contra la fecha de hoy (7), el contador de la
+  tarea 2 ya numeraba desde el último (10), la consulta de la tarea 3 ya buscaba un sprint
+  abierto (11), nada compara goals ni fechas entre sprints (12), cada proyecto tiene sus
+  sprints y su contador (13) y el registro de la #3 ya informa el proyecto inexistente (14).
+  Cada commit lo explica. Forzar un RED habría sido simular TDD.
+- **El test de la tarea 14 se llama `TestOperarSprintsSobreUnProyectoQueNoExiste`** y no con
+  el nombre exacto del escenario, porque la #6 ya tiene un escenario "Operar sobre un
+  proyecto que no existe" con su test. El comentario `// Esquema del escenario:` conserva el
+  nombre, y por ahí lo encuentra la trazabilidad.
+- **El test de la tarea 9 mira también el texto del error**, además de `errors.Is`: la RN-8
+  pide que el aviso diga cuál es el sprint abierto, y eso es lo único que agrega el error
+  envuelto.
+- **La tarea 15 tiene un segundo commit de test (`89b90fb`)**: dos casos de fechas de sprint
+  mal escritas en el archivo, que pasan con la implementación y cubren las dos lecturas de
+  fecha que habían quedado sin test. Devuelven el dominio al 100% de cobertura.
+- **La consola y la web todavía no usan los sprints**: eso es de la #24 y la #78.
 
 ## Trazabilidad
 
@@ -509,5 +544,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/sprint_test.go` |
-| Código Go | `internal/domain/sprint.go`, con los sprints dentro de `internal/domain/project.go` y sus errores en `internal/domain/errors.go` |
+| Tests | `internal/domain/sprint_test.go` (un test por escenario, 17) y los casos de sprints en `internal/domain/registry_json_test.go` (tarea 15) |
+| Código Go | `internal/domain/sprint.go`, con los sprints dentro de `internal/domain/project.go`, su conversión en `internal/domain/registry_json.go` y sus errores en `internal/domain/errors.go` |
