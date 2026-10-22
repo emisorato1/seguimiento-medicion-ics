@@ -68,9 +68,14 @@ se puede reemplazar, no se toca si la historia está Terminada. **Es el único c
 | `PointsAtClose` | story points por historia | los puntos que tenía cada historia de `Stories` al cerrar; vacío mientras está abierto |
 | `ClosedOn` | fecha | cuándo se cerró de verdad; vacía si no cerró |
 
-Cuelga del proyecto: `p.AddSprint(...)` y `p.OpenSprint()` (#8), `p.AssignStory(id)` y
-`p.UnassignStory(id)` (#9), `p.CloseSprint(...)` (#10), `p.Sprints()`, `p.ClosedSprints()` y
-`p.Sprint(number)` (#11).
+Cuelga del proyecto: `p.AddSprint(...)`, `p.OpenSprint()`, `p.Sprints()` y
+`p.Sprint(number)` (#8), `p.AssignStory(id)` y `p.UnassignStory(id)` (#9),
+`p.CloseSprint(...)` (#10) y `p.ClosedSprints()` (#11).
+
+**`p.Sprints()` y `p.Sprint(number)` los adelanta la #8**, con el error de sprint no
+encontrado, aunque al principio eran de la #11: la #15 los necesita desde su primera tarea para
+validar los sprints de detección y de resolución de un defecto. Lo pidieron Maxi y Juliana en
+la revisión de las puertas de la #8 (PR #104), el 20 y 21/10.
 
 **Por qué `CompletedStories` es un dato y no se deduce.** Una historia que no se terminó
 vuelve al Product Backlog y se puede terminar en el sprint siguiente: si "completada" se
