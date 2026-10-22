@@ -51,8 +51,8 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #105) |
-| [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | ⚙️ En implementación |
-| [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | 🟢 Puerta 3 aprobada — lista para implementar |
+| [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | 🔍 Implementada — en review |
+| [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | 🔍 Implementada — en review |
 | [Registrar el esfuerzo real](sprint-2/14-registrar-esfuerzo-real.md) | #14 | 3 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #100) |
 | [Gestionar defectos](sprint-2/15-gestionar-defectos.md) | #15 | 5 | Juliana Bustos | 🟢 Puerta 3 aprobada — lista para implementar |
 | [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` el 19/10, entre el Sprint 1 y el 2 |

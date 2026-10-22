@@ -60,4 +60,29 @@ var (
 	// ErrSprintNotFound: consultar un sprint con un numero que no existe en el proyecto
 	// (historia #8, RN-15). Lo usan tambien la #11 y la #15.
 	ErrSprintNotFound = errors.New("no se encontró el sprint")
+	// ErrSprintGoalRequired: crear un sprint sin Sprint Goal, o con uno de solo espacios
+	// (historia #8, RN-4).
+	ErrSprintGoalRequired = errors.New("el Sprint Goal es obligatorio")
+	// ErrSprintStartRequired: crear un sprint sin fecha de inicio (historia #8, RN-5).
+	ErrSprintStartRequired = errors.New("la fecha de inicio del sprint es obligatoria")
+	// ErrSprintEndRequired: crear un sprint sin fecha de fin (historia #8, RN-5).
+	ErrSprintEndRequired = errors.New("la fecha de fin del sprint es obligatoria")
+	// ErrSprintDatesInconsistent: fecha de fin del sprint anterior a la de inicio (historia #8,
+	// RN-6).
+	ErrSprintDatesInconsistent = errors.New("las fechas del sprint son incoherentes: la fecha de fin es anterior a la de inicio")
+	// ErrSprintAlreadyOpen: crear un sprint mientras el proyecto tiene otro abierto (historia
+	// #8, RN-8). Se devuelve envuelto con el numero del sprint abierto, asi el aviso dice cual
+	// es; errors.Is lo sigue reconociendo.
+	ErrSprintAlreadyOpen = errors.New("ya hay un sprint abierto en el proyecto")
+	// ErrStoryNotEstimated: asignar a un sprint una historia sin estimar (historia #9, RN-3).
+	ErrStoryNotEstimated = errors.New("solo se asignan a un sprint las historias estimadas")
+	// ErrStoryAlreadyInSprint: asignar una historia que ya esta en el Sprint Backlog (historia
+	// #9, RN-5).
+	ErrStoryAlreadyInSprint = errors.New("la historia ya está asignada al sprint")
+	// ErrNoOpenSprint: asignar o quitar una historia cuando el proyecto no tiene sprint abierto
+	// (historia #9, RN-2). Lo reusa la #10 al cerrar.
+	ErrNoOpenSprint = errors.New("el proyecto no tiene un sprint abierto")
+	// ErrStoryNotInSprint: quitar del sprint una historia que no esta en su Sprint Backlog
+	// (historia #9, RN-8).
+	ErrStoryNotInSprint = errors.New("la historia no está en el sprint")
 )

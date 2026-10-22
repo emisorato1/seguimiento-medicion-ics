@@ -3,7 +3,7 @@
 - **Historia:** #9
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 20/10: decidió los cinco
@@ -363,20 +363,20 @@ Backlog y el estado de la historia quedaron como estaban (RN-14).
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | El Sprint Backlog de un sprint recién abierto está vacío, y eso no es un error | Un sprint recien abierto tiene el Sprint Backlog vacio | RN-9 | pendiente |
-| 2 | Asignar una historia estimada la deja en el Sprint Backlog y En curso | Asignar una historia estimada al sprint abierto | RN-1, RN-4 | pendiente |
-| 3 | El Sprint Backlog conserva el orden en que se asignaron las historias | El Sprint Backlog respeta el orden en que se asignaron las historias | RN-9, RN-15 | pendiente |
-| 4 | Rechazar una historia sin estimar; el Sprint Backlog y la historia quedan como estaban | Rechazar una historia sin estimar | RN-3, RN-14 | pendiente |
-| 5 | Rechazar una historia ya asignada; el Sprint Backlog no la repite | Rechazar una historia que ya esta en el sprint | RN-5, RN-14 | pendiente |
-| 6 | Rechazar asignar o quitar una historia Terminada, con el error que ya existe para ese caso | Rechazar una historia terminada; Rechazar quitar una historia terminada | RN-6, RN-14 | pendiente |
-| 7 | Asignar o quitar sin sprint abierto se rechaza e informa que no hay sprint abierto | Operar sin un sprint abierto | RN-2 | pendiente |
-| 8 | Quitar una historia la saca del Sprint Backlog y la deja Pendiente | Quitar una historia del sprint abierto | RN-7 | pendiente |
-| 9 | Quitar una historia y volver a asignarla la deja última en el orden | Quitar una historia y volver a asignarla | RN-7, RN-9 | pendiente |
-| 10 | Rechazar quitar una historia que no está en el Sprint Backlog | Rechazar quitar una historia que no esta en el sprint | RN-8, RN-14 | pendiente |
-| 11 | Una historia que quedó sin completar en un sprint cerrado se asigna al sprint siguiente, y el sprint cerrado la sigue teniendo entre las suyas | Una historia que quedo sin completar se puede asignar al sprint siguiente | RN-11, RN-12 | pendiente |
-| 12 | Asignar en un proyecto no cambia el Sprint Backlog de otro | Cada proyecto arma su propio Sprint Backlog | RN-10 | pendiente |
-| 13 | Asignar o quitar una historia o un proyecto que no existen informa que no se encontró | Operar sobre algo que no existe | RN-13, RN-16 | pendiente |
-| 14 | El Sprint Backlog se conserva al guardar y volver a cargar el registro, en el mismo orden, y una historia que no existe en el proyecto se rechaza al cargar | — (caso en el test de ida y vuelta de `registry_json_test.go`) | RN-1, RN-9 | pendiente |
+| 1 | El Sprint Backlog de un sprint recién abierto está vacío, y eso no es un error | Un sprint recien abierto tiene el Sprint Backlog vacio | RN-9 | hecha |
+| 2 | Asignar una historia estimada la deja en el Sprint Backlog y En curso | Asignar una historia estimada al sprint abierto | RN-1, RN-4 | hecha |
+| 3 | El Sprint Backlog conserva el orden en que se asignaron las historias | El Sprint Backlog respeta el orden en que se asignaron las historias | RN-9, RN-15 | hecha |
+| 4 | Rechazar una historia sin estimar; el Sprint Backlog y la historia quedan como estaban | Rechazar una historia sin estimar | RN-3, RN-14 | hecha |
+| 5 | Rechazar una historia ya asignada; el Sprint Backlog no la repite | Rechazar una historia que ya esta en el sprint | RN-5, RN-14 | hecha |
+| 6 | Rechazar asignar o quitar una historia Terminada, con el error que ya existe para ese caso | Rechazar una historia terminada; Rechazar quitar una historia terminada | RN-6, RN-14 | hecha |
+| 7 | Asignar o quitar sin sprint abierto se rechaza e informa que no hay sprint abierto | Operar sin un sprint abierto | RN-2 | hecha |
+| 8 | Quitar una historia la saca del Sprint Backlog y la deja Pendiente | Quitar una historia del sprint abierto | RN-7 | hecha |
+| 9 | Quitar una historia y volver a asignarla la deja última en el orden | Quitar una historia y volver a asignarla | RN-7, RN-9 | hecha |
+| 10 | Rechazar quitar una historia que no está en el Sprint Backlog | Rechazar quitar una historia que no esta en el sprint | RN-8, RN-14 | hecha |
+| 11 | Una historia que quedó sin completar en un sprint cerrado se asigna al sprint siguiente, y el sprint cerrado la sigue teniendo entre las suyas | Una historia que quedo sin completar se puede asignar al sprint siguiente | RN-11, RN-12 | hecha |
+| 12 | Asignar en un proyecto no cambia el Sprint Backlog de otro | Cada proyecto arma su propio Sprint Backlog | RN-10 | hecha |
+| 13 | Asignar o quitar una historia o un proyecto que no existen informa que no se encontró | Operar sobre algo que no existe | RN-13, RN-16 | hecha |
+| 14 | El Sprint Backlog se conserva al guardar y volver a cargar el registro, en el mismo orden, y una historia que no existe en el proyecto se rechaza al cargar | — (caso en el test de ida y vuelta de `registry_json_test.go`) | RN-1, RN-9 | hecha |
 
 ### Por qué este orden
 
@@ -430,7 +430,45 @@ Los catorce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.** Va en el
+mismo pull request que el resto de la #8, como permite el modo sprint final para dos
+eslabones seguidos de la misma cadena.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `7f9af97` | — (ver abajo) |
+| 2 | `4eda9be` | `7405b81` |
+| 3 | `3356937` | — (ver abajo) |
+| 4 | `9890acc` | `64ba2dc` |
+| 5 | `7b688bd` | `7c4dd2a` |
+| 6 | `cd46b06` | `936fb60` |
+| 7 | `3524b7f` | `670390e` |
+| 8 | `0d27e9e` | `edfbc46` |
+| 9 | `f8681fa` | — (ver abajo) |
+| 10 | `c739a3a` | `7443a68` |
+| 11, 12 y 13 | `f22036f` | — (ver abajo) |
+| 14 | `2f5f674` y `40640f4` | `5cbe0c8` y `8a048e5` |
+
+### Desvíos respecto de la spec
+
+- **Tareas sin commit de implementación: la 1, la 3, la 9 y de la 11 a la 13.** Sus tests
+  pasaron en verde al escribirlos: la consulta del Sprint Backlog ya era `Stories()` del
+  sprint abierto, que dejó la #8 (1); asignar agrega al final, que es el orden de
+  asignación (3); quitar conserva el orden de las demás (9); asignar solo mira el sprint
+  abierto y el cerrado conserva su lista (11); cada proyecto tiene sus sprints (12), y la
+  historia y el proyecto inexistentes los informan la #6 y la #3 (13). Cada commit lo
+  explica.
+- **Quitar existe desde la tarea 6, no desde la 8.** El escenario "Rechazar quitar una
+  historia terminada", que la RN-6 sumó en la revisión de las puertas, cae en la tarea 6 y
+  necesita la operación. Se creó ahí con ese único control, y la tarea 8 le agregó sacar la
+  historia del Sprint Backlog.
+- **La tarea 14 tiene un segundo ciclo** (`40640f4` y `8a048e5`): al cargar, una historia
+  repetida en un Sprint Backlog se rechaza con el mismo error que al asignarla dos veces. Lo
+  encontró la revisión propia del PR, antes de pedir la revisión: un archivo editado a mano
+  podía traer lo que el sistema nunca deja hacer.
+- **No hay una consulta nueva del Sprint Backlog**: es `Stories()` del sprint abierto, que
+  devuelve los identificadores en orden. El detalle de cada historia se pide al Product
+  Backlog, como dice la Fase 2 (una sola fuente).
 
 ## Trazabilidad
 
@@ -440,5 +478,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/sprint_backlog_test.go` |
-| Código Go | `internal/domain/sprint_backlog.go` y sus errores en `internal/domain/errors.go` |
+| Tests | `internal/domain/sprint_backlog_test.go` (un test por escenario, 14) y el caso del Sprint Backlog en `internal/domain/registry_json_test.go` (tarea 14) |
+| Código Go | `AssignStory` y `UnassignStory` en `internal/domain/sprint_backlog.go`, su conversión en `internal/domain/registry_json.go` y sus errores en `internal/domain/errors.go` |

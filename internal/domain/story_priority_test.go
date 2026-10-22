@@ -284,7 +284,8 @@ func TestDosListadosSeguidosDevuelvenLoMismo(t *testing.T) {
 	}
 }
 
-// Tarea 4: desempatar por identificador aunque el backlog este guardado en otro orden
+// Sin escenario: tarea 4 de la #7, desempatar por identificador aunque el backlog este
+// guardado en otro orden
 // Cubre: RN-3 y la decision de la Fase 2 "El desempate por identificador se hace explicito"
 //
 // Con los escenarios de la Fase 1 solos el desempate no falla, porque las historias que se
