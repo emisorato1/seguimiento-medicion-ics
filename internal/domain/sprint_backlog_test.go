@@ -32,3 +32,35 @@ func TestUnSprintRecienAbiertoTieneElSprintBacklogVacio(t *testing.T) {
 		t.Fatalf("se esperaba el Sprint Backlog vacio, salio %v", stories)
 	}
 }
+
+// unaHistoriaEstimada agrega al proyecto una historia Pendiente estimada en esos puntos.
+func unaHistoriaEstimada(t *testing.T, project *Project, points int) *Story {
+	t.Helper()
+	story, err := project.AddStory(unosDatos())
+	if err != nil {
+		t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+	}
+	if err := project.EstimateStory(story.ID(), points); err != nil {
+		t.Fatalf("no se pudo estimar la historia de prueba: %v", err)
+	}
+	return story
+}
+
+// Escenario: Asignar una historia estimada al sprint abierto
+// Cubre: RN-1, RN-4
+func TestAsignarUnaHistoriaEstimadaAlSprintAbierto(t *testing.T) {
+	project, sprint := unSprintAbierto(t)
+	story := unaHistoriaEstimada(t, project, 5)
+
+	err := project.AssignStory(story.ID())
+
+	if err != nil {
+		t.Fatalf("se esperaba asignar la historia sin error, salio: %v", err)
+	}
+	if stories := sprint.Stories(); len(stories) != 1 || stories[0] != story.ID() {
+		t.Errorf("se esperaba el Sprint Backlog del sprint 1 con la historia %d, salio %v", story.ID(), stories)
+	}
+	if story.State() != StoryInProgress {
+		t.Errorf("se esperaba la historia En curso, salio %v", story.State())
+	}
+}
