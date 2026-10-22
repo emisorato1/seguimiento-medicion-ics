@@ -202,6 +202,10 @@ func (p *Project) ChangeDefectState(id int, state DefectState) error {
 // ResolveDefect pasa el defecto con ese identificador a Resuelto y registra el sprint en que
 // se resolvió, esté Abierto o En curso (RN-11).
 func (p *Project) ResolveDefect(id, sprintNumber int) error {
+	// el sprint de resolución tiene que existir en el proyecto (RN-12)
+	if _, err := p.Sprint(sprintNumber); err != nil {
+		return err
+	}
 	for _, defect := range p.defects {
 		if defect.id == id {
 			defect.state = DefectResolved
