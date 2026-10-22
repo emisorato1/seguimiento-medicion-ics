@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 14:25. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 19:22. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -23,19 +23,20 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 
 ## Lista para implementar
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 
 ## Especificacion SDD
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
-| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
-| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
@@ -70,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-ba0c908 2026-10-21 feat: las historias terminadas van al final del listado (tarea 5, historia 7)
-cc4e1f9 2026-10-21 test: las historias terminadas van al final (tarea 5, historia 7)
-deef1b0 2026-10-21 feat: desempatar por identificador dentro de la misma prioridad (tarea 4, historia 7)
-50a9d3f 2026-10-21 test: desempatar por identificador dentro de la misma prioridad (tarea 4, historia 7)
-f11be53 2026-10-21 feat: ordenar el backlog de Alta a Baja (tarea 3, historia 7)
-eb1c628 2026-10-21 test: el listado va de Alta a Baja y se arma en cada pedido (tarea 3, historia 7)
-5c75d88 2026-10-21 feat: el listado ordenado trae todas las historias del backlog (tarea 2, historia 7)
-ab5ea38 2026-10-21 test: el listado trae todas las historias con sus datos (tarea 2, historia 7)
+041257a 2026-10-21 docs: registrar las tres puertas de las historias 8 y 9
+296cf86 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-8-crear-sprint
+d9a3185 2026-10-21 Merge pull request #121 from emisorato1/docs-puertas-historia-19
+2c85c5d 2026-10-21 Merge pull request #122 from emisorato1/contrato-pdf-descarga
+8c27857 2026-10-21 Merge pull request #120 from emisorato1/docs-puertas-historia-10
+56140be 2026-10-21 docs: el PDF se descarga desde la web y Metrics se declara antes de su calculo
+9ad5eef 2026-10-21 docs: la #19 mide el renglon con los anchos de Helvetica, espera el reporte en dev y suma las decisiones del responsable
+54244f5 2026-10-21 docs: el responsable acepta el punto 9 de la #10
 ```
