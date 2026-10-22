@@ -348,3 +348,18 @@ func TestResolverUnDefecto(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Rechazar la resolucion con un sprint que no existe
+// Cubre: RN-12, RN-18
+func TestRechazarLaResolucionConUnSprintQueNoExiste(t *testing.T) {
+	project, defect := unDefectoRegistrado(t, 1)
+
+	err := project.ResolveDefect(defect.ID(), 4)
+
+	if !errors.Is(err, ErrSprintNotFound) {
+		t.Fatalf("se esperaba ErrSprintNotFound para el sprint 4, salio: %v", err)
+	}
+	if defect.State() != DefectOpen || defect.ResolvedIn() != 0 {
+		t.Fatalf("se esperaba que el defecto siguiera Abierto y sin sprint de resolucion, quedo en %d con el sprint %d", defect.State(), defect.ResolvedIn())
+	}
+}
