@@ -3,7 +3,7 @@
 - **Historia:** #5
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las
@@ -223,7 +223,7 @@ Escenario: Consultar el estado de un proyecto que no existe
    #8.** Cómo arma el test los sprints que necesita está en las Dependencias de la Fase 3.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #102 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6303513354), con dos aclaraciones. Los ajustes se aplicaron el 21/10 en ae10336, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6314721364).
 
 ## Fase 2 — Diseño
 
@@ -281,7 +281,7 @@ existe. Esta historia no agrega errores.
 - **No se calcula ninguna métrica**: ni porcentajes, ni puntos, ni horas. Son de la #16.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #102 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6303513354), con dos aclaraciones. Los ajustes se aplicaron el 21/10 en ae10336, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6314721364).
 
 ## Fase 3 — Tareas
 
@@ -359,7 +359,7 @@ Los diez escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
   Terminadas, y lo mismo que hace la #8 en sus tareas 10 a 12.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #102 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6303513354), con dos aclaraciones. Los ajustes se aplicaron el 21/10 en ae10336, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6314721364).
 
 ## Fase 4 — Implementación
 
