@@ -225,3 +225,34 @@ func TestRegistrarUnDefectoSobreUnaHistoriaTerminada(t *testing.T) {
 		t.Fatalf("se esperaba registrar un defecto sobre una historia Terminada, salio: %v", err)
 	}
 }
+
+// Escenario: Rechazar un defecto con un sprint de deteccion que no existe
+// Cubre: RN-8, RN-18
+func TestRechazarUnDefectoConUnSprintDeDeteccionQueNoExiste(t *testing.T) {
+	project := unProyectoConDefectos(t, 1)
+	data := unDefecto()
+	data.DetectedIn = 4
+
+	_, err := project.AddDefect(data)
+
+	if !errors.Is(err, ErrSprintNotFound) {
+		t.Fatalf("se esperaba ErrSprintNotFound para el sprint 4, salio: %v", err)
+	}
+	if len(project.Defects()) != 0 {
+		t.Fatalf("se esperaba que el proyecto siguiera sin defectos, tiene %d", len(project.Defects()))
+	}
+}
+
+// Escenario: Registrar un defecto detectado en un sprint ya cerrado
+// Cubre: RN-8
+func TestRegistrarUnDefectoDetectadoEnUnSprintYaCerrado(t *testing.T) {
+	project := unProyectoConDefectos(t, 1)
+	sprint, _ := project.Sprint(1)
+	// Cerrar un sprint es de la #10, que todavia no esta en dev: el test lo crea con el alta de
+	// la #8 y le fija el estado desde dentro del paquete (tarea 6 de la Fase 3).
+	sprint.state = SprintClosed
+
+	if _, err := project.AddDefect(unDefecto()); err != nil {
+		t.Fatalf("se esperaba registrar un defecto detectado en un sprint cerrado, salio: %v", err)
+	}
+}
