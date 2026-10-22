@@ -115,3 +115,28 @@ func TestRechazarUnaRondaEnUnProyectoSinIntegrantes(t *testing.T) {
 		t.Fatalf("se esperaba que no se abriera ninguna ronda, salio la ronda %d", round.Number())
 	}
 }
+
+// Escenario: Una historia no puede tener dos rondas en curso
+// Cubre: RN-7
+func TestUnaHistoriaNoPuedeTenerDosRondasEnCurso(t *testing.T) {
+	project, story := projectWithThreeMembers(t)
+	other, err := project.AddStory(unosDatos())
+	if err != nil {
+		t.Fatalf("no se pudo crear la segunda historia de prueba: %v", err)
+	}
+	if _, err := project.OpenVotingRound(story.ID()); err != nil {
+		t.Fatalf("no se pudo abrir la primera ronda: %v", err)
+	}
+
+	round, err := project.OpenVotingRound(story.ID())
+
+	if !errors.Is(err, ErrVotingRoundInProgress) {
+		t.Fatalf("se esperaba ErrVotingRoundInProgress, salio: %v", err)
+	}
+	if round != nil {
+		t.Fatalf("se esperaba que no se abriera otra ronda, salio la ronda %d", round.Number())
+	}
+	if _, err := project.OpenVotingRound(other.ID()); err != nil {
+		t.Fatalf("se esperaba abrir la ronda de la historia %d sin error, salio: %v", other.ID(), err)
+	}
+}
