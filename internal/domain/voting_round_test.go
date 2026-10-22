@@ -406,3 +406,40 @@ func TestQuienSaleDelProyectoDespuesDeAbrirLaRondaSigueParticipando(t *testing.T
 		t.Fatalf("se esperaba que la ronda no se pudiera revelar sin su voto, salio: %v", err)
 	}
 }
+
+// Esquema del escenario: Una ronda revelada ya no acepta cambios
+// Cubre: RN-16, RN-18
+func TestUnaRondaReveladaYaNoAceptaCambios(t *testing.T) {
+	cases := []struct {
+		name   string
+		action func(round *VotingRound) error
+	}{
+		// "Ronda revelada" va antes que cualquier otro control: Juliana ya votó, y el aviso
+		// igual es que la ronda ya fue revelada (orden de la Fase 2).
+		{"votar 3 otra vez como Juliana Bustos", func(round *VotingRound) error { return round.Vote("Juliana Bustos", 3) }},
+		{"revelarla de nuevo", func(round *VotingRound) error { return round.Reveal() }},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, round := openRound(t)
+			for name, points := range map[string]int{"Agustin Salinas": 5, "Juliana Bustos": 8, "Maximiliano Eula": 5} {
+				if err := round.Vote(name, points); err != nil {
+					t.Fatalf("no se pudo votar: %v", err)
+				}
+			}
+			if err := round.Reveal(); err != nil {
+				t.Fatalf("no se pudo revelar la ronda: %v", err)
+			}
+			before, _ := round.Votes()
+
+			err := tc.action(round)
+
+			if !errors.Is(err, ErrRoundRevealed) {
+				t.Fatalf("se esperaba ErrRoundRevealed, salio: %v", err)
+			}
+			if after, _ := round.Votes(); !slices.Equal(after, before) {
+				t.Fatalf("se esperaba que los votos revelados siguieran siendo %v, salio: %v", before, after)
+			}
+		})
+	}
+}
