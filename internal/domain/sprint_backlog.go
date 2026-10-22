@@ -14,7 +14,20 @@ func (p *Project) AssignStory(id int) error {
 	if !story.IsEstimated() {
 		return ErrStoryNotEstimated
 	}
+	if sprint.hasStory(story.id) {
+		return ErrStoryAlreadyInSprint
+	}
 	sprint.stories = append(sprint.stories, story.id)
 	story.state = StoryInProgress
 	return nil
+}
+
+// hasStory indica si la historia con ese identificador esta en el Sprint Backlog.
+func (s *Sprint) hasStory(id int) bool {
+	for _, storyID := range s.stories {
+		if storyID == id {
+			return true
+		}
+	}
+	return false
 }

@@ -76,4 +76,7 @@ var (
 	ErrSprintAlreadyOpen = errors.New("ya hay un sprint abierto en el proyecto")
 	// ErrStoryNotEstimated: asignar a un sprint una historia sin estimar (historia #9, RN-3).
 	ErrStoryNotEstimated = errors.New("solo se asignan a un sprint las historias estimadas")
+	// ErrStoryAlreadyInSprint: asignar una historia que ya esta en el Sprint Backlog (historia
+	// #9, RN-5).
+	ErrStoryAlreadyInSprint = errors.New("la historia ya está asignada al sprint")
 )
