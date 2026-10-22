@@ -52,6 +52,12 @@ aprobada pero sin mergear al cierre no está terminada: es lo que pasó con la #
 el 19/10, entre el cierre del Sprint 1 (16/10) y el arranque del Sprint 2 (20/10), y por eso
 cuenta en el Sprint 2.
 
+**Una historia adelantada** (decisión 11 del plan, desde el 21/10) entra al sprint en curso
+sin sumar a lo comprometido. Si se termina, suma a los story points completados y a la
+velocidad de ese sprint, mostrada aparte, y el sprint siguiente se planifica sin ella. El
+porcentaje de historias completadas se calcula solo sobre las comprometidas. Si no se
+termina, vuelve al sprint que tenía en el plan.
+
 ### Historias que pasan de un sprint a otro
 
 Una historia que no se termina vuelve al backlog y sigue en el sprint siguiente. El tablero
@@ -239,6 +245,8 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 15 | Gestionar defectos | 5 | Lista para implementar |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
 
+- Adelantada desde el 21/10: la **#13** (8 SP, Maximiliano Eula), que no suma a los 31
+  comprometidos. Está en el [acta de review](actas/sprint-2-review.md#historias-adelantadas).
 - Completados al 21/10: **18 SP**, 6 de 9 historias. Tres llegaron del Sprint 1; la #7, la #5
   y la #14 son las primeras historias nuevas del sprint que se terminan.
 
@@ -322,4 +330,7 @@ más de lo pensado y qué haríamos distinto.]_
 - **Historias sin estimar.** Una historia terminada sin story points, como la #77, suma sus
   horas reales a las trabajadas en el sprint, pero `scripts/metricas.sh` no la cuenta en la
   desviación ni en las horas por story point, porque no tiene con qué compararlas.
+- **Historias adelantadas.** `scripts/metricas.sh` las reconoce por la etiqueta `adelantada`
+  de la issue: no las cuenta en lo comprometido ni en sus horas y las muestra en un bloque
+  aparte. Si una no se termina y vuelve a su sprint del plan, hay que sacarle la etiqueta.
 - **Redondeo.** Los porcentajes se redondean al entero más cercano.

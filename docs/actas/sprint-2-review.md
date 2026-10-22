@@ -35,7 +35,8 @@ siguiente cuenta en el siguiente.
 
 - **Story points comprometidos:** 31 (los 26 del plan más los 5 de la #6)
 - **Story points completados al 21/10:** 18
-- **Velocidad del Sprint 2:** [se fija al cierre]
+- **Velocidad del Sprint 2:** [se fija al cierre]. Son los story points completados de lo
+  comprometido, más los de las adelantadas que se terminen, mostrados aparte (ver abajo).
 - **Historias completadas al 21/10:** 6 de 9 (67%), sin contar la #77, que también está terminada
   (PR #95) pero no está estimada
 
@@ -44,6 +45,30 @@ La #77 no suma story points ni horas mientras el equipo no la estime (ver el
 
 Las historias no terminadas al cierre **vuelven al Product Backlog**, no se arrastran en
 silencio.
+
+### Historias adelantadas
+
+La decisión 11 del [plan](../plan-final-al-2-de-noviembre.md) dice que quien termina lo suyo
+puede adelantar su próxima historia del plan sin esperar la planning. Se agregó el 21/10 y el
+equipo la confirmó por chat. La historia tiene que tener las tres puertas aprobadas y lo que
+necesita ya en `dev`. Entra al sprint en curso, queda registrada en esta acta y, si no se
+termina, vuelve al sprint que tenía en el plan. **No suma a los 31 story points
+comprometidos**: se cuenta aparte.
+
+| # | Historia | SP | Entró | Estado al 21/10 | Responsable | Si no se termina |
+|---|---|---|---|---|---|---|
+| 13 | Votar en secreto en una ronda de Planning Poker | 8 | 21/10 | Lista para implementar | Maximiliano Eula | vuelve al Sprint 3 |
+
+- La #13 cumple las dos condiciones. Agustín Salinas aprobó sus tres puertas en el PR #115,
+  y la #4, la #6 y la #12, de las que depende, ya están en `dev`.
+- **Si se termina en el Sprint 2**, suma a los story points completados y a la velocidad del
+  sprint, mostrada aparte (por ejemplo, "18 + 8 adelantados"). El porcentaje de historias
+  completadas se sigue calculando sobre las 9 comprometidas, y el Sprint 3 se planifica sin
+  esos puntos.
+- **La #16 no es una adelantada: sigue en el Sprint 3.** Depende de la #8, la #9, la #10 y la
+  #11, que no están en `dev`, así que no cumple la decisión 11. Su parte 1 (PR #81, las horas
+  estimadas de una historia) se viene adelantando desde el 20/10, antes de la regla. Se
+  programa contra el contrato del dominio, como permite el *Modo sprint final* de `CLAUDE.md`.
 
 ## Esfuerzo
 
