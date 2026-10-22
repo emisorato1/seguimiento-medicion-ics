@@ -38,6 +38,15 @@ type projectJSON struct {
 	NextStoryID int          `json:"next_story_id"`
 	Members     []memberJSON `json:"members"`
 	Stories     []storyJSON  `json:"stories"`
+	Efforts     []effortJSON `json:"efforts"`
+}
+
+type effortJSON struct {
+	StoryID    int     `json:"story_id"`
+	MemberName string  `json:"member_name"`
+	Activity   string  `json:"activity"`
+	Hours      float64 `json:"hours"`
+	Day        string  `json:"day"`
 }
 
 type memberJSON struct {
@@ -68,6 +77,7 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 			NextStoryID: p.nextStoryID,
 			Members:     []memberJSON{},
 			Stories:     []storyJSON{},
+			Efforts:     []effortJSON{},
 		}
 		if p.HasEnd() {
 			project.End = p.end.Format(dayLayout)
@@ -84,6 +94,15 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 				State:              s.state.String(),
 				StoryPoints:        s.storyPoints,
 				AcceptanceCriteria: s.acceptanceCriteria,
+			})
+		}
+		for _, e := range p.efforts {
+			project.Efforts = append(project.Efforts, effortJSON{
+				StoryID:    e.storyID,
+				MemberName: e.memberName,
+				Activity:   e.activity,
+				Hours:      e.hours,
+				Day:        e.day.Format(dayLayout),
 			})
 		}
 		out.Projects = append(out.Projects, project)
@@ -197,6 +216,27 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 		project.backlog = append(project.backlog, story)
 	}
 	project.nextStoryID = pj.NextStoryID
+
+	// El esfuerzo va al final, porque apunta a integrantes e historias que ya tienen que estar
+	// cargados. Pasa por las mismas reglas que al registrarlo, menos la del día futuro y la de
+	// seguir siendo integrante (Fase 2 de la #14).
+	for i, ej := range pj.Efforts {
+		day, err := parseDay(ej.Day)
+		if err != nil {
+			return nil, fmt.Errorf("esfuerzo %d: %w", i+1, err)
+		}
+		effort, err := project.newEffort(EffortData{
+			StoryID:    ej.StoryID,
+			MemberName: ej.MemberName,
+			Activity:   ej.Activity,
+			Hours:      ej.Hours,
+			Day:        day,
+		}, time.Time{}, true)
+		if err != nil {
+			return nil, fmt.Errorf("esfuerzo %d: %w", i+1, err)
+		}
+		project.efforts = append(project.efforts, effort)
+	}
 	return project, nil
 }
 

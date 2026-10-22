@@ -56,6 +56,15 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 	// desde dentro del paquete.
 	done.storyPoints = 3
 	done.state = StoryDone
+	// el esfuerzo es de la #14, que lo suma a la conversion: dos registros, uno de media hora
+	for _, data := range []EffortData{
+		{StoryID: estimated.ID(), MemberName: "Ana Perez", Activity: "Escribir los tests", Hours: 2, Day: unDia(2026, 10, 20)},
+		{StoryID: done.ID(), MemberName: "Juan Gomez", Activity: "Revisar el PR", Hours: 0.5, Day: unDia(2026, 10, 21)},
+	} {
+		if _, err := first.LogEffort(data, unDia(2026, 10, 21)); err != nil {
+			t.Fatalf("no se pudo registrar el esfuerzo de prueba: %v", err)
+		}
+	}
 	return registry
 }
 
@@ -108,6 +117,20 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 				}
 			}
 		}
+
+		wantEfforts, gotEfforts := w.Efforts(), g.Efforts()
+		if len(gotEfforts) != len(wantEfforts) {
+			t.Fatalf("proyecto %d: se esperaban %d registros de esfuerzo, salieron %d", w.ID(), len(wantEfforts), len(gotEfforts))
+		}
+		for j, we := range wantEfforts {
+			ge := gotEfforts[j]
+			if ge.StoryID() != we.StoryID() || ge.MemberName() != we.MemberName() || ge.Activity() != we.Activity() ||
+				!mismasHorasReales(ge.Hours(), we.Hours()) || !ge.Day().Equal(we.Day()) {
+				t.Fatalf("proyecto %d: se esperaba el esfuerzo %d de %q (%q, %v h, %v), salio %d de %q (%q, %v h, %v)",
+					w.ID(), we.StoryID(), we.MemberName(), we.Activity(), we.Hours(), we.Day(),
+					ge.StoryID(), ge.MemberName(), ge.Activity(), ge.Hours(), ge.Day())
+			}
+		}
 	}
 }
 
@@ -158,6 +181,9 @@ func unosDatosGuardados() registryJSON {
 						StoryPoints: 5, AcceptanceCriteria: []string{"Valida las horas"}},
 					{ID: 2, Title: "Crear proyectos", Description: "Alta de proyectos", Priority: "Baja", State: "Terminada",
 						StoryPoints: 3, AcceptanceCriteria: []string{"Pide el nombre"}},
+				},
+				Efforts: []effortJSON{
+					{StoryID: 1, MemberName: "Ana Perez", Activity: "Escribir los tests", Hours: 2, Day: "2026-10-20"},
 				}},
 			{ID: 2, Name: "Otro proyecto", Start: "2026-10-05", NextStoryID: 1},
 		},
@@ -199,6 +225,11 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "historia sin titulo", change: func(d *registryJSON) { d.Projects[0].Stories[0].Title = "" }, want: ErrStoryTitleRequired},
 		{name: "prioridad inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[0].Priority = "Urgente" }, want: ErrStoryPriorityInvalid},
 		{name: "estado inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[1].State = "Cerrada" }, want: ErrSavedDataInvalid},
+		{name: "esfuerzo con horas en cero", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Hours = 0 }, want: ErrEffortHoursInvalid},
+		{name: "esfuerzo sin actividad", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Activity = "  " }, want: ErrEffortActivityRequired},
+		{name: "esfuerzo sin integrante", change: func(d *registryJSON) { d.Projects[0].Efforts[0].MemberName = "  " }, want: ErrMemberNotFound},
+		{name: "esfuerzo sobre una historia que no existe", change: func(d *registryJSON) { d.Projects[0].Efforts[0].StoryID = 99 }, want: ErrStoryNotFound},
+		{name: "esfuerzo con una fecha que no es fecha", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Day = "20/10/2026" }, want: ErrSavedDataInvalid},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -251,5 +282,62 @@ func TestElMensajeDeDatosDanadosEstaEnCastellano(t *testing.T) {
 				t.Fatalf("se esperaba el mensaje %q, salio: %v", want, err)
 			}
 		})
+	}
+}
+
+// Sin escenario: tarea 14 de la #14, la carga no controla el día futuro
+// Cubre: Fase 2 de la #14, la decisión sobre los datos guardados
+//
+// Al cargar no hay "hoy" con qué comparar, y no hace falta: un día que no era futuro cuando
+// se guardó no puede volverse futuro después. Un registro con un día lejano se carga igual.
+func TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual(t *testing.T) {
+	saved := unosDatosGuardados()
+	saved.Projects[0].Efforts[0].Day = "2099-01-01"
+	data, err := json.Marshal(saved)
+	if err != nil {
+		t.Fatalf("no se pudieron armar los datos de prueba: %v", err)
+	}
+
+	registry, err := RegistryFromJSON(data)
+
+	if err != nil {
+		t.Fatalf("se esperaba cargar los datos sin error, salio: %v", err)
+	}
+	project, _ := registry.Get(1)
+	if len(project.Efforts()) != 1 || !project.Efforts()[0].Day().Equal(unDia(2099, 1, 1)) {
+		t.Fatalf("se esperaba el registro del 01/01/2099, salieron %d registros", len(project.Efforts()))
+	}
+}
+
+// Sin escenario: hallazgo de review-merge en el PR #100, decisión (a) de Emiliano del 21/10
+// Cubre: Fase 2 de la #14, la decisión sobre los datos guardados
+//
+// Quitar a un integrante (#4) no borra las horas que cargó. Si la carga exigiera que siga
+// siendo integrante, el archivo que guarda la propia web no se volvería a abrir. Sus horas
+// se cargan con su nombre, siguen sumando en la historia, y consultar las suyas informa que
+// no se encontró el integrante, igual que antes de cerrar (RN-14).
+func TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual(t *testing.T) {
+	registry := unRegistroCargado(t)
+	project, _ := registry.Get(1)
+	if err := project.RemoveMember("Juan Gomez"); err != nil {
+		t.Fatalf("no se pudo quitar el integrante de prueba: %v", err)
+	}
+	data, err := registry.ToJSON()
+	if err != nil {
+		t.Fatalf("no se pudieron convertir los datos: %v", err)
+	}
+
+	loaded, err := RegistryFromJSON(data)
+
+	if err != nil {
+		t.Fatalf("se esperaba cargar los datos sin error, salio: %v", err)
+	}
+	mismoRegistro(t, registry, loaded)
+	got, _ := loaded.Get(1)
+	if hours, err := got.StoryHours(3); err != nil || hours != 0.5 {
+		t.Fatalf("se esperaba que la historia 3 siguiera sumando 0,5 horas, salio %v (%v)", hours, err)
+	}
+	if _, err := got.MemberHours("Juan Gomez"); !errors.Is(err, ErrMemberNotFound) {
+		t.Fatalf("se esperaba ErrMemberNotFound al consultar las horas de quien ya no es integrante, salio: %v", err)
 	}
 }

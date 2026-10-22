@@ -110,6 +110,10 @@ type Project struct {
 	// operaciones sobre sprints estan en sprint.go.
 	sprints          []*Sprint
 	lastSprintNumber int
+	// efforts son los registros de esfuerzo del proyecto, en el orden en que se cargaron
+	// (historia #14). Viven dentro del proyecto, así las horas de un proyecto no suman en
+	// otro (RN-16). Las operaciones están en effort.go.
+	efforts []*Effort
 }
 
 // ID devuelve el identificador del proyecto, que no cambia nunca.
