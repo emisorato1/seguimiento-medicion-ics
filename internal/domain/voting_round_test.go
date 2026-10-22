@@ -235,3 +235,37 @@ func TestRevelarCuandoVotaronTodos(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: Rechazar revelar mientras falten votos
+// Cubre: RN-15, RN-18
+func TestRechazarRevelarMientrasFaltenVotos(t *testing.T) {
+	cases := []struct {
+		name  string
+		voted []string
+	}{
+		{"nadie", nil},
+		{"Agustin Salinas y Juliana Bustos", []string{"Agustin Salinas", "Juliana Bustos"}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, round := openRound(t)
+			for _, name := range tc.voted {
+				if err := round.Vote(name, 5); err != nil {
+					t.Fatalf("no se pudo votar: %v", err)
+				}
+			}
+
+			err := round.Reveal()
+
+			if !errors.Is(err, ErrVotesMissing) {
+				t.Fatalf("se esperaba ErrVotesMissing, salio: %v", err)
+			}
+			if round.Revealed() {
+				t.Fatal("se esperaba que la ronda siguiera sin revelar")
+			}
+			if _, err := round.Votes(); !errors.Is(err, ErrVotesHidden) {
+				t.Fatalf("se esperaba que los votos siguieran ocultos, salio: %v", err)
+			}
+		})
+	}
+}
