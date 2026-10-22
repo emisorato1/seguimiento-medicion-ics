@@ -306,9 +306,9 @@ Escenario: Usar el dashboard en un celular y sin internet
 7. **Cambia el contrato del dominio.** Antes el dashboard salía del dominio como una lista de
    secciones con las barras ya dibujadas en las líneas, compartida con el reporte (#18).
    Ahora el dominio entrega **los datos de cada gráfico** —rótulo, valor y valor ya escrito—
-   y la web dibuja las barras (Fase 2, D2). La sección queda solo para el reporte. Lo cambia
-   el manager en el contrato y en AGENTS.md, y se avisa al grupo, en especial a quien tiene la
-   #18.
+   y la web dibuja las barras (Fase 2, D2). La sección queda solo para el reporte. **Ya está
+   hecho**: el contrato y AGENTS.md se cambiaron el 20/10 (574a1a3). Se avisa al grupo, en
+   especial a quien tiene la #18.
 8. **La consola no muestra el dashboard.** La #24 no lo pide y la consigna pide
    "representaciones gráficas", que en una terminal no se defienden bien. Si el equipo lo
    quiere también en la consola, es otra historia.
@@ -403,9 +403,9 @@ la escribe la primera de la #17 y la #18 que llegue a `dev`, como pasó con `err
   plano que se puede armar a mano (contrato). Solo la tarea 8 necesita la #16 en `dev`.
 - **Depende de los sprints de la #8 y la #10**: se arman dentro del paquete, como en la #11.
 - **Las tareas de la web necesitan la #77 en `dev`**: el layout, la barra, la página de "no se
-  encontró" y los tests. La #77 está en review (PR #95).
-- **Antes de implementar, el contrato tiene que tener la entrada nueva del dashboard** (punto 7
-  de "Para decidir"), y se avisa al grupo.
+  encontró" y los tests. La #77 ya está en `dev` (PR #95, mergeado el 21/10).
+- **El contrato ya tiene la entrada nueva del dashboard** (punto 7 de "Para decidir"): se
+  cambió el 20/10 (574a1a3).
 - **No se modifica la consola.**
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
