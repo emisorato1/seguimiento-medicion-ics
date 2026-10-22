@@ -28,6 +28,7 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#6 Administrar el Product Backlog](#6-administrar-el-product-backlog) | 18 | 18 | 0 | 13 |
 | [#12 Estimar historias con Story Points](#12-estimar-historias-con-story-points) | 10 | 10 | 0 | 3 |
 | [#24 Operar el sistema desde una interfaz de consola](#24-operar-el-sistema-desde-una-interfaz-de-consola) | 13 | 13 | 0 | 5 |
+| [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 5 | 12 | 0 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 4 | 11 | 6 |
 
 ## Qué dice el historial de TDD
@@ -37,7 +38,7 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 88 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 93 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
 | `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 9 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 15 |
@@ -300,6 +301,52 @@ cinco casos posibles:
 | `TestElBacklogMuestraLosStoryPointsDeUnaHistoriaEstimada` [console_test.go:417](../cmd/app/console_test.go#L417) | RN-1 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
 | `TestLaEntradaTerminaSinSalir` [console_test.go:435](../cmd/app/console_test.go#L435) | RN-6 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
 | `TestListarLosIntegrantesDeUnProyectoSinIntegrantes` [console_test.go:448](../cmd/app/console_test.go#L448) | RN-1 | [console.go](../cmd/app/console.go) | `f0ca0e9` → `6120035` |
+
+## #8 Crear un sprint con su Sprint Goal
+
+- **Historia:** issue #8
+- **Spec:** [docs/specs/sprint-2/08-crear-sprint.md](specs/sprint-2/08-crear-sprint.md)
+- **Código según la spec:** `internal/domain/sprint.go`, `internal/domain/project.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (15)</summary>
+
+- Se puede crear un sprint con Sprint Goal, fecha de inicio y fecha de fin, y queda registrado con su número y en estado Abierto.
+- El primer sprint de un proyecto recibe el número 1, y cada sprint nuevo el número siguiente.
+- El número no se repite dentro del mismo proyecto.
+- Un sprint recién creado no tiene historias asignadas.
+- No se puede crear un sprint sin Sprint Goal, y un Sprint Goal de solo espacios cuenta como vacío.
+- No se puede crear un sprint sin fecha de inicio ni sin fecha de fin.
+- No se puede crear un sprint con fecha de fin anterior a la de inicio.
+- Un sprint cuya fecha de fin es igual a la de inicio se acepta.
+- No se puede crear un segundo sprint mientras haya uno abierto en el mismo proyecto, y el mensaje dice cuál es el que está abierto.
+- Tener un sprint abierto en un proyecto no impide crear un sprint en otro proyecto.
+- Se puede consultar cuál es el sprint abierto de un proyecto; si no hay ninguno se informa y no es un error.
+- El Sprint Goal se guarda sin los espacios del principio y del final.
+- Una creación rechazada no agrega ningún sprint al proyecto.
+- Crear un sprint o pedir el sprint abierto de un proyecto inexistente informa que no se encontró el proyecto.
+- Se puede consultar un sprint por su número, esté abierto o cerrado, y un número que no existe informa que no se encontró el sprint.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Crear el primer sprint de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L159) | `TestCrearElPrimerSprintDeUnProyecto` [sprint_test.go:28](../internal/domain/sprint_test.go#L28) | [sprint.go](../internal/domain/sprint.go) | `5d602fa` → `e3a9416` |
+| ⚠️ [El sprint nuevo recibe el numero siguiente](specs/sprint-2/08-crear-sprint.md?plain=1#L166) | **sin test** | | |
+| ⚠️ [No se puede abrir un segundo sprint habiendo uno abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L172) | **sin test** | | |
+| ⚠️ [Rechazar un sprint sin Sprint Goal](specs/sprint-2/08-crear-sprint.md?plain=1#L179) | **sin test** | | |
+| ⚠️ [Rechazar un sprint sin las fechas obligatorias](specs/sprint-2/08-crear-sprint.md?plain=1#L191) | **sin test** | | |
+| ⚠️ [Rechazar un sprint con fechas incoherentes](specs/sprint-2/08-crear-sprint.md?plain=1#L203) | **sin test** | | |
+| ⚠️ [Un sprint de un solo dia es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L209) | **sin test** | | |
+| ⚠️ [Un sprint con fechas pasadas es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L214) | **sin test** | | |
+| ⚠️ [Guardar el Sprint Goal sin espacios en los extremos](specs/sprint-2/08-crear-sprint.md?plain=1#L219) | **sin test** | | |
+| ⚠️ [Cada proyecto puede tener su propio sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L224) | **sin test** | | |
+| [Consultar el sprint abierto de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L230) | `TestConsultarElSprintAbiertoDeUnProyecto` [sprint_test.go:56](../internal/domain/sprint_test.go#L56) | [sprint.go](../internal/domain/sprint.go) | `6cf7475` → `de2ac50` |
+| [Un proyecto sin sprints no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L235) | `TestUnProyectoSinSprintsNoTieneSprintAbierto` [sprint_test.go:10](../internal/domain/sprint_test.go#L10) | [project.go](../internal/domain/project.go), [sprint.go](../internal/domain/sprint.go) | `5e2b377` → `ff3264e` |
+| ⚠️ [Un proyecto con todos sus sprints cerrados no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L241) | **sin test** | | |
+| ⚠️ [Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas](specs/sprint-2/08-crear-sprint.md?plain=1#L246) | **sin test** | | |
+| ⚠️ [Operar sobre un proyecto que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L252) | **sin test** | | |
+| [Consultar un sprint por su numero](specs/sprint-2/08-crear-sprint.md?plain=1#L262) | `TestConsultarUnSprintPorSuNumero` [sprint_test.go:88](../internal/domain/sprint_test.go#L88) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
+| [Consultar un sprint que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L267) | `TestConsultarUnSprintQueNoExiste` [sprint_test.go:119](../internal/domain/sprint_test.go#L119) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
 
 ## #77 Interfaz web: proyectos, integrantes y backlog
 

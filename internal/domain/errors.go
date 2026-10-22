@@ -47,4 +47,7 @@ var (
 	ErrStoryEstimateDone = errors.New("la estimación de una historia terminada no se modifica")
 	// ErrEstimatedHoursInvalid: cargar horas estimadas en cero o negativas (historia #16, RN-18).
 	ErrEstimatedHoursInvalid = errors.New("las horas estimadas tienen que ser mayores que cero")
+	// ErrSprintNotFound: consultar un sprint con un numero que no existe en el proyecto
+	// (historia #8, RN-15). Lo usan tambien la #11 y la #15.
+	ErrSprintNotFound = errors.New("no se encontró el sprint")
 )

@@ -5,8 +5,8 @@
 - **Responsable:** Emiliano Sorato
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
-- **Depende de:** #18 (el reporte ya armado), y por ella de la #16. Ninguna está en `dev`
-  todavía: se trabaja contra el contrato del dominio
+- **Depende de:** #18 (el reporte ya armado), y por ella de la #16. El código espera que el
+  reporte y sus secciones estén en `dev` (ver Dependencias de la Fase 2)
 - **La necesitan:** la #78, que ofrece el PDF para descargar desde la web. Es el último
   eslabón de la cadena, y el PDF es lo que se muestra en la review final
 
@@ -163,12 +163,29 @@ Esquema del escenario: Un reporte largo ocupa varias paginas numeradas
   Dado un reporte que necesita <paginas> paginas
   Cuando lo exporto a PDF
   Entonces el archivo tiene <paginas> paginas
+  Y cada pagina dice al pie su numero, de <paginas>
   Y la ultima dice <pie>
 
   Ejemplos:
     | paginas | pie              |
     | 1       | "Pagina 1 de 1"  |
     | 3       | "Pagina 3 de 3"  |
+
+Escenario: Un titulo largo sigue en varios renglones con su letra
+  Dado un reporte cuyo titulo es mas largo que el ancho de la pagina
+  Cuando lo exporto a PDF
+  Entonces el titulo ocupa varios renglones, todos con la letra del titulo
+  Y ninguno pasa el margen
+
+Escenario: Una linea vacia queda como renglon en blanco
+  Dado un reporte con una linea vacia entre dos lineas de una seccion
+  Cuando lo exporto a PDF
+  Entonces entre esas dos lineas queda un renglon en blanco
+
+Escenario: Exportar dos veces el mismo reporte da el mismo archivo
+  Dado un reporte del sprint 1
+  Cuando lo exporto a PDF dos veces
+  Entonces los dos archivos son iguales byte por byte
 
 Escenario: Un encabezado nunca queda solo al pie de una pagina
   Dado un reporte en el que un encabezado caeria en el ultimo renglon de la pagina 1
@@ -182,9 +199,10 @@ Esquema del escenario: Letras del castellano y caracteres que no se pueden repre
   Y el resto de la linea se ve igual que en el reporte
 
   Ejemplos:
-    | contenido                                   | resultado                        |
-    | tildes, enie, dieresis y signos de apertura | esas letras como en el reporte   |
-    | un emoji                                    | un signo de pregunta en su lugar |
+    | contenido                                         | resultado                        |
+    | tildes, enie, dieresis y signos de apertura       | esas letras como en el reporte   |
+    | la raya larga del titulo del reporte de un sprint | la raya como en el reporte       |
+    | un emoji                                          | un signo de pregunta en su lugar |
 
 Escenario: Los parentesis y las barras no rompen el archivo
   Dado un reporte con la linea "Desviacion (sobre lo estimado): 25,0 % \ revisar"
@@ -205,28 +223,25 @@ Escenario: Un PDF que no se puede entregar se informa
    negrita). La razón es que el proyecto no usa librerías externas, así que el archivo hay
    que escribirlo "a mano", y cada cosa que no sea texto multiplica el trabajo de la historia
    más arriesgada del último sprint. Si el equipo quiere gráficos en el PDF, hace falta
-   acordar una librería —y cambiar esa regla del proyecto— o crear otra historia.
+   acordar una librería —y cambiar esa regla del proyecto— o crear otra historia. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 2. **La tipografía es una de las básicas que trae cualquier lector**, así que el archivo se ve
    igual en cualquier computadora sin llevar la tipografía adentro. La consecuencia es que
    solo se ven las letras de los idiomas de Europa occidental: lo demás sale como "?"
    (RN-10). Para los reportes de este proyecto, que son en castellano, no se pierde nada.
+   **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 3. **"El mismo contenido que el reporte en pantalla" se interpretó como "las mismas líneas"**:
    el PDF solo agrega "Generado el" y los números de página, y acomoda el texto en páginas.
-   No copia el aspecto de la página web.
-4. **"Se descarga": el núcleo escribe el PDF en un `io.Writer` y la web lo descarga (#78).**
-   Decidido el 20/10, al escribir la spec de la #78, con un cambio del contrato (PR #94). El
-   primer borrador había tomado «se descarga» como «se guarda donde se indica» porque la
-   aplicación no era web; con la #77 lo es, y desde el navegador no se ve el disco de la
-   computadora donde corre el sistema. **La consola no exporta**: queda con lo que especifica
-   la #24, y todo lo nuevo —sprints, esfuerzo, defectos, Planning Poker, reportes y PDF— se
-   usa desde la web (decidido el 20/10, en el plan). Por eso esta historia no guarda el PDF
-   en el disco: no hay quién lo pida.
-5. **El contrato ya nombra la operación de exportar**: el reporte escribe su PDF donde se le
-   pida (PR #94, 20/10). Reemplaza la propuesta del primer borrador, que lo grababa en una
-   ubicación.
-6. **El tercer criterio de la issue ("previsto para el Sprint 4") es de planificación**, no de
+   No copia el aspecto de la página web. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
+4. **"Se descarga": el sistema arma el PDF sin guardarlo en ningún archivo, y la web lo ofrece
+   para descargar (#78).** El primer borrador había tomado «se descarga» como «se guarda
+   donde se indica» porque la aplicación no era web; con la #77 lo es, y desde el navegador
+   no se ve el disco de la computadora donde corre el sistema. **La consola no exporta**:
+   queda con lo que especifica la #24, y todo lo nuevo —sprints, esfuerzo, defectos,
+   Planning Poker, reportes y PDF— se usa desde la web (plan, 20/10). Por eso esta historia
+   no guarda el PDF en el disco: no hay quién lo pida. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
+5. **El tercer criterio de la issue ("previsto para el Sprint 4") es de planificación**, no de
    comportamiento: se cumple con que la historia y su spec estén en el Sprint 4, y no lleva
-   escenario ni test.
+   escenario ni test. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -241,8 +256,8 @@ escritos en las líneas por la #18.
 
 ### Enfoque
 
-Un PDF es un archivo de texto con una estructura fija: una cabecera con la versión, una serie
-de objetos numerados (el catálogo, el árbol de páginas, cada página con su contenido y las
+Un PDF es un archivo de texto con una estructura fija: una cabecera con la versión —se
+escribe **PDF 1.4**, que abre cualquier lector—, una serie de objetos numerados (el catálogo, el árbol de páginas, cada página con su contenido y las
 tipografías), una tabla con la posición exacta de cada objeto dentro del archivo y una marca
 de fin. Escribirlo a mano con la biblioteca estándar es viable **si el alcance se limita a lo
 que necesita un reporte de texto**, que es la decisión central de esta historia.
@@ -278,8 +293,9 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
 | Helvetica y Helvetica-Bold, de las 14 tipografías estándar que trae todo lector, sin incrustar | incrustar una tipografía TrueType | incrustarla obliga a leer el archivo de la tipografía y armar sus tablas de caracteres y de anchos: es el grueso de un generador de PDF. Las estándar se ven igual en cualquier lector (RN-1) |
 | Codificación WinAnsi; lo que no está en esa tabla sale como "?" | Unicode, con una tipografía incrustada | con las tipografías estándar es la única que muestra tildes y ñ, y cubre todo el castellano. Consecuencia: emojis y otros alfabetos no se ven (punto 2 de la puerta) |
 | El contenido de las páginas va sin comprimir | comprimirlo con zlib, que está en la biblioteca estándar | el archivo pesa pocos KB, y sin comprimir el texto se encuentra en los bytes del archivo: es como los tests verifican la RN-2 sin un lector de PDF |
-| El ancho del renglón se mide en caracteres: 85 en las líneas (cuerpo de 10 puntos), 75 en los encabezados y 50 en el título | medir el ancho real de cada letra con la tabla de anchos de Helvetica | la tabla son más de 200 números copiados a mano y sin forma de testearlos; con un máximo conservador el texto entra igual. Consecuencia: algún renglón queda más corto de lo que podría |
-| Página A4 con márgenes de 2 cm y un largo fijo de renglones por página | calcular el largo según el tamaño de cada renglón | con un interlineado fijo el paso de página se cuenta en renglones y se prueba con números enteros |
+| **El ancho del renglón se mide con los anchos reales de Helvetica y Helvetica-Bold**, escritos como una tabla corta que agrupa las letras del mismo ancho; un carácter que no está en la tabla cuenta con el ancho más grande. Entra en el renglón lo que no pasa de 481,9 pt, el ancho del A4 menos los dos márgenes | contar caracteres con un máximo (el primer borrador: 85 en las líneas); bajar el máximo a uno que entre en el peor caso | contar caracteres no cumple la RN-4: una línea en mayúsculas de 85 letras mide unos 612 pt y se sale del margen, y el test que cuenta caracteres pasaría igual. Un máximo para el peor caso (la «@» o la «W») deja unos 47 caracteres por renglón y corta casi todas las líneas por la mitad. Agrupadas, las letras de Helvetica tienen menos de veinte anchos distintos: la tabla se lee y se prueba con algunos valores conocidos (la «i», la «W», el espacio) y con que ningún renglón maquetado pase el ancho |
+| Tamaños: el cuerpo en 10 pt, los encabezados en 12 pt en negrita y el título en 16 pt en negrita | el mismo tamaño para todo, con la negrita como única diferencia | la RN-5 pide el título más grande; 16 y 12 se distinguen sin que el título ocupe media página |
+| Página A4 con márgenes de 2 cm, y todos los renglones con el mismo alto, 18 pt: entran 39 por página, además del pie | calcular el alto de cada renglón según su tamaño de letra | con un alto fijo, que alcanza para el título de 16 pt, el paso de página se cuenta en renglones y se prueba con números enteros |
 | Maquetar, escribir y entregar son tres pasos separados | armar el archivo mientras se recorre el reporte | cada paso se prueba por su lado (ver Enfoque) |
 | El archivo se arma entero en memoria y se escribe de una vez | ir escribiendo a medida que se arma | un error del maquetado no deja medio PDF en el destino, y el archivo es chico |
 | **La exportación escribe el PDF donde lo pida quien llama (`r.WritePDF(w)`)** | que el reporte reciba la ubicación y grabe el archivo (`r.ExportPDF(path)`, el primer borrador) | el dominio no toca archivos (AGENTS.md) y la web necesita mandarlo como descarga sin pasar por el disco (#78). Decidido el 20/10 con el cambio del contrato del PR #94 |
@@ -288,8 +304,14 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
 
 ### Dependencias y restricciones
 
-- **Depende de la #18, que no está en `dev`.** No se espera: los tests arman un `Report` a
-  mano dentro del paquete, como dice el contrato, con secciones y líneas inventadas.
+- **El código espera que el reporte esté en `dev`**: `Report` y `Section`, de la #18 (la
+  `Section` la declara la primera entre la #17 y la #18 que llegue, según el contrato), y por
+  ellos `Metrics`, de la #16, porque el reporte lo contiene. Sin esos tipos no compila: un
+  test no puede armar un reporte con un tipo que todavía no existe. Cuando estén, los tests
+  arman el reporte a mano, con secciones y líneas inventadas, sin depender de que la #18
+  calcule nada. Se descartó que esta historia declare `Report` y `Section` por su cuenta: el
+  contrato los pone a cargo de la #18 y la #17, y hacerlo exige acordarlo antes con Agustín
+  Salinas.
 - **No se lee nada fuera del reporte**: ni el proyecto, ni las métricas, ni los sprints. Es lo
   que garantiza la RN-3 por construcción.
 - **`errors.go` es compartido**: el error de esta historia se agrega ahí.
@@ -308,24 +330,26 @@ solo test con tabla de casos, y los errores verificados con `errors.Is`. Los tes
 el PDF en un destino en memoria: no tocan el disco.
 
 **Cómo se verifica que el archivo es un PDF válido sin un lector.** El test de la tarea 6
-comprueba que el archivo empieza con la marca de la versión y termina con la de fin, que la
-tabla de posiciones apunta exactamente al comienzo de cada objeto, que el árbol de páginas
-cuenta todas las páginas y que cada una declara el tamaño A4. Es lo que un lector controla
+comprueba que el archivo empieza con la marca de la versión 1.4 y termina con la de fin, que
+la tabla de posiciones apunta exactamente al comienzo de cada objeto, que `startxref` apunta
+al comienzo de esa tabla, que el `trailer` nombra el catálogo (`/Root`), que el árbol de
+páginas cuenta todas las páginas y que cada una declara el tamaño A4. Es lo que un lector controla
 antes de mostrar nada. Que **de verdad abra** se verifica a mano (ver abajo).
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Maquetar un reporte chico: una página con el título, "Generado el" y la fecha, los encabezados y las líneas en orden, y "Página 1 de 1" | Exportar el reporte de un sprint a PDF | RN-2, RN-3, RN-8 | pendiente |
-| 2 | Una línea más larga que el renglón se corta entre palabras | Una linea larga sigue en el renglon siguiente | RN-4, RN-6 | pendiente |
+| 1 | Maquetar un reporte chico: una página con el título, "Generado el" y la fecha, los encabezados y las líneas en orden, "Página 1 de 1", y una línea vacía como renglón en blanco | Exportar el reporte de un sprint a PDF / Una linea vacia queda como renglon en blanco | RN-2, RN-3, RN-8 | pendiente |
+| 2 | Medir el ancho con la tabla de Helvetica: una línea más larga que el renglón se corta entre palabras, también el título con su letra, y ningún renglón pasa los 481,9 pt | Una linea larga sigue en el renglon siguiente / Un titulo largo sigue en varios renglones con su letra | RN-4, RN-5, RN-6 | pendiente |
 | 3 | Una palabra más larga que el renglón se corta en el margen | Una palabra mas larga que el renglon se corta en el margen | RN-6 | pendiente |
-| 4 | Un reporte largo sigue en páginas nuevas, numeradas "Página N de M" | Un reporte largo ocupa varias paginas numeradas | RN-7, RN-8 | pendiente |
+| 4 | Un reporte largo sigue en páginas nuevas, cada una con su "Página N de M" | Un reporte largo ocupa varias paginas numeradas | RN-7, RN-8 | pendiente |
 | 5 | Un encabezado que caería en el último renglón pasa a la página siguiente | Un encabezado nunca queda solo al pie de una pagina | RN-7 | pendiente |
-| 6 | Escribir: el archivo tiene cabecera, objetos, tabla de posiciones exacta, árbol de páginas y marca de fin, con páginas A4 | El archivo se abre en un lector de PDF | RN-1, RN-4 | pendiente |
-| 7 | El texto de cada renglón está en el contenido de su página, con el título más grande y los encabezados en negrita | Exportar el reporte de un sprint a PDF | RN-2, RN-5, RN-9 | pendiente |
+| 6 | Escribir: el archivo tiene la cabecera de PDF 1.4, objetos, tabla de posiciones exacta, árbol de páginas y marca de fin, con páginas A4 | El archivo se abre en un lector de PDF | RN-1, RN-4 | pendiente |
+| 7 | El texto de cada renglón está en el contenido de su página, con el título más grande y los encabezados en negrita. Amplía el test de la tarea 1, que es del mismo escenario | Exportar el reporte de un sprint a PDF | RN-2, RN-5, RN-9 | pendiente |
 | 8 | Los paréntesis y las barras invertidas se escriben sin romper el archivo | Los parentesis y las barras no rompen el archivo | RN-11 | pendiente |
-| 9 | Tildes, ñ, ü, ¿ y ¡ se escriben en la codificación WinAnsi, y lo que no entra en ella sale como "?" | Letras del castellano y caracteres que no se pueden representar | RN-10 | pendiente |
+| 9 | Tildes, ñ, ü, ¿, ¡ y la raya «—» se escriben en la codificación WinAnsi —la raya no está en Latin-1: no alcanza con pasar cada letra a un byte—, y lo que no entra en ella sale como "?" | Letras del castellano y caracteres que no se pueden representar | RN-10 | pendiente |
 | 10 | Si el destino falla al escribir, la exportación informa que no se pudo generar el PDF | Un PDF que no se puede entregar se informa | RN-12 | pendiente |
 | 11 | Un reporte de proyecto y uno de sprint se exportan igual, sin nada agregado ni quitado | El PDF no agrega ni quita nada del reporte | RN-3, RN-13 | pendiente |
+| 12 | Exportar dos veces el mismo reporte da los mismos bytes: nada del archivo sale del reloj ni del azar | Exportar dos veces el mismo reporte da el mismo archivo | RN-3 | pendiente |
 
 **Verificación manual, que no es un ciclo de TDD.** Antes de abrir el pull request, se exporta
 un reporte real (de la #18, o armado a mano si la #18 no llegó) —descargado desde la web si la
@@ -341,12 +365,13 @@ un lector de PDF" que ningún test automático puede probar.
 - **De la 6 a la 9 va la escritura**: primero la estructura vacía pero válida, después el
   texto, y al final los caracteres que necesitan un trato especial.
 - **La 10 es la entrega que falla**, que recién tiene sentido con un archivo válido.
-- **La 11 va al final** porque recorre los tres pasos con los dos tipos de reporte.
+- **La 11 y la 12 van al final** porque recorren los tres pasos: con los dos tipos de reporte,
+  y dos veces con el mismo.
 
 ### Cobertura
 
-Las trece reglas quedan cubiertas: RN-1 (6), RN-2 (1, 7), RN-3 (1, 11), RN-4 (2, 6),
-RN-5 (7), RN-6 (2, 3), RN-7 (4, 5), RN-8 (1, 4), RN-9 (7), RN-10 (9), RN-11 (8),
+Las trece reglas quedan cubiertas: RN-1 (6), RN-2 (1, 7), RN-3 (1, 11, 12), RN-4 (2, 6),
+RN-5 (2, 7), RN-6 (2, 3), RN-7 (4, 5), RN-8 (1, 4), RN-9 (7), RN-10 (9), RN-11 (8),
 RN-12 (10), RN-13 (11).
 
 | Criterio de aceptación | Tareas |
@@ -362,12 +387,13 @@ RN-12 (10), RN-13 (11).
 | Si el PDF no se puede entregar, se informa | 10 |
 | Proyecto y sprint se exportan igual | 11 |
 
-Los diez escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD". El tercer
-criterio de la issue (Sprint 4) no lleva tarea: es de planificación (punto 6 de la puerta).
+Los trece escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD". El tercer
+criterio de la issue (Sprint 4) no lleva tarea: es de planificación (punto 5 de la puerta).
 
 ### Dependencias
 
-- **Ninguna tarea espera a la #18**: todas arman el `Report` a mano dentro del paquete.
+- **Ninguna tarea empieza sin `Report`, `Section` y `Metrics` en `dev`** (Dependencias de la
+  Fase 2). Con ellos, todas arman el reporte a mano: no esperan a que la #18 lo calcule.
 - **La operación ya está nombrada en el contrato** (PR #94): todas las tareas escriben en un
   destino en memoria, y la 10 usa uno que falla a propósito.
 - **La verificación manual** usa un reporte real si la #18 ya está en `dev`; si no, uno armado
