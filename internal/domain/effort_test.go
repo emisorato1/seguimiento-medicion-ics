@@ -105,3 +105,37 @@ func TestRechazarHorasQueNoSonMayoresQueCero(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Rechazar horas de un dia que todavia no paso
+// Cubre: RN-4, RN-18
+func TestRechazarHorasDeUnDiaQueTodaviaNoPaso(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	data := unEsfuerzo()
+	data.Day = hoy.AddDate(0, 0, 1)
+
+	_, err := project.LogEffort(data, hoy)
+
+	if !errors.Is(err, ErrEffortDayInFuture) {
+		t.Fatalf("se esperaba ErrEffortDayInFuture con fecha de mañana, salio: %v", err)
+	}
+	if len(project.Efforts()) != 0 {
+		t.Fatalf("se esperaba que el proyecto siguiera sin registros, tiene %d", len(project.Efforts()))
+	}
+}
+
+// Escenario: Registrar horas de un dia anterior al inicio del proyecto
+// Cubre: RN-17
+func TestRegistrarHorasDeUnDiaAnteriorAlInicioDelProyecto(t *testing.T) {
+	project := unProyectoConJuliana(t) // empezó el 01/10/2026
+	data := unEsfuerzo()
+	data.Day = unDia(2026, 9, 15)
+
+	_, err := project.LogEffort(data, hoy)
+
+	if err != nil {
+		t.Fatalf("se esperaba registrar un día anterior al inicio del proyecto sin error, salio: %v", err)
+	}
+	if len(project.Efforts()) != 1 {
+		t.Fatalf("se esperaba que quedara guardado el registro, hay %d", len(project.Efforts()))
+	}
+}
