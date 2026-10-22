@@ -3,10 +3,11 @@
 - **Historia:** #5
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a las puertas.
+  falta y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las
+  tres puertas por pull request.
 - **Depende de:** #3 (el proyecto y sus datos), #4 (los integrantes), #6 (el backlog y el
   estado de cada historia) y #8 (el sprint abierto); los cambios de estado de las historias
   los hacen la #9 y la #10
@@ -196,20 +197,33 @@ Escenario: Consultar el estado de un proyecto que no existe
    eligió que "pendiente" quiera decir "todavía no terminada", que es lo que le importa a
    quien pregunta cómo viene el proyecto. Si el equipo quiere ver las En curso aparte, es un
    número más en el resumen y cambia la RN-6, pero ya no se cumpliría la RN-7 tal como está.
+   **Decidido el 21/10: las En curso cuentan como pendientes.**
 2. **No se muestra el porcentaje de historias completas.** Sale fácil de los dos números, pero
    es una de las métricas de la #16, y el equipo decidió que las métricas se calculen en un
    solo lugar. Si se lo agrega acá, hay dos cálculos que pueden dar distinto.
+   **Decidido el 21/10: no se muestra; el porcentaje queda en la #16.**
 3. **Las completadas se cuentan por el estado actual de cada historia**, no por lo que quedó
    registrado al cerrar cada sprint. Para el proyecto entero da lo mismo: cada historia está
    una sola vez en el backlog, así que no se cuenta dos veces aunque haya pasado por dos
    sprints. Lo registrado al cerrar importa para medir sprint por sprint, que es la #16.
+   **Decidido el 21/10: se acepta como está.**
 4. **Del sprint en curso se muestra cuántas historias tiene, no cuáles.** El detalle de un
    sprint ya existe (#9 para el abierto, #11 para los cerrados).
+   **Decidido el 21/10: se acepta como está.**
 5. **Los integrantes salen en el orden en que se cargaron**, que es como los devuelve la #4.
    No se ordenan por rol ni por nombre.
+   **Decidido el 21/10: se acepta como está.**
+6. **La tarea 4 espera al `Sprint` de la #8 en `dev`.** El borrador decía que su test "arma
+   el sprint dentro del paquete" mientras la #8 no esté, pero en Go un test no puede armar un
+   sprint si el tipo todavía no existe: no compila. Las tareas 1 a 3 no lo necesitan, porque
+   el estado guarda una copia propia de los datos del sprint y no el sprint en sí. La tarea 4
+   se programa cuando estén en `dev` el `Sprint` y la consulta del sprint abierto de la #8,
+   que se le pidió adelantar a Agustín.
+   **Decidido el 21/10: las tareas 1 a 3 arrancan ya, y la 4 espera el PR temprano de la
+   #8.** Cómo arma el test los sprints que necesita está en las Dependencias de la Fase 3.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #102 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6303513354), con dos aclaraciones. Los ajustes se aplicaron el 21/10 en ae10336, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6314721364).
 
 ## Fase 2 — Diseño
 
@@ -258,15 +272,16 @@ existe. Esta historia no agrega errores.
 
 - **La #3, la #4 y la #6 ya están en `dev`**: los datos, los integrantes y el backlog se leen
   con lo que existe.
-- **El sprint abierto es de la #8**, que todavía no está en `dev`. No se la espera: los tests
-  arman el sprint dentro del paquete, contra el contrato.
+- **El sprint abierto es de la #8**, que todavía no está en `dev`. Las tareas 1 a 3 no lo
+  necesitan; la tarea 4 sí, y espera a que el `Sprint` y la consulta del sprint abierto estén
+  en `dev` (punto 6 de la puerta).
 - **Los estados En curso y Terminada los ponen la #9 y la #10.** Mientras no existan, los
   tests fijan el estado de la historia desde dentro del paquete, como ya hizo la #12.
 - **No se modifica ningún archivo existente.** Esta historia solo lee.
 - **No se calcula ninguna métrica**: ni porcentajes, ni puntos, ni horas. Son de la #16.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #102 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6303513354), con dos aclaraciones. Los ajustes se aplicaron el 21/10 en ae10336, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6314721364).
 
 ## Fase 3 — Tareas
 
@@ -285,10 +300,10 @@ escribirla.
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | El estado de un proyecto recién creado trae sus datos, la lista de integrantes vacía, el backlog en cero y ningún sprint en curso; la descripción y la fecha de fin vacías figuran como no cargadas; un proyecto inexistente informa que no se encontró | Consultar el estado de un proyecto recien creado; Un proyecto sin descripcion ni fecha de finalizacion; Consultar el estado de un proyecto que no existe | RN-1, RN-2, RN-4, RN-9, RN-11 | pendiente |
-| 2 | El estado trae los integrantes con su nombre y su rol, en el orden en que se cargaron | El estado muestra los integrantes con su rol | RN-3 | pendiente |
-| 3 | El resumen cuenta totales, completadas y pendientes en cada consulta, las En curso cuentan como pendientes, solo cuenta lo del proyecto y consultar no cambia nada | Resumen del backlog segun el estado de las historias; El estado refleja los cambios del proyecto; Cada proyecto muestra solo lo suyo; Consultar el estado no cambia nada | RN-5, RN-6, RN-7, RN-10, RN-12, RN-13 | pendiente |
-| 4 | El estado trae el sprint abierto con su número, su goal, sus fechas y cuántas historias tiene; con todos los sprints cerrados informa que no hay sprint en curso | El estado muestra el sprint en curso; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-8, RN-9 | pendiente |
+| 1 | El estado de un proyecto recién creado trae sus datos, la lista de integrantes vacía, el backlog en cero y ningún sprint en curso; la descripción y la fecha de fin vacías figuran como no cargadas; un proyecto inexistente informa que no se encontró | Consultar el estado de un proyecto recien creado; Un proyecto sin descripcion ni fecha de finalizacion; Consultar el estado de un proyecto que no existe | RN-1, RN-2, RN-4, RN-9, RN-11 | hecha |
+| 2 | El estado trae los integrantes con su nombre y su rol, en el orden en que se cargaron | El estado muestra los integrantes con su rol | RN-3 | hecha |
+| 3 | El resumen cuenta totales, completadas y pendientes en cada consulta, las En curso cuentan como pendientes, solo cuenta lo del proyecto y consultar no cambia nada | Resumen del backlog segun el estado de las historias; El estado refleja los cambios del proyecto; Cada proyecto muestra solo lo suyo; Consultar el estado no cambia nada | RN-5, RN-6, RN-7, RN-10, RN-12, RN-13 | hecha |
+| 4 | El estado trae el sprint abierto con su número, su goal, sus fechas y cuántas historias tiene; con todos los sprints cerrados informa que no hay sprint en curso | El estado muestra el sprint en curso; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-8, RN-9 | hecha |
 
 **Dónde falla cada una antes de implementarse.** La 1 falla porque la consulta no existe. La
 2, porque la tarea 1 devuelve los integrantes vacíos. La 3, porque el resumen está en cero:
@@ -332,15 +347,59 @@ Los diez escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 - **Las tareas 1 a 3 solo necesitan lo que ya está en `dev`** (#3, #4 y #6).
 - **La tarea 3 necesita historias En curso y Terminadas**, y esos cambios de estado son de la
   #9 y la #10: el test los fija desde dentro del paquete.
-- **La tarea 4 necesita el sprint abierto de la #8**, que todavía no está en `dev`. No se la
-  espera: el test arma los sprints dentro del paquete, contra el contrato del dominio.
+- **La tarea 4 necesita el `Sprint` y la consulta del sprint abierto de la #8** en `dev`. Sin
+  el tipo, su test no compila. Se le pidió a Agustín adelantarlos (punto 6 de la puerta);
+  mientras tanto se programan las tareas 1 a 3. Maxi confirmó en el PR #104 que
+  `p.OpenSprint()` es una consulta del sprint abierto y no la acción de abrir uno.
+- **La tarea 4 necesita además un sprint Cerrado y un sprint con 3 historias asignadas.**
+  Cerrar es de la #10 y asignar es de la #9, que todavía no existen. Con el `Sprint` en
+  `dev`, el test crea los sprints con el alta de la #8 y, desde dentro del paquete, le fija
+  el estado Cerrado a uno y le carga los 3 identificadores de historia en su lista de
+  historias asignadas al otro. Es lo mismo que se hace con las historias En curso y
+  Terminadas, y lo mismo que hace la #8 en sus tareas 10 a 12.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #102 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6303513354), con dos aclaraciones. Los ajustes se aplicaron el 21/10 en ae10336, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/102#issuecomment-6314721364).
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+**La implementó la sesión de Emiliano Sorato, con autorización de Juliana Bustos, el 21/10**,
+para adelantar sus historias. La responsable sigue siendo Juliana.
+
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro, con la salida
+del test fallando en el mensaje del commit del test, después de `RED:`.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `7de777d` | `718ae62` |
+| 2 | `d7aa701` | `674ff06` |
+| 3 | `a385451` | `431b247` |
+| 4 | `27cd558` | `96b9633` |
+
+Las cuatro fallaron antes de su implementación. La 1, por compilación: la consulta no existía.
+La 2, la 3 y la 4, por comportamiento: la tarea 1 devolvía los integrantes vacíos, el resumen
+en cero y ningún sprint. Cuatro tests pasaron solos, como preveía la Fase 3, y por eso van en
+el mismo commit que uno que falla:
+
+- **El proyecto que no existe** (tarea 1): lo resuelve el registro de la #3 al buscarlo.
+- **Consultar no cambia nada y cada proyecto muestra solo lo suyo** (tarea 3): la consulta
+  nunca escribe y cada proyecto cuenta lo suyo.
+- **Todos los sprints cerrados** (tarea 4): antes de la tarea, el estado nunca traía sprint.
+
+Nombres que la Fase 2 no fija: la consulta es `p.Status()`, y devuelve un `ProjectStatus`
+con `MemberStatus` (nombre y rol), `BacklogSummary` (`Total`, `Completed`, `Pending`) y
+`SprintSummary` (número, goal, fechas y `AssignedStories`). Los datos opcionales y el sprint
+en curso llevan su indicador aparte —`HasDescription`, `HasEnd`, `HasCurrentSprint`—, para que
+"no está cargado" y "no hay sprint en curso" se informen y no haya que deducirlos de un valor
+vacío (RN-2, RN-9). El sprint en curso sale de `p.OpenSprint()` de la #8, como pide la Fase 2.
+
+Los tests fijan el estado En curso y Terminada de las historias, y el sprint Cerrado con sus
+historias asignadas, desde dentro del paquete, como dicen las Dependencias de la Fase 3. No
+se modificó ningún archivo que ya existía. `internal/domain` sigue en 100% de cobertura.
+
+### Desvíos respecto de la spec
+
+Ninguno.
 
 ## Trazabilidad
 
