@@ -307,3 +307,78 @@ func TestDosCargasDelMismoIntegranteLaMismaHistoriaYElMismoDia(t *testing.T) {
 		t.Fatalf("se esperaba que la historia 1 tuviera 3 horas, salio %v (error: %v)", hours, err)
 	}
 }
+
+// cargar registra esfuerzo en el proyecto o corta el test: es para preparar los datos de las
+// consultas, no para probar el registro.
+func cargar(t *testing.T, project *Project, storyID int, name string, hours float64) {
+	t.Helper()
+	data := unEsfuerzo()
+	data.StoryID = storyID
+	data.MemberName = name
+	data.Hours = hours
+	if _, err := project.LogEffort(data, hoy); err != nil {
+		t.Fatalf("no se pudo cargar el esfuerzo de prueba: %v", err)
+	}
+}
+
+// Escenario: Consultar el total de horas de una historia
+// Cubre: RN-13
+func TestConsultarElTotalDeHorasDeUnaHistoria(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	cargar(t, project, 1, "Juliana Bustos", 2)
+	cargar(t, project, 1, "Juliana Bustos", 1.5)
+
+	hours, err := project.StoryHours(1)
+
+	if err != nil || !mismasHorasReales(hours, 3.5) {
+		t.Fatalf("se esperaban 3 horas y media, salio %v (error: %v)", hours, err)
+	}
+}
+
+// Esquema del escenario: Sin registros, el total es cero
+// Cubre: RN-13, RN-14
+func TestSinRegistrosElTotalEsCero(t *testing.T) {
+	cases := []struct {
+		name string
+		ask  func(project *Project) (float64, error)
+	}{
+		{"la historia 1", func(project *Project) (float64, error) { return project.StoryHours(1) }},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyectoConJuliana(t)
+
+			hours, err := tc.ask(project)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if hours != 0 {
+				t.Fatalf("se esperaban cero horas, salio %v", hours)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Consultar las horas de algo que no existe
+// Cubre: RN-13, RN-14
+func TestConsultarLasHorasDeAlgoQueNoExiste(t *testing.T) {
+	cases := []struct {
+		name string
+		ask  func(project *Project) (float64, error)
+		want error
+	}{
+		{"la historia 99", func(project *Project) (float64, error) { return project.StoryHours(99) }, ErrStoryNotFound},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyectoConJuliana(t)
+
+			_, err := tc.ask(project)
+
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+		})
+	}
+}
