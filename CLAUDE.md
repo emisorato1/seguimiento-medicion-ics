@@ -499,7 +499,12 @@ es parte de la documentación que se evalúa, no un trámite.
 - **Hacia `dev` mergea la sesión de revisión de Claude Code**, después de dejar la revisión
   escrita y con el CI en verde, para todos los PRs, también los del Agile Enabler. Así un PR
   ya revisado no queda parado esperando a su autor (decidido el 20/10). El autor sigue
-  resolviendo los conflictos de su rama. **Hacia `main`** hace falta la aprobación de una
+  resolviendo los conflictos de su rama, **salvo un caso**: si el PR ya está revisado y aprobado
+  y lo único que lo frena es un conflicto en archivos generados o de documentación
+  (`ESTADO.md`, el índice de specs, el README), una sesión de Claude Code puede traer `dev` a
+  esa rama y resolverlo **sin tocar el contenido del autor**, dejándole un comentario en el PR
+  para que haga `git pull` antes de seguir (decidido por el Agile Enabler el 21/10). Un
+  conflicto en código o en una spec lo sigue resolviendo el autor. **Hacia `main`** hace falta la aprobación de una
   persona.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
 - **Y se cierra su issue a mano**, con sus criterios tildados y un comentario con el PR y el
