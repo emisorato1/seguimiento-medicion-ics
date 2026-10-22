@@ -276,3 +276,109 @@ func TestRechazarQuitarUnaHistoriaQueNoEstaEnElSprint(t *testing.T) {
 		t.Errorf("se esperaba el Sprint Backlog vacio, salio %v", stories)
 	}
 }
+
+// Escenario: Una historia que quedo sin completar se puede asignar al sprint siguiente
+// Cubre: RN-11, RN-12
+func TestUnaHistoriaQueQuedoSinCompletarSePuedeAsignarAlSprintSiguiente(t *testing.T) {
+	project, first := unSprintAbierto(t)
+	story := unaHistoriaEstimada(t, project, 5)
+	if err := project.AssignStory(story.ID()); err != nil {
+		t.Fatalf("no se pudo asignar la historia al sprint 1: %v", err)
+	}
+	// El sprint 1 se cierra sin completar la historia, que vuelve al Product Backlog como
+	// Pendiente: es lo que hara la #10.
+	story.state = StoryPending
+	cerrarSprint(first)
+	second, err := project.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 11, 15), End: unDia(2026, 11, 28)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
+	}
+
+	err = project.AssignStory(story.ID())
+
+	if err != nil {
+		t.Fatalf("se esperaba asignar la historia al sprint 2 sin error, salio: %v", err)
+	}
+	if stories := second.Stories(); len(stories) != 1 || stories[0] != story.ID() {
+		t.Errorf("se esperaba el Sprint Backlog del sprint 2 con la historia %d, salio %v", story.ID(), stories)
+	}
+	if story.State() != StoryInProgress {
+		t.Errorf("se esperaba la historia En curso, salio %v", story.State())
+	}
+	if stories := first.Stories(); len(stories) != 1 || stories[0] != story.ID() {
+		t.Errorf("se esperaba que el sprint 1 siguiera teniendo la historia %d, salio %v", story.ID(), stories)
+	}
+}
+
+// Escenario: Cada proyecto arma su propio Sprint Backlog
+// Cubre: RN-10
+func TestCadaProyectoArmaSuPropioSprintBacklog(t *testing.T) {
+	registry := NewProjectRegistry()
+	var projects []*Project
+	var sprints []*Sprint
+	for _, name := range []string{"Proyecto A", "Proyecto B"} {
+		project, err := registry.Create(ProjectData{Name: name, Start: unDia(2026, 10, 1)})
+		if err != nil {
+			t.Fatalf("no se pudo crear el %s: %v", name, err)
+		}
+		sprint, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)})
+		if err != nil {
+			t.Fatalf("no se pudo crear el sprint del %s: %v", name, err)
+		}
+		unaHistoriaEstimada(t, project, 5)
+		projects = append(projects, project)
+		sprints = append(sprints, sprint)
+	}
+
+	if err := projects[0].AssignStory(1); err != nil {
+		t.Fatalf("se esperaba asignar la historia 1 del proyecto A sin error, salio: %v", err)
+	}
+
+	if stories := sprints[1].Stories(); len(stories) != 0 {
+		t.Fatalf("se esperaba el Sprint Backlog del proyecto B vacio, salio %v", stories)
+	}
+}
+
+// Esquema del escenario: Operar sobre algo que no existe
+// Cubre: RN-13, RN-16
+//
+// Las filas del proyecto que no existe se resuelven en el registro de la #3, que es el unico
+// camino para llegar a un proyecto: es la misma busqueda para asignar y para quitar.
+func TestOperarSobreAlgoQueNoExiste(t *testing.T) {
+	cases := []struct {
+		name      string
+		operation func(project *Project, id int) error
+		project   int
+		want      error
+	}{
+		{"asignar la historia 99, que no existe en el proyecto", func(p *Project, id int) error { return p.AssignStory(id) }, 1, ErrStoryNotFound},
+		{"asignar la historia 1 en el proyecto 99, que no existe", func(p *Project, id int) error { return p.AssignStory(id) }, 99, ErrProjectNotFound},
+		{"quitar la historia 99, que no existe en el proyecto", func(p *Project, id int) error { return p.UnassignStory(id) }, 1, ErrStoryNotFound},
+		{"quitar la historia 1 en el proyecto 99, que no existe", func(p *Project, id int) error { return p.UnassignStory(id) }, 99, ErrProjectNotFound},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			created, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: unDia(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+			}
+			sprint, err := created.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)})
+			if err != nil {
+				t.Fatalf("no se pudo crear el sprint de prueba: %v", err)
+			}
+
+			project, err := registry.Get(tc.project)
+			if err == nil {
+				err = tc.operation(project, 99)
+			}
+
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+			if stories := sprint.Stories(); len(stories) != 0 {
+				t.Errorf("se esperaba el Sprint Backlog vacio, salio %v", stories)
+			}
+		})
+	}
+}
