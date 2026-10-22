@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-22 12:54. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-22 14:57. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,7 +10,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 13
+- Terminadas: 14
 
 ## En review
 
@@ -27,7 +27,6 @@ _No hay historias en este estado._
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
-| #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 
 ## Especificacion SDD
 
@@ -64,18 +63,19 @@ _No hay historias en este estado._
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
+| #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-363097c 2026-10-22 Merge pull request #138 from emisorato1/historia-8-9-sprints
-0ccd17d 2026-10-22 refactor: actualizar el comentario de AddSprint
-41eee9d 2026-10-22 docs: poner al dia la documentacion tecnica con los sprints
-8a048e5 2026-10-22 feat: rechazar al cargar una historia repetida en un Sprint Backlog (tarea 14, historia 9)
-40640f4 2026-10-22 test: rechazar al cargar una historia repetida en un Sprint Backlog (tarea 14, historia 9)
-e34f62f 2026-10-22 chore: mover las historias 8 y 9 a en review
-764596c 2026-10-22 docs: registrar la implementacion de las historias 8 y 9
-c885140 2026-10-22 test: marcar como sin escenario el test de la tarea 4 de la historia 7
+e58a81c 2026-10-22 Merge pull request #139 from emisorato1/historias-8-y-9-terminadas
+9cfa06d 2026-10-22 Merge pull request #129 from emisorato1/historia-15-codigo
+e7ff34c 2026-10-22 docs: la historia 15 implementada, con su fase 4 y su fila del indice
+6695d51 2026-10-22 feat: un defecto invalido en el archivo rechaza la carga (historia 15, tarea 16)
+6a2a664 2026-10-22 chore: regenerar ESTADO.md y la trazabilidad con las historias 8 y 9 terminadas
+2683be5 2026-10-22 docs: las historias 8 y 9 terminadas en sus specs, el indice, la review y el informe del sprint 2
+aa23b4f 2026-10-22 fix: trazabilidad.sh reconoce "paso en verde al escribirlo" igual que "sin RED"
+db591a3 2026-10-22 test: un defecto invalido en el archivo rechaza la carga (historia 15, tarea 16)
 ```
