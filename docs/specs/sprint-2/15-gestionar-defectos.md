@@ -3,10 +3,11 @@
 - **Historia:** #15
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
-  y lo presenta a las puertas.
+  y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres
+  puertas por pull request.
 - **Depende de:** #3 (el proyecto), #6 (la historia relacionada) y #8 (los sprints de
   detección y de resolución)
 - **La necesitan:** #16 (defectos detectados y resueltos), #17 (dashboard), #18 (reporte)
@@ -84,8 +85,9 @@ los de una severidad.
 5. **[RN-5]** Cuando se registran el título y la descripción, el sistema debe guardarlos sin
    los espacios del principio y del final.
 6. **[RN-6]** El sistema debe aceptar como severidad únicamente **Crítica**, **Mayor** o
-   **Menor**. Si se indica otra, o no se indica ninguna, debe rechazar la operación e
-   informar cuáles son las válidas.
+   **Menor**, sin distinguir mayúsculas ni espacios de los extremos, y debe aceptar
+   "Critica" escrita sin tilde como lo mismo que "Crítica". Si se indica otra, o no se indica
+   ninguna, debe rechazar la operación e informar cuáles son las válidas.
 7. **[RN-7]** Si la historia relacionada no pertenece al proyecto, el sistema debe rechazar
    la operación e informar que no se encontró la historia. La historia se acepta en cualquier
    estado, incluida una Terminada.
@@ -103,7 +105,8 @@ los de una severidad.
     la operación e informar que no se encontró el sprint.
 13. **[RN-13]** Si el sprint de resolución es anterior al de detección, el sistema debe
     rechazar la operación e informar que un defecto no se resuelve en un sprint anterior al
-    de detección. Resolverlo en el mismo sprint en que se detectó es válido.
+    de detección. "Anterior" se compara por el número del sprint, no por sus fechas.
+    Resolverlo en el mismo sprint en que se detectó es válido.
 14. **[RN-14]** Si el defecto ya está Resuelto, el sistema debe rechazar cualquier cambio de
     estado y cualquier resolución nueva, e informar que el defecto ya está resuelto.
 15. **[RN-15]** El sistema debe permitir consultar todos los defectos del proyecto, los de un
@@ -154,7 +157,8 @@ los de una severidad.
       resolución. El primero del proyecto recibe el 1 y cada uno nuevo el siguiente.
 - [ ] No se puede registrar un defecto sin título o sin descripción; un texto de solo
       espacios cuenta como vacío y lo que se guarda va sin los espacios de los extremos.
-- [ ] La severidad solo puede ser Crítica, Mayor o Menor.
+- [ ] La severidad solo puede ser Crítica, Mayor o Menor, sin distinguir mayúsculas ni
+      espacios de los extremos, y "Critica" sin tilde se acepta como "Crítica".
 - [ ] No se puede registrar un defecto sobre una historia que no es del proyecto, y sí sobre
       una historia Terminada.
 - [ ] No se puede registrar un defecto con un sprint de detección que no existe, y sí con uno
@@ -210,14 +214,15 @@ Escenario: Guardar el titulo y la descripcion sin los espacios de los extremos
 
 Esquema del escenario: Registrar un defecto con cada severidad
   Dado un proyecto con la historia 1 y el sprint 1
-  Cuando registro un defecto con severidad <severidad>
+  Cuando registro un defecto con severidad <escrita>
   Entonces el defecto queda registrado con severidad <severidad>
 
   Ejemplos:
-    | severidad |
-    | "Critica" |
-    | "Mayor"   |
-    | "Menor"   |
+    | escrita     | severidad |
+    | "Crítica"   | "Crítica" |
+    | "critica"   | "Crítica" |
+    | "  MAYOR  " | "Mayor"   |
+    | "Menor"     | "Menor"   |
 
 Escenario: Rechazar una severidad que no existe
   Dado un proyecto con la historia 1 y el sprint 1
@@ -268,7 +273,7 @@ Escenario: Rechazar el pase a Resuelto por cambio de estado
   Y el defecto 1 sigue en estado "Abierto"
 
 Esquema del escenario: Resolver un defecto
-  Dado un proyecto con el sprint 2 y el defecto 1 detectado en el sprint 1, en estado <desde>
+  Dado un proyecto con los sprints 1 y 2, y el defecto 1 detectado en el sprint 1, en estado <desde>
   Cuando resuelvo el defecto 1 en el sprint 2
   Entonces el defecto 1 queda en estado "Resuelto"
   Y queda con el sprint de resolucion 2
@@ -279,7 +284,7 @@ Esquema del escenario: Resolver un defecto
     | "En curso" |
 
 Escenario: Resolver un defecto en el mismo sprint en que se detecto
-  Dado un proyecto con el defecto 1 detectado en el sprint 2
+  Dado un proyecto con el sprint 2 y el defecto 1 detectado en el sprint 2
   Cuando resuelvo el defecto 1 en el sprint 2
   Entonces el defecto 1 queda en estado "Resuelto"
   Y queda con el sprint de resolucion 2
@@ -299,7 +304,7 @@ Escenario: Rechazar la resolucion con un sprint que no existe
   Y el defecto 1 sigue en estado "Abierto"
 
 Esquema del escenario: Un defecto resuelto no se vuelve a tocar
-  Dado un proyecto con el defecto 1 en estado "Resuelto" en el sprint 2
+  Dado un proyecto con los sprints 1, 2 y 3, y el defecto 1 detectado en el sprint 1 y en estado "Resuelto" en el sprint 2
   Cuando intento <operacion> el defecto 1
   Entonces la operacion se rechaza
   Y se informa que el defecto ya esta resuelto
@@ -343,37 +348,56 @@ Esquema del escenario: Operar sobre algo que no existe
 
 **Para decidir en la puerta:**
 
-1. **El contrato no nombra dos de las tres operaciones que pide la issue.**
-   [`docs/diseno-dominio.md`](../../diseno-dominio.md) nombra registrar, listar y resolver,
-   pero no el **cambio de estado** (que la issue pide al registrar "estado" como dato que se
-   sigue) ni las **consultas por estado y por severidad** (último criterio de la issue). Acá
-   no se les inventó nombre: hay que agregarlas al contrato antes de implementar, que es la
-   regla 1 del propio contrato. Si el equipo prefiere que filtrar sea trabajo de quien
-   muestra, se cae parte de la RN-15 y el dashboard (#17) filtra sobre la lista completa.
+1. **El cambio de estado y las consultas por estado y por severidad.** La issue pide seguir
+   el estado del defecto y consultarlos por estado y por severidad. **Resuelto en el
+   contrato:** [`docs/diseno-dominio.md`](../../diseno-dominio.md) ya nombra las seis
+   operaciones (registrar, listar, cambiar el estado, resolver y las dos consultas
+   filtradas). No hace falta tocar el contrato antes de implementar.
+   **Decidido el 21/10: se mantienen las consultas por estado y por severidad en el dominio.**
 2. **El título es obligatorio aunque la issue no lo nombre.** La issue pide "descripción,
    severidad, estado, historia y sprint de detección"; el contrato le agrega un título, y acá
    se lo tomó como obligatorio igual que la descripción. Si el equipo lo quiere opcional,
    cambia la RN-4.
+   **Decidido el 21/10: el título es obligatorio.**
 3. **Un defecto resuelto no se reabre (RN-14).** Si el arreglo no funcionó, se registra un
    defecto nuevo. La alternativa —poder volver un defecto a Abierto— obligaría a decidir qué
    pasa con el sprint de resolución ya registrado y, sobre todo, cómo lo cuenta la #16: un
    defecto reabierto, ¿sigue contando como resuelto en el sprint anterior? Mientras no se
    pueda reabrir, esa pregunta no existe.
+   **Decidido el 21/10: un defecto resuelto no se reabre.**
 4. **El estado Resuelto solo se alcanza resolviendo (RN-10).** Hay una operación para cambiar
    el estado y otra para resolver, porque resolver necesita un dato más. Si el equipo quiere
    una sola operación, hay que decidir qué hace cuando el destino es Resuelto y no viene el
    sprint.
+   **Decidido el 21/10: son dos operaciones, como está.**
 5. **Los dos sprints se validan contra los sprints del proyecto (RN-8, RN-12).** La
    alternativa era aceptar cualquier número. La consecuencia de validarlos es que un defecto
    no se puede cargar antes de que su sprint exista: con el sprint creándose en la #8, en la
    práctica siempre existe.
+   **Decidido el 21/10: los dos sprints se validan.** "Anterior" se compara por el número
+   del sprint (RN-13).
 6. **No hay responsable, ni prioridad, ni fecha, y contar los defectos es de la #16.** El
    contrato no tiene esos tres datos y la issue no los pide; cuándo pasó se deduce del
    sprint. Acá los defectos se listan, y la #16 cuenta sobre esas listas los detectados y los
    resueltos de cada sprint.
+   **Decidido el 21/10: se acepta como está.**
+7. **Esta historia necesita que el `Sprint` de la #8 exista en `dev` antes de su tarea 1.**
+   El borrador decía que los tests "arman los sprints a mano" mientras la #8 no esté, pero en
+   Go un test no puede armar un sprint si el tipo todavía no existe en el paquete: no
+   compila. Como la RN-8 valida el sprint de detección desde el primer defecto, la tarea 1
+   ya lo necesita. Se pidió a Agustín, dueño del `Sprint`, que adelante a `dev` la tarea 1 de
+   la #8 (el sprint y su alta) con un PR temprano, igual que se hace acá con el `Defect`. La
+   alternativa —que esta historia defina su propia forma de preguntar por un sprint— rompe
+   la regla 2 del contrato, que hace dueño del `Sprint` a quien tiene la #8.
+   **Condición de la Puerta 2 (Maxi, 20/10):** según el contrato, la búsqueda de un sprint
+   por su número y su error de "no se encontró el sprint" son de la #11, no de la #8, y son
+   justo lo que usan la RN-8 y la RN-12. Ese PR temprano tiene que traerlos también; se le
+   pidió a Agustín en el PR #104. No se busca en los datos internos del proyecto, porque
+   duplicaría una búsqueda que después habría que reemplazar.
+   **Decidido el 21/10: la tarea 1 espera ese PR temprano de la #8.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #101 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6303474020), con seis cambios a hacer antes de la tarea 1. Los ajustes se aplicaron el 21/10 en e318c2c, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6314720573).
 
 ## Fase 2 — Diseño
 
@@ -383,7 +407,8 @@ y validar todo antes de cambiar nada— están en [AGENTS.md](../../../AGENTS.md
 repiten acá. Los nombres son los del contrato
 ([`docs/diseno-dominio.md`](../../diseno-dominio.md)): `Defect`, con `ID`, `Title`,
 `Description`, `Severity`, `State`, `StoryID`, `DetectedIn` y `ResolvedIn`, registrado con
-`AddDefect`, consultado con `Defects` y resuelto con `ResolveDefect`.
+`AddDefect`, consultado con `Defects`, `DefectsByState` y `DefectsBySeverity`, cambiado de
+estado con `ChangeDefectState` y resuelto con `ResolveDefect`.
 
 ### Enfoque
 
@@ -410,7 +435,7 @@ solo.
 | `internal/domain/defect_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/errors.go` | se modifica | los errores propios de esta historia |
 | `internal/domain/project.go` | se modifica | la lista de defectos y su contador dentro del proyecto |
-| `docs/diseno-dominio.md` | se modifica | nombrar el cambio de estado y las consultas filtradas, antes de escribir código (punto 1 de la puerta) |
+| `internal/domain/registry_json.go` y su test | se modifican | los defectos y su contador entran en la conversión del registro a JSON, con su caso en el test de ida y vuelta, para que no se pierdan al cerrar la web (regla de la #77 en AGENTS.md) |
 
 ### Decisiones
 
@@ -420,28 +445,32 @@ solo.
 | La severidad deja libre su valor "ninguna" y el estado no | que las dos arranquen igual | la severidad se indica al registrar, y una no indicada tiene que rechazarse (RN-6), como el rol de la #4; el estado no se indica nunca, el defecto siempre nace Abierto (RN-3), como la historia en la #6 |
 | Resolver es una operación propia, separada del cambio de estado | una sola operación de cambio de estado que, cuando el destino es Resuelto, además recibe el sprint | un dato que a veces se usa y a veces no termina en una operación que nadie entiende; además la RN-13 solo aplica al resolver |
 | El texto de la severidad se convierte a severidad en el dominio | que la interfaz lo traduzca y rechace lo inválido | si la consola rechaza un texto inválido por su cuenta, la RN-6 queda duplicada fuera del dominio y sin tests, como ya se decidió en la #4 con los roles |
+| La conversión acepta "critica" sin tilde, además de ignorar mayúsculas y espacios | aceptar solo "crítica" con tilde, o quitar las tildes de todo el texto | en un teclado sin tildes es la forma más probable de escribirla, y los escenarios Gherkin la escriben sin tilde. Se acepta esa forma puntual y no se normalizan las tildes en general: eso exigiría una librería de normalización, que AGENTS.md no permite (el mismo criterio de la #4 con los nombres). Mayor y Menor no llevan tilde (revisión de Maxi en el PR #101) |
 | Las consultas filtradas recorren la lista en el momento | guardar los defectos agrupados por estado y por severidad | con el cambio de estado habría que mantener los grupos sincronizados, y el volumen no lo justifica |
 | Un error propio por cada rechazo | un único error de "defecto inválido" | la Fase 1 da siete mensajes distintos y los tests necesitan distinguir cuál salió |
+| Al cargar los datos guardados, cada defecto conserva su número, su estado y sus sprints, y pasa por las mismas reglas del alta y de la resolución | volver a registrarlo con el alta, que le daría un número nuevo y lo dejaría Abierto | es lo que hace la #77 con las historias: se valida con lo mismo y se conserva lo que ya tenía. Los sprints de detección y de resolución se validan contra los sprints del proyecto, así que la conversión carga los sprints antes que los defectos |
 
 ### Dependencias y restricciones
 
 - **Depende de la #3 y la #6**, que ya están en `dev`: el proyecto y la búsqueda de una
   historia dentro de él.
-- **Depende del `Sprint` de la #8, que todavía no está en `dev`, y no se la espera.** El
-  contrato ya fija qué es un sprint y cómo se lo pide por su número, así que esta historia se
-  escribe entera —spec, tests y código— contra ese contrato. Lo único que necesita de la #8
-  es poder preguntarle al proyecto si existe el sprint con tal número.
-- **Los tests arman los sprints a mano**, desde dentro del paquete, mientras la #8 no esté
-  (ver la sección Dependencias de la Fase 3).
+- **Depende del `Sprint` de la #8, que todavía no está en `dev`.** El contrato ya fija qué
+  es un sprint y cómo se lo pide por su número, así que esta historia se escribe contra ese
+  contrato. Lo único que necesita de la #8 es poder preguntarle al proyecto si existe el
+  sprint con tal número, pero eso exige que el tipo `Sprint` y su alta estén en `dev`: sin
+  ellos los tests no compilan (punto 7 de la puerta).
+- **Con el `Sprint` en `dev`, los tests cargan los sprints que necesitan** con el alta de la
+  #8, sin esperar el resto de esa historia.
 - **No se toca `story.go`:** a la historia relacionada solo se la busca, y su estado no se
   mira.
 - **`errors.go` es compartido:** los errores de esta historia se agregan ahí, y al traer
   `dev` hay que resolver ese conflicto a mano, como ya pasó en la #12.
-- **El contrato se toca antes que el código** (punto 1 de la puerta), avisando al grupo: es
-  la regla 3 de `docs/diseno-dominio.md`.
+- **El contrato no se toca:** ya nombra todas las operaciones (punto 1 de la puerta). Si al
+  implementar hiciera falta cambiarlo, se avisa al grupo antes, como pide la regla 3 de
+  `docs/diseno-dominio.md`.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada con una condición en el PR #101 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6303474020): que el PR temprano de la #8 traiga p.Sprint(number) y su error. Los ajustes se aplicaron el 21/10 en e318c2c, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6314720573).
 
 ## Fase 3 — Tareas
 
@@ -457,9 +486,9 @@ RN-18.
 | 1 | Registrar un defecto válido: queda con identificador 1, en Abierto y sin sprint de resolución | Registrar un defecto | RN-1, RN-2, RN-3 | pendiente |
 | 2 | El defecto siguiente recibe el identificador siguiente, y dos defectos con los mismos datos conviven | El defecto nuevo recibe el identificador siguiente | RN-1, RN-17 | pendiente |
 | 3 | Rechazar un defecto sin título o sin descripción, y guardar los dos sin los espacios de los extremos | Rechazar un defecto sin titulo o sin descripcion / Guardar el titulo y la descripcion sin los espacios de los extremos | RN-4, RN-5 | pendiente |
-| 4 | Aceptar las tres severidades y rechazar cualquier otra | Registrar un defecto con cada severidad / Rechazar una severidad que no existe | RN-6 | pendiente |
+| 4 | Aceptar las tres severidades, sin distinguir mayúsculas ni espacios y con "critica" sin tilde, y rechazar cualquier otra | Registrar un defecto con cada severidad / Rechazar una severidad que no existe | RN-6 | pendiente |
 | 5 | La historia relacionada tiene que ser del proyecto, y una Terminada se acepta | Rechazar un defecto sobre una historia que no es del proyecto / Registrar un defecto sobre una historia terminada | RN-7 | pendiente |
-| 6 | El sprint de detección tiene que existir en el proyecto, y uno cerrado se acepta | Rechazar un defecto con un sprint de deteccion que no existe / Registrar un defecto detectado en un sprint ya cerrado | RN-8 | pendiente |
+| 6 | El sprint de detección tiene que existir en el proyecto, y uno cerrado se acepta. Cerrar un sprint es de la #10, que no existe todavía: el test crea el sprint con el alta de la #8 y le fija el estado Cerrado desde dentro del paquete, como hace la #8 en sus tareas 10 a 12 y la #12 con las historias Terminadas | Rechazar un defecto con un sprint de deteccion que no existe / Registrar un defecto detectado en un sprint ya cerrado | RN-8 | pendiente |
 | 7 | Pasar el defecto entre Abierto y En curso, en los dos sentidos y al estado que ya tenía | Cambiar el estado de un defecto no resuelto | RN-9 | pendiente |
 | 8 | Rechazar el pase a Resuelto por cambio de estado | Rechazar el pase a Resuelto por cambio de estado | RN-10 | pendiente |
 | 9 | Resolver un defecto Abierto y uno En curso: quedan Resueltos con su sprint | Resolver un defecto | RN-11 | pendiente |
@@ -469,6 +498,7 @@ RN-18.
 | 13 | Consultar todos los defectos, los de un estado y los de una severidad, en orden de registro, y una consulta sin resultados devuelve lista vacía | Listar los defectos del proyecto | RN-15 | pendiente |
 | 14 | Los defectos de un proyecto no aparecen en otro, y cada proyecto numera desde 1 | Los defectos de un proyecto no aparecen en otro | RN-16 | pendiente |
 | 15 | Operar sobre un defecto o un proyecto que no existe informa que no se encontró y no cambia nada | Operar sobre algo que no existe | RN-19 | pendiente |
+| 16 | Los defectos entran en la conversión del registro: uno Abierto, uno En curso y uno Resuelto, con sus severidades y sus sprints, se reconstruyen iguales, con su número y el contador; uno inválido en el archivo (sin título, severidad desconocida, historia o sprint que no existen, Resuelto sin sprint de resolución) rechaza la carga | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
 
 ### Por qué este orden
 
@@ -482,13 +512,19 @@ RN-18.
   grupo porque necesita un defecto resuelto, que recién existe después de la 9.
 - **La 13 y la 14 son las consultas**, que necesitan varios defectos con estados y
   severidades distintas: por eso van cuando las tres operaciones ya funcionan.
-- **La 15 va al final** porque el defecto o el proyecto inexistente es el borde más externo.
+- **La 15** va después de las consultas porque el defecto o el proyecto inexistente es el
+  borde más externo.
+- **La 16 cierra la historia**: la conversión a JSON guarda lo que ya existe, así que va
+  cuando el defecto tiene todos sus datos y sus reglas. No tiene escenario propio en la
+  Fase 1, como la tarea 14 de la #13: es la regla de la #77 para toda entidad nueva.
 
 ### Cobertura
 
 Las diecinueve reglas quedan cubiertas: RN-1 (1, 2), RN-2 (1), RN-3 (1), RN-4 (3), RN-5 (3),
 RN-6 (4), RN-7 (5), RN-8 (6), RN-9 (7), RN-10 (8), RN-11 (9), RN-12 (10), RN-13 (11),
 RN-14 (12), RN-15 (13), RN-16 (14), RN-17 (2), RN-18 (3, 4, 5, 6, 8, 10, 11, 12), RN-19 (15).
+La tarea 16 no cubre una regla de la Fase 1: es la regla de la #77 de que los datos sigan al
+cerrar y volver a abrir.
 
 | Criterio de aceptación | Tareas |
 |---|---|
@@ -511,15 +547,31 @@ Los veinte escenarios BDD de la Fase 1 tienen su tarea, en la columna "Escenario
 ### Dependencias
 
 - **Todas las tareas necesitan la #3 y la #6 en `dev`**, que ya lo están.
-- **Las tareas 1, 6, 9, 10, 11 y 12 necesitan sprints**, que son de la #8 y todavía no están.
-  No se espera: los tests los arman a mano desde dentro del paquete, contra el contrato de
-  `docs/diseno-dominio.md`, que es lo acordado el 20/10. Si la #8 llega a `dev` con otra
-  forma de preguntar si un sprint existe, se ajusta acá y se anota en los desvíos.
+- **Las tareas 1, 6, 9, 10, 11 y 12 necesitan sprints**, que son de la #8. No hace falta la
+  #8 completa: alcanza con su tarea 1 (el `Sprint` y su alta) en `dev`, que se le pidió
+  adelantar a Agustín (punto 7 de la puerta). Si la #8 llega con otra forma de preguntar si
+  un sprint existe, se ajusta acá y se anota en los desvíos.
 - **La tarea 5 necesita una historia Terminada**, y los cambios de estado son de la #9 y la
   #10. El test la prepara desde dentro del paquete, igual que hizo la #12 en su tarea 9.
+- **La tarea 6 necesita un sprint Cerrado**, y cerrar es de la #10. El test lo crea con el
+  alta de la #8 y le fija el estado desde dentro del paquete.
+
+### Entrega en dos pull requests
+
+La #16 (métricas) necesita defectos para contar los detectados y los resueltos de cada
+sprint, y en Go su test no puede armar un `Defect` si el tipo no existe en `dev`. Por eso
+esta historia se parte en dos, que es el caso 1 de "Cuándo se puede partir una historia" en
+`CLAUDE.md` (alguien está bloqueado esperándote):
+
+1. **Primer PR (`Refs #15`):** esta spec con sus tres puertas y la **tarea 1**, que deja el
+   `Defect`, su severidad, su estado, el registro y la lista. Necesita el `Sprint` de la #8
+   en `dev`.
+2. **Segundo PR (`Closes #15`):** las tareas 2 a 16. La conversión a JSON (tarea 16) va en
+   este PR y necesita que los sprints de la #8 ya estén en la conversión, porque los defectos
+   se validan contra ellos al cargar.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #101 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6303474020), con seis cambios a hacer antes de la tarea 1. Los ajustes se aplicaron el 21/10 en e318c2c, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6314720573).
 
 ## Fase 4 — Implementación
 

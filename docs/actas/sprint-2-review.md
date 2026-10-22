@@ -25,18 +25,19 @@ siguiente cuenta en el siguiente.
 | 6 | Administrar el Product Backlog | 5 | **Hecho** | Emiliano Sorato | PR #58, mergeado el 19/10, entre el Sprint 1 y el 2 |
 | 12 | Estimar con Story Points | 2 | **Hecho** | Maximiliano Eula | PR #70 |
 | 24 | Interfaz de consola | 3 | **Hecho** | Maximiliano Eula | PR #106 |
-| 7 | Priorizar el Product Backlog | 2 | En review | Agustín Salinas | [completar al cierre] |
+| 7 | Priorizar el Product Backlog | 2 | **Hecho** | Agustín Salinas | PR #105 |
 | 8 | Crear un sprint con su Sprint Goal | 3 | En progreso | Agustín Salinas | el sprint ya está en `dev` desde el PR #104, con las tareas 1, 2, 3 y 16 (`Refs #8`); [completar al cierre] |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar | Agustín Salinas | [completar al cierre] |
-| 5 | Consultar el estado de un proyecto | 3 | Especificación SDD | Juliana Bustos | [completar al cierre] |
-| 14 | Registrar el esfuerzo real | 3 | Especificación SDD | Juliana Bustos | [completar al cierre] |
-| 15 | Gestionar defectos | 5 | Especificación SDD | Juliana Bustos | [completar al cierre] |
-| 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | En review | Emiliano Sorato | [completar al cierre] |
+| 5 | Consultar el estado de un proyecto | 3 | **Hecho** | Juliana Bustos (la implementó una sesión de Emiliano) | PR #102 |
+| 14 | Registrar el esfuerzo real | 3 | En progreso | Juliana Bustos (la implementa una sesión de Emiliano) | la spec y el código van en el PR #100; [completar al cierre] |
+| 15 | Gestionar defectos | 5 | Lista para implementar | Juliana Bustos (la implementa una sesión de Emiliano) | spec en `dev` desde el PR #101; [completar al cierre] |
+| 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | **Hecho** | Emiliano Sorato | PR #95 |
 
 - **Story points comprometidos:** 31 (los 26 del plan más los 5 de la #6)
-- **Story points completados al 21/10:** 10
+- **Story points completados al 21/10:** 15
 - **Velocidad del Sprint 2:** [se fija al cierre]
-- **Historias completadas al 21/10:** 3 de 9 (33%), sin contar la #77, que no está estimada
+- **Historias completadas al 21/10:** 5 de 9 (56%), sin contar la #77, que también está terminada
+  (PR #95) pero no está estimada
 
 La #77 no suma story points ni horas mientras el equipo no la estime (ver el
 [anexo de la planning](sprint-2-planning.md#historias-nuevas-la-interfaz-web)).
@@ -72,9 +73,13 @@ donde se terminaron:
 | #6 | 15 | 13 | −2 h |
 | #12 | 6 | 4 | −2 h |
 | #24 | 9 | 7,25 | −1,75 h |
-| **Total** | **30** | **24,25** | **−5,75 h (−19%)** |
+| #7 | 5,4 | 4 | −1,4 h |
+| **Total** | **35,4** | **28,25** | **−7,15 h (−20%)** |
 
-- **Horas por story point completado al 21/10:** 2,4 (24,25 h ÷ 10 SP).
+La #5 no entra en esta tabla: está terminada, pero no tiene horas reales cargadas. Contarla
+con cero horas daría una desviación de −35% que no pasó. Entra cuando se carguen.
+
+- **Horas por story point completado al 21/10:** 2,4 (28,25 h ÷ 12 SP, sin la #5).
 
 ## Defectos
 

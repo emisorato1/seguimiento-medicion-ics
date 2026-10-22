@@ -90,12 +90,12 @@ escritas las horas que tenía cada historia al cierre.
 |---|---|---|---|---|
 | Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
 | SP planificados | 16 | 31 | _pendiente_ | _pendiente_ |
-| SP completados (velocidad) | **6** | 10 * | _pendiente_ | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | 3 de 9 (33%) * | _pendiente_ | _pendiente_ |
+| SP completados (velocidad) | **6** | 15 * | _pendiente_ | _pendiente_ |
+| Historias completadas | 2 de 5 (40%) | 5 de 9 (56%) * | _pendiente_ | _pendiente_ |
 | Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
 | Horas reales | 38,25 | 13 * | _pendiente_ | _pendiente_ |
 | Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
-| Desviación de las historias terminadas | −11% | −19% * | _pendiente_ | _pendiente_ |
+| Desviación de las historias terminadas | −11% | −20% * | _pendiente_ | _pendiente_ |
 | Horas por story point completado | 2,7 | 2,4 * | _pendiente_ | _pendiente_ |
 | Defectos detectados / resueltos | 2 / 1 | 1 / 2 * | _pendiente_ | _pendiente_ |
 | Cobertura del dominio | 100% | 100% * | _pendiente_ | _pendiente_ |
@@ -227,14 +227,16 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 6 | Administrar el Product Backlog | 5 | Hecho |
 | 12 | Estimar historias con Story Points | 2 | Hecho |
 | 24 | Operar el sistema desde una interfaz de consola | 3 | Hecho |
-| 7 | Priorizar el Product Backlog | 2 | En review |
+| 7 | Priorizar el Product Backlog | 2 | Hecho |
 | 8 | Crear un sprint con su Sprint Goal | 3 | En progreso: las tareas 1, 2, 3 y 16 ya están en `dev` (PR #104) |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar |
-| 5 | Consultar el estado de un proyecto | 3 | Especificación SDD |
-| 14 | Registrar el esfuerzo real | 3 | Especificación SDD |
-| 15 | Gestionar defectos | 5 | Especificación SDD |
+| 5 | Consultar el estado de un proyecto | 3 | Hecho |
+| 14 | Registrar el esfuerzo real | 3 | En progreso: la spec y el código van en el PR #100 |
+| 15 | Gestionar defectos | 5 | Lista para implementar |
+| 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
 
-- Completados al 21/10: **10 SP**, 3 de 9 historias. Las tres terminadas llegaron del Sprint 1.
+- Completados al 21/10: **15 SP**, 5 de 9 historias. Tres llegaron del Sprint 1; la #7 y la #5
+  son las primeras historias nuevas del sprint que se terminan.
 
 ### Esfuerzo
 
@@ -242,8 +244,9 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
   la #12 y la #24 (30 h) ya están en el Sprint 1.
 - Horas trabajadas en el sprint al 21/10: **13**. Es el total del tablero (35,25) menos las
   22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
-- Historias terminadas, medidas enteras: **30 h estimadas contra 24,25 reales (−19%)**, 2,4 h
-  por story point. Casi todas esas horas se trabajaron en el Sprint 1, así que este número
+- Historias terminadas, medidas enteras: **35,4 h estimadas contra 28,25 reales (−20%)**, 2,4 h
+  por story point, sin la #5, que no tiene horas reales cargadas: contarla con cero daría una
+  desviación que no pasó. La mayor parte de esas horas se trabajaron en el Sprint 1, así que este número
   todavía no dice cuánto cuesta un punto en el Sprint 2: eso se va a ver con las historias
   nuevas, al cierre.
 

@@ -40,6 +40,16 @@ var (
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.
 	ErrSavedDataInvalid = errors.New("los datos guardados no se pueden leer")
+	// ErrEffortHoursInvalid: registrar horas en cero, negativas, infinitas o que no son un
+	// número (historia #14, RN-3). Van aca y no al final, para no chocar con los errores que
+	// agregan otras historias al mismo tiempo.
+	ErrEffortHoursInvalid = errors.New("las horas tienen que ser mayores que cero")
+	// ErrEffortDayInFuture: registrar horas de un día posterior al de hoy (historia #14, RN-4).
+	ErrEffortDayInFuture = errors.New("no se pueden cargar horas de un día que todavía no pasó")
+	// ErrEffortDayRequired: registrar horas sin indicar el día (historia #14, RN-5).
+	ErrEffortDayRequired = errors.New("la fecha es obligatoria")
+	// ErrEffortActivityRequired: registrar horas sin decir qué se hizo (historia #14, RN-6).
+	ErrEffortActivityRequired = errors.New("la actividad realizada es obligatoria")
 	// ErrStoryPointsInvalid: valor fuera de la escala, cero o negativo (historia #12, RN-2, RN-3).
 	ErrStoryPointsInvalid = errors.New("los story points tienen que ser uno de estos valores: " + scaleText())
 	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
