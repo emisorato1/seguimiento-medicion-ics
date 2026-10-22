@@ -57,6 +57,19 @@ func (p *Project) Status() ProjectStatus {
 		members = append(members, MemberStatus{Name: member.name, Role: member.role})
 	}
 
+	// El resumen se cuenta en cada consulta, mirando el estado de cada historia: solo las
+	// Terminadas son completadas, y las Pendientes y En curso son pendientes (RN-6). Asi el
+	// total es siempre la suma de las dos (RN-7).
+	var backlog BacklogSummary
+	for _, story := range p.backlog {
+		backlog.Total++
+		if story.state == StoryDone {
+			backlog.Completed++
+		} else {
+			backlog.Pending++
+		}
+	}
+
 	return ProjectStatus{
 		ID:             p.id,
 		Name:           p.name,
@@ -66,5 +79,6 @@ func (p *Project) Status() ProjectStatus {
 		End:            p.end,
 		HasEnd:         p.HasEnd(),
 		Members:        members,
+		Backlog:        backlog,
 	}
 }
