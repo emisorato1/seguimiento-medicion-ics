@@ -25,7 +25,7 @@ siguiente cuenta en el siguiente.
 | 6 | Administrar el Product Backlog | 5 | **Hecho** | Emiliano Sorato | PR #58, mergeado el 19/10, entre el Sprint 1 y el 2 |
 | 12 | Estimar con Story Points | 2 | **Hecho** | Maximiliano Eula | PR #70 |
 | 24 | Interfaz de consola | 3 | **Hecho** | Maximiliano Eula | PR #106 |
-| 7 | Priorizar el Product Backlog | 2 | En review | Agustín Salinas | [completar al cierre] |
+| 7 | Priorizar el Product Backlog | 2 | **Hecho** | Agustín Salinas | PR #105 |
 | 8 | Crear un sprint con su Sprint Goal | 3 | En progreso | Agustín Salinas | el sprint ya está en `dev` desde el PR #104, con las tareas 1, 2, 3 y 16 (`Refs #8`); [completar al cierre] |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar | Agustín Salinas | [completar al cierre] |
 | 5 | Consultar el estado de un proyecto | 3 | Especificación SDD | Juliana Bustos | [completar al cierre] |
@@ -34,9 +34,9 @@ siguiente cuenta en el siguiente.
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | En review | Emiliano Sorato | [completar al cierre] |
 
 - **Story points comprometidos:** 31 (los 26 del plan más los 5 de la #6)
-- **Story points completados al 21/10:** 10
+- **Story points completados al 21/10:** 12
 - **Velocidad del Sprint 2:** [se fija al cierre]
-- **Historias completadas al 21/10:** 3 de 9 (33%), sin contar la #77, que no está estimada
+- **Historias completadas al 21/10:** 4 de 9 (44%), sin contar la #77, que no está estimada
 
 La #77 no suma story points ni horas mientras el equipo no la estime (ver el
 [anexo de la planning](sprint-2-planning.md#historias-nuevas-la-interfaz-web)).
@@ -72,9 +72,10 @@ donde se terminaron:
 | #6 | 15 | 13 | −2 h |
 | #12 | 6 | 4 | −2 h |
 | #24 | 9 | 7,25 | −1,75 h |
-| **Total** | **30** | **24,25** | **−5,75 h (−19%)** |
+| #7 | 5,4 | 4 | −1,4 h |
+| **Total** | **35,4** | **28,25** | **−7,15 h (−20%)** |
 
-- **Horas por story point completado al 21/10:** 2,4 (24,25 h ÷ 10 SP).
+- **Horas por story point completado al 21/10:** 2,4 (28,25 h ÷ 12 SP).
 
 ## Defectos
 

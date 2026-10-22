@@ -28,6 +28,7 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#6 Administrar el Product Backlog](#6-administrar-el-product-backlog) | 18 | 18 | 0 | 13 |
 | [#12 Estimar historias con Story Points](#12-estimar-historias-con-story-points) | 10 | 10 | 0 | 3 |
 | [#24 Operar el sistema desde una interfaz de consola](#24-operar-el-sistema-desde-una-interfaz-de-consola) | 13 | 13 | 0 | 5 |
+| [#7 Priorizar el Product Backlog](#7-priorizar-el-product-backlog) | 15 | 15 | 0 | 1 |
 | [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 5 | 12 | 0 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 4 | 11 | 6 |
 
@@ -38,7 +39,7 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 93 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 109 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
 | `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 9 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 15 |
@@ -301,6 +302,55 @@ cinco casos posibles:
 | `TestElBacklogMuestraLosStoryPointsDeUnaHistoriaEstimada` [console_test.go:417](../cmd/app/console_test.go#L417) | RN-1 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
 | `TestLaEntradaTerminaSinSalir` [console_test.go:435](../cmd/app/console_test.go#L435) | RN-6 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
 | `TestListarLosIntegrantesDeUnProyectoSinIntegrantes` [console_test.go:448](../cmd/app/console_test.go#L448) | RN-1 | [console.go](../cmd/app/console.go) | `f0ca0e9` → `6120035` |
+
+## #7 Priorizar el Product Backlog
+
+- **Historia:** issue #7
+- **Spec:** [docs/specs/sprint-2/07-priorizar-backlog.md](specs/sprint-2/07-priorizar-backlog.md)
+- **Código según la spec:** `PrioritizedBacklog()`, `internal/domain/story_priority.go`
+
+<details><summary>Criterios de aceptación (14)</summary>
+
+- Pedir el backlog ordenado de un proyecto devuelve primero las historias de prioridad Alta, después las Media y por último las Baja.
+- Dentro de una misma prioridad, las historias quedan ordenadas por identificador de menor a mayor.
+- El listado ordenado devuelve la misma cantidad de historias que tiene el backlog, sin omitir ni repetir ninguna.
+- Las historias aparecen en el listado cualquiera sea su estado y estén estimadas o no.
+- Cada historia del listado se devuelve con su identificador, título, descripción, prioridad, estado, story points y criterios de aceptación.
+- Al cambiar la prioridad de una historia, el listado siguiente la ubica en el lugar que corresponde a su nueva prioridad.
+- Cambiar una prioridad por la misma que ya tenía deja el listado igual.
+- Pedir el listado ordenado no cambia ningún dato de las historias ni el orden en que el backlog las devuelve sin ordenar.
+- Pedir el listado ordenado dos veces seguidas, sin cambiar nada en el medio, devuelve exactamente el mismo resultado.
+- El backlog ordenado de un proyecto sin historias se devuelve vacío, y eso no es un error.
+- Un proyecto con una sola historia devuelve un listado con esa única historia.
+- Un backlog donde todas las historias tienen la misma prioridad se devuelve ordenado por identificador.
+- Pedir el backlog ordenado de un proyecto que no existe informa que no se encontró.
+- Las historias Terminadas aparecen al final del listado, después de todas las demás, y ordenadas entre sí por prioridad.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Listar el backlog ordenado por prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L150) | `TestListarElBacklogOrdenadoPorPrioridad` [story_priority_test.go:152](../internal/domain/story_priority_test.go#L152) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Desempatar por identificador dentro de la misma prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L155) | `TestDesempatarPorIdentificadorDentroDeLaMismaPrioridad` [story_priority_test.go:252](../internal/domain/story_priority_test.go#L252) | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+| [El orden se actualiza al cambiar una prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L160) | `TestElOrdenSeActualizaAlCambiarUnaPrioridad` [story_priority_test.go:176](../internal/domain/story_priority_test.go#L176) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Bajar la prioridad de la historia que estaba primera](specs/sprint-2/07-priorizar-backlog.md?plain=1#L172) | `TestBajarLaPrioridadDeLaHistoriaQueEstabaPrimera` [story_priority_test.go:204](../internal/domain/story_priority_test.go#L204) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Backlog ordenado de un proyecto sin historias](specs/sprint-2/07-priorizar-backlog.md?plain=1#L178) | `TestBacklogOrdenadoDeUnProyectoSinHistorias` [story_priority_test.go:50](../internal/domain/story_priority_test.go#L50) | [story_priority.go](../internal/domain/story_priority.go) | `41f2471` → `d194fa8` |
+| [Backlog ordenado de un proyecto con una sola historia](specs/sprint-2/07-priorizar-backlog.md?plain=1#L184) | `TestBacklogOrdenadoDeUnProyectoConUnaSolaHistoria` [story_priority_test.go:140](../internal/domain/story_priority_test.go#L140) | [story_priority.go](../internal/domain/story_priority.go) | `ab5ea38` → `5c75d88` |
+| [Todas las historias tienen la misma prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L189) | `TestTodasLasHistoriasTienenLaMismaPrioridad` [story_priority_test.go:264](../internal/domain/story_priority_test.go#L264) | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+| [No hay historias de prioridad alta](specs/sprint-2/07-priorizar-backlog.md?plain=1#L194) | `TestNoHayHistoriasDePrioridadAlta` [story_priority_test.go:164](../internal/domain/story_priority_test.go#L164) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [El listado incluye las historias en cualquier estado](specs/sprint-2/07-priorizar-backlog.md?plain=1#L200) | `TestElListadoIncluyeLasHistoriasEnCualquierEstado` [story_priority_test.go:83](../internal/domain/story_priority_test.go#L83) | [story_priority.go](../internal/domain/story_priority.go) | `ab5ea38` → `5c75d88` |
+| [Las historias del listado traen todos sus datos](specs/sprint-2/07-priorizar-backlog.md?plain=1#L205) | `TestLasHistoriasDelListadoTraenTodosSusDatos` [story_priority_test.go:109](../internal/domain/story_priority_test.go#L109) | [story_priority.go](../internal/domain/story_priority.go) | `ab5ea38` → `5c75d88` |
+| [Pedir el listado ordenado no cambia el backlog](specs/sprint-2/07-priorizar-backlog.md?plain=1#L211) | `TestPedirElListadoOrdenadoNoCambiaElBacklog` [story_priority_test.go:234](../internal/domain/story_priority_test.go#L234) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Dos listados seguidos devuelven lo mismo](specs/sprint-2/07-priorizar-backlog.md?plain=1#L218) | `TestDosListadosSeguidosDevuelvenLoMismo` [story_priority_test.go:276](../internal/domain/story_priority_test.go#L276) | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+| [Cambiar una prioridad por la que ya tenia](specs/sprint-2/07-priorizar-backlog.md?plain=1#L223) | `TestCambiarUnaPrioridadPorLaQueYaTenia` [story_priority_test.go:219](../internal/domain/story_priority_test.go#L219) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Pedir el backlog ordenado de un proyecto que no existe](specs/sprint-2/07-priorizar-backlog.md?plain=1#L229) | `TestPedirElBacklogOrdenadoDeUnProyectoQueNoExiste` [story_priority_test.go:68](../internal/domain/story_priority_test.go#L68) | [story_priority.go](../internal/domain/story_priority.go) | `41f2471` → `d194fa8` |
+| [Las historias terminadas van al final](specs/sprint-2/07-priorizar-backlog.md?plain=1#L235) | `TestLasHistoriasTerminadasVanAlFinal` [story_priority_test.go:308](../internal/domain/story_priority_test.go#L308) | [story_priority.go](../internal/domain/story_priority.go) | `cc4e1f9` → `ba0c908` |
+
+**Tests que no citan un escenario de la Fase 1 (1).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden` [story_priority_test.go:294](../internal/domain/story_priority_test.go#L294) ⚠️ no dice que no tiene escenario | RN-3 y la decision de la Fase 2 "El desempate por identificador se hace explicito" | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
 
 ## #8 Crear un sprint con su Sprint Goal
 
