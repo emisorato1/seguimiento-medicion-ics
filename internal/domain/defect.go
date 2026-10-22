@@ -136,6 +136,11 @@ type DefectData struct {
 // AddDefect registra un defecto en el proyecto con el identificador que sigue al del último
 // registrado, en estado Abierto y sin sprint de resolución (RN-1, RN-3).
 func (p *Project) AddDefect(data DefectData) (*Defect, error) {
+	// primero se busca lo que se nombra (Fase 2): la historia tiene que ser del proyecto, en
+	// cualquier estado (RN-7)
+	if _, err := p.Story(data.StoryID); err != nil {
+		return nil, err
+	}
 	// el título y la descripción se controlan ya sin los espacios de los extremos, así un
 	// texto de solo espacios cuenta como vacío, y se guardan así (RN-4, RN-5)
 	title := strings.TrimSpace(data.Title)
