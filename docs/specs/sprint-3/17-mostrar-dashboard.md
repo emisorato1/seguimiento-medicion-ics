@@ -54,8 +54,10 @@ estado general, el sprint en curso y los gráficos. Abrirla no cambia nada.
    inicio y su fecha de finalización, o «sin fecha de fin» si no la tiene.
 4. **[RN-4]** El sistema debe mostrar en el estado general las métricas del proyecto entero:
    story points planificados y completados, historias planificadas y completadas con el
-   porcentaje de completas, horas estimadas y reales con su desviación, y defectos detectados
-   y resueltos.
+   porcentaje de completas, horas estimadas y reales con su desviación, defectos detectados
+   y resueltos, y la velocidad del equipo, que es el promedio de los sprints cerrados.
+   Mientras no haya ningún sprint cerrado, en lugar de la velocidad debe mostrar «sin sprints
+   cerrados», como el gráfico de velocidad (RN-9).
 5. **[RN-5]** Mientras el proyecto tenga un sprint abierto, el sistema debe mostrar su número,
    su Sprint Goal, sus fechas, sus story points planificados, sus horas reales registradas y
    sus defectos detectados, y no debe mostrar sus puntos completados ni su velocidad, que se
@@ -84,8 +86,10 @@ estado general, el sprint en curso y los gráficos. Abrirla no cambia nada.
     rótulos y sus valores y sin ninguna barra, y eso no es un error.
 15. **[RN-15]** El sistema debe mostrar los porcentajes y las horas con un decimal, coma
     decimal y su unidad (% o h); los story points, las historias y los defectos, sin
-    decimales; y la desviación, con su signo cuando es negativa. Es la misma regla del
-    reporte (#18, RN-14): un número se lee igual en el dashboard y en el reporte.
+    decimales; la desviación, con su signo cuando es negativa; y las fechas del encabezado y
+    del sprint en curso como día/mes/año, por ejemplo 01/10/2026. Es la misma regla del
+    reporte (#18, RN-14) y de las fechas del resto de la web (#77, RN-5): un número o una fecha
+    se lee igual en el dashboard y en el reporte.
 16. **[RN-16]** El sistema debe mostrar el dashboard sin modificar ningún dato del proyecto.
 17. **[RN-17]** Si se pide el dashboard de un proyecto que no existe, el sistema debe informar
     que no se encontró el proyecto y ofrecer volver a la lista de proyectos, como el resto de
@@ -104,7 +108,8 @@ estado general, el sprint en curso y los gráficos. Abrirla no cambia nada.
 ### Casos límite
 
 - **Un único sprint, abierto:** se ve todo; el gráfico de velocidad avisa que todavía no
-  hay sprints cerrados.
+  hay sprints cerrados, y el estado general muestra la velocidad como «sin sprints cerrados»
+  en lugar de un cero.
 - **Métricas en cero**, por ejemplo con un sprint recién abierto: gráficos sin barras, con
   sus rótulos y sus valores.
 - **Más completado que planificado:** la barra que ocupa todo el ancho es la de completados.
@@ -129,6 +134,8 @@ estado general, el sprint en curso y los gráficos. Abrirla no cambia nada.
       y gráficos.
 - [ ] El encabezado muestra el nombre y las fechas, o «sin fecha de fin».
 - [ ] El estado general muestra los mismos números que entregó el cálculo de métricas.
+- [ ] El estado general muestra la velocidad promedio del equipo, o «sin sprints cerrados»
+      si todavía no se cerró ninguno.
 - [ ] Con un sprint abierto se ven su número, su goal, sus fechas, sus story points
       planificados, sus horas reales y sus defectos, y no se ven completados ni velocidad.
 - [ ] Sin sprint abierto, se informa que no hay sprint en curso y el resto se ve igual.
@@ -140,7 +147,8 @@ estado general, el sprint en curso y los gráficos. Abrirla no cambia nada.
       proporcionales.
 - [ ] Un valor cero no tiene barra; uno mayor que cero ocupa al menos el 1 % del ancho; un
       gráfico con todos sus valores en cero se muestra sin barras y sin error.
-- [ ] Porcentajes y horas van con un decimal y coma; la desviación negativa, con su signo.
+- [ ] Porcentajes y horas van con un decimal y coma; la desviación negativa, con su signo;
+      las fechas, como día/mes/año.
 - [ ] Cada gráfico tiene su texto alternativo con sus valores, y se pueden ver como tabla.
 - [ ] Las barras no se distinguen solo por el color y tienen contraste con el fondo.
 - [ ] El dashboard se abre desde la barra de navegación del proyecto.
@@ -170,10 +178,11 @@ Escenario: Encabezado de un proyecto sin fecha de finalizacion
   Y muestra "sin fecha de fin"
 
 Escenario: El estado general muestra las metricas tal como se calcularon
-  Dado un proyecto con sprints cuyas metricas son 40 story points planificados y 30 completados
+  Dado un proyecto con sprints cerrados cuyas metricas son 40 story points planificados y 30 completados
   Y 10 historias planificadas y 7 completadas
   Y 40 horas estimadas y 45 reales
   Y 5 defectos detectados y 3 resueltos
+  Y una velocidad de 12
   Cuando abro el dashboard del proyecto
   Entonces el estado general muestra exactamente esos valores
 
@@ -193,9 +202,9 @@ Esquema del escenario: Porcentajes, horas y enteros se muestran con su formato
     | "story points completados"          | 30        | "30"      |
 
 Escenario: El sprint en curso muestra su meta y lo que lleva registrado
-  Dado un proyecto con el sprint 2 abierto, con el goal "Tener el dashboard" y 13 story points planificados
+  Dado un proyecto con el sprint 2 abierto del 26/10/2026 al 30/10/2026, con el goal "Tener el dashboard" y 13 story points planificados
   Cuando abro el dashboard del proyecto
-  Entonces el sprint en curso muestra el sprint 2, su goal y sus fechas
+  Entonces el sprint en curso muestra el sprint 2, su goal y las fechas 26/10/2026 y 30/10/2026
   Y muestra 13 story points planificados, sus horas reales y sus defectos detectados
   Y no muestra puntos completados ni velocidad
 
@@ -254,6 +263,7 @@ Escenario: Todavia no hay sprints cerrados para el grafico de velocidad
   Cuando abro el dashboard del proyecto
   Entonces el grafico de velocidad informa que todavia no hay sprints cerrados
   Y el sprint 1 no aparece como barra en ese grafico
+  Y el estado general muestra la velocidad como "sin sprints cerrados"
 
 Escenario: Cada grafico tiene su texto alternativo y su tabla
   Dado el grafico de story points con 40 planificados y 30 completados
@@ -315,6 +325,12 @@ Escenario: Usar el dashboard en un celular y sin internet
 9. **El texto alternativo y la tabla (RN-19)** hacen que alguien que no ve el gráfico, o que
    usa un lector de pantalla, tenga los mismos números. La tabla se abre desde el gráfico, para
    no repetir en pantalla lo que cada barra ya dice.
+10. **La velocidad promedio va en el estado general, y sin sprints cerrados dice «sin sprints
+    cerrados» (RN-4).** Lo agregó Juliana el 22/10: la consigna pide la velocidad del equipo y
+    el contrato ya la entrega. La #16 la devuelve en cero cuando no hay sprints cerrados, pero
+    un cero haría parecer que el equipo no hizo nada, así que el dashboard escribe el mismo
+    aviso que el gráfico de velocidad (RN-9). Es lo único que el dashboard escribe distinto de
+    como llega, y no es un cálculo: es cómo se muestra un dato que todavía no existe.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -427,11 +443,11 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
 | 1 | Un proyecto sin sprints arma un dashboard sin estado general, sin sprint en curso y sin gráficos, y sin error | Un proyecto sin sprints avisa que no hay datos | RN-7 | pendiente |
-| 2 | El estado general trae cada métrica del proyecto con su rótulo y su valor, tal como llegó | El estado general muestra las metricas tal como se calcularon | RN-2, RN-4 | pendiente |
+| 2 | El estado general trae cada métrica del proyecto con su rótulo y su valor, tal como llegó, incluida la velocidad promedio | El estado general muestra las metricas tal como se calcularon | RN-2, RN-4 | pendiente |
 | 3 | Porcentajes y horas con un decimal, coma y unidad; enteros sin decimales; la desviación negativa, con su signo | Porcentajes, horas y enteros se muestran con su formato | RN-15 | pendiente |
 | 4 | El sprint en curso trae el sprint abierto y lo que lleva registrado, sin completados ni velocidad; sin sprint abierto, no trae nada | El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-5, RN-6 | pendiente |
 | 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | pendiente |
-| 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8, RN-9 | pendiente |
+| 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso, y la velocidad del estado general escrita como «sin sprints cerrados» | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-4, RN-8, RN-9 | pendiente |
 | 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | pendiente |
 | 8 | El dashboard se pide al proyecto y usa las métricas que calcula la #16 | — (conexión con la #16) | RN-2 | pendiente |
 
@@ -440,9 +456,9 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
 | 9 | El largo de una barra: 100 % para el valor más grande, la parte proporcional con un decimal, sin barra para un cero y al menos 1 % para un valor mayor que cero | El largo de cada barra es proporcional al valor mas grande del grafico | RN-11, RN-12, RN-13 | pendiente |
-| 10 | La página del dashboard, con el encabezado del proyecto y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-17, RN-18 | pendiente |
+| 10 | La página del dashboard, con el encabezado del proyecto, su fecha de inicio como día/mes/año y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-15, RN-17, RN-18 | pendiente |
 | 11 | Sin sprints, la página muestra el encabezado y el aviso, sin gráficos | Un proyecto sin sprints avisa que no hay datos | RN-7 | pendiente |
-| 12 | El estado general y el sprint en curso muestran lo que entrega el dominio; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6 | pendiente |
+| 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | pendiente |
 | 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, y su rótulo y su valor escritos; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | pendiente |
 | 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | pendiente |
 | 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | pendiente |
@@ -467,9 +483,9 @@ desconectada.
 
 ### Cobertura
 
-Las veintiuna reglas quedan cubiertas: RN-1 (14), RN-2 (2, 8, 17), RN-3 (10), RN-4 (2, 12),
+Las veintiuna reglas quedan cubiertas: RN-1 (14), RN-2 (2, 8, 17), RN-3 (10), RN-4 (2, 6, 12),
 RN-5 (4, 12), RN-6 (4, 12), RN-7 (1, 11), RN-8 (5, 6, 13, 14), RN-9 (6, 13), RN-10 (5, 13),
-RN-11 (9, 13), RN-12 (9, 13), RN-13 (9, 13), RN-14 (13), RN-15 (3), RN-16 (7), RN-17 (10),
+RN-11 (9, 13), RN-12 (9, 13), RN-13 (9, 13), RN-14 (13), RN-15 (3, 10, 12), RN-16 (7), RN-17 (10),
 RN-18 (10), RN-19 (15), RN-20 (15 y la verificación manual), RN-21 (16 y la verificación
 manual).
 
@@ -478,6 +494,7 @@ manual).
 | Cuatro partes en orden: encabezado, estado general, sprint en curso y gráficos | 14 |
 | El encabezado con el nombre y las fechas, o «sin fecha de fin» | 10 |
 | El estado general con los mismos números del cálculo de métricas | 2, 8, 12, 17 |
+| La velocidad promedio, o «sin sprints cerrados» | 2, 6, 12 |
 | Con un sprint abierto, sus datos y lo registrado, sin completados ni velocidad | 4, 12 |
 | Sin sprint abierto, se informa y el resto se muestra igual | 4, 12 |
 | Un proyecto sin sprints muestra el aviso, sin gráficos y sin error | 1, 11 |
@@ -486,7 +503,7 @@ manual).
 | Cada barra con su rótulo y su valor | 5, 13 |
 | La barra más grande ocupa todo el ancho y las demás son proporcionales | 9, 13 |
 | Un cero sin barra, un valor chico al menos 1 %, todo en cero sin error | 9, 13 |
-| Porcentajes y horas con un decimal y coma; desviación negativa con signo | 3 |
+| Porcentajes y horas con un decimal y coma; desviación negativa con signo; fechas como día/mes/año | 3, 10, 12 |
 | Texto alternativo con sus valores y tabla | 15 |
 | Las barras no se distinguen solo por el color y tienen contraste | 15 y la verificación manual |
 | El dashboard se abre desde la barra | 10 |
