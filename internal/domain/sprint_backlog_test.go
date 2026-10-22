@@ -257,3 +257,22 @@ func TestQuitarUnaHistoriaYVolverAAsignarla(t *testing.T) {
 		t.Fatalf("se esperaba el Sprint Backlog [%d %d], salio %v", second.ID(), first.ID(), got)
 	}
 }
+
+// Escenario: Rechazar quitar una historia que no esta en el sprint
+// Cubre: RN-8, RN-14
+func TestRechazarQuitarUnaHistoriaQueNoEstaEnElSprint(t *testing.T) {
+	project, sprint := unSprintAbierto(t)
+	story := unaHistoriaEstimada(t, project, 5)
+
+	err := project.UnassignStory(story.ID())
+
+	if !errors.Is(err, ErrStoryNotInSprint) {
+		t.Fatalf("se esperaba ErrStoryNotInSprint, salio: %v", err)
+	}
+	if story.State() != StoryPending {
+		t.Errorf("se esperaba la historia todavia Pendiente, salio %v", story.State())
+	}
+	if stories := sprint.Stories(); len(stories) != 0 {
+		t.Errorf("se esperaba el Sprint Backlog vacio, salio %v", stories)
+	}
+}
