@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"slices"
+	"strconv"
 	"testing"
 )
 
@@ -265,6 +266,25 @@ func TestRechazarRevelarMientrasFaltenVotos(t *testing.T) {
 			}
 			if _, err := round.Votes(); !errors.Is(err, ErrVotesHidden) {
 				t.Fatalf("se esperaba que los votos siguieran ocultos, salio: %v", err)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Rechazar un voto fuera de la escala
+// Cubre: RN-9, RN-18
+func TestRechazarUnVotoFueraDeLaEscala(t *testing.T) {
+	for _, points := range []int{4, 7, 0, -3} {
+		t.Run(strconv.Itoa(points), func(t *testing.T) {
+			_, round := openRound(t)
+
+			err := round.Vote("Juliana Bustos", points)
+
+			if !errors.Is(err, ErrStoryPointsInvalid) {
+				t.Fatalf("se esperaba ErrStoryPointsInvalid al votar %d, salio: %v", points, err)
+			}
+			if !slices.Contains(round.Pending(), "Juliana Bustos") {
+				t.Fatalf("se esperaba que Juliana Bustos siguiera entre los que faltan, salio: %v", round.Pending())
 			}
 		})
 	}
