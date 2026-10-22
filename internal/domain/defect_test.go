@@ -125,3 +125,62 @@ func TestGuardarElTituloYLaDescripcionSinLosEspaciosDeLosExtremos(t *testing.T) 
 		t.Fatalf("se esperaban el titulo y la descripcion sin espacios de mas, salio %q y %q", defect.Title(), defect.Description())
 	}
 }
+
+// Esquema del escenario: Registrar un defecto con cada severidad
+// Cubre: RN-6
+func TestRegistrarUnDefectoConCadaSeveridad(t *testing.T) {
+	cases := []struct {
+		written string
+		want    string
+	}{
+		{"Crítica", "Crítica"},
+		{"critica", "Crítica"},
+		{"  MAYOR  ", "Mayor"},
+		{"Menor", "Menor"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.written, func(t *testing.T) {
+			project := unProyectoConDefectos(t, 1)
+			severity, err := ParseSeverity(tc.written)
+			if err != nil {
+				t.Fatalf("se esperaba aceptar la severidad %q, salio: %v", tc.written, err)
+			}
+			data := unDefecto()
+			data.Severity = severity
+
+			defect, err := project.AddDefect(data)
+
+			if err != nil {
+				t.Fatalf("se esperaba registrar el defecto sin error, salio: %v", err)
+			}
+			if defect.Severity().String() != tc.want {
+				t.Fatalf("se esperaba la severidad %q, salio %q", tc.want, defect.Severity().String())
+			}
+		})
+	}
+}
+
+// Escenario: Rechazar una severidad que no existe
+// Cubre: RN-6, RN-18
+//
+// Además del texto del escenario, cubre lo que llega a AddDefect sin pasar por la conversión:
+// una severidad sin indicar (el valor cero) y una armada a mano fuera de rango (RN-6).
+func TestRechazarUnaSeveridadQueNoExiste(t *testing.T) {
+	if _, err := ParseSeverity("Urgente"); !errors.Is(err, ErrDefectSeverityInvalid) {
+		t.Fatalf("se esperaba ErrDefectSeverityInvalid para %q, salio: %v", "Urgente", err)
+	}
+	for _, severity := range []Severity{0, Severity(9)} {
+		project := unProyectoConDefectos(t, 1)
+		data := unDefecto()
+		data.Severity = severity
+
+		_, err := project.AddDefect(data)
+
+		if !errors.Is(err, ErrDefectSeverityInvalid) {
+			t.Fatalf("se esperaba ErrDefectSeverityInvalid con la severidad %d, salio: %v", severity, err)
+		}
+		if len(project.Defects()) != 0 {
+			t.Fatalf("se esperaba que el proyecto siguiera sin defectos, tiene %d", len(project.Defects()))
+		}
+	}
+}
