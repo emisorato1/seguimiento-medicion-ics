@@ -8,17 +8,21 @@ import (
 // Escenario: Pedir algo que no existe
 // Cubre: RN-20
 //
-// Por ahora solo tiene la fila de la historia, adelantada de la tarea 16 para que la carga
-// de horas estimadas quede cubierta entera. Las filas del sprint y del proyecto se agregan
-// en la tarea 16, cuando existan las métricas.
+// La fila de la historia se adelantó a la tarea 16 para que la carga de horas estimadas
+// quedara cubierta entera. Las métricas del proyecto 99 se piden como las pediría la web: el
+// proyecto se busca en el registro, y si no existe no se llega a pedir nada.
 func TestPedirAlgoQueNoExiste(t *testing.T) {
 	cases := []struct {
 		name string
 		run  func(project *Project) error
 		want error
 	}{
+		{"pedir las metricas del sprint 99",
+			func(project *Project) error { _, err := project.SprintMetrics(99); return err }, ErrSprintNotFound},
 		{"cargar horas estimadas en la historia 99",
 			func(project *Project) error { return project.EstimateHours(99, 4) }, ErrStoryNotFound},
+		{"pedir las metricas del proyecto 99",
+			func(project *Project) error { _, err := NewProjectRegistry().Get(99); return err }, ErrProjectNotFound},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
