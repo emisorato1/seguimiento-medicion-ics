@@ -330,3 +330,21 @@ func TestRechazarUnEstadoQueNoExiste(t *testing.T) {
 		t.Fatalf("se esperaba que el defecto siguiera Abierto, quedo en %d", defect.State())
 	}
 }
+
+// Esquema del escenario: Resolver un defecto
+// Cubre: RN-11
+func TestResolverUnDefecto(t *testing.T) {
+	for _, from := range []DefectState{DefectOpen, DefectInProgress} {
+		project, defect := unDefectoRegistrado(t, 2)
+		defect.state = from
+
+		err := project.ResolveDefect(defect.ID(), 2)
+
+		if err != nil {
+			t.Fatalf("se esperaba resolver el defecto desde el estado %d sin error, salio: %v", from, err)
+		}
+		if defect.State() != DefectResolved || defect.ResolvedIn() != 2 {
+			t.Fatalf("se esperaba el defecto Resuelto en el sprint 2, salio en %d con el sprint %d", defect.State(), defect.ResolvedIn())
+		}
+	}
+}
