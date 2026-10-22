@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 22:41. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 23:07. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -28,7 +28,7 @@ _No hay historias en este estado._
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 
 ## Especificacion SDD
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-6640568 2026-10-21 Merge pull request #100 from emisorato1/historia-14-registrar-esfuerzo
-8bcc1ab 2026-10-21 docs: la decision (a) de Emiliano sobre el integrante quitado en la spec de la historia 14
-abe3750 2026-10-21 fix: cargar el esfuerzo de un integrante quitado (historia 14)
-dffc162 2026-10-21 test: el esfuerzo de un integrante quitado se carga igual (historia 14)
-20a99ea 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-14-codigo
-75fc687 2026-10-21 Merge pull request #130 from emisorato1/chore-estado-historia-13
-29b9e95 2026-10-21 chore: regenerar ESTADO.md con la historia 13 lista para implementar
-ea0bda6 2026-10-21 Merge pull request #115 from emisorato1/historia-13-votar-en-secreto
+00a406e 2026-10-21 Merge pull request #133 from emisorato1/regla-adelantar-historias
+99b69a6 2026-10-21 docs: quien termina lo suyo adelanta su próxima historia
+673e982 2026-10-21 Merge pull request #132 from emisorato1/horas-historias-con-ia
+72b6965 2026-10-21 docs: en la planning del sprint 2, asistencia de IA en lugar del nombre de la herramienta
+10377a1 2026-10-21 docs: en la review del sprint 2, quien implemento la 5, la 14 y la 15 con la formula de asistencia de IA
+d307c95 2026-10-21 docs: horas reales de la 5, la 14 y la 77 en la review y el informe del sprint 2
+8403787 2026-10-21 fix: una historia terminada sin story points no entra en la desviacion de metricas.sh
+28bdfee 2026-10-21 Merge pull request #131 from emisorato1/historia-14-terminada
 ```
