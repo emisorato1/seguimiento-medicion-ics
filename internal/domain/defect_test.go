@@ -184,3 +184,13 @@ func TestRechazarUnaSeveridadQueNoExiste(t *testing.T) {
 		}
 	}
 }
+
+// Sin escenario: tarea 4 de la #15, una severidad que no existe no se muestra como Crítica
+// Cubre: RN-6
+func TestUnaSeveridadQueNoExisteSeMuestraSinSeveridad(t *testing.T) {
+	for _, severity := range []Severity{0, Severity(9)} {
+		if severity.String() != "sin severidad" {
+			t.Fatalf("se esperaba %q para la severidad %d, salio %q", "sin severidad", severity, severity.String())
+		}
+	}
+}
