@@ -186,3 +186,27 @@ func TestRechazarQuitarUnaHistoriaTerminada(t *testing.T) {
 		t.Errorf("se esperaba la historia todavia Terminada, salio %v", story.State())
 	}
 }
+
+// Esquema del escenario: Operar sin un sprint abierto
+// Cubre: RN-2
+func TestOperarSinUnSprintAbierto(t *testing.T) {
+	cases := []struct {
+		name string
+		run  func(project *Project, id int) error
+	}{
+		{"asignar", func(project *Project, id int) error { return project.AssignStory(id) }},
+		{"quitar", func(project *Project, id int) error { return project.UnassignStory(id) }},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyecto(t)
+			story := unaHistoriaEstimada(t, project, 5)
+
+			err := tc.run(project, story.ID())
+
+			if !errors.Is(err, ErrNoOpenSprint) {
+				t.Fatalf("se esperaba ErrNoOpenSprint, salio: %v", err)
+			}
+		})
+	}
+}
