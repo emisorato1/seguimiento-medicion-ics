@@ -230,3 +230,39 @@ func TestEncontrarAlIntegranteAunqueElNombreVengaEscritoDistinto(t *testing.T) {
 		t.Fatalf("se esperaba el registro a nombre de %q, salio %q", "Juliana Bustos", effort.MemberName())
 	}
 }
+
+// Escenario: Rechazar el registro sobre una historia que no es del proyecto
+// Cubre: RN-9, RN-18
+func TestRechazarElRegistroSobreUnaHistoriaQueNoEsDelProyecto(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	data := unEsfuerzo()
+	data.StoryID = 99
+
+	_, err := project.LogEffort(data, hoy)
+
+	if !errors.Is(err, ErrStoryNotFound) {
+		t.Fatalf("se esperaba ErrStoryNotFound para la historia 99, salio: %v", err)
+	}
+	if len(project.Efforts()) != 0 {
+		t.Fatalf("se esperaba que el proyecto siguiera sin registros, tiene %d", len(project.Efforts()))
+	}
+}
+
+// Escenario: Registrar horas sobre una historia terminada
+// Cubre: RN-10
+func TestRegistrarHorasSobreUnaHistoriaTerminada(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	story, _ := project.Story(1)
+	// Terminar una historia es de la #10, que todavia no esta en dev: el test la prepara
+	// desde dentro del paquete, como la #12 en su tarea 9.
+	story.state = StoryDone
+
+	_, err := project.LogEffort(unEsfuerzo(), hoy)
+
+	if err != nil {
+		t.Fatalf("se esperaba registrar horas sobre una historia Terminada sin error, salio: %v", err)
+	}
+	if len(project.Efforts()) != 1 {
+		t.Fatalf("se esperaba que quedara guardado el registro, hay %d", len(project.Efforts()))
+	}
+}
