@@ -68,8 +68,13 @@ func (r *VotingRound) hasVoted(name string) bool {
 }
 
 // Vote registra el voto de un participante y lo pasa de los que faltan a los que votaron
-// (RN-8). La respuesta solo dice si se aceptó: nunca lleva el valor (RN-12).
+// (RN-8). La respuesta solo dice si se aceptó: nunca lleva el valor (RN-12). El voto tiene
+// que ser un valor de la escala de la #12, con su mismo error (RN-9). Si se rechaza, la
+// ronda queda como estaba (RN-18).
 func (r *VotingRound) Vote(member string, points int) error {
+	if !inScale(points) {
+		return ErrStoryPointsInvalid
+	}
 	r.votes = append(r.votes, Vote{MemberName: member, Points: points})
 	return nil
 }
