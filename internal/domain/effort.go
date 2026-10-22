@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"math"
+	"time"
+)
 
 // Effort es un registro de esfuerzo: las horas que un integrante trabajó de verdad en una
 // historia, un día, y qué hizo (historia #14). Vive dentro del proyecto, como los
@@ -52,6 +55,11 @@ type EffortData struct {
 // LogEffort registra esfuerzo en el proyecto (RN-1). El día de hoy lo recibe de quien llama:
 // el dominio no lee el reloj (AGENTS.md).
 func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
+	// "mayor que cero" escrito asi rechaza tambien NaN, que no es mayor ni menor que nada;
+	// el infinito si es mayor que cero, y se rechaza aparte porque no son horas (RN-3)
+	if !(data.Hours > 0) || math.IsInf(data.Hours, 0) {
+		return nil, ErrEffortHoursInvalid
+	}
 	effort := &Effort{
 		storyID:    data.StoryID,
 		memberName: data.MemberName,
