@@ -44,12 +44,20 @@ type metricsScope struct {
 	// plannedPoints tiene los story points de cada historia planificada, uno por historia:
 	// la cantidad de historias es su largo. Una historia sin estimar aporta 0 (RN-16).
 	plannedPoints []int
+	// estimatedHours y actualHours son las horas estimadas y las registradas de las historias
+	// cuyas horas cuentan en este ámbito.
+	estimatedHours float64
+	actualHours    float64
 }
 
 // metrics convierte el ámbito en las once métricas. Es el único cálculo, compartido por el
 // sprint y el proyecto.
 func (sc metricsScope) metrics() Metrics {
-	m := Metrics{StoriesPlanned: len(sc.plannedPoints)}
+	m := Metrics{
+		StoriesPlanned: len(sc.plannedPoints),
+		EstimatedHours: sc.estimatedHours,
+		ActualHours:    sc.actualHours,
+	}
 	for _, points := range sc.plannedPoints {
 		m.PlannedPoints += points
 	}
@@ -65,13 +73,35 @@ func (p *Project) SprintMetrics(number int) (Metrics, error) {
 		return Metrics{}, err
 	}
 
-	// los planificados son todas las historias comprometidas en el sprint (RN-3)
+	// los planificados son todas las historias comprometidas en el sprint (RN-3); sus horas
+	// cuentan solo si este es el último sprint en que estuvo comprometida, así una historia
+	// que pasó por dos sprints no las suma dos veces (RN-7)
 	points := p.pointsByStory()
+	estimated := p.estimatedHoursByStory()
+	actual := p.actualHoursByStory()
 	var scope metricsScope
 	for _, id := range sprint.stories {
 		scope.plannedPoints = append(scope.plannedPoints, points[id])
+		if p.lastSprintOf(id) == sprint.number {
+			scope.estimatedHours += estimated[id]
+			scope.actualHours += actual[id]
+		}
 	}
 	return scope.metrics(), nil
+}
+
+// lastSprintOf devuelve el número del último sprint, el de número más alto, en que la
+// historia estuvo comprometida (RN-7). Se averigua al calcular y no se guarda (Fase 2).
+func (p *Project) lastSprintOf(id int) int {
+	last := 0
+	for _, sprint := range p.sprints {
+		for _, storyID := range sprint.stories {
+			if storyID == id && sprint.number > last {
+				last = sprint.number
+			}
+		}
+	}
+	return last
 }
 
 // pointsByStory devuelve los story points actuales de cada historia del backlog, por su
@@ -82,6 +112,26 @@ func (p *Project) pointsByStory() map[int]int {
 		points[story.id] = story.storyPoints
 	}
 	return points
+}
+
+// estimatedHoursByStory devuelve las horas estimadas actuales de cada historia del backlog,
+// por su número.
+func (p *Project) estimatedHoursByStory() map[int]float64 {
+	hours := map[int]float64{}
+	for _, story := range p.backlog {
+		hours[story.id] = story.estimatedHours
+	}
+	return hours
+}
+
+// actualHoursByStory devuelve las horas registradas sobre cada historia, de cualquier
+// integrante y día (RN-7), por su número.
+func (p *Project) actualHoursByStory() map[int]float64 {
+	hours := map[int]float64{}
+	for _, effort := range p.efforts {
+		hours[effort.storyID] += effort.hours
+	}
+	return hours
 }
 
 // ProjectMetrics calcula las métricas del proyecto entero, con los datos de este momento y
