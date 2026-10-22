@@ -53,7 +53,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #105) |
 | [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | ⚙️ En implementación |
 | [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | 🟢 Puerta 3 aprobada — lista para implementar |
-| [Registrar el esfuerzo real](sprint-2/14-registrar-esfuerzo-real.md) | #14 | 3 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
+| [Registrar el esfuerzo real](sprint-2/14-registrar-esfuerzo-real.md) | #14 | 3 | Juliana Bustos | 🔍 Implementada — en review |
 | [Gestionar defectos](sprint-2/15-gestionar-defectos.md) | #15 | 5 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
 | [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` el 19/10, entre el Sprint 1 y el 2 |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #70) |

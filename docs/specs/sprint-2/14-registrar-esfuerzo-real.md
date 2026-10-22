@@ -3,7 +3,7 @@
 - **Historia:** #14
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
   y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres
@@ -415,20 +415,20 @@ comprueba además que el proyecto quedó sin registros, que es la otra mitad de 
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Registrar un esfuerzo válido: queda guardado con sus cinco datos y aparece en los registros del proyecto | Registrar horas trabajadas en una historia | RN-1, RN-15 | pendiente |
-| 2 | Las horas admiten fracciones | Registrar media hora | RN-2 | pendiente |
-| 3 | Rechazar cero horas, horas negativas, un valor infinito y un valor que no es un número, sin dejar rastro | Rechazar horas que no son mayores que cero | RN-3, RN-18 | pendiente |
-| 4 | El día de mañana se rechaza; el de hoy y uno anterior al inicio del proyecto se aceptan | Rechazar horas de un dia que todavia no paso / Registrar horas de un dia anterior al inicio del proyecto | RN-4, RN-17 | pendiente |
-| 5 | Rechazar un registro sin fecha | Rechazar un registro sin fecha | RN-5 | pendiente |
-| 6 | La actividad es obligatoria, un texto de solo espacios cuenta como vacío y se guarda sin los espacios de los extremos | Rechazar un registro sin actividad realizada / Guardar la actividad sin los espacios de los extremos | RN-6 | pendiente |
-| 7 | Quien registra tiene que ser integrante del proyecto; el nombre se busca ignorando mayúsculas y espacios, y se guarda como está cargado | Rechazar el registro de alguien que no es integrante del proyecto / Encontrar al integrante aunque el nombre venga escrito distinto | RN-7, RN-8 | pendiente |
-| 8 | La historia tiene que pertenecer al proyecto, y una Terminada acepta registros | Rechazar el registro sobre una historia que no es del proyecto / Registrar horas sobre una historia terminada | RN-9, RN-10 | pendiente |
-| 9 | El mismo integrante puede cargar dos veces la misma historia el mismo día, y las dos cargas quedan, suman y salen en el orden en que se cargaron | Dos cargas del mismo integrante, la misma historia y el mismo dia | RN-11, RN-12, RN-15 | pendiente |
-| 10 | Las horas de una historia son la suma de sus registros, sin registros son cero, y una historia que no es del proyecto informa que no se encontró | Consultar el total de horas de una historia / Sin registros, el total es cero (fila "la historia 1") / Consultar las horas de algo que no existe (fila "la historia 99") | RN-13 | pendiente |
-| 11 | Las horas de un integrante son la suma de sus registros, sin registros son cero, y alguien que no es integrante informa que no se encontró, buscándolo como al registrar | Consultar el total de horas de un integrante / Sin registros, el total es cero (fila "Juliana Bustos") / Consultar las horas de algo que no existe (fila "Pedro Gomez") | RN-14 | pendiente |
-| 12 | Los registros de un proyecto no suman en otro | Las horas cargadas en un proyecto no suman en otro | RN-16 | pendiente |
-| 13 | Registrar o consultar en un proyecto que no existe informa que no se encontró el proyecto | Registrar esfuerzo en un proyecto que no existe | RN-19 | pendiente |
-| 14 | Los registros de esfuerzo entran en la conversión del registro: dos registros, uno con media hora, se reconstruyen iguales y en el mismo orden; uno inválido en el archivo (horas en cero, actividad vacía, integrante o historia que no existen) rechaza la carga, y un día posterior a hoy no, porque la carga no valida el día futuro | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
+| 1 | Registrar un esfuerzo válido: queda guardado con sus cinco datos y aparece en los registros del proyecto | Registrar horas trabajadas en una historia | RN-1, RN-15 | hecha |
+| 2 | Las horas admiten fracciones | Registrar media hora | RN-2 | hecha |
+| 3 | Rechazar cero horas, horas negativas, un valor infinito y un valor que no es un número, sin dejar rastro | Rechazar horas que no son mayores que cero | RN-3, RN-18 | hecha |
+| 4 | El día de mañana se rechaza; el de hoy y uno anterior al inicio del proyecto se aceptan | Rechazar horas de un dia que todavia no paso / Registrar horas de un dia anterior al inicio del proyecto | RN-4, RN-17 | hecha |
+| 5 | Rechazar un registro sin fecha | Rechazar un registro sin fecha | RN-5 | hecha |
+| 6 | La actividad es obligatoria, un texto de solo espacios cuenta como vacío y se guarda sin los espacios de los extremos | Rechazar un registro sin actividad realizada / Guardar la actividad sin los espacios de los extremos | RN-6 | hecha |
+| 7 | Quien registra tiene que ser integrante del proyecto; el nombre se busca ignorando mayúsculas y espacios, y se guarda como está cargado | Rechazar el registro de alguien que no es integrante del proyecto / Encontrar al integrante aunque el nombre venga escrito distinto | RN-7, RN-8 | hecha |
+| 8 | La historia tiene que pertenecer al proyecto, y una Terminada acepta registros | Rechazar el registro sobre una historia que no es del proyecto / Registrar horas sobre una historia terminada | RN-9, RN-10 | hecha |
+| 9 | El mismo integrante puede cargar dos veces la misma historia el mismo día, y las dos cargas quedan, suman y salen en el orden en que se cargaron | Dos cargas del mismo integrante, la misma historia y el mismo dia | RN-11, RN-12, RN-15 | hecha |
+| 10 | Las horas de una historia son la suma de sus registros, sin registros son cero, y una historia que no es del proyecto informa que no se encontró | Consultar el total de horas de una historia / Sin registros, el total es cero (fila "la historia 1") / Consultar las horas de algo que no existe (fila "la historia 99") | RN-13 | hecha |
+| 11 | Las horas de un integrante son la suma de sus registros, sin registros son cero, y alguien que no es integrante informa que no se encontró, buscándolo como al registrar | Consultar el total de horas de un integrante / Sin registros, el total es cero (fila "Juliana Bustos") / Consultar las horas de algo que no existe (fila "Pedro Gomez") | RN-14 | hecha |
+| 12 | Los registros de un proyecto no suman en otro | Las horas cargadas en un proyecto no suman en otro | RN-16 | hecha |
+| 13 | Registrar o consultar en un proyecto que no existe informa que no se encontró el proyecto | Registrar esfuerzo en un proyecto que no existe | RN-19 | hecha |
+| 14 | Los registros de esfuerzo entran en la conversión del registro: dos registros, uno con media hora, se reconstruyen iguales y en el mismo orden; uno inválido en el archivo (horas en cero, actividad vacía, integrante o historia que no existen) rechaza la carga, y un día posterior a hoy no, porque la carga no valida el día futuro | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | hecha |
 
 **Tarea sin escenario propio.** La RN-12 (el día se guarda sin la hora) no tiene escenario
 suyo en la Fase 1: se verifica dentro de la tarea 9, cargando los dos registros del mismo día
@@ -509,7 +509,55 @@ está bloqueado esperándote):
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+**La implementó la sesión de Claude Code de Emiliano Sorato, con autorización de Juliana
+Bustos, la responsable de la historia (21/10)**, para destrabar la #16, que necesita el
+esfuerzo para sus métricas. La spec, las puertas y las decisiones son de Juliana y no se
+cambiaron.
+
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro; cada commit
+de test lleva en su mensaje la salida del test fallando, después de la línea `RED:`.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `d1b98f4` | `a82f98d` |
+| 2 | `254b808` | — (sin RED, ver Desvíos) |
+| 3 | `d7cebf8` | `10e8616` |
+| 4 | `930478a` | `8796e5d` |
+| 5 | `a2a393b` | `d18d77a` |
+| 6 | `0ca1644` | `8b7645a` |
+| 7 | `cece8ee` | `7ce0599` |
+| 8 | `2fb75e7` | `c696b48` |
+| 9 | `c645a93` | `4ea1780` |
+| 10 | `2de2ee2` | `6d5d3cb` |
+| 11 | `4504c33` | `79e2d56` |
+| 12 | `92c6091` | — (sin RED, ver Desvíos) |
+| 13 | `a74dec4` | — (sin RED, ver Desvíos) |
+| 14 | `c819ca6` | `4836ba4` |
+
+Los RED de las tareas 1, 3, 4, 5, 6, 9, 11 y 14 fueron por compilación (la operación, el error
+o el dato todavía no existían); los de las tareas 7, 8 y 10, por comportamiento. En la 4, la 8,
+la 10 y la 11, algunos de los escenarios que comparten la tarea pasaron solos (aceptar un día
+anterior al inicio del proyecto, registrar sobre una historia Terminada, los totales en cero):
+el RED lo dio el otro escenario de la misma tarea.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Los de proceso:
+
+- **Las tareas 2, 12 y 13 no tuvieron RED.** Las horas son decimales desde la tarea 1, así que
+  media hora ya se guardaba (2); los registros viven dentro de cada proyecto desde la tarea 1,
+  así que nunca se mezclaron (12); y para registrar en un proyecto hay que buscarlo en el
+  registro de la #3, que ya informa que no se encontró (13). Sus tests se escribieron igual,
+  porque cada escenario necesita el suyo, y sus commits lo dicen.
+- **Un solo pull request y no dos.** La sección "Entrega en dos pull requests" partía la
+  historia para que la #16 tuviera el `Effort` cuanto antes. Al final la spec entró sola en el
+  PR #100 y el código se sumó a ese mismo PR, a pedido de la responsable ("después de las
+  puertas se suman acá los tests y el código"): queda una historia por PR, que cierra la #14.
+- **Las validaciones del alta y de la carga son una sola función**, que la carga usa sin
+  controlar el día futuro, como decidió la Fase 2. Así las dos no pueden quedar distintas.
+- **La carga rechaza también una fecha que no tiene la forma aaaa-mm-dd**, además de los
+  casos que lista la tarea 14: es el mismo control que ya hacía la #77 con las fechas del
+  proyecto.
 
 ## Trazabilidad
 
@@ -519,5 +567,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/effort_test.go` |
-| Código Go | `internal/domain/effort.go` y sus errores en `internal/domain/errors.go` |
+| Tests | `internal/domain/effort_test.go` y los casos del esfuerzo en `internal/domain/registry_json_test.go` |
+| Código Go | `internal/domain/effort.go`, la lista de registros en `internal/domain/project.go`, la conversión en `internal/domain/registry_json.go` y sus errores en `internal/domain/errors.go` |
