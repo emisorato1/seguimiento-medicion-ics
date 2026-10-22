@@ -297,6 +297,7 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "fecha de fin de sprint que no es fecha", change: func(d *registryJSON) { d.Projects[0].Sprints[0].End = "mañana" }, want: ErrSavedDataInvalid},
 		// El Sprint Backlog de la #9 (tarea 14): solo historias que existen en el proyecto.
 		{name: "sprint con una historia que no existe", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Stories = []int{99} }, want: ErrStoryNotFound},
+		{name: "historia repetida en un Sprint Backlog", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Stories = []int{2, 2} }, want: ErrStoryAlreadyInSprint},
 		{name: "horas estimadas negativas", change: func(d *registryJSON) { d.Projects[0].Stories[0].EstimatedHours = -2 }, want: ErrEstimatedHoursInvalid},
 		{name: "esfuerzo con horas en cero", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Hours = 0 }, want: ErrEffortHoursInvalid},
 		{name: "esfuerzo sin actividad", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Activity = "  " }, want: ErrEffortActivityRequired},
