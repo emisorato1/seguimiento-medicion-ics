@@ -343,6 +343,7 @@ func TestSinRegistrosElTotalEsCero(t *testing.T) {
 		ask  func(project *Project) (float64, error)
 	}{
 		{"la historia 1", func(project *Project) (float64, error) { return project.StoryHours(1) }},
+		{"Juliana Bustos", func(project *Project) (float64, error) { return project.MemberHours("Juliana Bustos") }},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -369,6 +370,7 @@ func TestConsultarLasHorasDeAlgoQueNoExiste(t *testing.T) {
 		want error
 	}{
 		{"la historia 99", func(project *Project) (float64, error) { return project.StoryHours(99) }, ErrStoryNotFound},
+		{"Pedro Gomez", func(project *Project) (float64, error) { return project.MemberHours("Pedro Gomez") }, ErrMemberNotFound},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -380,5 +382,25 @@ func TestConsultarLasHorasDeAlgoQueNoExiste(t *testing.T) {
 				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
 			}
 		})
+	}
+}
+
+// Escenario: Consultar el total de horas de un integrante
+// Cubre: RN-14
+//
+// Se consulta con otras mayúsculas y espacios de más: el nombre se busca igual que al
+// registrar (RN-14).
+func TestConsultarElTotalDeHorasDeUnIntegrante(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	if _, err := project.AddStory(unosDatos()); err != nil {
+		t.Fatalf("no se pudo crear la segunda historia de prueba: %v", err)
+	}
+	cargar(t, project, 1, "Juliana Bustos", 2)
+	cargar(t, project, 2, "Juliana Bustos", 3)
+
+	hours, err := project.MemberHours("  JULIANA bustos ")
+
+	if err != nil || !mismasHorasReales(hours, 5) {
+		t.Fatalf("se esperaban 5 horas, salio %v (error: %v)", hours, err)
 	}
 }
