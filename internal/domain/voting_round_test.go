@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -441,5 +442,34 @@ func TestUnaRondaReveladaYaNoAceptaCambios(t *testing.T) {
 				t.Fatalf("se esperaba que los votos revelados siguieran siendo %v, salio: %v", before, after)
 			}
 		})
+	}
+}
+
+// Escenario: Mostrar una ronda sin revelar no deja ver los votos
+// Cubre: RN-17
+//
+// Se votan 13 y 21, que no aparecen en ningún otro dato de la ronda. Se prueban todas las
+// formas de imprimir de Go, también la de depuración (%#v), que no usa el texto de la ronda
+// y mostraría los datos ocultos. Y la ronda como valor, no solo como puntero.
+func TestMostrarUnaRondaSinRevelarNoDejaVerLosVotos(t *testing.T) {
+	_, round := openRound(t)
+	if err := round.Vote("Agustin Salinas", 13); err != nil {
+		t.Fatalf("no se pudo votar: %v", err)
+	}
+	if err := round.Vote("Juliana Bustos", 21); err != nil {
+		t.Fatalf("no se pudo votar: %v", err)
+	}
+
+	for _, format := range []string{"%v", "%+v", "%#v", "%s"} {
+		for _, printed := range []string{fmt.Sprintf(format, round), fmt.Sprintf(format, *round)} {
+			if strings.Contains(printed, "13") || strings.Contains(printed, "21") {
+				t.Fatalf("se esperaba que %s no mostrara ningun valor votado, salio: %q", format, printed)
+			}
+			for _, want := range []string{"ronda 1", "historia 1", "2 de 3"} {
+				if !strings.Contains(printed, want) {
+					t.Fatalf("se esperaba que %s mostrara %q, salio: %q", format, want, printed)
+				}
+			}
+		}
 	}
 }
