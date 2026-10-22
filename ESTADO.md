@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 23:07. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-22 12:36. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,20 +14,21 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
+| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 
 ## Lista para implementar
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 
@@ -70,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-00a406e 2026-10-21 Merge pull request #133 from emisorato1/regla-adelantar-historias
-99b69a6 2026-10-21 docs: quien termina lo suyo adelanta su próxima historia
-673e982 2026-10-21 Merge pull request #132 from emisorato1/horas-historias-con-ia
-72b6965 2026-10-21 docs: en la planning del sprint 2, asistencia de IA en lugar del nombre de la herramienta
-10377a1 2026-10-21 docs: en la review del sprint 2, quien implemento la 5, la 14 y la 15 con la formula de asistencia de IA
-d307c95 2026-10-21 docs: horas reales de la 5, la 14 y la 77 en la review y el informe del sprint 2
-8403787 2026-10-21 fix: una historia terminada sin story points no entra en la desviacion de metricas.sh
-28bdfee 2026-10-21 Merge pull request #131 from emisorato1/historia-14-terminada
+764596c 2026-10-22 docs: registrar la implementacion de las historias 8 y 9
+c885140 2026-10-22 test: marcar como sin escenario el test de la tarea 4 de la historia 7
+5cbe0c8 2026-10-22 feat: guardar y volver a cargar el Sprint Backlog (tarea 14, historia 9)
+2f5f674 2026-10-22 test: el Sprint Backlog se conserva al guardar y volver a cargar (tarea 14, historia 9)
+f22036f 2026-10-22 test: historia sin completar, un Sprint Backlog por proyecto y algo que no existe (tareas 11, 12 y 13, historia 9)
+7443a68 2026-10-22 feat: rechazar quitar una historia que no esta en el sprint (tarea 10, historia 9)
+c739a3a 2026-10-22 test: rechazar quitar una historia que no esta en el sprint (tarea 10, historia 9)
+f8681fa 2026-10-22 test: quitar una historia y volver a asignarla (tarea 9, historia 9)
 ```
