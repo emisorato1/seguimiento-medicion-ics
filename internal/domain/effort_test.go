@@ -266,3 +266,44 @@ func TestRegistrarHorasSobreUnaHistoriaTerminada(t *testing.T) {
 		t.Fatalf("se esperaba que quedara guardado el registro, hay %d", len(project.Efforts()))
 	}
 }
+
+// Escenario: Dos cargas del mismo integrante, la misma historia y el mismo dia
+// Cubre: RN-11, RN-12, RN-15
+//
+// Las dos cargas llegan con horas del día distintas (9 y 18): las dos tienen que quedar con
+// el mismo día y sin la hora (RN-12, que no tiene escenario propio).
+func TestDosCargasDelMismoIntegranteLaMismaHistoriaYElMismoDia(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	first := unEsfuerzo()
+	first.Hours = 2
+	first.Activity = "Escribir los tests"
+	first.Day = hoy.Add(9 * time.Hour)
+	second := unEsfuerzo()
+	second.Hours = 1
+	second.Activity = "Corregir la revision"
+	second.Day = hoy.Add(18 * time.Hour)
+
+	if _, err := project.LogEffort(first, hoy); err != nil {
+		t.Fatalf("se esperaba registrar la primera carga sin error, salio: %v", err)
+	}
+	if _, err := project.LogEffort(second, hoy); err != nil {
+		t.Fatalf("se esperaba registrar la segunda carga sin error, salio: %v", err)
+	}
+
+	efforts := project.Efforts()
+	if len(efforts) != 2 {
+		t.Fatalf("se esperaban 2 registros de esfuerzo, hay %d", len(efforts))
+	}
+	if efforts[0].Activity() != "Escribir los tests" || efforts[1].Activity() != "Corregir la revision" {
+		t.Fatalf("se esperaban los registros en el orden de carga, salieron %q y %q", efforts[0].Activity(), efforts[1].Activity())
+	}
+	for _, effort := range efforts {
+		if !effort.Day().Equal(hoy) {
+			t.Fatalf("se esperaba el dia %v sin la hora, salio %v", hoy, effort.Day())
+		}
+	}
+	hours, err := project.StoryHours(1)
+	if err != nil || !mismasHorasReales(hours, 3) {
+		t.Fatalf("se esperaba que la historia 1 tuviera 3 horas, salio %v (error: %v)", hours, err)
+	}
+}
