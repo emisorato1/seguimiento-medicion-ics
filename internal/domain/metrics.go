@@ -58,6 +58,11 @@ func (sc metricsScope) metrics() Metrics {
 		EstimatedHours: sc.estimatedHours,
 		ActualHours:    sc.actualHours,
 	}
+	// sin horas estimadas no hay contra qué comparar: la desviación queda en cero, y no es un
+	// error (RN-14)
+	if sc.estimatedHours > 0 {
+		m.HoursDeviation = (sc.actualHours - sc.estimatedHours) / sc.estimatedHours * 100
+	}
 	for _, points := range sc.plannedPoints {
 		m.PlannedPoints += points
 	}
