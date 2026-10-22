@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// Sin escenario: tarea 2 de la #4, el integrante como dato
 // Tarea 2 de la Fase 3 de la historia #4. No tiene escenario BDD propio: los escenarios
 // empiezan en la tarea 4, cuando ya se puede agregar un integrante a un proyecto.
 // Cubre: RN-1
@@ -148,6 +149,7 @@ func TestRechazarUnRolInvalido(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 7 de la #4, el rol sin inicializar
 // Tarea 7: el valor cero del rol no es ninguno de los dos roles validos, asi un rol sin
 // inicializar no se confunde con Agile Enabler. Se muestra como "sin rol".
 // Cubre: RN-4
@@ -203,6 +205,7 @@ func TestRechazarUnIntegranteDuplicado(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 8 de la #4, la comparación que decide la Fase 2
 // Tarea 8: no son duplicados los nombres que difieren en una tilde o en los espacios del
 // medio. La Fase 2 decide ignorar solo las mayusculas: "Agustin" y "Agustín" pueden ser dos
 // personas distintas.
@@ -291,6 +294,7 @@ func TestRechazarUnSegundoAgileEnabler(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 10 de la #4, el límite es de un solo Agile Enabler
 // Tarea 10: el limite es de un solo Agile Enabler, no de un solo integrante: con un Agile
 // Enabler cargado se pueden seguir agregando Product Builders.
 // Cubre: RN-7
@@ -315,6 +319,7 @@ func TestConUnAgileEnablerSePuedenAgregarProductBuilders(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 11 de la #4, el orden de los controles
 // Tarea 11: con varios errores a la vez se informa el primero, en el orden del Enfoque de
 // la Fase 2: nombre, rol, duplicado y Agile Enabler. No tiene escenario propio: fija el
 // orden para que los escenarios que esperan un mensaje puntual no sean indeterminados.
@@ -389,6 +394,7 @@ func TestQuitarElUltimoIntegrante(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 12 de la #4, quitar uno del medio
 // Tarea 12: quitar un integrante del medio deja a los demas en la lista, en el mismo orden.
 // Cubre: RN-9
 func TestQuitarUnIntegranteDejaALosDemas(t *testing.T) {
@@ -509,6 +515,7 @@ func TestListarLosIntegrantesDeUnProyecto(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 14 de la #4, la lista que se entrega es una copia
 // Tarea 14: la lista que se recibe es una copia. Reemplazar, agregar o quitar elementos de
 // ella no cambia los integrantes del proyecto, que solo cambian con operaciones que validan
 // (decision de encapsulamiento de AGENTS.md).
@@ -591,6 +598,7 @@ func TestOperarSobreIntegrantesDeUnProyectoQueNoExiste(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 1 de la #4, convertir el texto en un rol
 // Tarea 1: el dominio convierte el texto que escribe el usuario en un rol, ignorando
 // mayusculas y los espacios de los extremos.
 // Cubre: RN-4
@@ -620,6 +628,7 @@ func TestConvertirElTextoEnUnRol(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 1 de la #4; el escenario "Rechazar un rol invalido" es TestRechazarUnRolInvalido
 // Tarea 1: cualquier texto que no sea uno de los dos roles se rechaza con el error de la
 // RN-4. Solo se ignoran los espacios de los extremos, no los del medio.
 // Cubre: RN-4
@@ -637,6 +646,7 @@ func TestRechazarUnTextoQueNoEsUnRol(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 1 de la #4; completa lo que informa el escenario "Rechazar un rol invalido"
 // Tarea 1: el mensaje del error nombra los dos roles validos, asi la consola solo tiene que
 // mostrarlo (RN-4: "informar cuales son los roles validos").
 // Cubre: RN-4
@@ -653,6 +663,7 @@ func TestElErrorDeRolNombraLosValidos(t *testing.T) {
 	}
 }
 
+// Sin escenario: tarea 1 de la #4, el nombre con que se muestra cada rol
 // Tarea 1: los dos roles se muestran con el nombre que usa la Fase 1, y es el mismo texto
 // que ParseRole acepta: lo que se muestra se puede volver a escribir.
 // Cubre: RN-4

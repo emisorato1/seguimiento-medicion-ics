@@ -3,10 +3,11 @@
 - **Historia:** #9
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a las puertas.
+  falta y lo presenta a las puertas. Revisado por el responsable el 20/10: decidió los cinco
+  puntos de la puerta y sumó la persistencia del Sprint Backlog.
 - **Depende de:** #8 (tiene que existir el sprint abierto), #6 (las historias y su estado) y
   #12 (solo entran historias estimadas); por la #6 y la #8, también de la #3
 - **La necesitan:** #10 (cierra el sprint sobre las historias que esta historia le asignó),
@@ -61,8 +62,8 @@ momento se puede consultar el Sprint Backlog del sprint abierto.
 4. **[RN-4]** Cuando se asigna una historia, el sistema debe dejarla en estado **En curso**.
 5. **[RN-5]** Si la historia ya está en el Sprint Backlog, el sistema debe rechazar la
    asignación e informar que la historia ya está asignada al sprint.
-6. **[RN-6]** Si la historia está Terminada, el sistema debe rechazar la asignación e
-   informar que una historia terminada no se modifica.
+6. **[RN-6]** Si la historia está Terminada, el sistema debe rechazar tanto la asignación
+   como la desasignación e informar que una historia terminada no se modifica.
 7. **[RN-7]** Mientras el sprint esté abierto, el sistema debe permitir quitarle una
    historia: sale del Sprint Backlog y vuelve al Product Backlog en estado **Pendiente**.
 8. **[RN-8]** Si se intenta quitar una historia que no está en el Sprint Backlog, el sistema
@@ -99,7 +100,11 @@ asignar, y En curso a Pendiente al quitar. La que falta, a Terminada, es de la #
 - Historia a la que se le quitó la estimación (#12, RN-7): queda sin estimar y no se puede
   asignar.
 - Historia que estuvo en un sprint cerrado sin completarse: se puede volver a asignar.
-- Historia Terminada en un sprint cerrado: no se puede volver a asignar nunca.
+- Historia Terminada en un sprint cerrado: no se puede volver a asignar nunca, ni quitar de
+  ningún sprint.
+- Historia asignada a la que después se le quita la estimación: la #12 lo permite, porque
+  solo bloquea las Terminadas. La historia sigue en el Sprint Backlog, sin estimar, y para las
+  métricas de la #16 cuenta 0 story points. No es un error.
 - Quitar una historia y volver a asignarla en el mismo sprint: es válido, y queda última en
   el orden del Sprint Backlog.
 - Dos proyectos, cada uno con su sprint abierto: asignar en uno no cambia el otro.
@@ -113,7 +118,7 @@ asignar, y En curso a Pendiente al quitar. La que falta, a Terminada, es de la #
 | El proyecto no tiene sprint abierto | rechaza e informa que no hay un sprint abierto |
 | La historia no está estimada | rechaza e informa que solo se asignan historias estimadas |
 | La historia ya está en el Sprint Backlog | rechaza e informa que ya está asignada |
-| La historia está Terminada | rechaza e informa que una historia terminada no se modifica |
+| La historia está Terminada, al asignar o al quitar | rechaza e informa que una historia terminada no se modifica |
 | Se quiere quitar una historia que no está en el sprint | rechaza e informa que no está en el sprint |
 | La historia no existe en el proyecto | informa que no se encontró la historia |
 | El proyecto no existe | informa que no se encontró el proyecto y no cambia nada |
@@ -124,7 +129,7 @@ asignar, y En curso a Pendiente al quitar. La que falta, a Terminada, es de la #
 - [ ] Al asignarla, la historia queda En curso.
 - [ ] No se puede asignar una historia sin estimar.
 - [ ] No se puede asignar dos veces la misma historia al mismo sprint.
-- [ ] No se puede asignar una historia Terminada.
+- [ ] No se puede asignar ni quitar una historia Terminada.
 - [ ] No se puede asignar ni quitar nada si el proyecto no tiene un sprint abierto.
 - [ ] Se puede quitar una historia del sprint mientras el sprint esté abierto, y vuelve al
       Product Backlog en estado Pendiente.
@@ -179,6 +184,14 @@ Escenario: Rechazar una historia terminada
   Y se informa que una historia terminada no se modifica
   Y el Sprint Backlog sigue vacio
 
+Escenario: Rechazar quitar una historia terminada
+  Dado un proyecto cuyo sprint 1 se cerro con la historia 1 completada
+  Y el sprint 2 abierto
+  Cuando intento quitar la historia 1 del sprint
+  Entonces la operacion se rechaza
+  Y se informa que una historia terminada no se modifica
+  Y la historia 1 sigue en estado "Terminada"
+
 Esquema del escenario: Operar sin un sprint abierto
   Dado un proyecto sin ningun sprint abierto y una historia estimada
   Cuando intento <operacion> la historia
@@ -223,17 +236,21 @@ Escenario: Cada proyecto arma su propio Sprint Backlog
 
 Esquema del escenario: Operar sobre algo que no existe
   Dado un proyecto con el sprint 1 abierto
-  Cuando intento asignar la historia <caso>
+  Cuando intento <operacion> la historia <caso>
   Entonces se informa que no se encontro <que>
   Y el Sprint Backlog sigue vacio
 
   Ejemplos:
-    | caso                                | que           |
-    | "99, que no existe en el proyecto"  | "la historia" |
-    | "1 en el proyecto 99, que no existe"| "el proyecto" |
+    | operacion | caso                                 | que           |
+    | "asignar" | "99, que no existe en el proyecto"   | "la historia" |
+    | "asignar" | "1 en el proyecto 99, que no existe" | "el proyecto" |
+    | "quitar"  | "99, que no existe en el proyecto"   | "la historia" |
+    | "quitar"  | "1 en el proyecto 99, que no existe" | "el proyecto" |
 ```
 
-**Para decidir en la puerta:**
+**Decidido por el responsable antes de la puerta (20/10).** Los cinco puntos que el borrador
+dejaba abiertos quedan como estaban propuestos. Si quien aprueba la puerta no está de acuerdo
+con alguno, es el momento de decirlo:
 
 1. **La asignación es siempre al sprint abierto; no se elige a qué sprint.** La issue pide
    que una historia no esté en dos sprints abiertos a la vez, y con la regla de la #8 —un
@@ -257,7 +274,7 @@ Esquema del escenario: Operar sobre algo que no existe
    comprometido; si no, la #16 no podría decir cuántos puntos se habían planificado.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805) con cambios antes del código, aplicados el 21/10 en 5fbf1df: quitar una Terminada también se rechaza (RN-6), filas de quitar en "Operar sobre algo que no existe", el caso de la historia asignada que queda sin estimar y la dependencia del PR temprano de la #8.
 
 ## Fase 2 — Diseño
 
@@ -296,6 +313,8 @@ rechazada deja todo como estaba (RN-14) sin tener que deshacer nada.
 | `internal/domain/sprint_backlog.go` | se crea | asignar y quitar una historia del sprint abierto, y consultar el Sprint Backlog |
 | `internal/domain/sprint_backlog_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/errors.go` | se modifica | los cuatro errores nuevos de esta historia |
+| `internal/domain/registry_json.go` | se modifica | el Sprint Backlog se guarda y se vuelve a cargar con su sprint |
+| `internal/domain/registry_json_test.go` | se modifica | el caso del Sprint Backlog en el test de ida y vuelta |
 
 ### Decisiones
 
@@ -309,13 +328,15 @@ rechazada deja todo como estaba (RN-14) sin tener que deshacer nada.
 | Quitar es una operación propia | una sola operación que recibe el sprint destino, o vacío para sacarla | son dos reglas distintas con dos errores distintos (RN-5 y RN-8); juntarlas obliga a adivinar cuál se quiso hacer |
 | Se reutiliza el error de historia terminada que ya declaró la #6 | un error propio "no se puede asignar una historia terminada" | es el mismo caso y el mismo mensaje; con dos errores para lo mismo, quien consume tiene que acordarse de mirar los dos |
 | El error de "no hay sprint abierto" lo declara esta historia y lo reusa la #10 | que cada historia declare el suyo | es la misma situación para las dos, y es la primera que lo necesita |
+| El Sprint Backlog se guarda en el archivo de datos con su sprint, y al cargarlo se verifica que cada historia exista en el proyecto | dejar que lo guarde la #8 | la #8 guarda los datos que crea, y ahí la lista nace vacía: quien la llena es esta historia. Sin esto, la web perdería el Sprint Backlog al cerrarse, que es lo que `AGENTS.md` pide evitar con el test de ida y vuelta |
 
 ### Dependencias y restricciones
 
 - **Depende de la #8** (el sprint, su lista de historias y la consulta del sprint abierto),
   de la **#6** (la historia, su estado y el backlog) y de la **#12** (que la historia esté
-  estimada). Como manda el plan del 20/10, **no se espera a que estén en `dev`**: los tests
-  arman el sprint y las historias dentro del paquete, contra el contrato.
+  estimada). La #6 y la #12 ya están en `dev`. **El código se escribe después del PR
+  temprano de la #8** (tareas 1, 2, 3 y 16), que crea el sprint y la consulta del sprint
+  abierto: en Go el test no puede armar un tipo que todavía no existe.
 - **El dato de las historias del sprint lo declara la #8**; esta historia solo lo llena y lo
   vacía. No se cambia su nombre ni su forma.
 - **No se toca el cierre.** El pase a Cerrado, la fecha de cierre y el registro de lo
@@ -324,9 +345,11 @@ rechazada deja todo como estaba (RN-14) sin tener que deshacer nada.
   dependen de eso.
 - **`errors.go` es compartido**: los errores nuevos se agregan al final para achicar el
   conflicto con las otras historias del Sprint 2.
+- **`registry_json.go` también es compartido**: se suma el Sprint Backlog a la conversión del
+  sprint que arma la #8, sin tocar lo de las otras entidades.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805) con cambios antes del código, aplicados el 21/10 en 5fbf1df: quitar una Terminada también se rechaza (RN-6), filas de quitar en "Operar sobre algo que no existe", el caso de la historia asignada que queda sin estimar y la dependencia del PR temprano de la #8.
 
 ## Fase 3 — Tareas
 
@@ -345,7 +368,7 @@ Backlog y el estado de la historia quedaron como estaban (RN-14).
 | 3 | El Sprint Backlog conserva el orden en que se asignaron las historias | El Sprint Backlog respeta el orden en que se asignaron las historias | RN-9, RN-15 | pendiente |
 | 4 | Rechazar una historia sin estimar; el Sprint Backlog y la historia quedan como estaban | Rechazar una historia sin estimar | RN-3, RN-14 | pendiente |
 | 5 | Rechazar una historia ya asignada; el Sprint Backlog no la repite | Rechazar una historia que ya esta en el sprint | RN-5, RN-14 | pendiente |
-| 6 | Rechazar una historia Terminada, con el error que ya existe para ese caso | Rechazar una historia terminada | RN-6, RN-14 | pendiente |
+| 6 | Rechazar asignar o quitar una historia Terminada, con el error que ya existe para ese caso | Rechazar una historia terminada; Rechazar quitar una historia terminada | RN-6, RN-14 | pendiente |
 | 7 | Asignar o quitar sin sprint abierto se rechaza e informa que no hay sprint abierto | Operar sin un sprint abierto | RN-2 | pendiente |
 | 8 | Quitar una historia la saca del Sprint Backlog y la deja Pendiente | Quitar una historia del sprint abierto | RN-7 | pendiente |
 | 9 | Quitar una historia y volver a asignarla la deja última en el orden | Quitar una historia y volver a asignarla | RN-7, RN-9 | pendiente |
@@ -353,6 +376,7 @@ Backlog y el estado de la historia quedaron como estaban (RN-14).
 | 11 | Una historia que quedó sin completar en un sprint cerrado se asigna al sprint siguiente, y el sprint cerrado la sigue teniendo entre las suyas | Una historia que quedo sin completar se puede asignar al sprint siguiente | RN-11, RN-12 | pendiente |
 | 12 | Asignar en un proyecto no cambia el Sprint Backlog de otro | Cada proyecto arma su propio Sprint Backlog | RN-10 | pendiente |
 | 13 | Asignar o quitar una historia o un proyecto que no existen informa que no se encontró | Operar sobre algo que no existe | RN-13, RN-16 | pendiente |
+| 14 | El Sprint Backlog se conserva al guardar y volver a cargar el registro, en el mismo orden, y una historia que no existe en el proyecto se rechaza al cargar | — (caso en el test de ida y vuelta de `registry_json_test.go`) | RN-1, RN-9 | pendiente |
 
 ### Por qué este orden
 
@@ -365,11 +389,14 @@ Backlog y el estado de la historia quedaron como estaban (RN-14).
 - **La 8 abre la segunda operación**, y la 9 y la 10 la completan.
 - **La 11, la 12 y la 13 van al final** porque miran los bordes —el sprint anterior, otro
   proyecto, algo que no existe— y solo tienen sentido con lo de adentro ya andando.
+- **La 14 cierra la historia**: guarda el Sprint Backlog que armaron las anteriores. No sale
+  de un escenario de la Fase 1 sino de la regla de persistencia de `AGENTS.md`, y por eso es
+  un caso del test de ida y vuelta que ya existe.
 
 ### Cobertura
 
-Las dieciséis reglas quedan cubiertas: RN-1 (2), RN-2 (7), RN-3 (4), RN-4 (2), RN-5 (5),
-RN-6 (6), RN-7 (8, 9), RN-8 (10), RN-9 (1, 3, 9), RN-10 (12), RN-11 (11), RN-12 (11),
+Las dieciséis reglas quedan cubiertas: RN-1 (2, 14), RN-2 (7), RN-3 (4), RN-4 (2), RN-5 (5),
+RN-6 (6), RN-7 (8, 9), RN-8 (10), RN-9 (1, 3, 9, 14), RN-10 (12), RN-11 (11), RN-12 (11),
 RN-13 (13), RN-14 (4, 5, 6, 10), RN-15 (3), RN-16 (13).
 
 | Criterio de aceptación | Tareas |
@@ -378,7 +405,7 @@ RN-13 (13), RN-14 (4, 5, 6, 10), RN-15 (3), RN-16 (13).
 | Al asignarla, la historia queda En curso | 2 |
 | No se puede asignar una historia sin estimar | 4 |
 | No se puede asignar dos veces la misma historia | 5 |
-| No se puede asignar una historia Terminada | 6 |
+| No se puede asignar ni quitar una historia Terminada | 6 |
 | No se puede asignar ni quitar sin un sprint abierto | 7 |
 | Se puede quitar una historia mientras el sprint esté abierto, y vuelve a Pendiente | 8, 9 |
 | No se puede quitar una historia que no está en el sprint | 10 |
@@ -387,19 +414,19 @@ RN-13 (13), RN-14 (4, 5, 6, 10), RN-15 (3), RN-16 (13).
 | Una operación rechazada no cambia nada | 4, 5, 6, 10 |
 | Asignar o quitar sobre algo que no existe informa que no se encontró | 13 |
 
-Los trece escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los catorce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
 - **Todas las tareas necesitan la #8 y la #6**: el sprint abierto y la historia con su
-  estado. Mientras no estén en `dev`, los tests las arman dentro del paquete.
+  estado. La #6 ya está en `dev`; el código empieza después del PR temprano de la #8.
 - **Las tareas 6 y 11 necesitan historias Terminadas y un sprint cerrado**, que son de la
   #10. Los tests los preparan desde dentro del paquete, igual que hizo la #12.
 - **La tarea 4 necesita una historia sin estimar**, que es el estado en el que nace toda
   historia (#6, RN-7): no hace falta nada de la #12 para prepararla.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805) con cambios antes del código, aplicados el 21/10 en 5fbf1df: quitar una Terminada también se rechaza (RN-6), filas de quitar en "Operar sobre algo que no existe", el caso de la historia asignada que queda sin estimar y la dependencia del PR temprano de la #8.
 
 ## Fase 4 — Implementación
 

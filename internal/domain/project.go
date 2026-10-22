@@ -103,6 +103,13 @@ type Project struct {
 	// existen sin el, y asi el mismo nombre en otro proyecto nunca cuenta como duplicado
 	// (RN-6). Las operaciones sobre integrantes estan en member.go.
 	members []*Member
+	// sprints y lastSprintNumber son los sprints del proyecto (historia #8). Viven dentro
+	// del proyecto, asi el numero unico por proyecto (RN-1, RN-9) sale solo. El contador
+	// guarda el ultimo numero asignado y nunca retrocede: en cero, el proximo sprint es el 1,
+	// tambien en un proyecto cargado de un archivo que todavia no guardaba sprints. Las
+	// operaciones sobre sprints estan en sprint.go.
+	sprints          []*Sprint
+	lastSprintNumber int
 }
 
 // ID devuelve el identificador del proyecto, que no cambia nunca.
