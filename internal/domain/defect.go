@@ -1,6 +1,9 @@
 package domain
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // Severity es qué tan grave es un defecto (historia #15). Es un tipo propio para que no se
 // pueda guardar una severidad que no existe. El valor cero no es ninguna: significa "sin
@@ -67,6 +70,33 @@ const (
 	// ResolveDefect.
 	DefectResolved
 )
+
+// String devuelve el nombre del estado tal como lo nombra la Fase 1. Es también como se
+// guarda, igual que el estado de las historias.
+func (s DefectState) String() string {
+	switch s {
+	case DefectInProgress:
+		return "En curso"
+	case DefectResolved:
+		return "Resuelto"
+	default:
+		return "Abierto"
+	}
+}
+
+// parseDefectState lee un estado guardado por su nombre. Un nombre que no es un estado no se
+// acepta.
+func parseDefectState(text string) (DefectState, error) {
+	switch text {
+	case "Abierto":
+		return DefectOpen, nil
+	case "En curso":
+		return DefectInProgress, nil
+	case "Resuelto":
+		return DefectResolved, nil
+	}
+	return 0, fmt.Errorf("el estado de defecto %q no existe", text)
+}
 
 // Defect es un defecto encontrado en el producto. Vive dentro del proyecto, como las
 // historias: así su identificador es único dentro del proyecto sin llevar un índice aparte

@@ -43,6 +43,24 @@ type projectJSON struct {
 	// como un proyecto sin sprints y con el contador en cero.
 	LastSprintNumber int          `json:"last_sprint_number,omitempty"`
 	Sprints          []sprintJSON `json:"sprints,omitempty"`
+	// Los defectos son de la #15. Van con omitempty, como los sprints: un archivo de antes,
+	// sin defectos, se lee como un proyecto sin defectos y con el contador en cero.
+	LastDefectID int          `json:"last_defect_id,omitempty"`
+	Defects      []defectJSON `json:"defects,omitempty"`
+}
+
+// defectJSON es un defecto guardado (historia #15). La severidad y el estado van con su
+// nombre, como el estado de las historias; el sprint de resolución es 0 mientras no se
+// resuelva.
+type defectJSON struct {
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Severity    string `json:"severity"`
+	State       string `json:"state"`
+	StoryID     int    `json:"story_id"`
+	DetectedIn  int    `json:"detected_in"`
+	ResolvedIn  int    `json:"resolved_in,omitempty"`
 }
 
 type effortJSON struct {
@@ -132,6 +150,19 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 				End:     s.end.Format(dayLayout),
 				State:   s.state.String(),
 				Stories: s.Stories(),
+			})
+		}
+		project.LastDefectID = p.lastDefectID
+		for _, d := range p.defects {
+			project.Defects = append(project.Defects, defectJSON{
+				ID:          d.id,
+				Title:       d.title,
+				Description: d.description,
+				Severity:    d.severity.String(),
+				State:       d.state.String(),
+				StoryID:     d.storyID,
+				DetectedIn:  d.detectedIn,
+				ResolvedIn:  d.resolvedIn,
 			})
 		}
 		out.Projects = append(out.Projects, project)
@@ -273,7 +304,40 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 		}
 		project.efforts = append(project.efforts, effort)
 	}
+
+	// Los defectos van después de los sprints, porque apuntan a historias y sprints que ya
+	// tienen que estar cargados (historia #15).
+	for _, dj := range pj.Defects {
+		defect, err := defectFromJSON(dj)
+		if err != nil {
+			return nil, fmt.Errorf("defecto %d: %w", dj.ID, err)
+		}
+		project.defects = append(project.defects, defect)
+	}
+	project.lastDefectID = pj.LastDefectID
 	return project, nil
+}
+
+// defectFromJSON reconstruye un defecto con su número, su estado y sus sprints.
+func defectFromJSON(dj defectJSON) (*Defect, error) {
+	severity, err := ParseSeverity(dj.Severity)
+	if err != nil {
+		return nil, err
+	}
+	state, err := parseDefectState(dj.State)
+	if err != nil {
+		return nil, err
+	}
+	return &Defect{
+		id:          dj.ID,
+		title:       dj.Title,
+		description: dj.Description,
+		severity:    severity,
+		state:       state,
+		storyID:     dj.StoryID,
+		detectedIn:  dj.DetectedIn,
+		resolvedIn:  dj.ResolvedIn,
+	}, nil
 }
 
 // sprintsFromJSON reconstruye los sprints de un proyecto (historia #8, tarea 15). No puede
