@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"slices"
 	"testing"
 )
 
@@ -73,5 +74,27 @@ func TestConsultarElEstadoDeUnProyectoQueNoExiste(t *testing.T) {
 	}
 	if project != nil {
 		t.Errorf("no se esperaba ningun proyecto del que pedir el estado, salio %v", project)
+	}
+}
+
+// Escenario: El estado muestra los integrantes con su rol
+// Cubre: RN-3
+func TestElEstadoMuestraLosIntegrantesConSuRol(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+	for _, m := range []MemberStatus{{"Emiliano Sorato", RoleAgileEnabler}, {"Juliana Bustos", RoleProductBuilder}} {
+		if _, err := project.AddMember(m.Name, m.Role); err != nil {
+			t.Fatalf("no se pudo preparar el integrante %q: %v", m.Name, err)
+		}
+	}
+
+	status := project.Status()
+
+	want := []MemberStatus{{"Emiliano Sorato", RoleAgileEnabler}, {"Juliana Bustos", RoleProductBuilder}}
+	if !slices.Equal(status.Members, want) {
+		t.Errorf("se esperaban los integrantes %v, en ese orden, salio %v", want, status.Members)
 	}
 }
