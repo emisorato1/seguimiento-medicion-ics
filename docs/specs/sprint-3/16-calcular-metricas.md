@@ -3,7 +3,7 @@
 - **Historia:** #16
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada y ratificada por Juliana Bustos (20/10) — **en implementación** (tareas 1 a 5, 9, 10 y 16 hechas)
+- **Estado:** Puerta 3 aprobada y ratificada por Juliana Bustos (20/10) — **en implementación** (tareas 1 a 5, 8 a 10, 12, 15 y 16 hechas; la 13 a medias)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #8, #9 y #10 (los sprints, lo comprometido y lo completado), #11 (buscar un
   sprint por su número), #12 (los story points), #14 (las horas reales) y #15 (los defectos).
@@ -446,14 +446,14 @@ solo test con tabla de casos. Los números con decimales se comparan con una tol
 | 5 | Planificados de un sprint: puntos y cantidad de todas sus historias comprometidas | Metricas de un sprint cerrado | RN-3, RN-16 | hecha |
 | 6 | Completados y velocidad de un sprint salen del registro del cierre | Una historia que volvio al backlog cuenta como completada solo donde se completo | RN-4, RN-5 | pendiente |
 | 7 | Los puntos de un sprint cerrado salen de los registrados al cerrarlo, no de los actuales | Los puntos de un sprint cerrado no cambian si se reestima una historia | RN-3 | pendiente |
-| 8 | Un sprint abierto devuelve sus métricas con completados y velocidad en cero | Las metricas de un sprint abierto son parciales | RN-6 | pendiente |
+| 8 | Un sprint abierto devuelve sus métricas con completados y velocidad en cero | Las metricas de un sprint abierto son parciales | RN-6 | hecha |
 | 9 | Horas de un sprint, y las de una historia que pasó por dos sprints cuentan en el último | Las horas de una historia que paso por dos sprints cuentan en el ultimo | RN-7 | hecha |
 | 10 | Desviación con signo, y cero sin horas estimadas | Calcular la desviacion de horas | RN-12, RN-14 | hecha |
 | 11 | Porcentaje de historias completas con decimales, y cero sin historias | Calcular el porcentaje de historias completas | RN-13, RN-14, RN-16 | pendiente |
-| 12 | Defectos detectados y resueltos de cada sprint | Defectos detectados y resueltos de cada sprint | RN-8 | pendiente |
-| 13 | Métricas del proyecto: todo el backlog, todo el esfuerzo y todos los defectos | Metricas del proyecto entero | RN-9, RN-11 | pendiente |
+| 12 | Defectos detectados y resueltos de cada sprint | Defectos detectados y resueltos de cada sprint | RN-8 | hecha |
+| 13 | Métricas del proyecto: todo el backlog, todo el esfuerzo y todos los defectos | Metricas del proyecto entero | RN-9, RN-11 | a medias (los completados esperan la #10) |
 | 14 | Velocidad del proyecto: promedio redondeado de los sprints cerrados, y cero sin ninguno | Velocidad del proyecto | RN-10 | pendiente |
-| 15 | Pedir las métricas no cambia ningún dato y refleja lo que se cargó después | Las metricas reflejan los datos cargados despues | RN-2 | pendiente |
+| 15 | Pedir las métricas no cambia ningún dato y refleja lo que se cargó después | Las metricas reflejan los datos cargados despues | RN-2 | hecha |
 | 16 | Sprint, historia o proyecto inexistentes informan que no se encontraron | Pedir algo que no existe | RN-20 | hecha |
 
 **El escenario "Metricas de un sprint cerrado" se completa en varias tareas.** La 5 escribe su
@@ -531,6 +531,10 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 5 | `11f3554` | `fff2a46` |
 | 9 | `cc515ff` | `b48e2be` |
 | 10 | `7bab460` | `96ed50e` |
+| 8 | `1909bb4` | — (sin RED, ver abajo) |
+| 12 | `b6806d0` | `81328ca` |
+| 13 (sin los completados) | `a03372b` | `d8b461e` |
+| 15 | `771ffff` | — (sin RED, ver abajo) |
 
 Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
 existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
@@ -545,6 +549,18 @@ sprints (9), y las filas sin horas estimadas (10). Quedan como protección: si e
 sumara las horas en cada sprint o dividiera por cero, fallarían. El RED lo dieron las otras
 filas de la misma tarea y el escenario del sprint cerrado, que suma sus horas y su
 desviación.
+
+**Segundo PR (`Refs #16`), 22/10**, apenas los defectos de la #15 llegaron a `dev` (PR #129):
+- **La 12** tuvo RED por comportamiento: los defectos salían en cero. El escenario del sprint
+  cerrado suma sus dos defectos detectados y uno resuelto.
+- **La 13 quedó a medias.** Calcula los planificados, las horas, la desviación y los defectos
+  del proyecto, con RED por comportamiento. Los completados, el porcentaje y la velocidad
+  salen del registro del cierre de la #10, y los suman las tareas 6, 11 y 14.
+- **La 8 y la 15 pasaron sin RED**, y sus commits lo dicen.
+  - La 8: los completados y la velocidad de un sprint abierto todavía valen cero porque no se
+    calculan. El test queda para cuidar que sigan en cero cuando la tarea 6 los calcule.
+  - La 15: las métricas se calculan en el momento desde la tarea 4, y el cálculo solo lee.
+    El test compara el registro entero en JSON antes y después de pedirlas.
 
 ### Hallazgo de la revisión
 

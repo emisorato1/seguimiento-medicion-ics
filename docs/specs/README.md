@@ -66,7 +66,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 🟡 En implementación (tareas 1 a 5, 9, 10 y 16 hechas) |
+| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 🟡 En implementación (tareas 1 a 5, 8 a 10, 12, 15 y 16 hechas; la 13 a medias) |
 | [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Lista para implementar — puertas aprobadas en el PR #115 |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
