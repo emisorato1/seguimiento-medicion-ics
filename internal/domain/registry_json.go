@@ -38,6 +38,31 @@ type projectJSON struct {
 	NextStoryID int          `json:"next_story_id"`
 	Members     []memberJSON `json:"members"`
 	Stories     []storyJSON  `json:"stories"`
+	Efforts     []effortJSON `json:"efforts"`
+	// Los sprints son de la #8. Van con omitempty: un archivo de antes, sin sprints, se lee
+	// como un proyecto sin sprints y con el contador en cero.
+	LastSprintNumber int          `json:"last_sprint_number,omitempty"`
+	Sprints          []sprintJSON `json:"sprints,omitempty"`
+}
+
+type effortJSON struct {
+	StoryID    int     `json:"story_id"`
+	MemberName string  `json:"member_name"`
+	Activity   string  `json:"activity"`
+	Hours      float64 `json:"hours"`
+	Day        string  `json:"day"`
+}
+
+// sprintJSON es un sprint guardado (historia #8). El estado va con su nombre, como el de las
+// historias. El Sprint Backlog lo suma la #9, y los datos del cierre los va a sumar la #10.
+type sprintJSON struct {
+	Number int    `json:"number"`
+	Goal   string `json:"goal"`
+	Start  string `json:"start"`
+	End    string `json:"end"`
+	State  string `json:"state"`
+	// El Sprint Backlog es de la #9: los identificadores de las historias, en orden.
+	Stories []int `json:"stories,omitempty"`
 }
 
 type memberJSON struct {
@@ -52,6 +77,7 @@ type storyJSON struct {
 	Priority           string   `json:"priority"`
 	State              string   `json:"state"`
 	StoryPoints        int      `json:"story_points"`
+	EstimatedHours     float64  `json:"estimated_hours,omitempty"`
 	AcceptanceCriteria []string `json:"acceptance_criteria"`
 }
 
@@ -68,6 +94,7 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 			NextStoryID: p.nextStoryID,
 			Members:     []memberJSON{},
 			Stories:     []storyJSON{},
+			Efforts:     []effortJSON{},
 		}
 		if p.HasEnd() {
 			project.End = p.end.Format(dayLayout)
@@ -83,7 +110,28 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 				Priority:           s.priority.String(),
 				State:              s.state.String(),
 				StoryPoints:        s.storyPoints,
+				EstimatedHours:     s.estimatedHours,
 				AcceptanceCriteria: s.acceptanceCriteria,
+			})
+		}
+		for _, e := range p.efforts {
+			project.Efforts = append(project.Efforts, effortJSON{
+				StoryID:    e.storyID,
+				MemberName: e.memberName,
+				Activity:   e.activity,
+				Hours:      e.hours,
+				Day:        e.day.Format(dayLayout),
+			})
+		}
+		project.LastSprintNumber = p.lastSprintNumber
+		for _, s := range p.sprints {
+			project.Sprints = append(project.Sprints, sprintJSON{
+				Number:  s.number,
+				Goal:    s.goal,
+				Start:   s.start.Format(dayLayout),
+				End:     s.end.Format(dayLayout),
+				State:   s.state.String(),
+				Stories: s.Stories(),
 			})
 		}
 		out.Projects = append(out.Projects, project)
@@ -197,7 +245,102 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 		project.backlog = append(project.backlog, story)
 	}
 	project.nextStoryID = pj.NextStoryID
+
+	sprints, err := sprintsFromJSON(project, pj.Sprints, pj.LastSprintNumber)
+	if err != nil {
+		return nil, fmt.Errorf("sprints: %w", err)
+	}
+	project.sprints = sprints
+	project.lastSprintNumber = pj.LastSprintNumber
+
+	// El esfuerzo va al final, porque apunta a integrantes e historias que ya tienen que estar
+	// cargados. Pasa por las mismas reglas que al registrarlo, menos la del día futuro y la de
+	// seguir siendo integrante (Fase 2 de la #14).
+	for i, ej := range pj.Efforts {
+		day, err := parseDay(ej.Day)
+		if err != nil {
+			return nil, fmt.Errorf("esfuerzo %d: %w", i+1, err)
+		}
+		effort, err := project.newEffort(EffortData{
+			StoryID:    ej.StoryID,
+			MemberName: ej.MemberName,
+			Activity:   ej.Activity,
+			Hours:      ej.Hours,
+			Day:        day,
+		}, time.Time{}, true)
+		if err != nil {
+			return nil, fmt.Errorf("esfuerzo %d: %w", i+1, err)
+		}
+		project.efforts = append(project.efforts, effort)
+	}
 	return project, nil
+}
+
+// sprintsFromJSON reconstruye los sprints de un proyecto (historia #8, tarea 15). No puede
+// usar AddSprint, que los crearia abiertos y con numeros nuevos: cada uno se valida con lo
+// mismo que usa AddSprint (goal y fechas), y despues se controla lo que solo un archivo puede
+// traer mal: numeros repetidos o que el contador no alcanza, y mas de un sprint abierto.
+func sprintsFromJSON(project *Project, in []sprintJSON, lastNumber int) ([]*Sprint, error) {
+	numbers := make([]int, 0, len(in))
+	for _, sj := range in {
+		numbers = append(numbers, sj.Number)
+	}
+	// el contador guarda el ultimo numero asignado; checkNumbers recibe el proximo
+	if err := checkNumbers(numbers, lastNumber+1); err != nil {
+		return nil, err
+	}
+	sprints := make([]*Sprint, 0, len(in))
+	var open *Sprint
+	for _, sj := range in {
+		sprint, err := sprintFromJSON(project, sj)
+		if err != nil {
+			return nil, fmt.Errorf("sprint %d: %w", sj.Number, err)
+		}
+		if sprint.state == SprintOpen {
+			if open != nil {
+				return nil, fmt.Errorf("%w: el sprint %d y el sprint %d", ErrSprintAlreadyOpen, open.number, sprint.number)
+			}
+			open = sprint
+		}
+		sprints = append(sprints, sprint)
+	}
+	return sprints, nil
+}
+
+// sprintFromJSON reconstruye un sprint con su numero y su estado.
+func sprintFromJSON(project *Project, sj sprintJSON) (*Sprint, error) {
+	start, err := parseDay(sj.Start)
+	if err != nil {
+		return nil, err
+	}
+	end, err := parseDay(sj.End)
+	if err != nil {
+		return nil, err
+	}
+	data, err := prepareSprint(SprintData{Goal: sj.Goal, Start: start, End: end})
+	if err != nil {
+		return nil, err
+	}
+	state, err := parseSprintState(sj.State)
+	if err != nil {
+		return nil, err
+	}
+	// El Sprint Backlog (historia #9, tarea 14) solo puede tener historias que existen en el
+	// proyecto, que ya esta cargado cuando se leen los sprints, y cada una una sola vez, como
+	// cuando se asigna (RN-5).
+	stories := make([]int, 0, len(sj.Stories))
+	seen := map[int]bool{}
+	for _, id := range sj.Stories {
+		if _, err := project.Story(id); err != nil {
+			return nil, err
+		}
+		if seen[id] {
+			return nil, fmt.Errorf("%w: la historia %d", ErrStoryAlreadyInSprint, id)
+		}
+		seen[id] = true
+		stories = append(stories, id)
+	}
+	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories}, nil
 }
 
 // storyFromJSON reconstruye una historia con su numero, su estado y su estimacion.
@@ -223,6 +366,11 @@ func storyFromJSON(sj storyJSON) (*Story, error) {
 	if sj.StoryPoints != 0 && !inScale(sj.StoryPoints) {
 		return nil, ErrStoryPointsInvalid
 	}
+	// cero es "sin horas estimadas" (historia #16, RN-17); un valor cargado tiene que ser mayor
+	// que cero (RN-18). NaN no puede llegar: JSON no tiene como escribirlo
+	if sj.EstimatedHours < 0 {
+		return nil, ErrEstimatedHoursInvalid
+	}
 	return &Story{
 		id:                 sj.ID,
 		title:              data.Title,
@@ -230,6 +378,7 @@ func storyFromJSON(sj storyJSON) (*Story, error) {
 		priority:           data.Priority,
 		state:              state,
 		storyPoints:        sj.StoryPoints,
+		estimatedHours:     sj.EstimatedHours,
 		acceptanceCriteria: data.AcceptanceCriteria,
 	}, nil
 }

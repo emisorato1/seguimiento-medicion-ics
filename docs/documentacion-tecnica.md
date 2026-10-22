@@ -7,7 +7,7 @@ de usuario.
 
 - **Responsable:** Agustín Salinas
 - **Estado:** en construcción. Las secciones marcadas *(en construcción)* se completan a medida
-  que las historias entran a `dev`. Última actualización: 20/10/2026.
+  que las historias entran a `dev`. Última actualización: 22/10/2026, con los sprints (#8 y #9).
 
 Las reglas de trabajo del equipo están en [CLAUDE.md](../CLAUDE.md) y las convenciones
 técnicas detalladas en [AGENTS.md](../AGENTS.md). Este documento no las repite: las explica y
@@ -85,17 +85,26 @@ es el único que les asigna número.
 ```
 ProjectRegistry ─── Project ─┬── Member      (integrantes, #4)
                              ├── Story       (Product Backlog, #6; estimación, #12)
-                             └── Sprint      (#8 a #11)            (en construcción)
+                             ├── Sprint      (sprints, #8; Sprint Backlog, #9)
+                             └── Effort      (esfuerzo real, #14)
 ```
 
 | Entidad | Historia | Datos principales | Archivo |
 |---|---|---|---|
 | `ProjectRegistry` | #3 | los proyectos y el contador de números | `project_registry.go` |
-| `Project` | #3 | nombre, descripción, fecha de inicio y de fin | `project.go` |
+| `Project` | #3, #5 | nombre, descripción, fecha de inicio y de fin; su estado (#5) | `project.go`, `project_status.go` |
 | `Member` | #4 | nombre y rol (Agile Enabler o Product Builder) | `member.go` |
-| `Story` | #6, #12 | título, descripción, prioridad, estado, story points, criterios de aceptación | `story.go`, `story_estimation.go` |
-| `Sprint` | #8 a #11 | número, Sprint Goal, fechas, estado, historias asignadas | *(en construcción)* |
-| `Effort`, `Defect`, `Metrics`, `Report`, `VotingRound` | #13 a #19 | — | *(en construcción)* |
+| `Story` | #6, #7, #12, #16 | título, descripción, prioridad, estado, story points, horas estimadas, criterios de aceptación; el backlog ordenado por prioridad (#7) | `story.go`, `story_priority.go`, `story_estimation.go`, `story_hours.go` |
+| `Sprint` | #8, #9 | número, Sprint Goal, fechas, estado y Sprint Backlog (las historias asignadas, en orden). El cierre (#10) y la consulta de los cerrados (#11) están *(en construcción)* | `sprint.go`, `sprint_backlog.go` |
+| `Effort` | #14 | historia, integrante, actividad, horas y día | `effort.go` |
+| `Metrics` | #16 | las once métricas de un sprint o del proyecto, calculadas cada vez que se piden | `metrics.go` *(en construcción)* |
+| `Defect`, `Report`, `VotingRound` | #13, #15, #18, #19, #73 | — | *(en construcción)* |
+
+**Un solo sprint abierto por proyecto.** El sprint nace abierto y se cierra con la #10: no
+hay un estado "planificado". El Sprint Backlog guarda solo los números de las historias, y
+el detalle de cada una se pide al Product Backlog, así hay una sola fuente de verdad. La
+lista **no se vacía al cerrar**: es el registro de lo que se comprometió, y sobre eso miden
+las métricas.
 
 **Identificadores.** Los asigna el dominio, empezando en 1. Los proyectos son únicos en todo
 el sistema; las historias y los sprints, únicos dentro de su proyecto: la primera historia de
@@ -145,7 +154,7 @@ ErrProjectNameRequired = errors.New("el nombre del proyecto es obligatorio")
 | **Se devuelven, nunca `panic`** | un error de validación es parte normal del uso, no una falla del programa |
 | **Se comparan con `errors.Is`**, nunca por el texto | el mensaje se puede corregir (pasó con las tildes, defecto #60) sin romper ningún test ni ninguna interfaz |
 | **El nombre va en inglés y el mensaje en español** | el mensaje lo lee el usuario: la consola y la web lo muestran tal cual |
-| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más. Por ejemplo, cuando el archivo de datos no se puede abrir o escribir, el error dice cuál es el archivo (`internal/store/file.go`); y el rechazo por sprint abierto va a decir cuál es *(en construcción, #8)* |
+| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más. Por ejemplo, cuando el archivo de datos no se puede abrir o escribir, el error dice cuál es el archivo (`internal/store/file.go`); y crear un sprint habiendo otro abierto responde *"ya hay un sprint abierto en el proyecto: el sprint 1"* (`AddSprint` en `sprint.go`) |
 | **Cada error tiene un comentario con la historia y la regla que lo originan** | se puede rastrear de dónde sale sin buscar |
 | **Lo que no es un error no se informa como error** | un backlog vacío o un proyecto sin sprint abierto son situaciones normales y devuelven una lista vacía o un "no hay", no un error |
 
@@ -166,6 +175,10 @@ entero después de cada operación aceptada (historia #77).
 
 - **Al cargar, cada entidad pasa por las mismas validaciones que al crearla**: un archivo
   dañado o editado a mano no puede meter datos inválidos.
+- **Y además se controla lo que solo un archivo puede traer mal**, porque usando el sistema
+  nunca pasaría. Por ejemplo, en los sprints: números repetidos o que el contador no alcanza,
+  más de un sprint abierto, y en el Sprint Backlog una historia que no existe o que aparece
+  dos veces.
 - **Toda historia que agrega una entidad o un dato lo suma a la conversión**, con su caso en
   el test de ida y vuelta (`registry_json_test.go`). Si no, el dato se perdería al cerrar sin
   que ningún test lo note.

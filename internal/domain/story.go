@@ -89,6 +89,7 @@ type Story struct {
 	priority           Priority
 	state              StoryState
 	storyPoints        int
+	estimatedHours     float64
 	acceptanceCriteria []string
 }
 
@@ -126,6 +127,12 @@ func (s *Story) StoryPoints() int {
 // IsEstimated indica si la historia tiene una estimacion cargada (historia #12).
 func (s *Story) IsEstimated() bool {
 	return s.storyPoints > 0
+}
+
+// EstimatedHours devuelve las horas estimadas de la historia. El valor 0 significa que
+// nunca se le cargaron, y no es un error (historia #16, RN-17).
+func (s *Story) EstimatedHours() float64 {
+	return s.estimatedHours
 }
 
 // AcceptanceCriteria devuelve una copia de los criterios de aceptacion: cambiar lo que se

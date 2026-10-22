@@ -110,6 +110,10 @@ type Project struct {
 	// operaciones sobre sprints estan en sprint.go.
 	sprints          []*Sprint
 	lastSprintNumber int
+	// efforts son los registros de esfuerzo del proyecto, en el orden en que se cargaron
+	// (historia #14). Viven dentro del proyecto, así las horas de un proyecto no suman en
+	// otro (RN-16). Las operaciones están en effort.go.
+	efforts []*Effort
 	// defects y lastDefectID son los defectos del proyecto (historia #15). Viven dentro del
 	// proyecto, así el identificador único por proyecto (RN-1, RN-16) sale solo. El contador
 	// guarda el último identificador dado y nunca retrocede: en cero, el próximo es el 1. Las

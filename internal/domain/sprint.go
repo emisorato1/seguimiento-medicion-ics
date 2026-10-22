@@ -1,6 +1,10 @@
 package domain
 
-import "time"
+import (
+	"fmt"
+	"strings"
+	"time"
+)
 
 // SprintState es la etapa en la que esta un sprint (historia #8). Es un tipo propio para que
 // no se pueda guardar un estado que no existe.
@@ -12,6 +16,27 @@ const (
 	// SprintClosed: ya termino. El pase a cerrado lo hace la historia #10.
 	SprintClosed
 )
+
+// String devuelve el nombre del estado tal como lo nombra la Fase 1, que es tambien como se
+// guarda en el archivo de datos.
+func (s SprintState) String() string {
+	if s == SprintClosed {
+		return "Cerrado"
+	}
+	return "Abierto"
+}
+
+// parseSprintState lee un estado guardado por su nombre. Un nombre que no es un estado no se
+// acepta.
+func parseSprintState(text string) (SprintState, error) {
+	switch text {
+	case "Abierto":
+		return SprintOpen, nil
+	case "Cerrado":
+		return SprintClosed, nil
+	}
+	return 0, fmt.Errorf("el estado de sprint %q no existe", text)
+}
 
 // Sprint es un sprint de un proyecto, con los datos que fija el contrato del dominio. Sus
 // datos estan ocultos fuera del paquete: solo se cambian con operaciones que validan. Esta
@@ -35,6 +60,30 @@ type SprintData struct {
 	Goal  string
 	Start time.Time
 	End   time.Time
+}
+
+// prepareSprint normaliza y valida los datos de un sprint, sin tocar ningun sprint ni el
+// proyecto: si algo falla, no se agrega nada (RN-12).
+func prepareSprint(data SprintData) (SprintData, error) {
+	// Primero se normaliza y despues se valida sobre lo normalizado: asi un goal de solo
+	// espacios cuenta como vacio (RN-4, RN-7). Las fechas son dias, sin hora ni zona, igual
+	// que las del proyecto (defecto #59).
+	data.Goal = strings.TrimSpace(data.Goal)
+	data.Start = toDay(data.Start)
+	data.End = toDay(data.End)
+	if data.Goal == "" {
+		return SprintData{}, ErrSprintGoalRequired
+	}
+	if data.Start.IsZero() {
+		return SprintData{}, ErrSprintStartRequired
+	}
+	if data.End.IsZero() {
+		return SprintData{}, ErrSprintEndRequired
+	}
+	if data.End.Before(data.Start) {
+		return SprintData{}, ErrSprintDatesInconsistent
+	}
+	return data, nil
 }
 
 // Number devuelve el numero del sprint dentro de su proyecto, que no cambia nunca.
@@ -70,10 +119,21 @@ func (s *Sprint) Stories() []int {
 	return stories
 }
 
-// AddSprint crea un sprint en el proyecto con los datos indicados. Recibe el numero que
-// sigue al del ultimo sprint creado en el proyecto, nace abierto y sin historias (RN-1,
-// RN-3).
+// AddSprint crea un sprint en el proyecto con los datos indicados. Primero los normaliza y
+// valida (goal y fechas, RN-4 a RN-7) y controla que el proyecto no tenga otro sprint
+// abierto (RN-8); recien entonces lo crea, con el numero que sigue al del ultimo sprint del
+// proyecto, abierto y sin historias (RN-1, RN-3). Si algo falla, no agrega nada (RN-12).
 func (p *Project) AddSprint(data SprintData) (*Sprint, error) {
+	data, err := prepareSprint(data)
+	if err != nil {
+		return nil, err
+	}
+	// Un solo sprint abierto por proyecto (RN-8). Se pregunta con la misma consulta del
+	// sprint abierto: una sola fuente, que no se puede contradecir con la lista de sprints.
+	if open, ok := p.OpenSprint(); ok {
+		return nil, fmt.Errorf("%w: el sprint %d", ErrSprintAlreadyOpen, open.number)
+	}
+
 	sprint := &Sprint{
 		number: p.lastSprintNumber + 1,
 		goal:   data.Goal,

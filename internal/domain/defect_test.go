@@ -6,10 +6,16 @@ import (
 	"testing"
 )
 
-// conSprints crea en el proyecto los sprints del 1 al n, con el alta de la #8.
+// conSprints crea en el proyecto los sprints del 1 al n, con el alta de la #8. La #8 deja
+// uno solo abierto, así que antes de crear cada uno se cierra el que estaba abierto: cerrar
+// es de la #10, que todavía no está en dev, y el test lo hace dentro del paquete. Queda
+// abierto el último.
 func conSprints(t *testing.T, project *Project, n int) {
 	t.Helper()
 	for i := 1; i <= n; i++ {
+		if open, ok := project.OpenSprint(); ok {
+			open.state = SprintClosed
+		}
 		if _, err := project.AddSprint(SprintData{Goal: "Sprint de prueba", Start: unDia(2026, 10, 1), End: unDia(2026, 10, 5)}); err != nil {
 			t.Fatalf("no se pudo crear el sprint de prueba %d: %v", i, err)
 		}
@@ -519,7 +525,7 @@ func TestLosDefectosDeUnProyectoNoAparecenEnOtro(t *testing.T) {
 // Cubre: RN-18, RN-19
 // La fila del proyecto 99 pasa por el registro, como lo va a hacer la interfaz: si el
 // proyecto no existe, el registro informa el error de la #3 y el defecto no se registra.
-func TestOperarSobreAlgoQueNoExiste(t *testing.T) {
+func TestOperarSobreAlgoQueNoExisteConDefectos(t *testing.T) {
 	cases := []struct {
 		name string
 		want error
