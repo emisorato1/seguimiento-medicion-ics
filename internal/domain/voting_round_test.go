@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"slices"
 	"testing"
 )
@@ -60,6 +61,37 @@ func TestAbrirUnaRondaSobreUnaHistoriaQueNoEstaTerminada(t *testing.T) {
 			if story.State() != tc.state || story.StoryPoints() != tc.points {
 				t.Fatalf("se esperaba que la historia siguiera %v con %d puntos, salio %v con %d",
 					tc.state, tc.points, story.State(), story.StoryPoints())
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Rechazar una ronda sobre una historia que no se puede votar
+// Cubre: RN-4, RN-5
+func TestRechazarUnaRondaSobreUnaHistoriaQueNoSePuedeVotar(t *testing.T) {
+	cases := []struct {
+		name    string
+		storyID int
+		done    bool
+		want    error
+	}{
+		{"la historia 1 en estado Terminada", 1, true, ErrStoryEstimateDone},
+		{"ninguna historia con identificador 99", 99, false, ErrStoryNotFound},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, story := projectWithThreeMembers(t)
+			if tc.done {
+				story.state = StoryDone
+			}
+
+			round, err := project.OpenVotingRound(tc.storyID)
+
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+			if round != nil {
+				t.Fatalf("se esperaba que no se abriera ninguna ronda, salio la ronda %d", round.Number())
 			}
 		})
 	}
