@@ -426,34 +426,34 @@ filas, que son lo que falla primero. Un test que pase sin código nuevo va a Des
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | La escala de story points se puede leer, y cambiar lo recibido no la cambia | — (lectura nueva del dominio) | RN-11 | pendiente |
-| 2 | Ida y vuelta: un registro con proyectos, integrantes e historias (estimada, sin estimar y Terminada) se convierte a JSON y se reconstruye igual, con sus números y contadores | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | pendiente |
-| 3 | Reconstruir rechaza un texto que no es JSON y los datos que el dominio no acepta: sin nombre, 4 story points, rol inexistente, dos Agile Enabler | Los datos guardados estan danados | RN-24 | pendiente |
-| 4 | El archivo: si no existe, registro vacío; lo escrito se vuelve a leer igual; no queda ningún temporal | Los datos siguen al cerrar y volver a abrir / Las listas vacias dicen que hacer | RN-21, RN-23 | pendiente |
-| 5 | Un archivo dañado da error y queda igual byte a byte; una carpeta donde no se puede escribir da error al guardar | Los datos guardados estan danados / Un cambio que no se pudo guardar se avisa | RN-24, RN-25 | pendiente |
-| 6 | El layout: la raíz lleva a la lista de proyectos; toda página está en castellano, se adapta al ancho y tiene la barra; el CSS sale del binario y ninguna página pide nada de afuera | Abrir el sistema con un solo comando y sin internet | RN-3, RN-4 | pendiente |
-| 7 | La lista de proyectos vacía dice que no hay y ofrece crear el primero | Las listas vacias dicen que hacer | RN-7, RN-23 | pendiente |
-| 8 | Crear un proyecto redirige con 303 a su página y queda en la lista con su número; recargar no crea otro | Crear un proyecto desde la web | RN-1, RN-9 | pendiente |
-| 9 | El mensaje de confirmación se ve después de crear y, al recargar, ya no | Crear un proyecto desde la web | RN-8, RN-9 | pendiente |
-| 10 | Proyecto sin nombre o con fechas incoherentes: 422, lo escrito, el mensaje del dominio junto al campo y nada guardado | Mostrar el rechazo sin perder lo escrito | RN-12, RN-15 | pendiente |
-| 11 | Una fecha que no es fecha se marca junto al campo y no se llama al dominio | Mostrar el rechazo sin perder lo escrito | RN-14 | pendiente |
-| 12 | La página del proyecto: sus datos, «sin descripción», «sin fecha de fin», fechas dd/mm/aaaa y la barra con su nombre y sus secciones | Consultar un proyecto | RN-4, RN-5, RN-6 | pendiente |
-| 13 | Modificar un proyecto con el formulario precargado: cambiar el nombre, y borrar la descripción la quita | Cada operacion se confirma con un mensaje | RN-1, RN-8 | pendiente |
-| 14 | Proyecto 99, proyecto "abc" e historia 99: 404 con el mensaje del dominio y el acceso a la lista | Pedir algo que no existe | RN-16 | pendiente |
-| 15 | Un nombre con `<`, `>` y `&` se ve tal cual | Un texto con signos se muestra tal cual | RN-17 | pendiente |
-| 16 | Integrantes: lista vacía con su mensaje; agregar con el rol elegido entre las opciones del dominio | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-7, RN-11 | pendiente |
-| 17 | Integrante duplicado y segundo Agile Enabler: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | pendiente |
-| 18 | Quitar un integrante pide confirmación; confirmar lo quita con mensaje, cancelar no cambia nada | Confirmar o cancelar antes de quitar | RN-8, RN-10 | pendiente |
-| 19 | Backlog: vacío con su mensaje; cargar una historia con criterios uno por renglón y la prioridad elegida; figura Pendiente y «sin estimar» | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-6, RN-7, RN-11 | pendiente |
-| 20 | Historia sin título o con los criterios en blanco: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | pendiente |
-| 21 | Modificar una historia cambia su prioridad; una Terminada, cargada con la conversión, muestra el rechazo arriba | Cada operacion se confirma con un mensaje / Mostrar el rechazo sin perder lo escrito | RN-1, RN-13 | pendiente |
-| 22 | Estimar eligiendo de la escala del dominio; un valor fuera de la escala enviado igual muestra el mensaje del dominio junto al campo | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema | RN-1, RN-11, RN-15 | pendiente |
-| 23 | Quitar la estimación pide confirmación; confirmar la quita, cancelar no | Confirmar o cancelar antes de quitar | RN-10 | pendiente |
-| 24 | Con un guardado que falla, la operación responde 500 con el aviso de que no quedó guardada | Un cambio que no se pudo guardar se avisa | RN-25 | pendiente |
-| 25 | Con el archivo real en una carpeta temporal: cargar, armar otra web desde el mismo archivo y ver todo; el proyecto nuevo recibe el número siguiente | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | pendiente |
-| 26 | Veinte creaciones en paralelo dejan veinte proyectos con números distintos, también con `go test -race` | Dos pestanas a la vez | RN-20 | pendiente |
-| 27 | En cada formulario, todo campo tiene su etiqueta asociada y su error enlazado; toda tabla está dentro de su recuadro desplazable | Usar la pagina en un celular y con el teclado | RN-18, RN-19 | pendiente |
-| 28 | El comando arma el servidor en `127.0.0.1:8080` con `datos-ics.json`, respeta `-puerto`, `-datos` y `-red`, muestra la dirección, y con datos dañados termina con el motivo | Abrir el sistema con un solo comando y sin internet / Los datos guardados estan danados | RN-2, RN-24 | pendiente |
+| 1 | La escala de story points se puede leer, y cambiar lo recibido no la cambia | — (lectura nueva del dominio) | RN-11 | hecha |
+| 2 | Ida y vuelta: un registro con proyectos, integrantes e historias (estimada, sin estimar y Terminada) se convierte a JSON y se reconstruye igual, con sus números y contadores | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | hecha |
+| 3 | Reconstruir rechaza un texto que no es JSON y los datos que el dominio no acepta: sin nombre, 4 story points, rol inexistente, dos Agile Enabler | Los datos guardados estan danados | RN-24 | hecha |
+| 4 | El archivo: si no existe, registro vacío; lo escrito se vuelve a leer igual; no queda ningún temporal | Los datos siguen al cerrar y volver a abrir / Las listas vacias dicen que hacer | RN-21, RN-23 | hecha |
+| 5 | Un archivo dañado da error y queda igual byte a byte; una carpeta donde no se puede escribir da error al guardar | Los datos guardados estan danados / Un cambio que no se pudo guardar se avisa | RN-24, RN-25 | hecha |
+| 6 | El layout: la raíz lleva a la lista de proyectos; toda página está en castellano, se adapta al ancho y tiene la barra; el CSS sale del binario y ninguna página pide nada de afuera | Abrir el sistema con un solo comando y sin internet | RN-3, RN-4 | hecha |
+| 7 | La lista de proyectos vacía dice que no hay y ofrece crear el primero | Las listas vacias dicen que hacer | RN-7, RN-23 | hecha |
+| 8 | Crear un proyecto redirige con 303 a su página y queda en la lista con su número; recargar no crea otro | Crear un proyecto desde la web | RN-1, RN-9 | hecha |
+| 9 | El mensaje de confirmación se ve después de crear y, al recargar, ya no | Crear un proyecto desde la web | RN-8, RN-9 | hecha |
+| 10 | Proyecto sin nombre o con fechas incoherentes: 422, lo escrito, el mensaje del dominio junto al campo y nada guardado | Mostrar el rechazo sin perder lo escrito | RN-12, RN-15 | hecha |
+| 11 | Una fecha que no es fecha se marca junto al campo y no se llama al dominio | Mostrar el rechazo sin perder lo escrito | RN-14 | hecha |
+| 12 | La página del proyecto: sus datos, «sin descripción», «sin fecha de fin», fechas dd/mm/aaaa y la barra con su nombre y sus secciones | Consultar un proyecto | RN-4, RN-5, RN-6 | hecha |
+| 13 | Modificar un proyecto con el formulario precargado: cambiar el nombre, y borrar la descripción la quita | Cada operacion se confirma con un mensaje | RN-1, RN-8 | hecha |
+| 14 | Proyecto 99, proyecto "abc" e historia 99: 404 con el mensaje del dominio y el acceso a la lista | Pedir algo que no existe | RN-16 | hecha |
+| 15 | Un nombre con `<`, `>` y `&` se ve tal cual | Un texto con signos se muestra tal cual | RN-17 | hecha |
+| 16 | Integrantes: lista vacía con su mensaje; agregar con el rol elegido entre las opciones del dominio | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-7, RN-11 | hecha |
+| 17 | Integrante duplicado y segundo Agile Enabler: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | hecha |
+| 18 | Quitar un integrante pide confirmación; confirmar lo quita con mensaje, cancelar no cambia nada | Confirmar o cancelar antes de quitar | RN-8, RN-10 | hecha |
+| 19 | Backlog: vacío con su mensaje; cargar una historia con criterios uno por renglón y la prioridad elegida; figura Pendiente y «sin estimar» | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-6, RN-7, RN-11 | hecha |
+| 20 | Historia sin título o con los criterios en blanco: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | hecha |
+| 21 | Modificar una historia cambia su prioridad; una Terminada, cargada con la conversión, muestra el rechazo arriba | Cada operacion se confirma con un mensaje / Mostrar el rechazo sin perder lo escrito | RN-1, RN-13 | hecha |
+| 22 | Estimar eligiendo de la escala del dominio; un valor fuera de la escala enviado igual muestra el mensaje del dominio junto al campo | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema | RN-1, RN-11, RN-15 | hecha |
+| 23 | Quitar la estimación pide confirmación; confirmar la quita, cancelar no | Confirmar o cancelar antes de quitar | RN-10 | hecha |
+| 24 | Con un guardado que falla, la operación responde 500 con el aviso de que no quedó guardada | Un cambio que no se pudo guardar se avisa | RN-25 | hecha |
+| 25 | Con el archivo real en una carpeta temporal: cargar, armar otra web desde el mismo archivo y ver todo; el proyecto nuevo recibe el número siguiente | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | hecha |
+| 26 | Veinte creaciones en paralelo dejan veinte proyectos con números distintos, también con `go test -race` | Dos pestanas a la vez | RN-20 | hecha |
+| 27 | En cada formulario, todo campo tiene su etiqueta asociada y su error enlazado; toda tabla está dentro de su recuadro desplazable | Usar la pagina en un celular y con el teclado | RN-18, RN-19 | hecha |
+| 28 | El comando arma el servidor en `127.0.0.1:8080` con `datos-ics.json`, respeta `-puerto`, `-datos` y `-red`, muestra la dirección, y con datos dañados termina con el motivo | Abrir el sistema con un solo comando y sin internet / Los datos guardados estan danados | RN-2, RN-24 | hecha |
 
 **Verificación manual.** Lo que `httptest` no ve se comprueba a mano antes de abrir el PR y
 se anota en la Fase 4: el contraste con un verificador, el modo celular del navegador a 360
