@@ -326,12 +326,18 @@ func sprintFromJSON(project *Project, sj sprintJSON) (*Sprint, error) {
 		return nil, err
 	}
 	// El Sprint Backlog (historia #9, tarea 14) solo puede tener historias que existen en el
-	// proyecto, que ya esta cargado cuando se leen los sprints.
+	// proyecto, que ya esta cargado cuando se leen los sprints, y cada una una sola vez, como
+	// cuando se asigna (RN-5).
 	stories := make([]int, 0, len(sj.Stories))
+	seen := map[int]bool{}
 	for _, id := range sj.Stories {
 		if _, err := project.Story(id); err != nil {
 			return nil, err
 		}
+		if seen[id] {
+			return nil, fmt.Errorf("%w: la historia %d", ErrStoryAlreadyInSprint, id)
+		}
+		seen[id] = true
 		stories = append(stories, id)
 	}
 	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories}, nil
