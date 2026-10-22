@@ -99,6 +99,7 @@ echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" '
   + "\n| Porcentaje de historias completadas | \(if ($todas|length) > 0 then (($hechas|length) * 100 / ($todas|length) | redondear) else 0 end)% |"
   + "\n| Horas estimadas, todas las historias | \($estimadas) |"
   + "\n| Horas reales, todas las historias | \($reales) |"
+  + "\n| Horas reales, contando las adelantadas | \($reales + ([$adelantadas[] | .["horas reales"] // 0] | add // 0) | redondear(2)) |"
   + "\n| Horas estimadas, historias terminadas | \($estimadas_hechas) |"
   + "\n| Horas reales, historias terminadas | \($reales_hechas) |"
   + "\n| Desviacion de esfuerzo, historias terminadas | \($reales_hechas - $estimadas_hechas | redondear(2)) h (\(if $estimadas_hechas > 0 then (($reales_hechas - $estimadas_hechas) * 100 / $estimadas_hechas | redondear) else 0 end)%) |"
