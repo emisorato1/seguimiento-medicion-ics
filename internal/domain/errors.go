@@ -74,4 +74,6 @@ var (
 	// #8, RN-8). Se devuelve envuelto con el numero del sprint abierto, asi el aviso dice cual
 	// es; errors.Is lo sigue reconociendo.
 	ErrSprintAlreadyOpen = errors.New("ya hay un sprint abierto en el proyecto")
+	// ErrStoryNotEstimated: asignar a un sprint una historia sin estimar (historia #9, RN-3).
+	ErrStoryNotEstimated = errors.New("solo se asignan a un sprint las historias estimadas")
 )

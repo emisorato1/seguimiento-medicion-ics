@@ -9,6 +9,11 @@ func (p *Project) AssignStory(id int) error {
 	if err != nil {
 		return err
 	}
+	// Los controles van antes de cambiar nada, asi un rechazo deja el Sprint Backlog y la
+	// historia como estaban (RN-14).
+	if !story.IsEstimated() {
+		return ErrStoryNotEstimated
+	}
 	sprint.stories = append(sprint.stories, story.id)
 	story.state = StoryInProgress
 	return nil
