@@ -180,3 +180,14 @@ func (p *Project) Defects() []*Defect {
 	copy(defects, p.defects)
 	return defects
 }
+
+// ChangeDefectState pasa el defecto con ese identificador al estado indicado: entre Abierto y
+// En curso, en los dos sentidos e incluso al que ya tenía (RN-9).
+func (p *Project) ChangeDefectState(id int, state DefectState) error {
+	for _, defect := range p.defects {
+		if defect.id == id {
+			defect.state = state
+		}
+	}
+	return nil
+}
