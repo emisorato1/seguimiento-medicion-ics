@@ -1,6 +1,9 @@
 package domain
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 // unSprintAbierto devuelve un proyecto con el sprint 1 abierto, para los tests que no prueban
 // la creacion del sprint.
@@ -83,5 +86,27 @@ func TestElSprintBacklogRespetaElOrdenEnQueSeAsignaronLasHistorias(t *testing.T)
 	got := sprint.Stories()
 	if len(got) != len(want) || got[0] != want[0] || got[1] != want[1] || got[2] != want[2] {
 		t.Fatalf("se esperaba el Sprint Backlog %v, salio %v", want, got)
+	}
+}
+
+// Escenario: Rechazar una historia sin estimar
+// Cubre: RN-3, RN-14
+func TestRechazarUnaHistoriaSinEstimar(t *testing.T) {
+	project, sprint := unSprintAbierto(t)
+	story, err := project.AddStory(unosDatos())
+	if err != nil {
+		t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+	}
+
+	err = project.AssignStory(story.ID())
+
+	if !errors.Is(err, ErrStoryNotEstimated) {
+		t.Fatalf("se esperaba ErrStoryNotEstimated, salio: %v", err)
+	}
+	if stories := sprint.Stories(); len(stories) != 0 {
+		t.Errorf("se esperaba el Sprint Backlog vacio, salio %v", stories)
+	}
+	if story.State() != StoryPending {
+		t.Errorf("se esperaba la historia todavia Pendiente, salio %v", story.State())
 	}
 }
