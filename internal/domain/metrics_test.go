@@ -230,3 +230,29 @@ func TestCalcularLaDesviacionDeHoras(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Las metricas de un sprint abierto son parciales
+// Cubre: RN-6
+//
+// Un sprint abierto todavía no tiene registro de cierre, así que sus completados y su
+// velocidad valen cero, y eso no es un error. Lo planificado y las horas sí se calculan.
+func TestLasMetricasDeUnSprintAbiertoSonParciales(t *testing.T) {
+	project := unProyecto(t)
+	conIntegrante(t, project)
+	historiasEstimadas(t, project, 3)
+	cargar(t, project, 1, "Juliana Bustos", 2)
+	unSprint(t, project).stories = []int{1}
+
+	got, err := project.SprintMetrics(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+	if got.PlannedPoints != 3 || got.CompletedPoints != 0 || got.Velocity != 0 {
+		t.Fatalf("se esperaban 3 story points planificados, 0 completados y velocidad 0, salieron %d, %d y %d",
+			got.PlannedPoints, got.CompletedPoints, got.Velocity)
+	}
+	if !mismasHoras(got.ActualHours, 2) {
+		t.Fatalf("se esperaban 2 horas reales, salieron %v", got.ActualHours)
+	}
+}
