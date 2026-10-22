@@ -208,6 +208,10 @@ func (p *Project) ResolveDefect(id, sprintNumber int) error {
 	}
 	for _, defect := range p.defects {
 		if defect.id == id {
+			// "anterior" se compara por número de sprint; el mismo sprint vale (RN-13)
+			if sprintNumber < defect.detectedIn {
+				return ErrDefectResolvedBeforeDetected
+			}
 			defect.state = DefectResolved
 			defect.resolvedIn = sprintNumber
 		}

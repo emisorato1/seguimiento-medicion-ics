@@ -50,6 +50,9 @@ var (
 	// ErrDefectStateInvalid: cambiar un defecto a un estado que no es Abierto ni En curso
 	// (historia #15, RN-9).
 	ErrDefectStateInvalid = errors.New("el estado de un defecto solo cambia entre Abierto y En curso")
+	// ErrDefectResolvedBeforeDetected: resolver un defecto en un sprint de número menor al de
+	// detección (historia #15, RN-13).
+	ErrDefectResolvedBeforeDetected = errors.New("un defecto no se resuelve en un sprint anterior al de detección")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.
