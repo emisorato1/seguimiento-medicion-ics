@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-20 22:40. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 09:50. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,13 +10,12 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 6
+- Terminadas: 7
 
 ## En review
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
@@ -66,16 +65,17 @@ _No hay historias en este estado._
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-887959b 2026-10-20 Merge pull request #110 from emisorato1/docs-trazabilidad-tests
-380e819 2026-10-20 docs: registrar la correccion de trazabilidad en la fase 4 de la #6
-a4bd5a6 2026-10-20 docs: los tests de la #4, la #6 y el defecto #60 declaran su escenario
-d6eafaf 2026-10-20 Merge pull request #103 from emisorato1/agents-persistencia-web
-a30165e 2026-10-20 docs: aclarar que el archivo de datos es de la web y la consola sigue en memoria
-2aceda2 2026-10-20 Merge pull request #92 from emisorato1/historia-77-guardado
-f9064af 2026-10-20 Merge pull request #99 from emisorato1/spec-17-dashboard-web
-62092bf 2026-10-20 Merge pull request #98 from emisorato1/plan-consola-y-web
+892cb34 2026-10-21 Merge pull request #106 from emisorato1/historia-24-interfaz-consola
+ebca791 2026-10-21 fix: el título de la consola lleva tilde, como el de la web (historia 24)
+ded81b7 2026-10-21 docs: registrar las correcciones de la revisión del PR #106 (historia 24)
+70ac198 2026-10-21 refactor: renombrar pointsText a pointsInput en estimar (historia 24)
+6120035 2026-10-21 feat: avisar cuando un proyecto no tiene integrantes (historia 24)
+f0ca0e9 2026-10-21 test: listar los integrantes de un proyecto sin integrantes (historia 24)
+dbab5e3 2026-10-21 Merge branch 'dev' into historia-24-interfaz-consola
+13991df 2026-10-20 Merge pull request #114 from emisorato1/trazabilidad-cabecera
 ```

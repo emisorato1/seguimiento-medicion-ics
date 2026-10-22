@@ -21,7 +21,8 @@ métricas y los defectos, listo para mostrar en la review.
 ### Qué queda afuera
 
 - **Calcular las métricas**: es la #16. El reporte toma sus números y los escribe.
-- **Exportar a PDF**: es la #19. Acá el reporte se arma; cómo se guarda es de la #19.
+- **Exportar a PDF**: es la #19. Acá el reporte se arma; la #19 lo escribe como PDF y la web lo
+  ofrece como descarga (#78). No se guarda en disco.
 - **Gráficos**: son del dashboard (#17).
 - Guardar los reportes generados, llevar un historial de reportes o compararlos.
 - Elegir qué secciones van: el reporte tiene siempre las mismas.
