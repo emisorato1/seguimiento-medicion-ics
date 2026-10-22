@@ -218,8 +218,8 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 	project.nextStoryID = pj.NextStoryID
 
 	// El esfuerzo va al final, porque apunta a integrantes e historias que ya tienen que estar
-	// cargados. Pasa por las mismas reglas que al registrarlo, menos la del día futuro (Fase 2
-	// de la #14).
+	// cargados. Pasa por las mismas reglas que al registrarlo, menos la del día futuro y la de
+	// seguir siendo integrante (Fase 2 de la #14).
 	for i, ej := range pj.Efforts {
 		day, err := parseDay(ej.Day)
 		if err != nil {
@@ -231,7 +231,7 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 			Activity:   ej.Activity,
 			Hours:      ej.Hours,
 			Day:        day,
-		}, time.Time{}, false)
+		}, time.Time{}, true)
 		if err != nil {
 			return nil, fmt.Errorf("esfuerzo %d: %w", i+1, err)
 		}

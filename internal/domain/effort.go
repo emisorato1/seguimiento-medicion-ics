@@ -57,7 +57,7 @@ type EffortData struct {
 // el dominio no lee el reloj (AGENTS.md). Valida todo antes de guardar: si algo falla, el
 // proyecto queda como estaba (RN-18).
 func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
-	effort, err := p.newEffort(data, today, true)
+	effort, err := p.newEffort(data, today, false)
 	if err != nil {
 		return nil, err
 	}
@@ -66,14 +66,20 @@ func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
 }
 
 // newEffort arma un registro validando sus datos en el orden de la Fase 2: integrante,
-// historia, día, horas y actividad. No lo guarda. La carga de los datos guardados lo usa sin
-// controlar el día futuro (checkToday en falso): al cargar no hay un "hoy" con qué comparar,
-// y un día que no era futuro al guardarse no puede volverse futuro después (Fase 2).
-func (p *Project) newEffort(data EffortData, today time.Time, checkToday bool) (*Effort, error) {
+// historia, día, horas y actividad. No lo guarda. La carga de los datos guardados lo usa con
+// loading en verdadero, y ahí cambian dos controles (Fase 2): no se mira el día futuro,
+// porque al cargar no hay un "hoy" con qué comparar y un día que no era futuro al guardarse
+// no puede volverse futuro después; y se acepta el registro de alguien que ya no es
+// integrante, porque quitarlo del proyecto no borra sus horas (decisión de Emiliano del 21/10).
+func (p *Project) newEffort(data EffortData, today time.Time, loading bool) (*Effort, error) {
 	// el integrante se busca como en la #4, ignorando mayúsculas y los espacios de los
-	// extremos, y se guarda su nombre tal como está cargado (RN-7, RN-8)
-	member := p.findMember(strings.TrimSpace(data.MemberName))
-	if member == nil {
+	// extremos, y se guarda su nombre tal como está cargado (RN-7, RN-8). Un nombre vacío no
+	// se acepta nunca, ni al cargar
+	name := strings.TrimSpace(data.MemberName)
+	member := p.findMember(name)
+	if member != nil {
+		name = member.name
+	} else if !loading || name == "" {
 		return nil, ErrMemberNotFound
 	}
 	// la historia tiene que ser del proyecto; su estado no importa, porque las horas se
@@ -86,7 +92,7 @@ func (p *Project) newEffort(data EffortData, today time.Time, checkToday bool) (
 	}
 	// el dia se compara solo con hoy, sin la hora, y no con las fechas del proyecto ni de los
 	// sprints (RN-4, RN-17)
-	if checkToday && toDay(data.Day).After(toDay(today)) {
+	if !loading && toDay(data.Day).After(toDay(today)) {
 		return nil, ErrEffortDayInFuture
 	}
 	// "mayor que cero" escrito asi rechaza tambien NaN, que no es mayor ni menor que nada;
@@ -102,7 +108,7 @@ func (p *Project) newEffort(data EffortData, today time.Time, checkToday bool) (
 	}
 	return &Effort{
 		storyID:    data.StoryID,
-		memberName: member.name,
+		memberName: name,
 		activity:   activity,
 		hours:      data.Hours,
 		day:        toDay(data.Day),
