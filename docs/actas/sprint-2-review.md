@@ -28,9 +28,9 @@ siguiente cuenta en el siguiente.
 | 7 | Priorizar el Product Backlog | 2 | **Hecho** | Agustín Salinas | PR #105 |
 | 8 | Crear un sprint con su Sprint Goal | 3 | En progreso | Agustín Salinas | el sprint ya está en `dev` desde el PR #104, con las tareas 1, 2, 3 y 16 (`Refs #8`); [completar al cierre] |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar | Agustín Salinas | [completar al cierre] |
-| 5 | Consultar el estado de un proyecto | 3 | **Hecho** | Juliana Bustos (la implementó una sesión de Emiliano) | PR #102 |
-| 14 | Registrar el esfuerzo real | 3 | **Hecho** | Juliana Bustos (la implementó una sesión de Emiliano) | PR #100 |
-| 15 | Gestionar defectos | 5 | Lista para implementar | Juliana Bustos (la implementa una sesión de Emiliano) | spec en `dev` desde el PR #101; [completar al cierre] |
+| 5 | Consultar el estado de un proyecto | 3 | **Hecho** | Juliana Bustos (la implementó Emiliano con asistencia de IA) | PR #102 |
+| 14 | Registrar el esfuerzo real | 3 | **Hecho** | Juliana Bustos (la implementó Emiliano con asistencia de IA) | PR #100 |
+| 15 | Gestionar defectos | 5 | Lista para implementar | Juliana Bustos (la implementa Emiliano con asistencia de IA) | spec en `dev` desde el PR #101; [completar al cierre] |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | **Hecho** | Emiliano Sorato | PR #95 |
 
 - **Story points comprometidos:** 31 (los 26 del plan más los 5 de la #6)
