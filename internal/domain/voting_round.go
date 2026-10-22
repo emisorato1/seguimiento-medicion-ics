@@ -1,6 +1,9 @@
 package domain
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // VotingRound es una ronda de Planning Poker sobre una historia del proyecto (historia #13).
 // Sus datos estan ocultos fuera del paquete: los votos solo se leen por la consulta que lo
@@ -33,6 +36,20 @@ func (r *VotingRound) Number() int {
 // Revealed indica si la ronda ya fue revelada.
 func (r *VotingRound) Revealed() bool {
 	return r.revealed
+}
+
+// String muestra la ronda con su número, su historia y cuántos participantes votaron, sin
+// ningún valor (RN-17), por ejemplo "ronda 1 de la historia 1: votaron 2 de 3".
+func (r VotingRound) String() string {
+	return fmt.Sprintf("ronda %d de la historia %d: votaron %d de %d",
+		r.number, r.storyID, len(r.votes), len(r.participants))
+}
+
+// Format hace que todas las formas de imprimir de Go muestren solo String. Sin esto, la de
+// depuración (%#v) no usa String y mostraría los votos ocultos (RN-17, Fase 2). Recibe la
+// ronda como valor para cubrir también a quien imprime la ronda y no un puntero a ella.
+func (r VotingRound) Format(f fmt.State, verb rune) {
+	fmt.Fprint(f, r.String())
 }
 
 // Voted devuelve los nombres de los participantes que ya votaron, en el orden de los
