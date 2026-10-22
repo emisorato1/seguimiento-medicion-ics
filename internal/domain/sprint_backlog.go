@@ -4,7 +4,10 @@ package domain
 // del proyecto y la deja En curso (historia #9, RN-1, RN-4). Se le pide al proyecto, porque
 // hacen falta las dos puntas: el sprint abierto y la historia del Product Backlog.
 func (p *Project) AssignStory(id int) error {
-	sprint, _ := p.OpenSprint()
+	sprint, ok := p.OpenSprint()
+	if !ok {
+		return ErrNoOpenSprint
+	}
 	story, err := p.Story(id)
 	if err != nil {
 		return err
@@ -30,6 +33,9 @@ func (p *Project) AssignStory(id int) error {
 // y la devuelve al Product Backlog como Pendiente (historia #9, RN-7). Una historia Terminada
 // no se mueve (RN-6).
 func (p *Project) UnassignStory(id int) error {
+	if _, ok := p.OpenSprint(); !ok {
+		return ErrNoOpenSprint
+	}
 	story, err := p.Story(id)
 	if err != nil {
 		return err
