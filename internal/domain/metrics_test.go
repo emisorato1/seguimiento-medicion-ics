@@ -308,3 +308,49 @@ func TestDefectosDetectadosYResueltosDeCadaSprint(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Metricas del proyecto entero
+// Cubre: RN-9, RN-11, RN-12
+//
+// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
+// las horas, la desviación y los defectos. Los completados, el porcentaje y la velocidad salen
+// del registro del cierre de la #10 y los suman las tareas 6, 11 y 14. Asignar historias es de
+// la #9 y cerrar el sprint de la #10: el test arma los sprints dentro del paquete.
+func TestMetricasDelProyectoEntero(t *testing.T) {
+	project := unProyecto(t)
+	conIntegrante(t, project)
+	historiasEstimadas(t, project, 3, 5, 2, 3, 8)
+	for i, hours := range []float64{4, 6, 2, 8, 10} {
+		conHorasEstimadas(t, project, i+1, hours)
+	}
+	for i, hours := range []float64{5, 8, 3, 7, 10} {
+		cargar(t, project, i+1, "Juliana Bustos", hours)
+	}
+	first := unSprint(t, project)
+	first.stories = []int{1, 2, 3}
+	first.state = SprintClosed
+	unSprint(t, project).stories = []int{3}
+	for _, detectedIn := range []int{1, 1, 2} {
+		data := unDefecto()
+		data.DetectedIn = detectedIn
+		if _, err := project.AddDefect(data); err != nil {
+			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+		}
+	}
+	if err := project.ResolveDefect(1, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
+	}
+
+	got := project.ProjectMetrics()
+
+	if got.PlannedPoints != 21 || got.StoriesPlanned != 5 {
+		t.Fatalf("se esperaban 21 story points y 5 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+	if !mismasHoras(got.EstimatedHours, 30) || !mismasHoras(got.ActualHours, 33) || !mismasHoras(got.HoursDeviation, 10) {
+		t.Fatalf("se esperaban 30 horas estimadas, 33 reales y una desviacion de 10, salieron %v, %v y %v",
+			got.EstimatedHours, got.ActualHours, got.HoursDeviation)
+	}
+	if got.DefectsDetected != 3 || got.DefectsResolved != 1 {
+		t.Fatalf("se esperaban 3 defectos detectados y 1 resuelto, salieron %d y %d", got.DefectsDetected, got.DefectsResolved)
+	}
+}
