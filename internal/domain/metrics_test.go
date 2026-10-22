@@ -115,10 +115,10 @@ func conHorasEstimadas(t *testing.T, project *Project, id int, hours float64) {
 }
 
 // Escenario: Metricas de un sprint cerrado
-// Cubre: RN-3, RN-7, RN-16
+// Cubre: RN-3, RN-7, RN-12, RN-16
 //
-// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados y
-// las horas, y las tareas 6, 10, 11 y 12 le suman su número. Asignar historias es de la #9 y
+// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
+// las horas y la desviación, y las tareas 6, 11 y 12 le suman su número. Asignar historias es de la #9 y
 // cerrar el sprint de la #10, que todavía no están en dev: el test arma el sprint dentro del
 // paquete.
 func TestMetricasDeUnSprintCerrado(t *testing.T) {
@@ -145,6 +145,9 @@ func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	}
 	if !mismasHoras(got.EstimatedHours, 16) || !mismasHoras(got.ActualHours, 20) {
 		t.Fatalf("se esperaban 16 horas estimadas y 20 reales, salieron %v y %v", got.EstimatedHours, got.ActualHours)
+	}
+	if !mismasHoras(got.HoursDeviation, 25) {
+		t.Fatalf("se esperaba una desviacion de 25, salio %v", got.HoursDeviation)
 	}
 }
 
@@ -182,6 +185,47 @@ func TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo(t *testing.T
 			}
 			if !mismasHoras(got.EstimatedHours, tc.estimated) || !mismasHoras(got.ActualHours, tc.actual) {
 				t.Fatalf("se esperaban %v horas estimadas y %v reales, salieron %v y %v", tc.estimated, tc.actual, got.EstimatedHours, got.ActualHours)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Calcular la desviacion de horas
+// Cubre: RN-12, RN-14
+//
+// Cada fila arma un sprint con una sola historia que tiene esas horas. Cero horas estimadas
+// es no cargarlas, porque la carga rechaza el cero (RN-18), y cero reales es no registrar
+// ninguna.
+func TestCalcularLaDesviacionDeHoras(t *testing.T) {
+	cases := []struct {
+		estimated, actual, deviation float64
+	}{
+		{16, 20, 25},
+		{10, 8, -20},
+		{8, 0, -100},
+		{0, 5, 0},
+		{0, 0, 0},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("%v estimadas y %v reales", tc.estimated, tc.actual), func(t *testing.T) {
+			project := unProyecto(t)
+			conIntegrante(t, project)
+			historiasEstimadas(t, project, 3)
+			if tc.estimated > 0 {
+				conHorasEstimadas(t, project, 1, tc.estimated)
+			}
+			if tc.actual > 0 {
+				cargar(t, project, 1, "Juliana Bustos", tc.actual)
+			}
+			unSprint(t, project).stories = []int{1}
+
+			got, err := project.SprintMetrics(1)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if !mismasHoras(got.HoursDeviation, tc.deviation) {
+				t.Fatalf("se esperaba una desviacion de %v, salio %v", tc.deviation, got.HoursDeviation)
 			}
 		})
 	}
