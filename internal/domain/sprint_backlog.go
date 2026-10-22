@@ -33,7 +33,8 @@ func (p *Project) AssignStory(id int) error {
 // y la devuelve al Product Backlog como Pendiente (historia #9, RN-7). Una historia Terminada
 // no se mueve (RN-6).
 func (p *Project) UnassignStory(id int) error {
-	if _, ok := p.OpenSprint(); !ok {
+	sprint, ok := p.OpenSprint()
+	if !ok {
 		return ErrNoOpenSprint
 	}
 	story, err := p.Story(id)
@@ -43,6 +44,16 @@ func (p *Project) UnassignStory(id int) error {
 	if story.state == StoryDone {
 		return ErrStoryDone
 	}
+	// Se arma la lista nueva sin la historia, en el mismo orden, y recien despues se aplica
+	// junto con el cambio de estado.
+	remaining := make([]int, 0, len(sprint.stories))
+	for _, storyID := range sprint.stories {
+		if storyID != story.id {
+			remaining = append(remaining, storyID)
+		}
+	}
+	sprint.stories = remaining
+	story.state = StoryPending
 	return nil
 }
 
