@@ -445,8 +445,8 @@ solo test con tabla de casos. Los números con decimales se comparan con una tol
 | 6 | Completados y velocidad de un sprint salen del registro del cierre | Una historia que volvio al backlog cuenta como completada solo donde se completo | RN-4, RN-5 | pendiente |
 | 7 | Los puntos de un sprint cerrado salen de los registrados al cerrarlo, no de los actuales | Los puntos de un sprint cerrado no cambian si se reestima una historia | RN-3 | pendiente |
 | 8 | Un sprint abierto devuelve sus métricas con completados y velocidad en cero | Las metricas de un sprint abierto son parciales | RN-6 | pendiente |
-| 9 | Horas de un sprint, y las de una historia que pasó por dos sprints cuentan en el último | Las horas de una historia que paso por dos sprints cuentan en el ultimo | RN-7 | pendiente |
-| 10 | Desviación con signo, y cero sin horas estimadas | Calcular la desviacion de horas | RN-12, RN-14 | pendiente |
+| 9 | Horas de un sprint, y las de una historia que pasó por dos sprints cuentan en el último | Las horas de una historia que paso por dos sprints cuentan en el ultimo | RN-7 | hecha |
+| 10 | Desviación con signo, y cero sin horas estimadas | Calcular la desviacion de horas | RN-12, RN-14 | hecha |
 | 11 | Porcentaje de historias completas con decimales, y cero sin historias | Calcular el porcentaje de historias completas | RN-13, RN-14, RN-16 | pendiente |
 | 12 | Defectos detectados y resueltos de cada sprint | Defectos detectados y resueltos de cada sprint | RN-8 | pendiente |
 | 13 | Métricas del proyecto: todo el backlog, todo el esfuerzo y todos los defectos | Metricas del proyecto entero | RN-9, RN-11 | pendiente |
@@ -525,12 +525,22 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 4 | `7f4a880` | `0faa0aa` |
 | 16 (filas del sprint y del proyecto) | `3f540d8` | `538264d` (la del proyecto, sin RED: ver Desvíos) |
 | 5 | `11f3554` | `fff2a46` |
+| 9 | `cc515ff` | `b48e2be` |
+| 10 | `7bab460` | `96ed50e` |
 
 Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
 existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
 Los dos de la conversión, por comportamiento: las horas se perdían al reconstruir el
 registro, y unas horas negativas se cargaban sin error. Esos dos commits de test llevan la
 salida del test fallando en su mensaje, como pide AGENTS.md desde el PR #98.
+
+Las tareas 9 y 10 se hicieron el 21/10, apenas el esfuerzo de la #14 llegó a `dev` (PR #100).
+Sus RED fueron por comportamiento: las horas y la desviación salían en cero. En las dos,
+algunas filas pasaron solas porque esperan cero: el sprint 1 de la historia que pasó por dos
+sprints (9), y las filas sin horas estimadas (10). Quedan como protección: si el cálculo
+sumara las horas en cada sprint o dividiera por cero, fallarían. El RED lo dieron las otras
+filas de la misma tarea y el escenario del sprint cerrado, que suma sus horas y su
+desviación.
 
 ### Hallazgo de la revisión
 
