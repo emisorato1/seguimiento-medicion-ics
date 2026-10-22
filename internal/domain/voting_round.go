@@ -51,6 +51,9 @@ func (p *Project) OpenVotingRound(storyID int) (*VotingRound, error) {
 	if story.state == StoryDone {
 		return nil, ErrStoryEstimateDone
 	}
+	if len(p.members) == 0 {
+		return nil, ErrVotingRoundNoMembers
+	}
 	participants := make([]string, 0, len(p.members))
 	for _, member := range p.members {
 		participants = append(participants, member.name)

@@ -108,4 +108,7 @@ var (
 	// ErrStoryNotInSprint: quitar del sprint una historia que no esta en su Sprint Backlog
 	// (historia #9, RN-8).
 	ErrStoryNotInSprint = errors.New("la historia no está en el sprint")
+	// ErrVotingRoundNoMembers: abrir una ronda de Planning Poker en un proyecto sin
+	// integrantes (historia #13, RN-6).
+	ErrVotingRoundNoMembers = errors.New("el proyecto no tiene integrantes que puedan votar")
 )
