@@ -189,3 +189,20 @@ func (p *Project) OpenVotingRound(storyID int) (*VotingRound, error) {
 	p.votingRounds = append(p.votingRounds, round)
 	return round, nil
 }
+
+// CurrentVotingRound devuelve la ronda actual de la historia, que es la última que se abrió
+// sobre ella, esté revelada o no, y si tiene alguna. Que no tenga ninguna no es un error: se
+// informa aparte, como el sprint abierto de la #8. Si la historia no existe, informa que no
+// se encontró (RN-19). La usa la web para volver a encontrar la ronda entre un pedido y
+// otro (#78).
+func (p *Project) CurrentVotingRound(storyID int) (*VotingRound, bool, error) {
+	if _, err := p.Story(storyID); err != nil {
+		return nil, false, err
+	}
+	for i := len(p.votingRounds) - 1; i >= 0; i-- {
+		if p.votingRounds[i].storyID == storyID {
+			return p.votingRounds[i], true, nil
+		}
+	}
+	return nil, false, nil
+}
