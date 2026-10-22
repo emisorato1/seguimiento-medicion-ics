@@ -387,7 +387,7 @@ total que no se guarda no puede quedar desactualizado, y es lo que dice el contr
 | Las horas se validan como "mayores que cero **y finitas**", y no como "no menores o iguales que cero" | comprobar que no sean cero ni negativas | "mayor que cero" rechaza un valor que no es un número (`NaN`), que puede llegar desde la consola porque convertir el texto "NaN" a número no da error; es el criterio de la #16 para las horas estimadas (hallazgo de la revisión del PR #81). Pero deja pasar el infinito (`+Inf`), que la conversión también acepta con el texto "Inf": por eso se exige además que el valor sea finito (revisión de Maxi en el PR #100). La web ya lo frena, pero la regla tiene que vivir en el dominio |
 | Consultar las horas de algo que no existe informa que no se encontró, con la misma búsqueda que al registrar | devolver cero | cero es una respuesta válida para una historia o un integrante sin registros (RN-13, RN-14); si también fuera la respuesta para algo que no existe, un nombre mal escrito pasaría por "no trabajó" sin aviso. Además queda simétrico con registrar (revisión de Maxi en el PR #100) |
 | El registro admite varias cargas del mismo integrante, historia y día (RN-11) | un único registro por esa combinación, que acumula o rechaza | ver el punto 3 de "Para decidir en la puerta": con la actividad adentro, acumular pierde información |
-| Al cargar los datos guardados, cada registro pasa por todas las reglas del alta **menos la del día futuro** | pedirle el día de hoy también a la carga, o no validar nada al cargar | la carga de la #77 no recibe el día de hoy, y no hace falta: un día que no era futuro cuando se guardó no puede volverse futuro después, porque el tiempo solo avanza. El resto (horas, actividad, integrante, historia) sí se valida, como hace la #77 con las demás entidades, para que un archivo editado a mano no meta datos que el dominio rechazaría |
+| Al cargar los datos guardados, cada registro pasa por todas las reglas del alta **menos dos: la del día futuro y la de que quien cargó las horas siga siendo integrante**. Un nombre vacío se rechaza igual | pedirle el día de hoy también a la carga, o no validar nada al cargar; y, para el integrante, prohibir quitar del proyecto a un integrante que tiene horas cargadas | la carga de la #77 no recibe el día de hoy, y no hace falta: un día que no era futuro cuando se guardó no puede volverse futuro después, porque el tiempo solo avanza. **El integrante lo decidió Emiliano el 21/10**, después del hallazgo de review-merge en el PR #100: quitar a un integrante (#4) no borra sus horas, y si la carga exigiera que siga en el proyecto, el archivo que guarda la propia web no se volvería a abrir. Prohibir quitarlo cambiaba la #4, que ya estaba terminada. Sus horas siguen sumando en la historia, y consultar las suyas informa que no se encontró el integrante, como pide la RN-14. El resto (horas, actividad, historia) sí se valida, como hace la #77 con las demás entidades, para que un archivo editado a mano no meta datos que el dominio rechazaría |
 
 ### Dependencias y restricciones
 
@@ -428,7 +428,7 @@ comprueba además que el proyecto quedó sin registros, que es la otra mitad de 
 | 11 | Las horas de un integrante son la suma de sus registros, sin registros son cero, y alguien que no es integrante informa que no se encontró, buscándolo como al registrar | Consultar el total de horas de un integrante / Sin registros, el total es cero (fila "Juliana Bustos") / Consultar las horas de algo que no existe (fila "Pedro Gomez") | RN-14 | hecha |
 | 12 | Los registros de un proyecto no suman en otro | Las horas cargadas en un proyecto no suman en otro | RN-16 | hecha |
 | 13 | Registrar o consultar en un proyecto que no existe informa que no se encontró el proyecto | Registrar esfuerzo en un proyecto que no existe | RN-19 | hecha |
-| 14 | Los registros de esfuerzo entran en la conversión del registro: dos registros, uno con media hora, se reconstruyen iguales y en el mismo orden; uno inválido en el archivo (horas en cero, actividad vacía, integrante o historia que no existen) rechaza la carga, y un día posterior a hoy no, porque la carga no valida el día futuro | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | hecha |
+| 14 | Los registros de esfuerzo entran en la conversión del registro: dos registros, uno con media hora, se reconstruyen iguales y en el mismo orden; uno inválido en el archivo (horas en cero, actividad vacía, integrante sin nombre o historia que no existe) rechaza la carga, y un día posterior a hoy no, porque la carga no valida el día futuro. Las horas de un integrante quitado se cargan igual (decisión de Emiliano del 21/10, ver la Fase 2) | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | hecha |
 
 **Tarea sin escenario propio.** La RN-12 (el día se guarda sin la hora) no tiene escenario
 suyo en la Fase 1: se verifica dentro de la tarea 9, cargando los dos registros del mismo día
@@ -533,12 +533,21 @@ de test lleva en su mensaje la salida del test fallando, después de la línea `
 | 12 | `92c6091` | — (sin RED, ver Desvíos) |
 | 13 | `a74dec4` | — (sin RED, ver Desvíos) |
 | 14 | `c819ca6` | `4836ba4` |
+| 14, corrección | `dffc162` | `abe3750` |
 
 Los RED de las tareas 1, 3, 4, 5, 6, 9, 11 y 14 fueron por compilación (la operación, el error
 o el dato todavía no existían); los de las tareas 7, 8 y 10, por comportamiento. En la 4, la 8,
 la 10 y la 11, algunos de los escenarios que comparten la tarea pasaron solos (aceptar un día
 anterior al inicio del proyecto, registrar sobre una historia Terminada, los totales en cero):
 el RED lo dio el otro escenario de la misma tarea.
+
+**Corrección de la tarea 14 después de la revisión.** review-merge encontró en el PR #100 que,
+si se quitaba a un integrante con horas cargadas, la carga rechazaba el archivo y la web no
+volvía a arrancar. Emiliano eligió el 21/10 aceptar esas horas al cargar (Fase 2). El test
+reproduce el uso normal —registrar horas, quitar al integrante, guardar y volver a cargar— y
+su RED fue por comportamiento: la carga informaba "no se encontró el integrante". En los
+datos dañados, el caso "esfuerzo de alguien que no es integrante" pasó a ser "esfuerzo sin
+integrante", que se sigue rechazando.
 
 ### Desvíos respecto de la spec
 
@@ -554,7 +563,8 @@ Ninguno de comportamiento. Los de proceso:
   PR #100 y el código se sumó a ese mismo PR, a pedido de la responsable ("después de las
   puertas se suman acá los tests y el código"): queda una historia por PR, que cierra la #14.
 - **Las validaciones del alta y de la carga son una sola función**, que la carga usa sin
-  controlar el día futuro, como decidió la Fase 2. Así las dos no pueden quedar distintas.
+  controlar el día futuro ni que el integrante siga en el proyecto, como decidió la Fase 2.
+  Así las dos no pueden quedar distintas.
 - **La carga rechaza también una fecha que no tiene la forma aaaa-mm-dd**, además de los
   casos que lista la tarea 14: es el mismo control que ya hacía la #77 con las fechas del
   proyecto.
