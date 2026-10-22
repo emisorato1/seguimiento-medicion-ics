@@ -82,4 +82,7 @@ var (
 	// ErrNoOpenSprint: asignar o quitar una historia cuando el proyecto no tiene sprint abierto
 	// (historia #9, RN-2). Lo reusa la #10 al cerrar.
 	ErrNoOpenSprint = errors.New("el proyecto no tiene un sprint abierto")
+	// ErrStoryNotInSprint: quitar del sprint una historia que no esta en su Sprint Backlog
+	// (historia #9, RN-8).
+	ErrStoryNotInSprint = errors.New("la historia no está en el sprint")
 )

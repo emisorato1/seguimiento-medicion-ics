@@ -44,6 +44,9 @@ func (p *Project) UnassignStory(id int) error {
 	if story.state == StoryDone {
 		return ErrStoryDone
 	}
+	if !sprint.hasStory(story.id) {
+		return ErrStoryNotInSprint
+	}
 	// Se arma la lista nueva sin la historia, en el mismo orden, y recien despues se aplica
 	// junto con el cambio de estado.
 	remaining := make([]int, 0, len(sprint.stories))
