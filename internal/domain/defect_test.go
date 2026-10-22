@@ -476,3 +476,41 @@ func TestListarLosDefectosDelProyecto(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Los defectos de un proyecto no aparecen en otro
+// Cubre: RN-16
+func TestLosDefectosDeUnProyectoNoAparecenEnOtro(t *testing.T) {
+	registry := NewProjectRegistry()
+	proyectoA, err := registry.Create(ProjectData{Name: "Proyecto A", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto A: %v", err)
+	}
+	proyectoB, err := registry.Create(ProjectData{Name: "Proyecto B", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto B: %v", err)
+	}
+	for _, project := range []*Project{proyectoA, proyectoB} {
+		if _, err := project.AddStory(unosDatos()); err != nil {
+			t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+		}
+		conSprints(t, project, 1)
+	}
+	if _, err := proyectoA.AddDefect(unDefecto()); err != nil {
+		t.Fatalf("no se pudo registrar el defecto del proyecto A: %v", err)
+	}
+
+	defect, err := proyectoB.AddDefect(unDefecto())
+
+	if err != nil {
+		t.Fatalf("se esperaba registrar el defecto del proyecto B sin error, salio: %v", err)
+	}
+	if defect.ID() != 1 {
+		t.Fatalf("se esperaba que el defecto del proyecto B tuviera el identificador 1, salio: %d", defect.ID())
+	}
+	if got := numerosDeDefectos(proyectoB.Defects()); fmt.Sprint(got) != "[1]" {
+		t.Fatalf("se esperaba que el proyecto B tuviera 1 solo defecto, salieron %v", got)
+	}
+	if got := numerosDeDefectos(proyectoA.Defects()); fmt.Sprint(got) != "[1]" {
+		t.Fatalf("se esperaba que el proyecto A siguiera con su defecto, salieron %v", got)
+	}
+}
