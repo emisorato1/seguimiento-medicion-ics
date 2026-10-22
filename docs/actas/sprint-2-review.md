@@ -61,6 +61,11 @@ comprometidos**: se cuenta aparte.
 
 - La #13 cumple las dos condiciones. Agustín Salinas aprobó sus tres puertas en el PR #115,
   y la #4, la #6 y la #12, de las que depende, ya están en `dev`.
+- **Horas estimadas de la #13: 21,6.** Se cargaron el 21/10, antes de empezarla, con la
+  conversión de 2,7 horas por punto, como las demás del sprint (ver el
+  [anexo de la planning](sprint-2-planning.md#horas-estimadas-del-sprint-2)). Maximiliano Eula
+  las puede ajustar al empezarla. Sus horas reales suman a las trabajadas en el sprint:
+  `scripts/metricas.sh` las muestra en la fila *Horas reales, contando las adelantadas*.
 - **Si se termina en el Sprint 2**, suma a los story points completados y a la velocidad del
   sprint, mostrada aparte (por ejemplo, "18 + 8 adelantados"). El porcentaje de historias
   completadas se sigue calculando sobre las 9 comprometidas, y el Sprint 3 se planifica sin

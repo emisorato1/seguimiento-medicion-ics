@@ -245,8 +245,8 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 15 | Gestionar defectos | 5 | Lista para implementar |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
 
-- Adelantada desde el 21/10: la **#13** (8 SP, Maximiliano Eula), que no suma a los 31
-  comprometidos. Está en el [acta de review](actas/sprint-2-review.md#historias-adelantadas).
+- Adelantada desde el 21/10: la **#13** (8 SP y 21,6 h estimadas, Maximiliano Eula), que no
+  suma a los 31 comprometidos. Está en el [acta de review](actas/sprint-2-review.md#historias-adelantadas).
 - Completados al 21/10: **18 SP**, 6 de 9 historias. Tres llegaron del Sprint 1; la #7, la #5
   y la #14 son las primeras historias nuevas del sprint que se terminan.
 
