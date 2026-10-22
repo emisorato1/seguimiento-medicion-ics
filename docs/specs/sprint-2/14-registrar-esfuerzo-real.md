@@ -3,7 +3,7 @@
 - **Historia:** #14
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
   y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres
@@ -340,7 +340,7 @@ Escenario: Registrar esfuerzo en un proyecto que no existe
    **Decidido el 20/10: el "hoy" lo pasa quien llama.** La regla del día futuro se mantiene.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #100 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/100#issuecomment-6303432594), con tres cambios a hacer antes de la tarea 1. Los ajustes se aplicaron el 21/10 en 0d07046, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/100#issuecomment-6314719781).
 
 ## Fase 2 — Diseño
 
@@ -403,7 +403,7 @@ total que no se guarda no puede quedar desactualizado, y es lo que dice el contr
   pide la regla 3 de `docs/diseno-dominio.md`.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #100 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/100#issuecomment-6303432594), con tres cambios a hacer antes de la tarea 1. Los ajustes se aplicaron el 21/10 en 0d07046, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/100#issuecomment-6314719781).
 
 ## Fase 3 — Tareas
 
@@ -505,7 +505,7 @@ está bloqueado esperándote):
    se guardan al cerrar la web, pero la #16 no la necesita para sus tests.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #100 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/100#issuecomment-6303432594), con tres cambios a hacer antes de la tarea 1. Los ajustes se aplicaron el 21/10 en 0d07046, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/100#issuecomment-6314719781).
 
 ## Fase 4 — Implementación
 
