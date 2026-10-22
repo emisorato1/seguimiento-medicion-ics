@@ -296,3 +296,37 @@ func TestCambiarElEstadoDeUnDefectoNoResuelto(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Rechazar el pase a Resuelto por cambio de estado
+// Cubre: RN-10, RN-18
+func TestRechazarElPaseAResueltoPorCambioDeEstado(t *testing.T) {
+	project, defect := unDefectoRegistrado(t, 1)
+
+	err := project.ChangeDefectState(defect.ID(), DefectResolved)
+
+	if !errors.Is(err, ErrDefectResolveNeedsSprint) {
+		t.Fatalf("se esperaba ErrDefectResolveNeedsSprint, salio: %v", err)
+	}
+	if defect.State() != DefectOpen {
+		t.Fatalf("se esperaba que el defecto siguiera Abierto, quedo en %d", defect.State())
+	}
+}
+
+// Sin escenario: tarea 8 de la #15, un estado armado a mano que no existe
+// Cubre: RN-9, RN-18
+//
+// La RN-9 solo deja pasar entre Abierto y En curso. Un estado que no es ninguno de los tres
+// —un valor armado a mano, como DefectState(9)— también se rechaza, para que nunca quede
+// guardado un estado que no existe.
+func TestRechazarUnEstadoQueNoExiste(t *testing.T) {
+	project, defect := unDefectoRegistrado(t, 1)
+
+	err := project.ChangeDefectState(defect.ID(), DefectState(9))
+
+	if !errors.Is(err, ErrDefectStateInvalid) {
+		t.Fatalf("se esperaba ErrDefectStateInvalid, salio: %v", err)
+	}
+	if defect.State() != DefectOpen {
+		t.Fatalf("se esperaba que el defecto siguiera Abierto, quedo en %d", defect.State())
+	}
+}
