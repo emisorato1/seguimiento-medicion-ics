@@ -3,7 +3,7 @@
 - **Historia:** #13
 - **Sprint:** 3
 - **Responsable:** Maximiliano Eula
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 21/10: decidió los
@@ -353,7 +353,7 @@ Escenario: Consultar la ronda actual de una historia que no existe
      sería una protección de mentira, porque la clave estaría en el mismo programa.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Agustín Salinas — Fecha: 2026-10-21 — Comentarios: aprobada en el PR #115 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/115#issuecomment-6328013297), junto con las otras dos puertas. Nota que no bloquea: en la demo no hay que quitar un integrante con una ronda a medio votar (punto 1).
 
 ## Fase 2 — Diseño
 
@@ -436,7 +436,7 @@ consulta protegida.
   la ronda en curso, que tiene que seguir pasando.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Agustín Salinas — Fecha: 2026-10-21 — Comentarios: aprobada en el PR #115 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/115#issuecomment-6328013297), junto con las otras dos puertas. Nota que no bloquea: en la demo no hay que quitar un integrante con una ronda a medio votar (punto 1).
 
 ## Fase 3 — Tareas
 
@@ -520,7 +520,7 @@ guarda.
   puerta), así que la tarea 1 no espera nada.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Agustín Salinas — Fecha: 2026-10-21 — Comentarios: aprobada en el PR #115 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/115#issuecomment-6328013297), junto con las otras dos puertas. Nota que no bloquea: en la demo no hay que quitar un integrante con una ronda a medio votar (punto 1).
 
 ## Fase 4 — Implementación
 
