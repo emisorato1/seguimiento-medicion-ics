@@ -519,6 +519,7 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 3 | `4d24c31` | `9d00e6f` |
 | 16 (fila de la historia) | `15a8336` | — (sin RED, ver Desvíos) |
 | 2 (NaN, hallazgo de la revisión) | `4708708` | `9dd7309` |
+| 2 (infinito, pedido de cambios de Agustín) | `f0ee9fb` | `1a60943` |
 | Conversión: las horas estimadas se guardan (regla de la #77) | `ac4eb74` | `8b364b3` |
 | Conversión: horas estimadas negativas en los datos guardados | `a2dbb04` | `eea8b48` |
 | `Metrics` declarado como dato plano, antes que su cálculo | — (sin test, ver Desvíos) | `ab6d4e7` |
@@ -549,8 +550,21 @@ lo que no sea mayor que cero, y NaN no lo es, pero la condición estaba escrita 
 igual que cero", que con NaN da falso. Puede llegar desde la consola, porque la conversión de
 texto a número de Go acepta "NaN". Se encontró en la revisión del PR #81, antes de entrar a
 `dev`, así que no se abrió defecto: se agregó un test sin escenario que lo rechaza (RED por
-comportamiento) y la condición pasó a "no es mayor que cero". El infinito sí es mayor que
-cero y cumple la regla tal como está escrita, así que no se rechaza.
+comportamiento) y la condición pasó a "no es mayor que cero".
+
+**La carga también aceptaba horas estimadas infinitas.** Responde al pedido de cambios de
+Agustín Salinas en el PR #81 (20/10). El infinito es mayor que cero y cumplía la RN-18 tal
+como está escrita, pero no son horas:
+- La consola lo puede mandar, porque `strconv.ParseFloat` acepta el texto "Inf".
+- JSON no lo puede escribir: con una sola historia en horas infinitas, la web ya no podía
+  guardar el archivo, que se reescribe entero en cada operación.
+- La desviación de la tarea 10 daba NaN.
+
+Se agregó un test sin escenario con el infinito positivo y el negativo. Su RED fue por
+comportamiento, en el positivo; el negativo ya se rechazaba. Después se agregó el arreglo:
+se rechaza con el mismo error, como hace la #14 con las horas reales. La carga del archivo
+no cambió, porque el decodificador de JSON ya rechaza un número infinito y uno que no es un
+número.
 
 ### Desvíos respecto de la spec
 
