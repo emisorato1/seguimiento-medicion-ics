@@ -56,6 +56,9 @@ var (
 	// ErrDefectAlreadyResolved: cambiarle el estado o volver a resolver un defecto Resuelto
 	// (historia #15, RN-14).
 	ErrDefectAlreadyResolved = errors.New("el defecto ya está resuelto")
+	// ErrDefectNotFound: cambiarle el estado o resolver un defecto que no existe en el
+	// proyecto (historia #15, RN-19).
+	ErrDefectNotFound = errors.New("no se encontró el defecto")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.

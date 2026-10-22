@@ -184,6 +184,15 @@ func (p *Project) Defects() []*Defect {
 // ChangeDefectState pasa el defecto con ese identificador al estado indicado: entre Abierto y
 // En curso, en los dos sentidos e incluso al que ya tenía (RN-9).
 func (p *Project) ChangeDefectState(id int, state DefectState) error {
+	// primero se busca el defecto y después se mira su estado, como pide la Fase 2 (RN-19)
+	defect, err := p.findDefect(id)
+	if err != nil {
+		return err
+	}
+	// un defecto resuelto no se reabre ni cambia de estado (RN-14)
+	if defect.state == DefectResolved {
+		return ErrDefectAlreadyResolved
+	}
 	// a Resuelto solo se llega resolviendo, porque hace falta el sprint (RN-10)
 	if state == DefectResolved {
 		return ErrDefectResolveNeedsSprint
@@ -191,39 +200,42 @@ func (p *Project) ChangeDefectState(id int, state DefectState) error {
 	if state != DefectOpen && state != DefectInProgress {
 		return ErrDefectStateInvalid
 	}
-	for _, defect := range p.defects {
-		if defect.id == id {
-			// un defecto resuelto no se reabre ni cambia de estado (RN-14)
-			if defect.state == DefectResolved {
-				return ErrDefectAlreadyResolved
-			}
-			defect.state = state
-		}
-	}
+	defect.state = state
 	return nil
 }
 
 // ResolveDefect pasa el defecto con ese identificador a Resuelto y registra el sprint en que
 // se resolvió, esté Abierto o En curso (RN-11).
 func (p *Project) ResolveDefect(id, sprintNumber int) error {
+	defect, err := p.findDefect(id)
+	if err != nil {
+		return err
+	}
 	// el sprint de resolución tiene que existir en el proyecto (RN-12)
 	if _, err := p.Sprint(sprintNumber); err != nil {
 		return err
 	}
+	if defect.state == DefectResolved {
+		return ErrDefectAlreadyResolved
+	}
+	// "anterior" se compara por número de sprint; el mismo sprint vale (RN-13)
+	if sprintNumber < defect.detectedIn {
+		return ErrDefectResolvedBeforeDetected
+	}
+	defect.state = DefectResolved
+	defect.resolvedIn = sprintNumber
+	return nil
+}
+
+// findDefect devuelve el defecto guardado con ese identificador dentro del proyecto, no una
+// copia (RN-19 si no existe).
+func (p *Project) findDefect(id int) (*Defect, error) {
 	for _, defect := range p.defects {
 		if defect.id == id {
-			if defect.state == DefectResolved {
-				return ErrDefectAlreadyResolved
-			}
-			// "anterior" se compara por número de sprint; el mismo sprint vale (RN-13)
-			if sprintNumber < defect.detectedIn {
-				return ErrDefectResolvedBeforeDetected
-			}
-			defect.state = DefectResolved
-			defect.resolvedIn = sprintNumber
+			return defect, nil
 		}
 	}
-	return nil
+	return nil, ErrDefectNotFound
 }
 
 // DefectsByState devuelve los defectos del proyecto que están en ese estado, en el orden en
