@@ -196,3 +196,37 @@ func TestGuardarLaActividadSinLosEspaciosDeLosExtremos(t *testing.T) {
 		t.Fatalf("se esperaba la actividad %q, salio %q", "Revisar el pull request", effort.Activity())
 	}
 }
+
+// Escenario: Rechazar el registro de alguien que no es integrante del proyecto
+// Cubre: RN-7, RN-18
+func TestRechazarElRegistroDeAlguienQueNoEsIntegranteDelProyecto(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	data := unEsfuerzo()
+	data.MemberName = "Pedro Gomez"
+
+	_, err := project.LogEffort(data, hoy)
+
+	if !errors.Is(err, ErrMemberNotFound) {
+		t.Fatalf("se esperaba ErrMemberNotFound para Pedro Gomez, salio: %v", err)
+	}
+	if len(project.Efforts()) != 0 {
+		t.Fatalf("se esperaba que el proyecto siguiera sin registros, tiene %d", len(project.Efforts()))
+	}
+}
+
+// Escenario: Encontrar al integrante aunque el nombre venga escrito distinto
+// Cubre: RN-7, RN-8
+func TestEncontrarAlIntegranteAunqueElNombreVengaEscritoDistinto(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	data := unEsfuerzo()
+	data.MemberName = "  juliana bustos  "
+
+	effort, err := project.LogEffort(data, hoy)
+
+	if err != nil {
+		t.Fatalf("se esperaba encontrar a la integrante, salio: %v", err)
+	}
+	if effort.MemberName() != "Juliana Bustos" {
+		t.Fatalf("se esperaba el registro a nombre de %q, salio %q", "Juliana Bustos", effort.MemberName())
+	}
+}
