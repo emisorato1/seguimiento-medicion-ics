@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"testing"
 )
@@ -118,5 +119,36 @@ func TestRechazarHorasEstimadasQueNoSonUnNumero(t *testing.T) {
 	}
 	if !mismasHoras(story.EstimatedHours(), 4) {
 		t.Fatalf("se esperaba que la historia siguiera con 4 horas estimadas, salio %v", story.EstimatedHours())
+	}
+}
+
+// Sin escenario: caso límite de la RN-18, pedido de cambios de Agustín en el PR #81 (20/10)
+// Cubre: RN-18
+//
+// El infinito positivo es mayor que cero, pero no son horas: strconv.ParseFloat acepta el
+// texto "Inf", y con una historia en horas infinitas la web ya no puede guardar el archivo,
+// porque JSON no tiene cómo escribirlas. El negativo ya lo rechazaba la regla; va igual para
+// que los dos queden cubiertos.
+func TestRechazarHorasEstimadasInfinitas(t *testing.T) {
+	for _, hours := range []float64{math.Inf(1), math.Inf(-1)} {
+		t.Run(fmt.Sprint(hours), func(t *testing.T) {
+			project := unProyecto(t)
+			story, err := project.AddStory(unosDatos())
+			if err != nil {
+				t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+			}
+			if err := project.EstimateHours(story.ID(), 4); err != nil {
+				t.Fatalf("no se pudieron cargar las 4 horas estimadas de prueba: %v", err)
+			}
+
+			err = project.EstimateHours(story.ID(), hours)
+
+			if !errors.Is(err, ErrEstimatedHoursInvalid) {
+				t.Fatalf("se esperaba ErrEstimatedHoursInvalid al cargar %v horas, salio: %v", hours, err)
+			}
+			if !mismasHoras(story.EstimatedHours(), 4) {
+				t.Fatalf("se esperaba que la historia siguiera con 4 horas estimadas, salio %v", story.EstimatedHours())
+			}
+		})
 	}
 }
