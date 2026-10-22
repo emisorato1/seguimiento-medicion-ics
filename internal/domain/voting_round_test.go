@@ -140,3 +140,42 @@ func TestUnaHistoriaNoPuedeTenerDosRondasEnCurso(t *testing.T) {
 		t.Fatalf("se esperaba abrir la ronda de la historia %d sin error, salio: %v", other.ID(), err)
 	}
 }
+
+// openRound abre una ronda sobre la historia 1 de un proyecto con "Agustin Salinas",
+// "Juliana Bustos" y "Maximiliano Eula": el "Dado una ronda sin revelar" de los escenarios.
+func openRound(t *testing.T) (*Project, *VotingRound) {
+	t.Helper()
+	project, story := projectWithThreeMembers(t)
+	round, err := project.OpenVotingRound(story.ID())
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda de prueba: %v", err)
+	}
+	return project, round
+}
+
+// Escenario: Votar registra quien voto sin dejar ver los votos, ni siquiera el propio
+// Cubre: RN-8, RN-12, RN-13
+func TestVotarRegistraQuienVotoSinDejarVerLosVotosNiSiquieraElPropio(t *testing.T) {
+	_, round := openRound(t)
+	if err := round.Vote("Agustin Salinas", 3); err != nil {
+		t.Fatalf("se esperaba aceptar el voto de Agustin Salinas, salio: %v", err)
+	}
+	if err := round.Vote("Juliana Bustos", 8); err != nil {
+		t.Fatalf("se esperaba aceptar el voto de Juliana Bustos, salio: %v", err)
+	}
+
+	votes, err := round.Votes()
+
+	if !errors.Is(err, ErrVotesHidden) {
+		t.Fatalf("se esperaba ErrVotesHidden, salio: %v", err)
+	}
+	if votes != nil {
+		t.Fatalf("se esperaba no recibir ningun voto, salio: %v", votes)
+	}
+	if want := []string{"Agustin Salinas", "Juliana Bustos"}; !slices.Equal(round.Voted(), want) {
+		t.Fatalf("se esperaba que votaran %v, salio: %v", want, round.Voted())
+	}
+	if want := []string{"Maximiliano Eula"}; !slices.Equal(round.Pending(), want) {
+		t.Fatalf("se esperaba que faltara %v, salio: %v", want, round.Pending())
+	}
+}
