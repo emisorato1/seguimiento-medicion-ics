@@ -54,8 +54,22 @@ type EffortData struct {
 }
 
 // LogEffort registra esfuerzo en el proyecto (RN-1). El día de hoy lo recibe de quien llama:
-// el dominio no lee el reloj (AGENTS.md).
+// el dominio no lee el reloj (AGENTS.md). Valida todo antes de guardar: si algo falla, el
+// proyecto queda como estaba (RN-18).
 func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
+	effort, err := p.newEffort(data, today, true)
+	if err != nil {
+		return nil, err
+	}
+	p.efforts = append(p.efforts, effort)
+	return effort, nil
+}
+
+// newEffort arma un registro validando sus datos en el orden de la Fase 2: integrante,
+// historia, día, horas y actividad. No lo guarda. La carga de los datos guardados lo usa sin
+// controlar el día futuro (checkToday en falso): al cargar no hay un "hoy" con qué comparar,
+// y un día que no era futuro al guardarse no puede volverse futuro después (Fase 2).
+func (p *Project) newEffort(data EffortData, today time.Time, checkToday bool) (*Effort, error) {
 	// el integrante se busca como en la #4, ignorando mayúsculas y los espacios de los
 	// extremos, y se guarda su nombre tal como está cargado (RN-7, RN-8)
 	member := p.findMember(strings.TrimSpace(data.MemberName))
@@ -72,7 +86,7 @@ func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
 	}
 	// el dia se compara solo con hoy, sin la hora, y no con las fechas del proyecto ni de los
 	// sprints (RN-4, RN-17)
-	if toDay(data.Day).After(toDay(today)) {
+	if checkToday && toDay(data.Day).After(toDay(today)) {
 		return nil, ErrEffortDayInFuture
 	}
 	// "mayor que cero" escrito asi rechaza tambien NaN, que no es mayor ni menor que nada;
@@ -86,15 +100,13 @@ func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
 	if activity == "" {
 		return nil, ErrEffortActivityRequired
 	}
-	effort := &Effort{
+	return &Effort{
 		storyID:    data.StoryID,
 		memberName: member.name,
 		activity:   activity,
 		hours:      data.Hours,
 		day:        toDay(data.Day),
-	}
-	p.efforts = append(p.efforts, effort)
-	return effort, nil
+	}, nil
 }
 
 // Efforts devuelve los registros de esfuerzo del proyecto, en el orden en que se cargaron
