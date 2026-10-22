@@ -402,3 +402,32 @@ func TestResolverUnDefectoEnElMismoSprintEnQueSeDetecto(t *testing.T) {
 		t.Fatalf("se esperaba el defecto Resuelto en el sprint 2, salio en %d con el sprint %d (error: %v)", defect.State(), defect.ResolvedIn(), err)
 	}
 }
+
+// Esquema del escenario: Un defecto resuelto no se vuelve a tocar
+// Cubre: RN-14, RN-18
+func TestUnDefectoResueltoNoSeVuelveATocar(t *testing.T) {
+	cases := []struct {
+		name string
+		run  func(project *Project, id int) error
+	}{
+		{"cambiarle el estado a Abierto", func(project *Project, id int) error { return project.ChangeDefectState(id, DefectOpen) }},
+		{"resolver en el sprint 3", func(project *Project, id int) error { return project.ResolveDefect(id, 3) }},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, defect := unDefectoRegistrado(t, 3)
+			if err := project.ResolveDefect(defect.ID(), 2); err != nil {
+				t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
+			}
+
+			err := tc.run(project, defect.ID())
+
+			if !errors.Is(err, ErrDefectAlreadyResolved) {
+				t.Fatalf("se esperaba ErrDefectAlreadyResolved, salio: %v", err)
+			}
+			if defect.State() != DefectResolved || defect.ResolvedIn() != 2 {
+				t.Fatalf("se esperaba que siguiera Resuelto en el sprint 2, quedo en %d con el sprint %d", defect.State(), defect.ResolvedIn())
+			}
+		})
+	}
+}
