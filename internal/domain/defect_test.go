@@ -256,3 +256,43 @@ func TestRegistrarUnDefectoDetectadoEnUnSprintYaCerrado(t *testing.T) {
 		t.Fatalf("se esperaba registrar un defecto detectado en un sprint cerrado, salio: %v", err)
 	}
 }
+
+// unDefectoRegistrado registra el defecto 1 en un proyecto con la historia 1 y los sprints del
+// 1 al n, y lo devuelve.
+func unDefectoRegistrado(t *testing.T, sprints int) (*Project, *Defect) {
+	t.Helper()
+	project := unProyectoConDefectos(t, sprints)
+	defect, err := project.AddDefect(unDefecto())
+	if err != nil {
+		t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+	}
+	return project, defect
+}
+
+// Esquema del escenario: Cambiar el estado de un defecto no resuelto
+// Cubre: RN-9
+func TestCambiarElEstadoDeUnDefectoNoResuelto(t *testing.T) {
+	cases := []struct {
+		name     string
+		from, to DefectState
+	}{
+		{"de Abierto a En curso", DefectOpen, DefectInProgress},
+		{"de En curso a Abierto", DefectInProgress, DefectOpen},
+		{"de Abierto a Abierto", DefectOpen, DefectOpen},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, defect := unDefectoRegistrado(t, 1)
+			defect.state = tc.from
+
+			err := project.ChangeDefectState(defect.ID(), tc.to)
+
+			if err != nil {
+				t.Fatalf("se esperaba cambiar el estado sin error, salio: %v", err)
+			}
+			if defect.State() != tc.to {
+				t.Fatalf("se esperaba el estado %d, salio %d", tc.to, defect.State())
+			}
+		})
+	}
+}
