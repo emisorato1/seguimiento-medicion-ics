@@ -56,6 +56,12 @@ type EffortData struct {
 // LogEffort registra esfuerzo en el proyecto (RN-1). El día de hoy lo recibe de quien llama:
 // el dominio no lee el reloj (AGENTS.md).
 func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
+	// el integrante se busca como en la #4, ignorando mayúsculas y los espacios de los
+	// extremos, y se guarda su nombre tal como está cargado (RN-7, RN-8)
+	member := p.findMember(strings.TrimSpace(data.MemberName))
+	if member == nil {
+		return nil, ErrMemberNotFound
+	}
 	if data.Day.IsZero() {
 		return nil, ErrEffortDayRequired
 	}
@@ -77,7 +83,7 @@ func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
 	}
 	effort := &Effort{
 		storyID:    data.StoryID,
-		memberName: data.MemberName,
+		memberName: member.name,
 		activity:   activity,
 		hours:      data.Hours,
 		day:        data.Day,
