@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 22:13. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 22:24. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -29,6 +29,7 @@ _No hay historias en este estado._
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 
 ## Especificacion SDD
@@ -37,7 +38,6 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+ea0bda6 2026-10-21 Merge pull request #115 from emisorato1/historia-13-votar-en-secreto
+1a80571 2026-10-21 Merge remote-tracking branch 'origin/dev' into HEAD
+4a2a7fe 2026-10-21 Merge pull request #128 from emisorato1/historia-77-terminada
+c41f090 2026-10-21 chore: regenerar ESTADO.md y la trazabilidad con la historia 77 terminada
+cf16cd7 2026-10-21 docs: la historia 77 terminada en su spec, el indice, la review y el informe del sprint 2
 1f70d51 2026-10-21 Merge pull request #109 from emisorato1/docs-manual-web
 080d2d7 2026-10-21 Merge pull request #95 from emisorato1/historia-77-web
 ee69131 2026-10-21 docs: Maximiliano Eula acepto los tres agregados de la #77
-385c605 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-77-web
-898ae39 2026-10-21 Merge pull request #127 from emisorato1/chore-estado-historias-juliana
-fe2f10a 2026-10-21 Merge pull request #126 from emisorato1/acta-sprint-2-juliana
-da01e01 2026-10-21 chore: regenerar ESTADO.md y la trazabilidad con la historia 5 terminada
-49805ce 2026-10-21 docs: la historia 5 terminada en la review y el informe del sprint 2, sin horas reales todavia
 ```
