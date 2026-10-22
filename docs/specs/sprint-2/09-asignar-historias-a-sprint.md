@@ -447,7 +447,7 @@ eslabones seguidos de la misma cadena.
 | 9 | `f8681fa` | — (ver abajo) |
 | 10 | `c739a3a` | `7443a68` |
 | 11, 12 y 13 | `f22036f` | — (ver abajo) |
-| 14 | `2f5f674` | `5cbe0c8` |
+| 14 | `2f5f674` y `40640f4` | `5cbe0c8` y `8a048e5` |
 
 ### Desvíos respecto de la spec
 
@@ -462,6 +462,10 @@ eslabones seguidos de la misma cadena.
   historia terminada", que la RN-6 sumó en la revisión de las puertas, cae en la tarea 6 y
   necesita la operación. Se creó ahí con ese único control, y la tarea 8 le agregó sacar la
   historia del Sprint Backlog.
+- **La tarea 14 tiene un segundo ciclo** (`40640f4` y `8a048e5`): al cargar, una historia
+  repetida en un Sprint Backlog se rechaza con el mismo error que al asignarla dos veces. Lo
+  encontró la revisión propia del PR, antes de pedir la revisión: un archivo editado a mano
+  podía traer lo que el sistema nunca deja hacer.
 - **No hay una consulta nueva del Sprint Backlog**: es `Stories()` del sprint abierto, que
   devuelve los identificadores en orden. El detalle de cada historia se pide al Product
   Backlog, como dice la Fase 2 (una sola fuente).
