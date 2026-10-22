@@ -78,7 +78,25 @@ func (r *VotingRound) Vote(member string, points int) error {
 // que entrega valores, y mientras la ronda no esté revelada responde con un error, no con
 // una lista vacía, que se confundiría con "nadie votó" (RN-12, Fase 2).
 func (r *VotingRound) Votes() ([]Vote, error) {
-	return nil, ErrVotesHidden
+	if !r.revealed {
+		return nil, ErrVotesHidden
+	}
+	votes := make([]Vote, 0, len(r.votes))
+	for _, name := range r.participants {
+		for _, vote := range r.votes {
+			if vote.MemberName == name {
+				votes = append(votes, vote)
+			}
+		}
+	}
+	return votes, nil
+}
+
+// Reveal da vuelta todos los votos juntos: desde entonces Votes los entrega, cada uno con
+// el nombre de quien lo dio y en el orden de los integrantes (RN-14).
+func (r *VotingRound) Reveal() error {
+	r.revealed = true
+	return nil
 }
 
 // OpenVotingRound abre una ronda de votacion sobre la historia con ese identificador. Los
