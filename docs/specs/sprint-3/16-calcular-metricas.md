@@ -440,8 +440,8 @@ solo test con tabla de casos. Los números con decimales se comparan con una tol
 | 1 | Una historia nace con cero horas estimadas; cargarlas las registra con fracciones, y volver a cargarlas reemplaza | Cargar y reemplazar las horas estimadas de una historia | RN-17 | hecha |
 | 2 | Rechazar horas estimadas cero o negativas, sin cambiar la historia | Rechazar horas estimadas que no son mayores que cero | RN-18 | hecha |
 | 3 | Rechazar la carga en una historia Terminada, sin cambiarla | No cambiar las horas estimadas de una historia terminada | RN-19 | hecha |
-| 4 | Las métricas de un sprint y de un proyecto sin datos valen cero | Sin datos cargados las metricas valen cero | RN-1, RN-14, RN-15 | pendiente |
-| 5 | Planificados de un sprint: puntos y cantidad de todas sus historias comprometidas | Metricas de un sprint cerrado | RN-3, RN-16 | pendiente |
+| 4 | Las métricas de un sprint y de un proyecto sin datos valen cero | Sin datos cargados las metricas valen cero | RN-1, RN-14, RN-15 | hecha |
+| 5 | Planificados de un sprint: puntos y cantidad de todas sus historias comprometidas | Metricas de un sprint cerrado | RN-3, RN-16 | hecha |
 | 6 | Completados y velocidad de un sprint salen del registro del cierre | Una historia que volvio al backlog cuenta como completada solo donde se completo | RN-4, RN-5 | pendiente |
 | 7 | Los puntos de un sprint cerrado salen de los registrados al cerrarlo, no de los actuales | Los puntos de un sprint cerrado no cambian si se reestima una historia | RN-3 | pendiente |
 | 8 | Un sprint abierto devuelve sus métricas con completados y velocidad en cero | Las metricas de un sprint abierto son parciales | RN-6 | pendiente |
@@ -452,7 +452,7 @@ solo test con tabla de casos. Los números con decimales se comparan con una tol
 | 13 | Métricas del proyecto: todo el backlog, todo el esfuerzo y todos los defectos | Metricas del proyecto entero | RN-9, RN-11 | pendiente |
 | 14 | Velocidad del proyecto: promedio redondeado de los sprints cerrados, y cero sin ninguno | Velocidad del proyecto | RN-10 | pendiente |
 | 15 | Pedir las métricas no cambia ningún dato y refleja lo que se cargó después | Las metricas reflejan los datos cargados despues | RN-2 | pendiente |
-| 16 | Sprint, historia o proyecto inexistentes informan que no se encontraron | Pedir algo que no existe | RN-20 | en curso: fila de la historia |
+| 16 | Sprint, historia o proyecto inexistentes informan que no se encontraron | Pedir algo que no existe | RN-20 | hecha |
 
 **El escenario "Metricas de un sprint cerrado" se completa en varias tareas.** La 5 escribe su
 test verificando los planificados, y la 6, la 9, la 10, la 11 y la 12 le agregan la
@@ -522,6 +522,9 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | Conversión: las horas estimadas se guardan (regla de la #77) | `ac4eb74` | `8b364b3` |
 | Conversión: horas estimadas negativas en los datos guardados | `a2dbb04` | `eea8b48` |
 | `Metrics` declarado como dato plano, antes que su cálculo | — (sin test, ver Desvíos) | `ab6d4e7` |
+| 4 | `7f4a880` | `0faa0aa` |
+| 16 (filas del sprint y del proyecto) | `3f540d8` | `538264d` (la del proyecto, sin RED: ver Desvíos) |
+| 5 | `11f3554` | `fff2a46` |
 
 Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
 existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
@@ -567,6 +570,12 @@ Ninguno de comportamiento. Uno de orden:
   contrato (PR #122). No lleva test ni RED porque es una declaración sin comportamiento: no
   hay nada que un test pueda verificar que falle antes y pase después. El comportamiento
   llega con las tareas 4 a 16, cada una con su test primero.
+
+- **La fila "pedir las métricas del proyecto 99" de la tarea 16 pasó sin código nuevo**: el
+  proyecto se busca en el registro de la #3, que ya informa que no se encontró. La del
+  sprint 99 sí tuvo RED. Las tareas 4, 5 y 16 se hicieron el 21/10, apenas el sprint de la #8
+  llegó a `dev`; asignar historias (#9) y cerrar el sprint (#10) todavía no están, así que
+  los tests arman esos datos dentro del paquete, sin tocar `sprint.go`.
 
 Nota de proceso: las tareas 4 a 16 necesitan `Sprint` (#8), `Effort` (#14) y `Defect` (#15).
 Como ninguna está en `dev` y esas entidades son de sus dueños, las tareas 1 a 3 entran en un
