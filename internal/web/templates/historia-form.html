@@ -1,0 +1,43 @@
+{{define "content"}}
+<h1>{{.Data.Heading}}</h1>
+{{template "error-formulario" .Data.Form.General}}
+<form class="formulario" method="post" action="{{.Data.Action}}" novalidate>
+  {{with .Data.Form.Field "titulo"}}
+  <div class="campo">
+    <label for="titulo">Título</label>
+    <input type="text" id="titulo" name="titulo" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "descripcion"}}
+  <div class="campo">
+    <label for="descripcion">Descripción</label>
+    <textarea id="descripcion" name="descripcion"{{template "invalido" .}}>{{.Value}}</textarea>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "prioridad"}}
+  <div class="campo">
+    <label for="prioridad">Prioridad</label>
+    <select id="prioridad" name="prioridad"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí una prioridad" $.Data.Priorities .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "criterios"}}
+  <div class="campo">
+    <label for="criterios">Criterios de aceptación</label>
+    <span class="ayuda" id="criterios-ayuda">Uno por renglón.</span>
+    {{/* Este campo ya esta descripto por su ayuda: el error se suma a la misma lista, porque
+         el navegador solo lee el primer aria-describedby. */}}
+    <textarea id="criterios" name="criterios" aria-describedby="criterios-ayuda{{if .Error}} criterios-error{{end}}"{{if .Error}} aria-invalid="true"{{if .Focus}} autofocus{{end}}{{end}}>{{.Value}}</textarea>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">{{.Data.Submit}}</button>
+    <a class="boton boton-secundario" href="{{.Data.Cancel}}">Cancelar</a>
+  </div>
+</form>
+{{end}}

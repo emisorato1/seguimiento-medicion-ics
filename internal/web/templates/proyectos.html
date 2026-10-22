@@ -1,0 +1,35 @@
+{{define "content"}}
+<h1>Proyectos</h1>
+{{if not .Data.Projects}}
+<div class="vacio">
+  <p>Todavía no hay proyectos.</p>
+  <a class="boton" href="/proyectos/nuevo">Crear el primer proyecto</a>
+</div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/nuevo">Nuevo proyecto</a>
+</div>
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Inicio</th>
+        <th scope="col">Fin</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Data.Projects}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td class="principal"><a href="/proyectos/{{.ID}}">{{.Name}}</a></td>
+        <td>{{fecha .Start}}</td>
+        <td>{{if .HasEnd}}{{fecha .End}}{{else}}<span class="sin-dato">sin fecha de fin</span>{{end}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}

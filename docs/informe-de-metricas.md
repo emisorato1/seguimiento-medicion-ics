@@ -89,17 +89,19 @@ escritas las horas que tenía cada historia al cierre.
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|
 | Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
-| SP planificados | 16 | _pendiente_ | _pendiente_ | _pendiente_ |
-| SP completados (velocidad) | **6** | _pendiente_ | _pendiente_ | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | _pendiente_ | _pendiente_ | _pendiente_ |
-| Horas estimadas | 48 | _pendiente_ | _pendiente_ | _pendiente_ |
-| Horas reales | 38,25 | _pendiente_ | _pendiente_ | _pendiente_ |
-| Desviación total | −20% | _pendiente_ | _pendiente_ | _pendiente_ |
-| Desviación de las historias terminadas | −11% | _pendiente_ | _pendiente_ | _pendiente_ |
-| Horas por story point completado | 2,7 | _pendiente_ | _pendiente_ | _pendiente_ |
-| Defectos detectados / resueltos | 2 / 1 | _pendiente_ | _pendiente_ | _pendiente_ |
-| Cobertura del dominio | 100% | _pendiente_ | _pendiente_ | _pendiente_ |
-| Tests | 52 | _pendiente_ | _pendiente_ | _pendiente_ |
+| SP planificados | 16 | 31 | _pendiente_ | _pendiente_ |
+| SP completados (velocidad) | **6** | 15 * | _pendiente_ | _pendiente_ |
+| Historias completadas | 2 de 5 (40%) | 5 de 9 (56%) * | _pendiente_ | _pendiente_ |
+| Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
+| Horas reales | 38,25 | 13 * | _pendiente_ | _pendiente_ |
+| Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
+| Desviación de las historias terminadas | −11% | −20% * | _pendiente_ | _pendiente_ |
+| Horas por story point completado | 2,7 | 2,4 * | _pendiente_ | _pendiente_ |
+| Defectos detectados / resueltos | 2 / 1 | 1 / 2 * | _pendiente_ | _pendiente_ |
+| Cobertura del dominio | 100% | 100% * | _pendiente_ | _pendiente_ |
+| Tests | 52 | 121 * | _pendiente_ | _pendiente_ |
+
+_* Sprint 2 al 21/10: se actualiza al cierre, el domingo 25._
 
 **Velocidad del proyecto:** 6 (el promedio de los sprints cerrados; por ahora, uno solo).
 
@@ -206,9 +208,67 @@ los casos donde no hay un commit de implementación por cada test.]_
 
 ## Sprint 2 — interfaz usable
 
-_[Se completa el 25/10 con la review. Mismas secciones que el Sprint 1. Incluye la #6 y la
-#12, que llegaron del Sprint 1: compromiso de 31 SP, con los 5 de la #6 ya terminados el
-19/10.]_
+> **Al 21/10, se actualiza al cierre** del domingo 25 con el acta de review.
+
+- **Sprint Goal:** que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda
+  operar desde la consola.
+- **Duración:** del 20/10 al 25/10, seis días.
+- Actas: [planning](actas/sprint-2-planning.md), [review](actas/sprint-2-review.md) y
+  [retrospectiva](actas/sprint-2-retrospectiva.md), las dos últimas en esqueleto hasta el cierre.
+
+### Historias y story points
+
+El compromiso es de **31 SP**: los 26 del plan más los 5 de la #6, que se mergeó el 19/10,
+entre el Sprint 1 y el 2, y por eso cuenta acá. La #77 (interfaz web) entró al sprint sin
+estimar: no suma puntos ni horas hasta que el equipo la estime.
+
+| # | Historia | SP | Estado al 21/10 |
+|---|---|---|---|
+| 6 | Administrar el Product Backlog | 5 | Hecho |
+| 12 | Estimar historias con Story Points | 2 | Hecho |
+| 24 | Operar el sistema desde una interfaz de consola | 3 | Hecho |
+| 7 | Priorizar el Product Backlog | 2 | Hecho |
+| 8 | Crear un sprint con su Sprint Goal | 3 | En progreso: las tareas 1, 2, 3 y 16 ya están en `dev` (PR #104) |
+| 9 | Asignar historias a un sprint | 5 | Lista para implementar |
+| 5 | Consultar el estado de un proyecto | 3 | Hecho |
+| 14 | Registrar el esfuerzo real | 3 | En progreso: la spec y el código van en el PR #100 |
+| 15 | Gestionar defectos | 5 | Lista para implementar |
+| 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
+
+- Completados al 21/10: **15 SP**, 5 de 9 historias. Tres llegaron del Sprint 1; la #7 y la #5
+  son las primeras historias nuevas del sprint que se terminan.
+
+### Esfuerzo
+
+- Horas estimadas de las historias nuevas: **56,7**, a 2,7 h por story point. Las de la #6,
+  la #12 y la #24 (30 h) ya están en el Sprint 1.
+- Horas trabajadas en el sprint al 21/10: **13**. Es el total del tablero (35,25) menos las
+  22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
+- Historias terminadas, medidas enteras: **35,4 h estimadas contra 28,25 reales (−20%)**, 2,4 h
+  por story point, sin la #5, que no tiene horas reales cargadas: contarla con cero daría una
+  desviación que no pasó. La mayor parte de esas horas se trabajaron en el Sprint 1, así que este número
+  todavía no dice cuánto cuesta un punto en el Sprint 2: eso se va a ver con las historias
+  nuevas, al cierre.
+
+### Defectos
+
+| # | Defecto | Detectado | Resuelto |
+|---|---|---|---|
+| 60 | Los mensajes de error del dominio no llevan tildes | Sprint 1 (12/10) | Sprint 2 (20/10) |
+| 108 | Tres tests de `internal/store` fallan en Windows | Sprint 2 (20/10) | Sprint 2 (21/10, PR #116) |
+
+- Detectados en el sprint: **1**. Resueltos en el sprint: **2**. Abiertos: **0**.
+
+### Cobertura y tests
+
+Medido sobre `dev` en `6ad7ac7` (21/10): dominio **100%**, `internal/store` 96,0%, consola
+(`cmd/app`) 96,2% y **98,8% en total**, con **121 tests** (234 casos). Desde el arreglo del
+#108 el CI corre los tests también en Windows.
+
+### Evidencia de TDD
+
+El recorrido de cada historia —escenario, test, código y los commits RED y GREEN— está en la
+[trazabilidad](trazabilidad.md), que se regenera con `scripts/trazabilidad.sh`.
 
 ## Sprint 3 — funcionalidad y calidad
 

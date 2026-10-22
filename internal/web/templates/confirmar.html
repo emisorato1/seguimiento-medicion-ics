@@ -1,0 +1,17 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Confirmar</h1>
+{{template "error-formulario" .Error}}
+<div class="confirmar">
+  <p><strong>{{.Question}}</strong></p>
+  <p>{{.Detail}}</p>
+  <form method="post" action="{{.Action}}">
+    {{range $name, $value := .Fields}}<input type="hidden" name="{{$name}}" value="{{$value}}">{{end}}
+    <div class="acciones">
+      <button type="submit" class="boton-peligro">{{.Confirm}}</button>
+      <a class="boton boton-secundario" href="{{.Cancel}}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{{end}}
+{{end}}

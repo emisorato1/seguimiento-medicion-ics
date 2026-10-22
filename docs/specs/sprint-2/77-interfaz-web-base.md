@@ -3,7 +3,7 @@
 - **Historia:** #77
 - **Sprint:** 2
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **lista para implementar** (las aprobó el responsable como excepción; falta que un compañero las ratifique en la issue #77)
+- **Estado:** Terminada en el Sprint 2 — **mergeada a `dev`** el 21/10 (PR #95). Las puertas las aprobó el responsable como excepción y **las ratificó Maximiliano Eula el 2026-10-20** en la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279). Tres cosas se agregaron después de lo que él vio —la D16 (un dato desconocido rechaza la carga), la opción vacía de las listas y el 404 en castellano (Fase 4, "Desvíos")— y **las aceptó Maximiliano Eula el 21/10** en el PR #95 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/95#issuecomment-6329603750)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
@@ -317,6 +317,7 @@ del equipo no estaba disponible (ver las líneas de cada puerta).
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279), desde su cuenta. Ratifica las tres puertas y acepta los siete puntos de "Para decidir en la puerta".
 
 ## Fase 2 — Diseño
 
@@ -385,7 +386,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
 | **D13** Los datos se guardan en un archivo JSON con `encoding/json`, reescrito entero después de cada operación aceptada **(AGENTS.md)** | una base de datos (SQLite); guardar al cerrar; un registro de cambios | SQLite es una dependencia externa; guardar al cerrar pierde todo si el programa se corta; los datos son pocos y reescribir entero es lo más simple de probar |
 | **D14** La conversión vive en `internal/domain`, con tipos intermedios no exportados; leer y escribir el archivo es de `internal/store` **(AGENTS.md)** | la conversión en la web o en `internal/store` | los datos de las entidades están ocultos fuera del paquete: afuera no se pueden leer ni reconstruir sin exportarlos, y exportarlos permitiría saltear las validaciones. El dominio sigue sin tocar archivos: convierte a texto y desde texto |
 | **D15** Al reconstruir, cada entidad pasa por las mismas validaciones que al crearla, se conservan los números y los contadores, y un dato inválido rechaza la carga entera | confiar en el archivo | el archivo es texto y se puede editar o romper a mano; un proyecto sin nombre o 4 story points romperían reglas que el resto da por ciertas. Guardar los contadores es lo que hace que la numeración no retroceda (RN-22) |
-| **D16** En el archivo, las fechas van como día (aaaa-mm-dd) y el rol, la prioridad y el estado con su nombre. No lleva número de versión: un dato que falta se carga vacío. **Un dato que el sistema no conoce rechaza la carga** | guardar la fecha con hora y zona, los números de las constantes y una versión del formato; **ignorar los datos que el sistema no conoce** | el día evita el defecto #59; con nombres el archivo se lee y no se rompe si se reordenan las constantes. Sin versión, un archivo de antes de los sprints carga con cero sprints, que es correcto. **Ignorar lo desconocido haría que una versión vieja del programa cargue un archivo con datos de una historia posterior (por ejemplo los sprints) sin ellos, y los borre en silencio al volver a guardar.** Lo de los datos desconocidos lo aceptó el responsable el 20/10, después de las puertas, a partir de la revisión del PR #92: queda para la ratificación |
+| **D16** En el archivo, las fechas van como día (aaaa-mm-dd) y el rol, la prioridad y el estado con su nombre. No lleva número de versión: un dato que falta se carga vacío. **Un dato que el sistema no conoce rechaza la carga** | guardar la fecha con hora y zona, los números de las constantes y una versión del formato; **ignorar los datos que el sistema no conoce** | el día evita el defecto #59; con nombres el archivo se lee y no se rompe si se reordenan las constantes. Sin versión, un archivo de antes de los sprints carga con cero sprints, que es correcto. **Ignorar lo desconocido haría que una versión vieja del programa cargue un archivo con datos de una historia posterior (por ejemplo los sprints) sin ellos, y los borre en silencio al volver a guardar.** Lo de los datos desconocidos lo aceptó el responsable el 20/10, después de las puertas, a partir de la revisión del PR #92: lo aceptó Maximiliano Eula el 21/10 en el PR #95 |
 | **D17** Se escribe en un archivo temporal de la misma carpeta y se renombra | escribir encima del archivo | un corte a mitad de la escritura dejaría un archivo roto y, por D15 y D18, el sistema no volvería a arrancar |
 | **D18** Al arrancar: sin archivo, se empieza vacío; con un archivo que no se puede leer, el comando termina con el motivo y no lo toca | empezar vacío en los dos casos | el primer guardado pisaría los datos (RN-24) |
 | **D19** Si el guardado falla, el cambio queda en memoria y se avisa con estado 500; el siguiente guardado exitoso lo incluye | deshacer el cambio | el dominio no tiene cómo deshacer, y como se guarda el registro entero nada se pierde si el siguiente guardado funciona |
@@ -412,6 +413,7 @@ JSON y lo reconstruye validando (D14, D15), `internal/store` lee y reescribe el 
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279), desde su cuenta. Ratifica las tres puertas y acepta los siete puntos de "Para decidir en la puerta".
 
 ## Fase 3 — Tareas
 
@@ -424,34 +426,34 @@ filas, que son lo que falla primero. Un test que pase sin código nuevo va a Des
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | La escala de story points se puede leer, y cambiar lo recibido no la cambia | — (lectura nueva del dominio) | RN-11 | pendiente |
-| 2 | Ida y vuelta: un registro con proyectos, integrantes e historias (estimada, sin estimar y Terminada) se convierte a JSON y se reconstruye igual, con sus números y contadores | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | pendiente |
-| 3 | Reconstruir rechaza un texto que no es JSON y los datos que el dominio no acepta: sin nombre, 4 story points, rol inexistente, dos Agile Enabler | Los datos guardados estan danados | RN-24 | pendiente |
-| 4 | El archivo: si no existe, registro vacío; lo escrito se vuelve a leer igual; no queda ningún temporal | Los datos siguen al cerrar y volver a abrir / Las listas vacias dicen que hacer | RN-21, RN-23 | pendiente |
-| 5 | Un archivo dañado da error y queda igual byte a byte; una carpeta donde no se puede escribir da error al guardar | Los datos guardados estan danados / Un cambio que no se pudo guardar se avisa | RN-24, RN-25 | pendiente |
-| 6 | El layout: la raíz lleva a la lista de proyectos; toda página está en castellano, se adapta al ancho y tiene la barra; el CSS sale del binario y ninguna página pide nada de afuera | Abrir el sistema con un solo comando y sin internet | RN-3, RN-4 | pendiente |
-| 7 | La lista de proyectos vacía dice que no hay y ofrece crear el primero | Las listas vacias dicen que hacer | RN-7, RN-23 | pendiente |
-| 8 | Crear un proyecto redirige con 303 a su página y queda en la lista con su número; recargar no crea otro | Crear un proyecto desde la web | RN-1, RN-9 | pendiente |
-| 9 | El mensaje de confirmación se ve después de crear y, al recargar, ya no | Crear un proyecto desde la web | RN-8, RN-9 | pendiente |
-| 10 | Proyecto sin nombre o con fechas incoherentes: 422, lo escrito, el mensaje del dominio junto al campo y nada guardado | Mostrar el rechazo sin perder lo escrito | RN-12, RN-15 | pendiente |
-| 11 | Una fecha que no es fecha se marca junto al campo y no se llama al dominio | Mostrar el rechazo sin perder lo escrito | RN-14 | pendiente |
-| 12 | La página del proyecto: sus datos, «sin descripción», «sin fecha de fin», fechas dd/mm/aaaa y la barra con su nombre y sus secciones | Consultar un proyecto | RN-4, RN-5, RN-6 | pendiente |
-| 13 | Modificar un proyecto con el formulario precargado: cambiar el nombre, y borrar la descripción la quita | Cada operacion se confirma con un mensaje | RN-1, RN-8 | pendiente |
-| 14 | Proyecto 99, proyecto "abc" e historia 99: 404 con el mensaje del dominio y el acceso a la lista | Pedir algo que no existe | RN-16 | pendiente |
-| 15 | Un nombre con `<`, `>` y `&` se ve tal cual | Un texto con signos se muestra tal cual | RN-17 | pendiente |
-| 16 | Integrantes: lista vacía con su mensaje; agregar con el rol elegido entre las opciones del dominio | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-7, RN-11 | pendiente |
-| 17 | Integrante duplicado y segundo Agile Enabler: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | pendiente |
-| 18 | Quitar un integrante pide confirmación; confirmar lo quita con mensaje, cancelar no cambia nada | Confirmar o cancelar antes de quitar | RN-8, RN-10 | pendiente |
-| 19 | Backlog: vacío con su mensaje; cargar una historia con criterios uno por renglón y la prioridad elegida; figura Pendiente y «sin estimar» | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-6, RN-7, RN-11 | pendiente |
-| 20 | Historia sin título o con los criterios en blanco: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | pendiente |
-| 21 | Modificar una historia cambia su prioridad; una Terminada, cargada con la conversión, muestra el rechazo arriba | Cada operacion se confirma con un mensaje / Mostrar el rechazo sin perder lo escrito | RN-1, RN-13 | pendiente |
-| 22 | Estimar eligiendo de la escala del dominio; un valor fuera de la escala enviado igual muestra el mensaje del dominio junto al campo | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema | RN-1, RN-11, RN-15 | pendiente |
-| 23 | Quitar la estimación pide confirmación; confirmar la quita, cancelar no | Confirmar o cancelar antes de quitar | RN-10 | pendiente |
-| 24 | Con un guardado que falla, la operación responde 500 con el aviso de que no quedó guardada | Un cambio que no se pudo guardar se avisa | RN-25 | pendiente |
-| 25 | Con el archivo real en una carpeta temporal: cargar, armar otra web desde el mismo archivo y ver todo; el proyecto nuevo recibe el número siguiente | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | pendiente |
-| 26 | Veinte creaciones en paralelo dejan veinte proyectos con números distintos, también con `go test -race` | Dos pestanas a la vez | RN-20 | pendiente |
-| 27 | En cada formulario, todo campo tiene su etiqueta asociada y su error enlazado; toda tabla está dentro de su recuadro desplazable | Usar la pagina en un celular y con el teclado | RN-18, RN-19 | pendiente |
-| 28 | El comando arma el servidor en `127.0.0.1:8080` con `datos-ics.json`, respeta `-puerto`, `-datos` y `-red`, muestra la dirección, y con datos dañados termina con el motivo | Abrir el sistema con un solo comando y sin internet / Los datos guardados estan danados | RN-2, RN-24 | pendiente |
+| 1 | La escala de story points se puede leer, y cambiar lo recibido no la cambia | — (lectura nueva del dominio) | RN-11 | hecha |
+| 2 | Ida y vuelta: un registro con proyectos, integrantes e historias (estimada, sin estimar y Terminada) se convierte a JSON y se reconstruye igual, con sus números y contadores | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | hecha |
+| 3 | Reconstruir rechaza un texto que no es JSON y los datos que el dominio no acepta: sin nombre, 4 story points, rol inexistente, dos Agile Enabler | Los datos guardados estan danados | RN-24 | hecha |
+| 4 | El archivo: si no existe, registro vacío; lo escrito se vuelve a leer igual; no queda ningún temporal | Los datos siguen al cerrar y volver a abrir / Las listas vacias dicen que hacer | RN-21, RN-23 | hecha |
+| 5 | Un archivo dañado da error y queda igual byte a byte; una carpeta donde no se puede escribir da error al guardar | Los datos guardados estan danados / Un cambio que no se pudo guardar se avisa | RN-24, RN-25 | hecha |
+| 6 | El layout: la raíz lleva a la lista de proyectos; toda página está en castellano, se adapta al ancho y tiene la barra; el CSS sale del binario y ninguna página pide nada de afuera | Abrir el sistema con un solo comando y sin internet | RN-3, RN-4 | hecha |
+| 7 | La lista de proyectos vacía dice que no hay y ofrece crear el primero | Las listas vacias dicen que hacer | RN-7, RN-23 | hecha |
+| 8 | Crear un proyecto redirige con 303 a su página y queda en la lista con su número; recargar no crea otro | Crear un proyecto desde la web | RN-1, RN-9 | hecha |
+| 9 | El mensaje de confirmación se ve después de crear y, al recargar, ya no | Crear un proyecto desde la web | RN-8, RN-9 | hecha |
+| 10 | Proyecto sin nombre o con fechas incoherentes: 422, lo escrito, el mensaje del dominio junto al campo y nada guardado | Mostrar el rechazo sin perder lo escrito | RN-12, RN-15 | hecha |
+| 11 | Una fecha que no es fecha se marca junto al campo y no se llama al dominio | Mostrar el rechazo sin perder lo escrito | RN-14 | hecha |
+| 12 | La página del proyecto: sus datos, «sin descripción», «sin fecha de fin», fechas dd/mm/aaaa y la barra con su nombre y sus secciones | Consultar un proyecto | RN-4, RN-5, RN-6 | hecha |
+| 13 | Modificar un proyecto con el formulario precargado: cambiar el nombre, y borrar la descripción la quita | Cada operacion se confirma con un mensaje | RN-1, RN-8 | hecha |
+| 14 | Proyecto 99, proyecto "abc" e historia 99: 404 con el mensaje del dominio y el acceso a la lista | Pedir algo que no existe | RN-16 | hecha |
+| 15 | Un nombre con `<`, `>` y `&` se ve tal cual | Un texto con signos se muestra tal cual | RN-17 | hecha |
+| 16 | Integrantes: lista vacía con su mensaje; agregar con el rol elegido entre las opciones del dominio | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-7, RN-11 | hecha |
+| 17 | Integrante duplicado y segundo Agile Enabler: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | hecha |
+| 18 | Quitar un integrante pide confirmación; confirmar lo quita con mensaje, cancelar no cambia nada | Confirmar o cancelar antes de quitar | RN-8, RN-10 | hecha |
+| 19 | Backlog: vacío con su mensaje; cargar una historia con criterios uno por renglón y la prioridad elegida; figura Pendiente y «sin estimar» | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema / Las listas vacias dicen que hacer | RN-1, RN-6, RN-7, RN-11 | hecha |
+| 20 | Historia sin título o con los criterios en blanco: el mensaje junto a su campo | Mostrar el rechazo sin perder lo escrito | RN-12 | hecha |
+| 21 | Modificar una historia cambia su prioridad; una Terminada, cargada con la conversión, muestra el rechazo arriba | Cada operacion se confirma con un mensaje / Mostrar el rechazo sin perder lo escrito | RN-1, RN-13 | hecha |
+| 22 | Estimar eligiendo de la escala del dominio; un valor fuera de la escala enviado igual muestra el mensaje del dominio junto al campo | Cada operacion se confirma con un mensaje / Las opciones para elegir son las del sistema | RN-1, RN-11, RN-15 | hecha |
+| 23 | Quitar la estimación pide confirmación; confirmar la quita, cancelar no | Confirmar o cancelar antes de quitar | RN-10 | hecha |
+| 24 | Con un guardado que falla, la operación responde 500 con el aviso de que no quedó guardada | Un cambio que no se pudo guardar se avisa | RN-25 | hecha |
+| 25 | Con el archivo real en una carpeta temporal: cargar, armar otra web desde el mismo archivo y ver todo; el proyecto nuevo recibe el número siguiente | Los datos siguen al cerrar y volver a abrir | RN-21, RN-22 | hecha |
+| 26 | Veinte creaciones en paralelo dejan veinte proyectos con números distintos, también con `go test -race` | Dos pestanas a la vez | RN-20 | hecha |
+| 27 | En cada formulario, todo campo tiene su etiqueta asociada y su error enlazado; toda tabla está dentro de su recuadro desplazable | Usar la pagina en un celular y con el teclado | RN-18, RN-19 | hecha |
+| 28 | El comando arma el servidor en `127.0.0.1:8080` con `datos-ics.json`, respeta `-puerto`, `-datos` y `-red`, muestra la dirección, y con datos dañados termina con el motivo | Abrir el sistema con un solo comando y sin internet / Los datos guardados estan danados | RN-2, RN-24 | hecha |
 
 **Verificación manual.** Lo que `httptest` no ve se comprueba a mano antes de abrir el PR y
 se anota en la Fase 4: el contraste con un verificador, el modo celular del navegador a 360
@@ -506,6 +508,7 @@ Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD"
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6299914339). La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #77, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: en un comentario de la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279), desde su cuenta. Ratifica las tres puertas y acepta los siete puntos de "Para decidir en la puerta".
 
 ## Fase 4 — Implementación
 
@@ -519,6 +522,29 @@ Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en o
 | 3 | `ff7d24f` | `2ecdfad` |
 | 4 | `9e9ec91` | `fc414fb` |
 | 5 | `6d73f7a` | `a83bfc5` |
+| 6 | `11939e0` | `6669ec3` |
+| 7 | `e9570b7` | `650752f` |
+| 8 | `8de188c` | `9723e86` |
+| 9 | `fbb3d02` | `9ad0bbf` |
+| 10 | `99d8188` | `20180ce` |
+| 11 | `241efec` | `46b2b01` |
+| 12 | `c7624af` | `1e8dbd2` |
+| 13 | `b13d561` | `6160b7d` |
+| 14 | `b90a385` | `e3dec70` |
+| 15 | `413660d` (sin RED) | — |
+| 16 | `e9ded37` | `2a95134` |
+| 17 | `dc84823` | `520b864` |
+| 18 | `7907b18` | `e990442` |
+| 19 | `5cf28f2` | `1ed1de3` |
+| 20 | `2a07c3b` | `292bdeb` |
+| 21 | `7736c88`; la historia Terminada, `248cb7a` (sin RED) | `bf8058d` |
+| 22 | `ef74e94` y el ajuste `5ab4419` | `3e127d2` |
+| 23 | `77ff4f0` | `de429a3` |
+| 24 | `ca19590` | `a811698` |
+| 25 | `722d1f1` (sin RED) | — |
+| 26 | `4c925e3` | `1e7a4b1` |
+| 27 | `4ab0d49` | `add6a34` |
+| 28 | `9c5ff72` | `d588282` |
 
 Los RED de la lista de proyectos y de las tareas 1, 2, 4 y 5 fueron por compilación (la
 operación o el error todavía no existían); el de la tarea 3, por comportamiento: 13 de sus
@@ -551,10 +577,172 @@ Ninguno de comportamiento. Tres agregados y una nota:
   archivo con datos de una historia posterior (por ejemplo los sprints) los cargaría sin
   ellos y los borraría en silencio al volver a guardar. Rechazarlos es lo que pide la RN-24
   para un archivo con algo que el núcleo no acepta. Lo aceptó el responsable el 20/10 y
-  quedó escrito en la D16 de la Fase 2; queda para la ratificación.
+  quedó escrito en la D16 de la Fase 2; lo aceptó Maximiliano Eula el
+  21/10 en el PR #95.
 - **`internal/store` queda en 95,5%**: lo único sin probar es el error de convertir el
   registro a texto, que con textos, números y listas `encoding/json` no puede dar. Se dejó
   igual, para que se avise si algún día un dato nuevo sí puede fallar.
+
+### La web (tareas 6 a 28)
+
+Los RED de las tareas 6, 8 y 28 fueron por compilación: no existían la web, el guardado
+que recibe ni el comando. Los de la 11, la 14 y la 22 también, porque faltaba el error de
+forma que el test toma del propio error; antes de escribir el código se declaró solo ese
+error y el test falló por comportamiento (la fecha de fin mal escrita creaba el proyecto).
+El resto fallaron por comportamiento. El de la 26 fue con `go test -race`: seis carreras de
+datos entre pedidos a la vez.
+
+Tres pasaron sin código nuevo, y se comprobó que el test sí puede fallar rompiendo el
+código a propósito:
+
+- **La 15**: `html/template` escapa los textos solo (D1).
+- **La parte Terminada de la 21**: el rechazo que no es de ningún campo ya iba arriba
+  desde la tarea 10 (D6). Falla si el error se asocia a un campo.
+- **La 25**: el guardado después de cada operación ya existía desde la 8 y la 24, y el
+  archivo de `internal/store` cumple la misma interfaz que el guardado falso. Falla si la
+  web no guarda.
+
+Nombres que la Fase 2 no fija: la web es `web.NewServer(registro, guardado)`, y el guardado
+es la interfaz `web.Saver`, con el `Save(registro)` que cumple `store.File`. El comando
+separa `parseOptions`, `open` y `showAddress` para probarlos sin abrir el puerto.
+
+De cada escenario a su test. Los esquemas que cruzan pantallas están en
+`internal/web/server_test.go`, y cada pantalla les suma sus filas; por eso no hicieron falta
+`members_test.go`, `backlog_test.go` ni `forms_test.go`, que la Fase 2 listaba.
+
+| Escenario | Test |
+|---|---|
+| Crear un proyecto desde la web | `TestCrearUnProyectoDesdeLaWeb` (`internal/web/projects_test.go`) |
+| Cada operacion se confirma con un mensaje | `TestCadaOperacionSeConfirmaConUnMensaje` (`server_test.go`) |
+| Consultar un proyecto | `TestConsultarUnProyecto` (`projects_test.go`) |
+| Las opciones para elegir son las del sistema | `TestLasOpcionesParaElegirSonLasDelSistema` (`server_test.go`) |
+| Confirmar o cancelar antes de quitar | `TestConfirmarOCancelarAntesDeQuitar` (`server_test.go`) |
+| Mostrar el rechazo sin perder lo escrito | `TestMostrarElRechazoSinPerderLoEscrito` (`server_test.go`) |
+| Las listas vacias dicen que hacer | `TestLasListasVaciasDicenQueHacer` (`server_test.go`) y `TestSinDatosGuardadosSeArrancaSinProyectos` (`internal/store`) |
+| Pedir algo que no existe | `TestPedirAlgoQueNoExiste` (`server_test.go`) |
+| Un texto con signos se muestra tal cual | `TestUnTextoConSignosSeMuestraTalCual` (`projects_test.go`) |
+| Abrir el sistema con un solo comando y sin internet | `TestAbrirElSistemaConUnSoloComandoYSinInternet`, en `internal/web` (la página) y en `cmd/web` (el comando) |
+| Los datos siguen al cerrar y volver a abrir | `TestLosDatosSiguenAlCerrarYVolverAAbrir` en `internal/web` (con el archivo real) y en `internal/domain`, y `TestLoGuardadoSeVuelveALeerIgual` (`internal/store`) |
+| Los datos guardados estan danados | `TestLosDatosGuardadosEstanDanados` en `cmd/web` y en `internal/domain`, y `TestUnArchivoDanadoQuedaComoEstaba` (`internal/store`) |
+| Un cambio que no se pudo guardar se avisa | `TestUnCambioQueNoSePudoGuardarSeAvisa`, en `internal/web` y en `internal/store` |
+| Dos pestanas a la vez | `TestDosPestanasALaVez` (`server_test.go`) |
+| Usar la pagina en un celular y con el teclado | `TestUsarLaPaginaEnUnCelularYConElTeclado` (`server_test.go`) y la verificación manual |
+
+### Desvíos de la web respecto de la spec
+
+- **Una fila más en «Pedir algo que no existe»**: una dirección que no es de ninguna página
+  responde 404 con «no se encontró la página» y el acceso a la lista. Sin esto, Go responde
+  `404 page not found`, en inglés, y la RN-5 pide los textos en castellano. Está solo en el
+  test, no en la Fase 1: **la aceptó Maximiliano Eula el 21/10 en el PR #95**.
+- **Las listas para elegir empiezan con una opción vacía** («Elegí un rol», «Elegí una
+  prioridad», «Elegí los story points»), que no es ningún valor del núcleo. Sin ella el
+  navegador elige solo la primera, y una historia quedaría en Alta o un integrante en Agile
+  Enabler sin que nadie lo haya elegido. Es lo mismo que evita `priorityUnspecified` en el
+  dominio. Si no se elige rol o prioridad, rechaza el dominio junto al campo. Los story points
+  vacíos, o con letras, son un error de forma de la web, «hay que elegir los story points de
+  la lista», como una fecha mal escrita (RN-14), y no se llama al dominio. El test de las
+  opciones compara exactamente los valores que se pueden elegir, sin la opción vacía. Se
+  propuso en la implementación el 20/10 y lo aceptó Maximiliano Eula el
+  21/10 en el PR #95.
+- **Una lista no conserva un valor que no ofrece.** En «Mostrar el rechazo», un 4 o
+  «cinco» enviados igual no tienen opción que los muestre, así que en esas filas el test no
+  controla que se conserve lo escrito (`5ab4419`). El mensaje junto al campo sí se controla.
+- **Filas que no están en los Ejemplos**, para probar cosas que la Fase 3 sí pide: la fecha
+  de fin mal escrita en la tarea 11 (si llegara al dominio como «sin fecha», el proyecto se
+  crearía: es la que prueba que no se lo llama), estimar una historia Terminada en la 21
+  (caso límite) y los story points sin elegir o con letras en la 22.
+- **Filas para la cobertura, sin RED** (`ec54dba`): «Pedir algo que no existe» en cada pantalla
+  del proyecto (editar, integrantes, backlog, cargar, estimar, quitar la estimación, quitar
+  a un integrante que no está), y «Mostrar el rechazo» al modificar un proyecto y al quitar
+  la estimación de una Terminada. Son las mismas reglas (RN-12, RN-13, RN-14, RN-16) en
+  pantallas donde no estaban probadas; el código ya existía, por eso no hubo RED. Con ellas
+  `internal/web` pasa de 85,5% a 93,2%. `cmd/web` queda en 48,9%: lo que no se recorre es
+  `main` y la lista de direcciones de `-red`, que abren el puerto y leen la red de la
+  computadora.
+- **La web tiene tres errores propios**, todos de forma o de navegación y ninguno de
+  negocio: la fecha que no es fecha, los story points que no son un número y la página que
+  no existe.
+- **Detalles de implementación**: la barra marca con `aria-current` la sección abierta, y
+  la página que avisa que un cambio no se guardó (tarea 24) muestra el mensaje del guardado
+  tal cual, con el acceso para seguir.
+
+### Hallazgo de la tarea 27
+
+El test de accesibilidad encontró un error antes del PR, así que no se abrió defecto: el
+campo de criterios repetía `aria-describedby` cuando tenía un error (uno para su ayuda y
+otro para el error). El navegador solo usa el primero, y el error quedaba sin enlazar para
+los lectores de pantalla. Ahora va un solo atributo con las dos referencias (`add6a34`).
+
+### Verificación manual
+
+La empezó Emiliano a mano y la terminó Claude Code automatizada, con Playwright, contra el
+binario compilado (`go build ./cmd/web`) y en los tres motores: **Chromium 151, Firefox 153
+y WebKit 26.5** (el de Safari), de a uno por vez. El script no está en el repo, porque
+agregar una dependencia de Node es una decisión del equipo; queda fuera, en `~/ics/e2e`.
+Resultado final: **52 controles bien, ninguno falla.** Esta verificación, la que hizo él a
+mano más la de Playwright en los tres motores, **la aceptó Emiliano Sorato el 20/10** como la
+verificación manual que pide la Fase 3 (en la revisión del PR #95).
+
+| Qué | Cómo | Resultado |
+|---|---|---|
+| Teclado y foco | crear un proyecto, agregar un integrante, cargar y estimar una historia y quitar con confirmación (primero cancelando), todo con Tab y Enter. En WebKit, Option+Tab, porque en Safari Tab solo pasa por los campos. En cada parada se mira que el contorno del foco se vea | bien en los tres, después de los dos arreglos de abajo. El primer Tab lleva a «Saltar al contenido». Las listas se eligen tecleando el comienzo de la opción. La fecha se cargó directo en el campo, sin teclear, porque el calendario de cada motor tiene su propio teclado |
+| El error junto al campo y anunciado | enviar el proyecto sin nombre | el foco arranca en Nombre, marcado como inválido y descripto por el mensaje del dominio, que está en el mismo bloque del campo |
+| Sin red | todo pedido que no va al binario se corta y se anota. El modo sin conexión del navegador también corta 127.0.0.1, así que no sirve para esto | ningún pedido sale del binario, y los estilos se aplican (se mira el color de fondo) |
+| Sin JavaScript | cargar una historia con JavaScript apagado | se carga igual en los tres |
+| Reinicio | cargar datos, matar el proceso y volver a arrancarlo con el mismo archivo | están el proyecto, la historia con sus 5 story points y la cargada sin JavaScript |
+| 360 de ancho | 12 páginas a 360 de ancho en los tres motores (lista, formularios, proyecto, integrantes, backlog, historia, estimar, confirmar, no encontrado) | ninguna se desplaza de costado; capturas en [77-verificacion/](77-verificacion/) |
+| Puerto ocupado | abrir el binario con el 8080 tomado por Docker | termina con «el puerto 8080 ya lo está usando otro programa. Probá con otro, por ejemplo: go run ./cmd/web -puerto 8081» |
+| Contraste de 4,5 a 1 | fórmula de WCAG sobre cada par de colores del CSS | el más bajo es 5,75 a 1 (el error sobre su fondo); el foco, 14,7 a 1, y 10,2 en la barra |
+| El binario y los datos | crear un proyecto, mirar el archivo; abrirlo con un archivo cortado | guarda después de cada operación; con el archivo dañado termina con el motivo y el archivo queda igual |
+
+### Hallazgos de la verificación en los navegadores
+
+Se encontraron antes del merge, así que no se abrió defecto. Los tres tienen su arreglo en
+este PR:
+
+- **Con el puerto ocupado, la web arrancaba igual y mostraba otra aplicación.** Lo encontró
+  Emiliano: en su máquina Docker tiene el 8080, y el navegador abrió Adminer. En macOS, que
+  otro programa escuche en todas las direcciones no impide escuchar solo en 127.0.0.1, así
+  que la web no daba ningún error. Además mostraba la dirección antes de tener el puerto.
+  Ahora prueba el puerto en todas las direcciones antes de tomarlo, muestra la dirección
+  recién cuando lo tiene, y si está ocupado termina con el aviso en castellano y la
+  sugerencia de `-puerto` (test `4a8a148`, arreglo `13e0f27`).
+- **Después de un rechazo, el foco quedaba al principio de la página**, y el lector de
+  pantalla no anunciaba el error. Ahora el foco arranca en el primer campo con error, que
+  se lee con su mensaje; sin errores, la página no mueve el foco (test `4473b0e`, arreglo
+  `b19be59`).
+- **En los campos de fecha de Chromium, el foco no se veía en el botón del calendario**,
+  que es una parada aparte del Tab: ahí el campo no cuenta como enfocado. Se arregló en el
+  CSS (`ff7ce79`). No tiene test en Go: `httptest` no aplica estilos; lo prueba el recorrido
+  con el teclado.
+
+### Hallazgos de la revisión de Maximiliano Eula en Windows
+
+Maximiliano revisó el PR #95 en Windows y lo aprobó con una condición, que bloqueaba, y un
+pedido que no bloqueaba. Los dos se arreglaron con su ciclo de TDD, y la salida del RED va
+en el commit del test:
+
+- **En Windows el aviso de puerto ocupado no funcionaba**, y por eso
+  `TestAbrirElSistemaConUnSoloComandoYSinInternet` daba rojo ahí. Windows avisa el puerto
+  ocupado y la falta de permiso con sus códigos de Winsock (10048 y 10013), que no son
+  `syscall.EADDRINUSE` ni `syscall.EACCES`, así que el error caía al caso por defecto, con el
+  texto del sistema. Ahora se reconocen los dos (commits en la tabla de abajo). Se
+  reconocen en cualquier sistema y no solo cuando corre en Windows: ningún otro sistema usa
+  esos números, y así el test que arma el error de Windows corre también en el CI, que es
+  Linux. Se compila el test para Windows (`GOOS=windows go test -c`), pero no se pudo correr
+  ahí desde esta máquina. El permiso tiene ahora su propio aviso, que sugiere otro puerto.
+- **Protección contra pedidos de otro sitio.** Sin usuarios ni contraseñas (D20), otra página
+  abierta en el mismo navegador podía enviar un formulario a la web y cambiar los datos. Ahora
+  la web pasa por `http.NewCrossOriginProtection()` de la biblioteca estándar: un pedido que
+  cambia algo y viene de otro sitio recibe un 403 con el aviso en castellano, y no cambia
+  nada. Los formularios de la propia web siguen andando, también en los tres motores (52 bien
+  después del cambio). No es un escenario de la spec: el test lo dice en su comentario.
+
+| Qué | Commit del test | Commit del arreglo |
+|---|---|---|
+| Puerto ocupado en Windows | `d0ee320` | `1cec6f8` |
+| Sin permiso para el puerto, también en Windows | `0dceabd` | `e8c5213` |
+| Pedido de otro sitio | `7e4fdb9` | `d2fa1e9` |
 
 ### Hallazgos de la revisión del PR #92
 
