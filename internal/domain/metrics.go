@@ -38,8 +38,12 @@ type Metrics struct {
 }
 
 // SprintMetrics calcula las métricas del sprint con ese número, con los datos de este
-// momento y sin cambiar nada (RN-1, RN-2).
+// momento y sin cambiar nada (RN-1, RN-2). Si el proyecto no tiene ese sprint, informa que
+// no se encontró (RN-20).
 func (p *Project) SprintMetrics(number int) (Metrics, error) {
+	if _, err := p.Sprint(number); err != nil {
+		return Metrics{}, err
+	}
 	return Metrics{}, nil
 }
 
