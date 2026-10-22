@@ -354,3 +354,48 @@ func TestMetricasDelProyectoEntero(t *testing.T) {
 		t.Fatalf("se esperaban 3 defectos detectados y 1 resuelto, salieron %d y %d", got.DefectsDetected, got.DefectsResolved)
 	}
 }
+
+// Escenario: Las metricas reflejan los datos cargados despues
+// Cubre: RN-2
+//
+// Las métricas se calculan cada vez que se piden: la segunda vez ven las horas cargadas en el
+// medio. Y pedirlas no cambia nada: el registro entero, convertido a JSON, queda igual.
+func TestLasMetricasReflejanLosDatosCargadosDespues(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+	}
+	conIntegrante(t, project)
+	historiasEstimadas(t, project, 3)
+	cargar(t, project, 1, "Juliana Bustos", 5)
+	sprint := unSprint(t, project)
+	sprint.stories = []int{1}
+	sprint.state = SprintClosed
+	before, err := registry.ToJSON()
+	if err != nil {
+		t.Fatalf("no se pudieron convertir los datos: %v", err)
+	}
+
+	first, err := project.SprintMetrics(1)
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+	project.ProjectMetrics()
+	after, err := registry.ToJSON()
+	if err != nil {
+		t.Fatalf("no se pudieron convertir los datos: %v", err)
+	}
+	cargar(t, project, 1, "Juliana Bustos", 2)
+	second, err := project.SprintMetrics(1)
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+
+	if !mismasHoras(first.ActualHours, 5) || !mismasHoras(second.ActualHours, 7) {
+		t.Fatalf("se esperaban 5 horas reales la primera vez y 7 la segunda, salieron %v y %v", first.ActualHours, second.ActualHours)
+	}
+	if string(after) != string(before) {
+		t.Fatalf("se esperaba que pedir las metricas no cambiara ningun dato, y el registro cambio")
+	}
+}
