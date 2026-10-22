@@ -36,3 +36,15 @@ type Metrics struct {
 	// DefectsResolved es cuántos se resolvieron.
 	DefectsResolved int
 }
+
+// SprintMetrics calcula las métricas del sprint con ese número, con los datos de este
+// momento y sin cambiar nada (RN-1, RN-2).
+func (p *Project) SprintMetrics(number int) (Metrics, error) {
+	return Metrics{}, nil
+}
+
+// ProjectMetrics calcula las métricas del proyecto entero, con los datos de este momento y
+// sin cambiar nada (RN-1, RN-2).
+func (p *Project) ProjectMetrics() Metrics {
+	return Metrics{}
+}
