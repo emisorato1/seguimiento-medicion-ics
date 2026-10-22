@@ -179,3 +179,59 @@ func TestVotarRegistraQuienVotoSinDejarVerLosVotosNiSiquieraElPropio(t *testing.
 		t.Fatalf("se esperaba que faltara %v, salio: %v", want, round.Pending())
 	}
 }
+
+// Esquema del escenario: Revelar cuando votaron todos
+// Cubre: RN-14
+func TestRevelarCuandoVotaronTodos(t *testing.T) {
+	cases := []struct {
+		name    string
+		members []string
+		votes   []Vote
+	}{
+		{"tres integrantes", []string{"Agustin Salinas", "Juliana Bustos", "Maximiliano Eula"},
+			[]Vote{{"Agustin Salinas", 3}, {"Juliana Bustos", 8}, {"Maximiliano Eula", 5}}},
+		{"un unico integrante", []string{"Maximiliano Eula"},
+			[]Vote{{"Maximiliano Eula", 13}}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyecto(t)
+			for _, name := range tc.members {
+				if _, err := project.AddMember(name, RoleProductBuilder); err != nil {
+					t.Fatalf("no se pudo agregar el integrante de prueba %q: %v", name, err)
+				}
+			}
+			story, err := project.AddStory(unosDatos())
+			if err != nil {
+				t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+			}
+			round, err := project.OpenVotingRound(story.ID())
+			if err != nil {
+				t.Fatalf("no se pudo abrir la ronda de prueba: %v", err)
+			}
+			// Votan en el orden inverso al de los integrantes: los votos revelados tienen que
+			// salir en el orden de los integrantes, no en el que se votó.
+			for i := len(tc.votes) - 1; i >= 0; i-- {
+				if err := round.Vote(tc.votes[i].MemberName, tc.votes[i].Points); err != nil {
+					t.Fatalf("no se pudo votar: %v", err)
+				}
+			}
+
+			err = round.Reveal()
+
+			if err != nil {
+				t.Fatalf("se esperaba revelar sin error, salio: %v", err)
+			}
+			if !round.Revealed() {
+				t.Fatal("se esperaba la ronda revelada")
+			}
+			votes, err := round.Votes()
+			if err != nil {
+				t.Fatalf("se esperaba ver los votos de la ronda revelada, salio: %v", err)
+			}
+			if !slices.Equal(votes, tc.votes) {
+				t.Fatalf("se esperaban los votos %v, salio: %v", tc.votes, votes)
+			}
+		})
+	}
+}
