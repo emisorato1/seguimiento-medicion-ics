@@ -57,3 +57,20 @@ func TestRegistrarHorasTrabajadasEnUnaHistoria(t *testing.T) {
 		t.Fatalf("se esperaba que el proyecto tuviera ese unico registro, tiene %d", len(efforts))
 	}
 }
+
+// Escenario: Registrar media hora
+// Cubre: RN-2
+func TestRegistrarMediaHora(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	data := unEsfuerzo()
+	data.Hours = 0.5
+
+	effort, err := project.LogEffort(data, hoy)
+
+	if err != nil {
+		t.Fatalf("se esperaba registrar media hora sin error, salio: %v", err)
+	}
+	if !mismasHorasReales(effort.Hours(), 0.5) {
+		t.Fatalf("se esperaba el registro con media hora, salio con %v", effort.Hours())
+	}
+}
