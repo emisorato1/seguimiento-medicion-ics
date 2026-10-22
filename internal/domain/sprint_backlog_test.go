@@ -232,3 +232,28 @@ func TestQuitarUnaHistoriaDelSprintAbierto(t *testing.T) {
 		t.Errorf("se esperaba la historia Pendiente, salio %v", story.State())
 	}
 }
+
+// Escenario: Quitar una historia y volver a asignarla
+// Cubre: RN-7, RN-9
+func TestQuitarUnaHistoriaYVolverAAsignarla(t *testing.T) {
+	project, sprint := unSprintAbierto(t)
+	first := unaHistoriaEstimada(t, project, 3)
+	second := unaHistoriaEstimada(t, project, 5)
+	for _, story := range []*Story{first, second} {
+		if err := project.AssignStory(story.ID()); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d: %v", story.ID(), err)
+		}
+	}
+
+	if err := project.UnassignStory(first.ID()); err != nil {
+		t.Fatalf("se esperaba quitar la historia %d sin error, salio: %v", first.ID(), err)
+	}
+	if err := project.AssignStory(first.ID()); err != nil {
+		t.Fatalf("se esperaba volver a asignar la historia %d sin error, salio: %v", first.ID(), err)
+	}
+
+	got := sprint.Stories()
+	if len(got) != 2 || got[0] != second.ID() || got[1] != first.ID() {
+		t.Fatalf("se esperaba el Sprint Backlog [%d %d], salio %v", second.ID(), first.ID(), got)
+	}
+}
