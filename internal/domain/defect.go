@@ -166,6 +166,20 @@ type DefectData struct {
 // AddDefect registra un defecto en el proyecto con el identificador que sigue al del último
 // registrado, en estado Abierto y sin sprint de resolución (RN-1, RN-3).
 func (p *Project) AddDefect(data DefectData) (*Defect, error) {
+	defect, err := p.newDefect(data)
+	if err != nil {
+		return nil, err
+	}
+	defect.id = p.lastDefectID + 1
+	p.defects = append(p.defects, defect)
+	p.lastDefectID = defect.id
+	return defect, nil
+}
+
+// newDefect arma un defecto Abierto y sin sprint de resolución, validando sus datos en el
+// orden de la Fase 2. No le da número ni lo guarda: lo usan igual el alta y la carga de los
+// datos guardados, así las dos no pueden quedar distintas.
+func (p *Project) newDefect(data DefectData) (*Defect, error) {
 	// primero se busca lo que se nombra (Fase 2): la historia tiene que ser del proyecto, en
 	// cualquier estado (RN-7)
 	if _, err := p.Story(data.StoryID); err != nil {
@@ -188,18 +202,14 @@ func (p *Project) AddDefect(data DefectData) (*Defect, error) {
 	if !data.Severity.isValid() {
 		return nil, ErrDefectSeverityInvalid
 	}
-	defect := &Defect{
-		id:          p.lastDefectID + 1,
+	return &Defect{
 		title:       title,
 		description: description,
 		severity:    data.Severity,
 		state:       DefectOpen,
 		storyID:     data.StoryID,
 		detectedIn:  data.DetectedIn,
-	}
-	p.defects = append(p.defects, defect)
-	p.lastDefectID = defect.id
-	return defect, nil
+	}, nil
 }
 
 // Defects devuelve todos los defectos del proyecto, en el orden en que se registraron

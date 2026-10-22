@@ -307,8 +307,16 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 
 	// Los defectos van después de los sprints, porque apuntan a historias y sprints que ya
 	// tienen que estar cargados (historia #15).
+	defectIDs := make([]int, 0, len(pj.Defects))
 	for _, dj := range pj.Defects {
-		defect, err := defectFromJSON(dj)
+		defectIDs = append(defectIDs, dj.ID)
+	}
+	// el contador guarda el ultimo numero dado; checkNumbers recibe el proximo
+	if err := checkNumbers(defectIDs, pj.LastDefectID+1); err != nil {
+		return nil, fmt.Errorf("defectos: %w", err)
+	}
+	for _, dj := range pj.Defects {
+		defect, err := defectFromJSON(project, dj)
 		if err != nil {
 			return nil, fmt.Errorf("defecto %d: %w", dj.ID, err)
 		}
@@ -318,9 +326,22 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 	return project, nil
 }
 
-// defectFromJSON reconstruye un defecto con su número, su estado y sus sprints.
-func defectFromJSON(dj defectJSON) (*Defect, error) {
+// defectFromJSON reconstruye un defecto con su número, su estado y sus sprints. Pasa por las
+// mismas reglas que al registrarlo, y después controla el estado contra el sprint de
+// resolución, que solo un archivo puede traer mal: un Resuelto sin ese sprint, con uno que
+// no existe o anterior al de detección, y uno sin resolver que ya lo tiene.
+func defectFromJSON(project *Project, dj defectJSON) (*Defect, error) {
 	severity, err := ParseSeverity(dj.Severity)
+	if err != nil {
+		return nil, err
+	}
+	defect, err := project.newDefect(DefectData{
+		Title:       dj.Title,
+		Description: dj.Description,
+		Severity:    severity,
+		StoryID:     dj.StoryID,
+		DetectedIn:  dj.DetectedIn,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -328,16 +349,23 @@ func defectFromJSON(dj defectJSON) (*Defect, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Defect{
-		id:          dj.ID,
-		title:       dj.Title,
-		description: dj.Description,
-		severity:    severity,
-		state:       state,
-		storyID:     dj.StoryID,
-		detectedIn:  dj.DetectedIn,
-		resolvedIn:  dj.ResolvedIn,
-	}, nil
+	if state == DefectResolved {
+		if dj.ResolvedIn == 0 {
+			return nil, ErrDefectResolveNeedsSprint
+		}
+		if _, err := project.Sprint(dj.ResolvedIn); err != nil {
+			return nil, err
+		}
+		if dj.ResolvedIn < dj.DetectedIn {
+			return nil, ErrDefectResolvedBeforeDetected
+		}
+	} else if dj.ResolvedIn != 0 {
+		return nil, fmt.Errorf("un defecto %s no tiene sprint de resolución", state)
+	}
+	defect.id = dj.ID
+	defect.state = state
+	defect.resolvedIn = dj.ResolvedIn
+	return defect, nil
 }
 
 // sprintsFromJSON reconstruye los sprints de un proyecto (historia #8, tarea 15). No puede
