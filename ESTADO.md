@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 21:49. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 21:59. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,6 +16,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
@@ -23,6 +24,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
+| #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 
 ## Lista para implementar
@@ -30,17 +32,15 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+| #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 
 ## Especificacion SDD
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 3 |
-| #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
-| #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
@@ -71,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-97993f5 2026-10-21 Merge pull request #123 from emisorato1/actas-sprint-2-esqueleto
-09ffb57 2026-10-21 Merge pull request #107 from emisorato1/docs-documentacion-tecnica
-ded87ef 2026-10-21 Merge pull request #105 from emisorato1/historia-7-priorizar-backlog
-6488fff 2026-10-21 docs: el sprint de la historia 8 ya esta en dev desde el PR #104
-cb8dc0c 2026-10-21 Merge remote-tracking branch 'origin/dev' into docs-documentacion-tecnica
-cc5dc89 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-7-priorizar-backlog
-f39c097 2026-10-21 docs: regenerar la trazabilidad con el PR temprano de la historia 8
-7055343 2026-10-21 docs: el sprint 2 en el informe de metricas, con los numeros al 21/10
+2f1f36f 2026-10-21 Merge pull request #101 from emisorato1/historia-15-gestionar-defectos
+36d8a91 2026-10-21 docs: registrar las puertas que aprobo Maximiliano Eula en la spec de la historia 15
+c38b022 2026-10-21 Merge pull request #125 from emisorato1/chore-historia-7-hecha
+2ad7366 2026-10-21 docs: la historia 7 terminada el 21/10 en la review y el informe del sprint 2
+1b45d18 2026-10-21 Merge remote-tracking branch 'origin/dev' into chore-historia-7-hecha
+06b417c 2026-10-21 Merge pull request #124 from emisorato1/regla-traer-dev
+2b3bc00 2026-10-21 chore: regenerar ESTADO.md y la trazabilidad con la historia 7 terminada
+902c8a2 2026-10-21 docs: la spec de la historia 7 queda terminada en el sprint 2
 ```
