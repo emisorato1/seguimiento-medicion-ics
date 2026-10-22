@@ -2,6 +2,7 @@ package domain
 
 import (
 	"math"
+	"strings"
 	"time"
 )
 
@@ -68,10 +69,16 @@ func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
 	if !(data.Hours > 0) || math.IsInf(data.Hours, 0) {
 		return nil, ErrEffortHoursInvalid
 	}
+	// la actividad se controla ya sin los espacios de los extremos, así un texto de solo
+	// espacios cuenta como vacío, y se guarda así (RN-6)
+	activity := strings.TrimSpace(data.Activity)
+	if activity == "" {
+		return nil, ErrEffortActivityRequired
+	}
 	effort := &Effort{
 		storyID:    data.StoryID,
 		memberName: data.MemberName,
-		activity:   data.Activity,
+		activity:   activity,
 		hours:      data.Hours,
 		day:        data.Day,
 	}
