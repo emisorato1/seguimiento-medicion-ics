@@ -129,3 +129,60 @@ func TestRechazarUnaHistoriaQueYaEstaEnElSprint(t *testing.T) {
 		t.Errorf("se esperaba el Sprint Backlog con una sola historia, salio %v", stories)
 	}
 }
+
+// unaHistoriaTerminada deja la historia Terminada desde dentro del paquete, porque terminar
+// es de la #10, que todavia no existe. Es lo mismo que hace la #12.
+func unaHistoriaTerminada(story *Story) {
+	story.state = StoryDone
+}
+
+// Escenario: Rechazar una historia terminada
+// Cubre: RN-6, RN-14
+func TestRechazarUnaHistoriaTerminada(t *testing.T) {
+	project := unProyecto(t)
+	first, err := project.AddSprint(SprintData{Goal: "Tener el backlog estimado", Start: unDia(2026, 11, 1), End: unDia(2026, 11, 14)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
+	}
+	cerrarSprint(first)
+	sprint, err := project.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 11, 15), End: unDia(2026, 11, 28)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
+	}
+	story := unaHistoriaEstimada(t, project, 5)
+	unaHistoriaTerminada(story)
+
+	err = project.AssignStory(story.ID())
+
+	if !errors.Is(err, ErrStoryDone) {
+		t.Fatalf("se esperaba ErrStoryDone, salio: %v", err)
+	}
+	if stories := sprint.Stories(); len(stories) != 0 {
+		t.Errorf("se esperaba el Sprint Backlog del sprint 2 vacio, salio %v", stories)
+	}
+}
+
+// Escenario: Rechazar quitar una historia terminada
+// Cubre: RN-6, RN-14
+func TestRechazarQuitarUnaHistoriaTerminada(t *testing.T) {
+	project, first := unSprintAbierto(t)
+	story := unaHistoriaEstimada(t, project, 5)
+	if err := project.AssignStory(story.ID()); err != nil {
+		t.Fatalf("no se pudo asignar la historia de prueba: %v", err)
+	}
+	// El sprint 1 se cierra con la historia completada: es lo que hara la #10.
+	unaHistoriaTerminada(story)
+	cerrarSprint(first)
+	if _, err := project.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 11, 15), End: unDia(2026, 11, 28)}); err != nil {
+		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
+	}
+
+	err := project.UnassignStory(story.ID())
+
+	if !errors.Is(err, ErrStoryDone) {
+		t.Fatalf("se esperaba ErrStoryDone, salio: %v", err)
+	}
+	if story.State() != StoryDone {
+		t.Errorf("se esperaba la historia todavia Terminada, salio %v", story.State())
+	}
+}
