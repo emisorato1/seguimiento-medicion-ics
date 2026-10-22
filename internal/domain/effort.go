@@ -121,3 +121,21 @@ func (p *Project) StoryHours(id int) (float64, error) {
 	}
 	return total, nil
 }
+
+// MemberHours devuelve las horas de un integrante: la suma de todos los registros que cargó
+// en el proyecto. El nombre se busca como al registrar, ignorando mayúsculas y los espacios
+// de los extremos. Sin registros son cero, que no es un error; alguien que no es integrante
+// informa que no se encontró (RN-14).
+func (p *Project) MemberHours(name string) (float64, error) {
+	member := p.findMember(strings.TrimSpace(name))
+	if member == nil {
+		return 0, ErrMemberNotFound
+	}
+	total := 0.0
+	for _, effort := range p.efforts {
+		if effort.memberName == member.name {
+			total += effort.hours
+		}
+	}
+	return total, nil
+}
