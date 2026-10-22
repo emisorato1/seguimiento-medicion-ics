@@ -131,8 +131,12 @@ git log --no-color --format='@@%H' --name-only HEAD | awk '
   END { cerrar() }
 ' > "$TMP/archivos-commit.tsv"
 
-# Commits que dicen "sin RED": el test paso con el codigo que ya habia, y no hay GREEN
-git log --no-color --format='%H' --grep='sin RED' HEAD > "$TMP/sin-red.txt"
+# Commits que dicen "sin RED" o "(paso) en verde al escribirlo": el test paso con el codigo
+# que ya habia, y no hay GREEN. Las dos frases dicen lo mismo; la segunda es la que usan la #8
+# y la #9. git busca linea por linea, y en algunos mensajes "en" queda al final de la linea
+# anterior: por eso se busca "verde al escribir". Las busquedas no ignoran mayusculas:
+# "sin red" tambien esta en "sin redondear".
+git log --no-color --format='%H' --grep='sin RED' --grep='verde al escribir' HEAD > "$TMP/sin-red.txt"
 
 # Commits "test:": si tocan codigo, es lo minimo para que el test compile (una constante, una
 # firma), y la implementacion viene en el commit siguiente
