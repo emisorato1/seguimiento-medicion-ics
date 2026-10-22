@@ -90,8 +90,8 @@ escritas las horas que tenía cada historia al cierre.
 |---|---|---|---|---|
 | Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
 | SP planificados | 16 | 31 | _pendiente_ | _pendiente_ |
-| SP completados (velocidad) | **6** | 15 * | _pendiente_ | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | 5 de 9 (56%) * | _pendiente_ | _pendiente_ |
+| SP completados (velocidad) | **6** | 18 * | _pendiente_ | _pendiente_ |
+| Historias completadas | 2 de 5 (40%) | 6 de 9 (67%) * | _pendiente_ | _pendiente_ |
 | Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
 | Horas reales | 38,25 | 13 * | _pendiente_ | _pendiente_ |
 | Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
@@ -231,12 +231,12 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 8 | Crear un sprint con su Sprint Goal | 3 | En progreso: las tareas 1, 2, 3 y 16 ya están en `dev` (PR #104) |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar |
 | 5 | Consultar el estado de un proyecto | 3 | Hecho |
-| 14 | Registrar el esfuerzo real | 3 | En progreso: la spec y el código van en el PR #100 |
+| 14 | Registrar el esfuerzo real | 3 | Hecho |
 | 15 | Gestionar defectos | 5 | Lista para implementar |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
 
-- Completados al 21/10: **15 SP**, 5 de 9 historias. Tres llegaron del Sprint 1; la #7 y la #5
-  son las primeras historias nuevas del sprint que se terminan.
+- Completados al 21/10: **18 SP**, 6 de 9 historias. Tres llegaron del Sprint 1; la #7, la #5
+  y la #14 son las primeras historias nuevas del sprint que se terminan.
 
 ### Esfuerzo
 
@@ -245,7 +245,7 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 - Horas trabajadas en el sprint al 21/10: **13**. Es el total del tablero (35,25) menos las
   22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
 - Historias terminadas, medidas enteras: **35,4 h estimadas contra 28,25 reales (−20%)**, 2,4 h
-  por story point, sin la #5, que no tiene horas reales cargadas: contarla con cero daría una
+  por story point, sin la #5 ni la #14, que no tienen horas reales cargadas: contarlas con cero daría una
   desviación que no pasó. La mayor parte de esas horas se trabajaron en el Sprint 1, así que este número
   todavía no dice cuánto cuesta un punto en el Sprint 2: eso se va a ver con las historias
   nuevas, al cierre.
