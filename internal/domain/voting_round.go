@@ -1,5 +1,7 @@
 package domain
 
+import "strings"
+
 // VotingRound es una ronda de Planning Poker sobre una historia del proyecto (historia #13).
 // Sus datos estan ocultos fuera del paquete: los votos solo se leen por la consulta que lo
 // permite, y recien cuando la ronda esta revelada (RN-12).
@@ -70,17 +72,36 @@ func (r *VotingRound) hasVoted(name string) bool {
 // Vote registra el voto de un participante y lo pasa de los que faltan a los que votaron
 // (RN-8). La respuesta solo dice si se aceptó: nunca lleva el valor (RN-12). El voto tiene
 // que ser un valor de la escala de la #12, con su mismo error (RN-9). Cada participante vota
-// una sola vez, y el aviso no dice qué votó (RN-10). Si se rechaza, la ronda queda como
-// estaba (RN-18). Los controles van en el orden de la Fase 2: ya votó → valor.
+// una sola vez, y el aviso no dice qué votó (RN-10). Solo votan los participantes, buscados
+// como en la #4, y el voto queda con el nombre tal como está cargado (RN-11). Si se rechaza,
+// la ronda queda como estaba (RN-18). Los controles van en el orden de la Fase 2:
+// participa → ya votó → valor.
 func (r *VotingRound) Vote(member string, points int) error {
-	if r.hasVoted(member) {
+	name, ok := r.participant(member)
+	if !ok {
+		return ErrNotParticipant
+	}
+	if r.hasVoted(name) {
 		return ErrAlreadyVoted
 	}
 	if !inScale(points) {
 		return ErrStoryPointsInvalid
 	}
-	r.votes = append(r.votes, Vote{MemberName: member, Points: points})
+	r.votes = append(r.votes, Vote{MemberName: name, Points: points})
 	return nil
+}
+
+// participant busca entre los participantes de la ronda el nombre escrito, ignorando las
+// mayúsculas y los espacios de los extremos, igual que la búsqueda de integrantes de la #4,
+// y lo devuelve tal como está cargado.
+func (r *VotingRound) participant(member string) (string, bool) {
+	member = strings.TrimSpace(member)
+	for _, name := range r.participants {
+		if strings.EqualFold(name, member) {
+			return name, true
+		}
+	}
+	return "", false
 }
 
 // Votes devuelve los votos de la ronda con el nombre de quien los dio. Es la única consulta

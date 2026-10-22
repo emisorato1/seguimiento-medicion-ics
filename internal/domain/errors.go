@@ -123,4 +123,7 @@ var (
 	// ErrAlreadyVoted: votar por segunda vez en la misma ronda (historia #13, RN-10). El
 	// mensaje no dice qué se votó.
 	ErrAlreadyVoted = errors.New("el integrante ya votó en esta ronda")
+	// ErrNotParticipant: votar en una ronda de la que no se participa, porque no se era
+	// integrante del proyecto al abrirla (historia #13, RN-11).
+	ErrNotParticipant = errors.New("no participa de esta ronda")
 )
