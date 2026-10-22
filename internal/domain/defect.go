@@ -225,3 +225,27 @@ func (p *Project) ResolveDefect(id, sprintNumber int) error {
 	}
 	return nil
 }
+
+// DefectsByState devuelve los defectos del proyecto que están en ese estado, en el orden en
+// que se registraron. Sin resultados devuelve una lista vacía, que no es un error (RN-15).
+func (p *Project) DefectsByState(state DefectState) []*Defect {
+	defects := []*Defect{}
+	for _, defect := range p.defects {
+		if defect.state == state {
+			defects = append(defects, defect)
+		}
+	}
+	return defects
+}
+
+// DefectsBySeverity devuelve los defectos del proyecto de esa severidad, en el orden en que se
+// registraron. Sin resultados devuelve una lista vacía, que no es un error (RN-15).
+func (p *Project) DefectsBySeverity(severity Severity) []*Defect {
+	defects := []*Defect{}
+	for _, defect := range p.defects {
+		if defect.severity == severity {
+			defects = append(defects, defect)
+		}
+	}
+	return defects
+}
