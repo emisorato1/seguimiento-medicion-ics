@@ -228,7 +228,7 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 12 | Estimar historias con Story Points | 2 | Hecho |
 | 24 | Operar el sistema desde una interfaz de consola | 3 | Hecho |
 | 7 | Priorizar el Product Backlog | 2 | En review |
-| 8 | Crear un sprint con su Sprint Goal | 3 | En progreso |
+| 8 | Crear un sprint con su Sprint Goal | 3 | En progreso: las tareas 1, 2, 3 y 16 ya están en `dev` (PR #104) |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar |
 | 5 | Consultar el estado de un proyecto | 3 | Especificación SDD |
 | 14 | Registrar el esfuerzo real | 3 | Especificación SDD |

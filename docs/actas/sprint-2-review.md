@@ -26,7 +26,7 @@ siguiente cuenta en el siguiente.
 | 12 | Estimar con Story Points | 2 | **Hecho** | Maximiliano Eula | PR #70 |
 | 24 | Interfaz de consola | 3 | **Hecho** | Maximiliano Eula | PR #106 |
 | 7 | Priorizar el Product Backlog | 2 | En review | Agustín Salinas | [completar al cierre] |
-| 8 | Crear un sprint con su Sprint Goal | 3 | En progreso | Agustín Salinas | PR #104 con las tareas 1 a 3 (`Refs #8`); [completar al cierre] |
+| 8 | Crear un sprint con su Sprint Goal | 3 | En progreso | Agustín Salinas | el sprint ya está en `dev` desde el PR #104, con las tareas 1, 2, 3 y 16 (`Refs #8`); [completar al cierre] |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar | Agustín Salinas | [completar al cierre] |
 | 5 | Consultar el estado de un proyecto | 3 | Especificación SDD | Juliana Bustos | [completar al cierre] |
 | 14 | Registrar el esfuerzo real | 3 | Especificación SDD | Juliana Bustos | [completar al cierre] |
