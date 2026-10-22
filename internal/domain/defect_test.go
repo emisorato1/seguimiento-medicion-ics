@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -427,6 +428,50 @@ func TestUnDefectoResueltoNoSeVuelveATocar(t *testing.T) {
 			}
 			if defect.State() != DefectResolved || defect.ResolvedIn() != 2 {
 				t.Fatalf("se esperaba que siguiera Resuelto en el sprint 2, quedo en %d con el sprint %d", defect.State(), defect.ResolvedIn())
+			}
+		})
+	}
+}
+
+// numerosDeDefectos devuelve los identificadores de una lista de defectos, en su orden.
+func numerosDeDefectos(defects []*Defect) []int {
+	ids := []int{}
+	for _, defect := range defects {
+		ids = append(ids, defect.ID())
+	}
+	return ids
+}
+
+// Esquema del escenario: Listar los defectos del proyecto
+// Cubre: RN-15
+func TestListarLosDefectosDelProyecto(t *testing.T) {
+	project := unProyectoConDefectos(t, 1)
+	for _, severity := range []Severity{SeverityCritical, SeverityMinor, SeverityMinor} {
+		data := unDefecto()
+		data.Severity = severity
+		if _, err := project.AddDefect(data); err != nil {
+			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+		}
+	}
+	if err := project.ResolveDefect(3, 1); err != nil {
+		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
+	}
+
+	cases := []struct {
+		name string
+		got  []*Defect
+		want []int
+	}{
+		{"todos los defectos", project.Defects(), []int{1, 2, 3}},
+		{"los defectos en Abierto", project.DefectsByState(DefectOpen), []int{1, 2}},
+		{"los defectos de severidad Menor", project.DefectsBySeverity(SeverityMinor), []int{2, 3}},
+		{"los defectos de severidad Mayor", project.DefectsBySeverity(SeverityMajor), []int{}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := numerosDeDefectos(tc.got)
+			if fmt.Sprint(got) != fmt.Sprint(tc.want) {
+				t.Fatalf("se esperaban los defectos %v, salieron %v", tc.want, got)
 			}
 		})
 	}
