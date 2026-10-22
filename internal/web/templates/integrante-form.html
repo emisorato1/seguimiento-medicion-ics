@@ -1,0 +1,26 @@
+{{define "content"}}
+<h1>Agregar integrante</h1>
+{{template "error-formulario" .Data.Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/integrantes/nuevo" novalidate>
+  {{with .Data.Form.Field "nombre"}}
+  <div class="campo">
+    <label for="nombre">Nombre y apellido</label>
+    <input type="text" id="nombre" name="nombre" value="{{.Value}}" autocomplete="name"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "rol"}}
+  <div class="campo">
+    <label for="rol">Rol</label>
+    <select id="rol" name="rol"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí un rol" $.Data.Roles .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Agregar integrante</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/integrantes">Cancelar</a>
+  </div>
+</form>
+{{end}}

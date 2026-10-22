@@ -1,0 +1,42 @@
+{{define "layout"}}<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} · Seguimiento y Medición ICS</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="barra">
+  <nav aria-label="Navegación principal">
+    <a class="marca" href="/proyectos">Seguimiento y Medición ICS</a>
+    <ul>
+      <li><a href="/proyectos"{{if not .Project}} aria-current="page"{{end}}>Proyectos</a></li>
+    </ul>
+    {{with .Project}}
+    <p class="proyecto-actual" title="{{.Name}}">Proyecto: <strong>{{.Name}}</strong></p>
+    <ul aria-label="Secciones del proyecto">
+      <li><a href="/proyectos/{{.ID}}"{{if eq $.Section "datos"}} aria-current="page"{{end}}>Datos</a></li>
+      <li><a href="/proyectos/{{.ID}}/integrantes"{{if eq $.Section "integrantes"}} aria-current="page"{{end}}>Integrantes</a></li>
+      <li><a href="/proyectos/{{.ID}}/backlog"{{if eq $.Section "backlog"}} aria-current="page"{{end}}>Backlog</a></li>
+    </ul>
+    {{end}}
+  </nav>
+</header>
+<main id="contenido" tabindex="-1">
+{{with .Flash}}<p class="aviso aviso-ok" role="status">{{.}}</p>{{end}}
+{{template "content" .}}
+</main>
+</body>
+</html>
+{{end}}
+
+{{/* Partes comunes de los formularios. "invalido" marca el campo y lo enlaza con su error
+     para los lectores de pantalla; "error" muestra el mensaje del dominio junto al campo. */}}
+{{define "invalido"}}{{if .Error}} aria-invalid="true" aria-describedby="{{.Name}}-error"{{if .Focus}} autofocus{{end}}{{end}}{{end}}
+{{define "error"}}{{if .Error}}<span class="error" id="{{.Name}}-error">{{.Error}}</span>{{end}}{{end}}
+{{define "error-formulario"}}{{with .}}<div class="aviso aviso-error" role="alert" id="error-formulario">{{.}}</div>{{end}}{{end}}
+{{/* "opciones" arma las opciones de una lista para elegir, con una primera opcion vacia que
+     pide elegir: sin ella el navegador elegiria la primera solo. */}}
+{{define "opciones"}}<option value="">{{.Prompt}}</option>{{range .Options}}<option value="{{.}}"{{if eq . $.Selected}} selected{{end}}>{{.}}</option>{{end}}{{end}}

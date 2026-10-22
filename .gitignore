@@ -3,6 +3,9 @@
 /app
 *.exe
 
+# datos que guarda la interfaz web al usarla (go run ./cmd/web)
+datos-ics.json
+
 # salidas de tests
 *.out
 coverage.*
