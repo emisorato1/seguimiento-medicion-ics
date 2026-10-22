@@ -40,10 +40,16 @@ func (r *VotingRound) Pending() []string {
 
 // OpenVotingRound abre una ronda de votacion sobre la historia con ese identificador. Los
 // participantes son los integrantes que el proyecto tiene en este momento, y se fijan ahi
-// (RN-2). Abrir la ronda no cambia la historia (RN-3).
+// (RN-2). Abrir la ronda no cambia la historia (RN-3). Primero busca la historia (RN-5) y
+// después mira su estado: una Terminada no se vota, porque su estimación ya no se modifica
+// (RN-4, con el error de la #12).
 func (p *Project) OpenVotingRound(storyID int) (*VotingRound, error) {
-	if _, err := p.Story(storyID); err != nil {
+	story, err := p.Story(storyID)
+	if err != nil {
 		return nil, err
+	}
+	if story.state == StoryDone {
+		return nil, ErrStoryEstimateDone
 	}
 	participants := make([]string, 0, len(p.members))
 	for _, member := range p.members {
