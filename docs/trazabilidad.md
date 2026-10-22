@@ -28,6 +28,7 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#6 Administrar el Product Backlog](#6-administrar-el-product-backlog) | 18 | 18 | 0 | 13 |
 | [#12 Estimar historias con Story Points](#12-estimar-historias-con-story-points) | 10 | 10 | 0 | 3 |
 | [#24 Operar el sistema desde una interfaz de consola](#24-operar-el-sistema-desde-una-interfaz-de-consola) | 13 | 13 | 0 | 5 |
+| [#5 Consultar el estado de un proyecto](#5-consultar-el-estado-de-un-proyecto) | 10 | 10 | 0 | 0 |
 | [#7 Priorizar el Product Backlog](#7-priorizar-el-product-backlog) | 15 | 15 | 0 | 1 |
 | [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 5 | 12 | 0 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 4 | 11 | 6 |
@@ -39,7 +40,7 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 109 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 119 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
 | `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 9 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 15 |
@@ -302,6 +303,42 @@ cinco casos posibles:
 | `TestElBacklogMuestraLosStoryPointsDeUnaHistoriaEstimada` [console_test.go:417](../cmd/app/console_test.go#L417) | RN-1 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
 | `TestLaEntradaTerminaSinSalir` [console_test.go:435](../cmd/app/console_test.go#L435) | RN-6 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
 | `TestListarLosIntegrantesDeUnProyectoSinIntegrantes` [console_test.go:448](../cmd/app/console_test.go#L448) | RN-1 | [console.go](../cmd/app/console.go) | `f0ca0e9` → `6120035` |
+
+## #5 Consultar el estado de un proyecto
+
+- **Historia:** issue #5
+- **Spec:** [docs/specs/sprint-2/05-consultar-estado-proyecto.md](specs/sprint-2/05-consultar-estado-proyecto.md)
+- **Código según la spec:** `internal/domain/project_status.go`
+
+<details><summary>Criterios de aceptación (12)</summary>
+
+- El estado muestra el identificador, el nombre, la descripción y las dos fechas del proyecto.
+- Un proyecto sin descripción o sin fecha de finalización las muestra como no cargadas, sin error.
+- El estado muestra cada integrante con su nombre y su rol, en el orden en que se cargó.
+- Un proyecto sin integrantes muestra la lista vacía, sin error.
+- El estado muestra la cantidad de historias totales, completadas y pendientes, y el total es igual a completadas más pendientes.
+- Solo las historias Terminadas cuentan como completadas; las En curso cuentan como pendientes.
+- Si hay un sprint abierto, el estado muestra su número, su goal, sus fechas y cuántas historias tiene.
+- Si no hay sprint abierto, el estado lo informa y eso no es un error.
+- Una consulta hecha después de un cambio en el proyecto lo refleja.
+- Consultar el estado no modifica nada del proyecto.
+- El estado de un proyecto no incluye nada de otro.
+- Pedir el estado de un proyecto que no existe informa que no se encontró.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Consultar el estado de un proyecto recien creado](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L123) | `TestConsultarElEstadoDeUnProyectoRecienCreado` [project_status_test.go:47](../internal/domain/project_status_test.go#L47) | [project_status.go](../internal/domain/project_status.go) | `7de777d` → `718ae62` |
+| [Un proyecto sin descripcion ni fecha de finalizacion](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L132) | `TestUnProyectoSinDescripcionNiFechaDeFinalizacion` [project_status_test.go:83](../internal/domain/project_status_test.go#L83) | [project_status.go](../internal/domain/project_status.go) | `7de777d` → `718ae62` |
+| [El estado muestra los integrantes con su rol](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L137) | `TestElEstadoMuestraLosIntegrantesConSuRol` [project_status_test.go:118](../internal/domain/project_status_test.go#L118) | [project_status.go](../internal/domain/project_status.go) | `d7aa701` → `674ff06` |
+| [Resumen del backlog segun el estado de las historias](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L143) | `TestResumenDelBacklogSegunElEstadoDeLasHistorias` [project_status_test.go:140](../internal/domain/project_status_test.go#L140) | [project_status.go](../internal/domain/project_status.go) | `a385451` → `431b247` |
+| [El estado muestra el sprint en curso](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L155) | `TestElEstadoMuestraElSprintEnCurso` [project_status_test.go:260](../internal/domain/project_status_test.go#L260) | [project_status.go](../internal/domain/project_status.go) | `27cd558` → `96b9633` |
+| [Un proyecto con todos sus sprints cerrados no tiene sprint en curso](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L161) | `TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCurso` [project_status_test.go:275](../internal/domain/project_status_test.go#L275) | [project_status.go](../internal/domain/project_status.go) | `27cd558` → `96b9633` |
+| [El estado refleja los cambios del proyecto](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L167) | `TestElEstadoReflejaLosCambiosDelProyecto` [project_status_test.go:170](../internal/domain/project_status_test.go#L170) | [project_status.go](../internal/domain/project_status.go) | `a385451` → `431b247` |
+| [Consultar el estado no cambia nada](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L174) | `TestConsultarElEstadoNoCambiaNada` [project_status_test.go:191](../internal/domain/project_status_test.go#L191) | [project_status.go](../internal/domain/project_status.go) | `a385451` → `431b247` |
+| [Cada proyecto muestra solo lo suyo](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L180) | `TestCadaProyectoMuestraSoloLoSuyo` [project_status_test.go:223](../internal/domain/project_status_test.go#L223) | [project_status.go](../internal/domain/project_status.go) | `a385451` → `431b247` |
+| [Consultar el estado de un proyecto que no existe](specs/sprint-2/05-consultar-estado-proyecto.md?plain=1#L186) | `TestConsultarElEstadoDeUnProyectoQueNoExiste` [project_status_test.go:103](../internal/domain/project_status_test.go#L103) | [project_status.go](../internal/domain/project_status.go) | `7de777d` → `718ae62` |
 
 ## #7 Priorizar el Product Backlog
 
