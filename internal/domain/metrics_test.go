@@ -77,3 +77,44 @@ func TestSinDatosCargadosLasMetricasValenCero(t *testing.T) {
 		})
 	}
 }
+
+// historiasEstimadas carga en el backlog una historia por cada valor, estimada con esos
+// story points; un 0 la deja sin estimar.
+func historiasEstimadas(t *testing.T, project *Project, points ...int) {
+	t.Helper()
+	for _, p := range points {
+		story, err := project.AddStory(unosDatos())
+		if err != nil {
+			t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+		}
+		if p == 0 {
+			continue
+		}
+		if err := project.EstimateStory(story.ID(), p); err != nil {
+			t.Fatalf("no se pudo estimar la historia de prueba en %d: %v", p, err)
+		}
+	}
+}
+
+// Escenario: Metricas de un sprint cerrado
+// Cubre: RN-3, RN-16
+//
+// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados, y
+// las tareas 6, 9, 10, 11 y 12 le suman su número. Asignar historias es de la #9 y cerrar el
+// sprint de la #10, que todavía no están en dev: el test arma el sprint dentro del paquete.
+func TestMetricasDeUnSprintCerrado(t *testing.T) {
+	project := unProyecto(t)
+	historiasEstimadas(t, project, 3, 5, 2, 3)
+	sprint := unSprint(t, project)
+	sprint.stories = []int{1, 2, 3, 4}
+	sprint.state = SprintClosed
+
+	got, err := project.SprintMetrics(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+	if got.PlannedPoints != 13 || got.StoriesPlanned != 4 {
+		t.Fatalf("se esperaban 13 story points y 4 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+}
