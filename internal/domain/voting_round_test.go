@@ -336,3 +336,73 @@ func TestRechazarUnSegundoVotoDelMismoIntegrante(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: Rechazar el voto de quien no participa de la ronda
+// Cubre: RN-2, RN-11, RN-18
+func TestRechazarElVotoDeQuienNoParticipaDeLaRonda(t *testing.T) {
+	cases := []struct {
+		name   string
+		voter  string
+		points int
+	}{
+		{"Pedro Gomez no es integrante del proyecto", "Pedro Gomez", 5},
+		{"Emiliano Sorato se agrego al proyecto despues de abrirla", "Emiliano Sorato", 5},
+		// El control de "no participa" va antes que el del valor (orden de la Fase 2).
+		{"quien no participa, con un valor fuera de la escala", "Pedro Gomez", 4},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, round := openRound(t)
+			if _, err := project.AddMember("Emiliano Sorato", RoleAgileEnabler); err != nil {
+				t.Fatalf("no se pudo agregar al integrante nuevo: %v", err)
+			}
+
+			err := round.Vote(tc.voter, tc.points)
+
+			if !errors.Is(err, ErrNotParticipant) {
+				t.Fatalf("se esperaba ErrNotParticipant, salio: %v", err)
+			}
+			if len(round.Voted()) != 0 {
+				t.Fatalf("se esperaba que no votara nadie, salio: %v", round.Voted())
+			}
+		})
+	}
+}
+
+// Escenario: Reconocer al integrante aunque el nombre venga escrito distinto
+// Cubre: RN-11
+func TestReconocerAlIntegranteAunqueElNombreVengaEscritoDistinto(t *testing.T) {
+	_, round := openRound(t)
+
+	err := round.Vote("  juliana bustos  ", 5)
+
+	if err != nil {
+		t.Fatalf("se esperaba aceptar el voto, salio: %v", err)
+	}
+	if want := []string{"Juliana Bustos"}; !slices.Equal(round.Voted(), want) {
+		t.Fatalf("se esperaba que votara %v, escrito como esta cargado, salio: %v", want, round.Voted())
+	}
+}
+
+// Escenario: Quien sale del proyecto despues de abrir la ronda sigue participando
+// Cubre: RN-2
+func TestQuienSaleDelProyectoDespuesDeAbrirLaRondaSigueParticipando(t *testing.T) {
+	project, round := openRound(t)
+	if err := project.RemoveMember("Juliana Bustos"); err != nil {
+		t.Fatalf("no se pudo quitar a Juliana Bustos del proyecto: %v", err)
+	}
+	for _, name := range []string{"Agustin Salinas", "Maximiliano Eula"} {
+		if err := round.Vote(name, 5); err != nil {
+			t.Fatalf("no se pudo votar: %v", err)
+		}
+	}
+
+	err := round.Reveal()
+
+	if want := []string{"Juliana Bustos"}; !slices.Equal(round.Pending(), want) {
+		t.Fatalf("se esperaba que siguiera faltando %v, salio: %v", want, round.Pending())
+	}
+	if !errors.Is(err, ErrVotesMissing) {
+		t.Fatalf("se esperaba que la ronda no se pudiera revelar sin su voto, salio: %v", err)
+	}
+}
