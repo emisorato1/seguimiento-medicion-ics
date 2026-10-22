@@ -4,6 +4,7 @@ import (
 	"errors"
 	"slices"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -285,6 +286,52 @@ func TestRechazarUnVotoFueraDeLaEscala(t *testing.T) {
 			}
 			if !slices.Contains(round.Pending(), "Juliana Bustos") {
 				t.Fatalf("se esperaba que Juliana Bustos siguiera entre los que faltan, salio: %v", round.Pending())
+			}
+		})
+	}
+}
+
+// Escenario: Rechazar un segundo voto del mismo integrante
+// Cubre: RN-10, RN-12, RN-18
+//
+// Los valores 13 y 21 no aparecen en ningún otro dato de la ronda (historia 1, ronda 1,
+// nombres sin números): así el test puede comprobar que el aviso no lleva ninguno de los dos.
+func TestRechazarUnSegundoVotoDelMismoIntegrante(t *testing.T) {
+	cases := []struct {
+		name   string
+		second int
+	}{
+		{"con un valor de la escala", 21},
+		// El control de "ya votó" va antes que el del valor: un segundo voto fuera de la
+		// escala también informa que ya votó (orden de la Fase 2).
+		{"con un valor fuera de la escala", 4},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, round := openRound(t)
+			if err := round.Vote("Juliana Bustos", 13); err != nil {
+				t.Fatalf("no se pudo registrar el primer voto: %v", err)
+			}
+
+			err := round.Vote("Juliana Bustos", tc.second)
+
+			if !errors.Is(err, ErrAlreadyVoted) {
+				t.Fatalf("se esperaba ErrAlreadyVoted, salio: %v", err)
+			}
+			if strings.Contains(err.Error(), "13") || strings.Contains(err.Error(), strconv.Itoa(tc.second)) {
+				t.Fatalf("se esperaba un aviso sin ningun valor votado, salio: %q", err.Error())
+			}
+			for _, name := range []string{"Agustin Salinas", "Maximiliano Eula"} {
+				if err := round.Vote(name, 5); err != nil {
+					t.Fatalf("no se pudo votar: %v", err)
+				}
+			}
+			if err := round.Reveal(); err != nil {
+				t.Fatalf("no se pudo revelar la ronda: %v", err)
+			}
+			votes, _ := round.Votes()
+			if votes[1] != (Vote{"Juliana Bustos", 13}) {
+				t.Fatalf("se esperaba que quedara el primer voto de Juliana Bustos, 13, salio: %v", votes[1])
 			}
 		})
 	}
