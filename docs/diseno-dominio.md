@@ -68,9 +68,14 @@ se puede reemplazar, no se toca si la historia está Terminada. **Es el único c
 | `PointsAtClose` | story points por historia | los puntos que tenía cada historia de `Stories` al cerrar; vacío mientras está abierto |
 | `ClosedOn` | fecha | cuándo se cerró de verdad; vacía si no cerró |
 
-Cuelga del proyecto: `p.AddSprint(...)` y `p.OpenSprint()` (#8), `p.AssignStory(id)` y
-`p.UnassignStory(id)` (#9), `p.CloseSprint(...)` (#10), `p.Sprints()`, `p.ClosedSprints()` y
-`p.Sprint(number)` (#11).
+Cuelga del proyecto: `p.AddSprint(...)`, `p.OpenSprint()`, `p.Sprints()` y
+`p.Sprint(number)` (#8), `p.AssignStory(id)` y `p.UnassignStory(id)` (#9),
+`p.CloseSprint(...)` (#10) y `p.ClosedSprints()` (#11).
+
+**`p.Sprints()` y `p.Sprint(number)` los adelanta la #8**, con el error de sprint no
+encontrado, aunque al principio eran de la #11: la #15 los necesita desde su primera tarea para
+validar los sprints de detección y de resolución de un defecto. Lo pidieron Maxi y Juliana en
+la revisión de las puertas de la #8 (PR #104), el 20 y 21/10.
 
 **Por qué `CompletedStories` es un dato y no se deduce.** Una historia que no se terminó
 vuelve al Product Backlog y se puede terminar en el sprint siguiente: si "completada" se
@@ -213,9 +218,14 @@ Se pide con `p.Dashboard()`, que no falla: si el proyecto no existe, lo informa 
 
 **Lo que necesita saber la historia #19:** el reporte se arma una sola vez y la exportación a
 PDF **solo lo formatea**. No vuelve a calcular nada. Se exporta con `r.WritePDF(w)`, que **escribe el PDF en un
-`io.Writer`** y solo lee `Title`, `GeneratedOn` y `Sections`. El dominio no toca archivos: la
-consola lo graba en disco y la web lo manda como descarga (decidido el 20/10, al escribir la
-spec de la #78; reemplaza a `r.ExportPDF(path)`).
+`io.Writer`** y solo lee `Title`, `GeneratedOn` y `Sections`. El dominio no toca archivos: **la web
+lo manda como descarga (#78)** y la consola no exporta, porque queda con lo de la #24
+(decidido el 20/10, al escribir la spec de la #78; reemplaza a `r.ExportPDF(path)`).
+
+**`Metrics` se declara antes que su cálculo.** Es un dato plano y sus campos son públicos, porque
+la #17 y la #18 lo arman a mano en sus tests. Lo declara la #16 en un PR chico, sin
+comportamiento y por lo tanto sin test, para que la #17, la #18 y la #19 no esperen a que
+existan el sprint, el esfuerzo y los defectos (decidido el 21/10).
 
 ### `VotingRound` — historias #13 y #73
 

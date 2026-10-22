@@ -27,18 +27,22 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#4 Registrar integrantes de un proyecto](#4-registrar-integrantes-de-un-proyecto) | 13 | 13 | 0 | 11 |
 | [#6 Administrar el Product Backlog](#6-administrar-el-product-backlog) | 18 | 18 | 0 | 13 |
 | [#12 Estimar historias con Story Points](#12-estimar-historias-con-story-points) | 10 | 10 | 0 | 3 |
+| [#24 Operar el sistema desde una interfaz de consola](#24-operar-el-sistema-desde-una-interfaz-de-consola) | 13 | 13 | 0 | 5 |
+| [#7 Priorizar el Product Backlog](#7-priorizar-el-product-backlog) | 15 | 15 | 0 | 1 |
+| [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 5 | 12 | 0 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 4 | 11 | 6 |
 
 ## Qué dice el historial de TDD
 
 Cada test tiene en la columna *RED → GREEN* lo que muestra el historial de commits. Hay
-cuatro casos posibles:
+cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 77 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 6 |
-| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 109 |
+| `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 9 |
+| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 15 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
 ## #3 Crear y modificar proyectos
@@ -253,6 +257,147 @@ cuatro casos posibles:
 | `TestQuitarLaEstimacionDeUnaHistoriaInexistente` [story_estimation_test.go:208](../internal/domain/story_estimation_test.go#L208) | RN-9 | [story_estimation.go](../internal/domain/story_estimation.go) | `f4e9086` → `4e93db8` |
 | `TestConMasDeUnProblemaSeInformaElPrimero` [story_estimation_test.go:220](../internal/domain/story_estimation_test.go#L220) | RN-8, RN-9 | el que ya estaba | `ae2a6cc` (sin RED: ya pasaba) |
 
+## #24 Operar el sistema desde una interfaz de consola
+
+- **Historia:** issue #24
+- **Spec:** [docs/specs/sprint-1/24-interfaz-de-consola.md](specs/sprint-1/24-interfaz-de-consola.md)
+- **Código según la spec:** `cmd/app/console.go`, `cmd/app/main.go`
+
+<details><summary>Criterios de aceptación (9)</summary>
+
+- Se puede crear un proyecto desde la consola y se ve su identificador.
+- Se pueden agregar integrantes a un proyecto y listarlos.
+- Se pueden cargar historias en el backlog y listarlas.
+- Se le pueden asignar story points a una historia.
+- Cuando una operación se rechaza, se ve el motivo y el programa sigue andando.
+- Listar algo vacío no es un error.
+- Una operación incompleta o con un dato mal escrito se informa sin ejecutarla.
+- Se puede salir del programa.
+- La consola no contiene ninguna validación de negocio propia.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Crear un proyecto desde la consola](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L103) | `TestCrearUnProyectoDesdeLaConsola` [console_test.go:74](../cmd/app/console_test.go#L74) | [console.go](../cmd/app/console.go) | `799f9e8` → `07c23ff` (el test trae lo justo para compilar) |
+| [Mostrar el motivo de un rechazo](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L109) | `TestMostrarElMotivoDeUnRechazo` [console_test.go:106](../cmd/app/console_test.go#L106) | [console.go](../cmd/app/console.go) | `b1bf255` → `4cd8d97` |
+| [Agregar y listar integrantes](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L115) | `TestAgregarYListarIntegrantes` [console_test.go:160](../cmd/app/console_test.go#L160) | [console.go](../cmd/app/console.go) | `385645f` → `ae3ffa5` |
+| [Listar un backlog vacio](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L121) | `TestListarUnBacklogVacio` [console_test.go:185](../cmd/app/console_test.go#L185) | [console.go](../cmd/app/console.go) | `11a3b48` → `01b3b07` |
+| [Cargar una historia y listar el backlog](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L126) | `TestCargarUnaHistoriaYListarElBacklog` [console_test.go:204](../cmd/app/console_test.go#L204) | [console.go](../cmd/app/console.go) | `3f578a2` → `fc3fa30` |
+| [Estimar una historia desde la consola](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L132) | `TestEstimarUnaHistoriaDesdeLaConsola` [console_test.go:243](../cmd/app/console_test.go#L243) | [console.go](../cmd/app/console.go) | `0d8941c` → `4d2fe0e` |
+| [El nucleo rechaza un valor fuera de la escala](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L137) | `TestElNucleoRechazaUnValorFueraDeLaEscala` [console_test.go:268](../cmd/app/console_test.go#L268) | ⚠️ ningún commit de código después del test | `383dcf7` → ⚠️ sin GREEN |
+| [Operacion incompleta](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L143) | `TestOperacionIncompleta` [console_test.go:292](../cmd/app/console_test.go#L292) | [console.go](../cmd/app/console.go) | `bedd456` → `28b8aef` |
+| [Dato con forma invalida](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L149) | `TestDatoConFormaInvalida` [console_test.go:313](../cmd/app/console_test.go#L313) | [console.go](../cmd/app/console.go) | `7e64570` → `de946a6` |
+| [Operar sobre un identificador que no existe](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L155) | `TestOperarSobreUnIdentificadorQueNoExiste` [console_test.go:353](../cmd/app/console_test.go#L353) | [main.go](../cmd/app/main.go) | `fb5bad5` → `ac4a4d3` |
+| [Operacion inexistente](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L161) | `TestOperacionInexistente` [console_test.go:54](../cmd/app/console_test.go#L54) | [console.go](../cmd/app/console.go) | `35173b0` → `69fbd58` (el test trae lo justo para compilar) |
+| [Entrada vacia](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L166) | `TestEntradaVacia` [console_test.go:38](../cmd/app/console_test.go#L38) | [console.go](../cmd/app/console.go) | `44eaaf7` → `d9e27a8` (el test trae lo justo para compilar) |
+| [Salir del programa](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L172) | `TestSalirDelPrograma` [console_test.go:16](../cmd/app/console_test.go#L16) | [console.go](../cmd/app/console.go) | `7d31b89` → `cd3c73b` |
+
+**Tests que no citan un escenario de la Fase 1 (5).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestUnaFechaMalEscritaSeInformaYLaOperacionNoSeEjecuta` [console_test.go:130](../cmd/app/console_test.go#L130) | RN-5 | [console.go](../cmd/app/console.go) | `e48de53` → `42cfe49` |
+| `TestCadaOperacionMuestraElRechazoDelNucleo` [console_test.go:376](../cmd/app/console_test.go#L376) | RN-2, RN-7 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
+| `TestElBacklogMuestraLosStoryPointsDeUnaHistoriaEstimada` [console_test.go:417](../cmd/app/console_test.go#L417) | RN-1 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
+| `TestLaEntradaTerminaSinSalir` [console_test.go:435](../cmd/app/console_test.go#L435) | RN-6 | el que ya estaba | `43fface` (sin RED: ya pasaba) |
+| `TestListarLosIntegrantesDeUnProyectoSinIntegrantes` [console_test.go:448](../cmd/app/console_test.go#L448) | RN-1 | [console.go](../cmd/app/console.go) | `f0ca0e9` → `6120035` |
+
+## #7 Priorizar el Product Backlog
+
+- **Historia:** issue #7
+- **Spec:** [docs/specs/sprint-2/07-priorizar-backlog.md](specs/sprint-2/07-priorizar-backlog.md)
+- **Código según la spec:** `PrioritizedBacklog()`, `internal/domain/story_priority.go`
+
+<details><summary>Criterios de aceptación (14)</summary>
+
+- Pedir el backlog ordenado de un proyecto devuelve primero las historias de prioridad Alta, después las Media y por último las Baja.
+- Dentro de una misma prioridad, las historias quedan ordenadas por identificador de menor a mayor.
+- El listado ordenado devuelve la misma cantidad de historias que tiene el backlog, sin omitir ni repetir ninguna.
+- Las historias aparecen en el listado cualquiera sea su estado y estén estimadas o no.
+- Cada historia del listado se devuelve con su identificador, título, descripción, prioridad, estado, story points y criterios de aceptación.
+- Al cambiar la prioridad de una historia, el listado siguiente la ubica en el lugar que corresponde a su nueva prioridad.
+- Cambiar una prioridad por la misma que ya tenía deja el listado igual.
+- Pedir el listado ordenado no cambia ningún dato de las historias ni el orden en que el backlog las devuelve sin ordenar.
+- Pedir el listado ordenado dos veces seguidas, sin cambiar nada en el medio, devuelve exactamente el mismo resultado.
+- El backlog ordenado de un proyecto sin historias se devuelve vacío, y eso no es un error.
+- Un proyecto con una sola historia devuelve un listado con esa única historia.
+- Un backlog donde todas las historias tienen la misma prioridad se devuelve ordenado por identificador.
+- Pedir el backlog ordenado de un proyecto que no existe informa que no se encontró.
+- Las historias Terminadas aparecen al final del listado, después de todas las demás, y ordenadas entre sí por prioridad.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Listar el backlog ordenado por prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L150) | `TestListarElBacklogOrdenadoPorPrioridad` [story_priority_test.go:152](../internal/domain/story_priority_test.go#L152) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Desempatar por identificador dentro de la misma prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L155) | `TestDesempatarPorIdentificadorDentroDeLaMismaPrioridad` [story_priority_test.go:252](../internal/domain/story_priority_test.go#L252) | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+| [El orden se actualiza al cambiar una prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L160) | `TestElOrdenSeActualizaAlCambiarUnaPrioridad` [story_priority_test.go:176](../internal/domain/story_priority_test.go#L176) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Bajar la prioridad de la historia que estaba primera](specs/sprint-2/07-priorizar-backlog.md?plain=1#L172) | `TestBajarLaPrioridadDeLaHistoriaQueEstabaPrimera` [story_priority_test.go:204](../internal/domain/story_priority_test.go#L204) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Backlog ordenado de un proyecto sin historias](specs/sprint-2/07-priorizar-backlog.md?plain=1#L178) | `TestBacklogOrdenadoDeUnProyectoSinHistorias` [story_priority_test.go:50](../internal/domain/story_priority_test.go#L50) | [story_priority.go](../internal/domain/story_priority.go) | `41f2471` → `d194fa8` |
+| [Backlog ordenado de un proyecto con una sola historia](specs/sprint-2/07-priorizar-backlog.md?plain=1#L184) | `TestBacklogOrdenadoDeUnProyectoConUnaSolaHistoria` [story_priority_test.go:140](../internal/domain/story_priority_test.go#L140) | [story_priority.go](../internal/domain/story_priority.go) | `ab5ea38` → `5c75d88` |
+| [Todas las historias tienen la misma prioridad](specs/sprint-2/07-priorizar-backlog.md?plain=1#L189) | `TestTodasLasHistoriasTienenLaMismaPrioridad` [story_priority_test.go:264](../internal/domain/story_priority_test.go#L264) | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+| [No hay historias de prioridad alta](specs/sprint-2/07-priorizar-backlog.md?plain=1#L194) | `TestNoHayHistoriasDePrioridadAlta` [story_priority_test.go:164](../internal/domain/story_priority_test.go#L164) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [El listado incluye las historias en cualquier estado](specs/sprint-2/07-priorizar-backlog.md?plain=1#L200) | `TestElListadoIncluyeLasHistoriasEnCualquierEstado` [story_priority_test.go:83](../internal/domain/story_priority_test.go#L83) | [story_priority.go](../internal/domain/story_priority.go) | `ab5ea38` → `5c75d88` |
+| [Las historias del listado traen todos sus datos](specs/sprint-2/07-priorizar-backlog.md?plain=1#L205) | `TestLasHistoriasDelListadoTraenTodosSusDatos` [story_priority_test.go:109](../internal/domain/story_priority_test.go#L109) | [story_priority.go](../internal/domain/story_priority.go) | `ab5ea38` → `5c75d88` |
+| [Pedir el listado ordenado no cambia el backlog](specs/sprint-2/07-priorizar-backlog.md?plain=1#L211) | `TestPedirElListadoOrdenadoNoCambiaElBacklog` [story_priority_test.go:234](../internal/domain/story_priority_test.go#L234) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Dos listados seguidos devuelven lo mismo](specs/sprint-2/07-priorizar-backlog.md?plain=1#L218) | `TestDosListadosSeguidosDevuelvenLoMismo` [story_priority_test.go:276](../internal/domain/story_priority_test.go#L276) | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+| [Cambiar una prioridad por la que ya tenia](specs/sprint-2/07-priorizar-backlog.md?plain=1#L223) | `TestCambiarUnaPrioridadPorLaQueYaTenia` [story_priority_test.go:219](../internal/domain/story_priority_test.go#L219) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
+| [Pedir el backlog ordenado de un proyecto que no existe](specs/sprint-2/07-priorizar-backlog.md?plain=1#L229) | `TestPedirElBacklogOrdenadoDeUnProyectoQueNoExiste` [story_priority_test.go:68](../internal/domain/story_priority_test.go#L68) | [story_priority.go](../internal/domain/story_priority.go) | `41f2471` → `d194fa8` |
+| [Las historias terminadas van al final](specs/sprint-2/07-priorizar-backlog.md?plain=1#L235) | `TestLasHistoriasTerminadasVanAlFinal` [story_priority_test.go:308](../internal/domain/story_priority_test.go#L308) | [story_priority.go](../internal/domain/story_priority.go) | `cc4e1f9` → `ba0c908` |
+
+**Tests que no citan un escenario de la Fase 1 (1).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden` [story_priority_test.go:294](../internal/domain/story_priority_test.go#L294) ⚠️ no dice que no tiene escenario | RN-3 y la decision de la Fase 2 "El desempate por identificador se hace explicito" | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+
+## #8 Crear un sprint con su Sprint Goal
+
+- **Historia:** issue #8
+- **Spec:** [docs/specs/sprint-2/08-crear-sprint.md](specs/sprint-2/08-crear-sprint.md)
+- **Código según la spec:** `internal/domain/sprint.go`, `internal/domain/project.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (15)</summary>
+
+- Se puede crear un sprint con Sprint Goal, fecha de inicio y fecha de fin, y queda registrado con su número y en estado Abierto.
+- El primer sprint de un proyecto recibe el número 1, y cada sprint nuevo el número siguiente.
+- El número no se repite dentro del mismo proyecto.
+- Un sprint recién creado no tiene historias asignadas.
+- No se puede crear un sprint sin Sprint Goal, y un Sprint Goal de solo espacios cuenta como vacío.
+- No se puede crear un sprint sin fecha de inicio ni sin fecha de fin.
+- No se puede crear un sprint con fecha de fin anterior a la de inicio.
+- Un sprint cuya fecha de fin es igual a la de inicio se acepta.
+- No se puede crear un segundo sprint mientras haya uno abierto en el mismo proyecto, y el mensaje dice cuál es el que está abierto.
+- Tener un sprint abierto en un proyecto no impide crear un sprint en otro proyecto.
+- Se puede consultar cuál es el sprint abierto de un proyecto; si no hay ninguno se informa y no es un error.
+- El Sprint Goal se guarda sin los espacios del principio y del final.
+- Una creación rechazada no agrega ningún sprint al proyecto.
+- Crear un sprint o pedir el sprint abierto de un proyecto inexistente informa que no se encontró el proyecto.
+- Se puede consultar un sprint por su número, esté abierto o cerrado, y un número que no existe informa que no se encontró el sprint.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Crear el primer sprint de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L159) | `TestCrearElPrimerSprintDeUnProyecto` [sprint_test.go:28](../internal/domain/sprint_test.go#L28) | [sprint.go](../internal/domain/sprint.go) | `5d602fa` → `e3a9416` |
+| ⚠️ [El sprint nuevo recibe el numero siguiente](specs/sprint-2/08-crear-sprint.md?plain=1#L166) | **sin test** | | |
+| ⚠️ [No se puede abrir un segundo sprint habiendo uno abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L172) | **sin test** | | |
+| ⚠️ [Rechazar un sprint sin Sprint Goal](specs/sprint-2/08-crear-sprint.md?plain=1#L179) | **sin test** | | |
+| ⚠️ [Rechazar un sprint sin las fechas obligatorias](specs/sprint-2/08-crear-sprint.md?plain=1#L191) | **sin test** | | |
+| ⚠️ [Rechazar un sprint con fechas incoherentes](specs/sprint-2/08-crear-sprint.md?plain=1#L203) | **sin test** | | |
+| ⚠️ [Un sprint de un solo dia es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L209) | **sin test** | | |
+| ⚠️ [Un sprint con fechas pasadas es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L214) | **sin test** | | |
+| ⚠️ [Guardar el Sprint Goal sin espacios en los extremos](specs/sprint-2/08-crear-sprint.md?plain=1#L219) | **sin test** | | |
+| ⚠️ [Cada proyecto puede tener su propio sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L224) | **sin test** | | |
+| [Consultar el sprint abierto de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L230) | `TestConsultarElSprintAbiertoDeUnProyecto` [sprint_test.go:56](../internal/domain/sprint_test.go#L56) | [sprint.go](../internal/domain/sprint.go) | `6cf7475` → `de2ac50` |
+| [Un proyecto sin sprints no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L235) | `TestUnProyectoSinSprintsNoTieneSprintAbierto` [sprint_test.go:10](../internal/domain/sprint_test.go#L10) | [project.go](../internal/domain/project.go), [sprint.go](../internal/domain/sprint.go) | `5e2b377` → `ff3264e` |
+| ⚠️ [Un proyecto con todos sus sprints cerrados no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L241) | **sin test** | | |
+| ⚠️ [Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas](specs/sprint-2/08-crear-sprint.md?plain=1#L246) | **sin test** | | |
+| ⚠️ [Operar sobre un proyecto que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L252) | **sin test** | | |
+| [Consultar un sprint por su numero](specs/sprint-2/08-crear-sprint.md?plain=1#L262) | `TestConsultarUnSprintPorSuNumero` [sprint_test.go:88](../internal/domain/sprint_test.go#L88) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
+| [Consultar un sprint que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L267) | `TestConsultarUnSprintQueNoExiste` [sprint_test.go:119](../internal/domain/sprint_test.go#L119) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
+
 ## #77 Interfaz web: proyectos, integrantes y backlog
 
 - **Historia:** issue #77
@@ -286,15 +431,15 @@ cuatro casos posibles:
 | ⚠️ [Las opciones para elegir son las del sistema](specs/sprint-2/77-interfaz-web-base.md?plain=1#L184) | **sin test** | | |
 | ⚠️ [Confirmar o cancelar antes de quitar](specs/sprint-2/77-interfaz-web-base.md?plain=1#L194) | **sin test** | | |
 | ⚠️ [Mostrar el rechazo sin perder lo escrito](specs/sprint-2/77-interfaz-web-base.md?plain=1#L207) | **sin test** | | |
-| [Las listas vacias dicen que hacer](specs/sprint-2/77-interfaz-web-base.md?plain=1#L225) | `TestSinDatosGuardadosSeArrancaSinProyectos` [file_test.go:53](../internal/store/file_test.go#L53) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
+| [Las listas vacias dicen que hacer](specs/sprint-2/77-interfaz-web-base.md?plain=1#L225) | `TestSinDatosGuardadosSeArrancaSinProyectos` [file_test.go:54](../internal/store/file_test.go#L54) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | ⚠️ [Pedir algo que no existe](specs/sprint-2/77-interfaz-web-base.md?plain=1#L237) | **sin test** | | |
 | ⚠️ [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | **sin test** | | |
 | ⚠️ [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | **sin test** | | |
 | [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:116](../internal/domain/registry_json_test.go#L116) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
-| ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:68](../internal/store/file_test.go#L68) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
+| ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:69](../internal/store/file_test.go#L69) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:172](../internal/domain/registry_json_test.go#L172) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
-| ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:124](../internal/store/file_test.go#L124) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
-| [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:165](../internal/store/file_test.go#L165) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
+| ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:160](../internal/store/file_test.go#L160) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
+| [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:202](../internal/store/file_test.go#L202) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | ⚠️ [Dos pestanas a la vez](specs/sprint-2/77-interfaz-web-base.md?plain=1#L276) | **sin test** | | |
 | ⚠️ [Usar la pagina en un celular y con el teclado](specs/sprint-2/77-interfaz-web-base.md?plain=1#L281) | **sin test** | | |
 
@@ -306,6 +451,6 @@ cuatro casos posibles:
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:236](../internal/domain/registry_json_test.go#L236) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
-| `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:217](../internal/store/file_test.go#L217) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
-| `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:237](../internal/store/file_test.go#L237) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
+| `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
 

@@ -121,28 +121,34 @@ git log --reverse --no-color --format='@@%H' -p -- '*_test.go' | awk '
 git rev-list --parents HEAD | awk '{ print $2 "\t" $1 "\t" (NF - 1) }' \
   > "$TMP/hijos.tsv"
 
-# Archivos .go que cambia cada commit, separados en codigo y tests
+# Archivos de codigo que cambia cada commit, separados de los tests. Es codigo de produccion
+# todo .go que no es test y, en la web, las plantillas (.html) y el CSS (.css) de internal/web
 git log --no-color --format='@@%H' --name-only HEAD | awk '
   function cerrar() { if (commit != "") print commit "\t" codigo "\t" tests }
   /^@@[0-9a-f]+$/ { cerrar(); commit = substr($0, 3); codigo = ""; tests = 0; next }
   /_test\.go$/ { tests = 1; next }
-  /\.go$/ { codigo = codigo (codigo == "" ? "" : " ") $0 }
+  /\.go$/ || /^internal\/web\/.*\.(html|css)$/ { codigo = codigo (codigo == "" ? "" : " ") $0 }
   END { cerrar() }
 ' > "$TMP/archivos-commit.tsv"
 
 # Commits que dicen "sin RED": el test paso con el codigo que ya habia, y no hay GREEN
 git log --no-color --format='%H' --grep='sin RED' HEAD > "$TMP/sin-red.txt"
 
+# Commits "test:": si tocan codigo, es lo minimo para que el test compile (una constante, una
+# firma), y la implementacion viene en el commit siguiente
+git log --no-color --format='%H %s' HEAD | awk '$2 == "test:" { print $1 }' > "$TMP/commits-test.txt"
+
 # Para cada test: commit RED, commit GREEN y archivos de codigo del GREEN
 awk -F'\t' -v dir="$TMP" '
   FILENAME == dir "/hijos.tsv" { if ($1 != "") { hijo[$1] = $2; padres[$2] = $3 }; next }
   FILENAME == dir "/archivos-commit.tsv" { codigo[$1] = $2; toca_tests[$1] = $3; next }
   FILENAME == dir "/sin-red.txt" { sin_red[$1] = 1; next }
+  FILENAME == dir "/commits-test.txt" { es_test[$1] = 1; next }
   {
     nombre = $1; red = $2; green = ""; archivos = ""; nota = ""
     if (red in sin_red) {
       nota = "sin-red"
-    } else if (codigo[red] != "") {
+    } else if (codigo[red] != "" && !(red in es_test)) {
       nota = "mismo-commit"; archivos = codigo[red]
     } else {
       actual = red
@@ -153,11 +159,14 @@ awk -F'\t' -v dir="$TMP" '
         if (toca_tests[h] == 1) break
         actual = h
       }
-      if (green == "") nota = "sin-green"
+      if (green == "" && codigo[red] != "") { nota = "mismo-commit"; archivos = codigo[red] }
+      else if (green == "") nota = "sin-green"
+      else if (codigo[red] != "") nota = "andamiaje"
     }
     print nombre "\t" red "\t" green "\t" archivos "\t" nota
   }
-' "$TMP/hijos.tsv" "$TMP/archivos-commit.tsv" "$TMP/sin-red.txt" "$TMP/primer-commit.tsv" \
+' "$TMP/hijos.tsv" "$TMP/archivos-commit.tsv" "$TMP/sin-red.txt" "$TMP/commits-test.txt" \
+  "$TMP/primer-commit.tsv" \
   > "$TMP/green.tsv"
 
 # --- 4. A que historia va cada test -------------------------------------------------------
@@ -230,6 +239,7 @@ awk -F'\t' -v dir="$TMP" '
     if (nota_green[nombre] == "mismo-commit") return r " ⚠️ test y código en el mismo commit"
     if (nota_green[nombre] == "sin-red") return r " (sin RED: ya pasaba)"
     if (green[nombre] == "") return r " → ⚠️ sin GREEN"
+    if (nota_green[nombre] == "andamiaje") return r " → " g " (el test trae lo justo para compilar)"
     return r " → " g
   }
   function codigo_de(nombre) {
@@ -323,9 +333,10 @@ awk -F'\t' -v dir="$TMP" '
     print ""
 
     # Las marcas del historial de TDD, contadas y explicadas
-    m_verde = 0; m_sin_red = 0; m_juntos = 0; m_sin_green = 0
+    m_verde = 0; m_sin_red = 0; m_juntos = 0; m_sin_green = 0; m_andamiaje = 0
     for (nombre in red) {
       if (nota_green[nombre] == "mismo-commit") m_juntos++
+      else if (nota_green[nombre] == "andamiaje") m_andamiaje++
       else if (nota_green[nombre] == "sin-red") m_sin_red++
       else if (green[nombre] == "") m_sin_green++
       else m_verde++
@@ -333,11 +344,12 @@ awk -F'\t' -v dir="$TMP" '
     print "## Qué dice el historial de TDD"
     print ""
     print "Cada test tiene en la columna *RED → GREEN* lo que muestra el historial de commits. Hay"
-    print "cuatro casos posibles:"
+    print "cinco casos posibles:"
     print ""
     print "| Marca | Qué quiere decir | Tests |"
     print "|---|---|---|"
     printf "| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | %d |\n", m_verde
+    printf "| `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | %d |\n", m_andamiaje
     printf "| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | %d |\n", m_sin_red
     printf "| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | %d |\n", m_sin_green
     printf "| `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | %d |\n", m_juntos

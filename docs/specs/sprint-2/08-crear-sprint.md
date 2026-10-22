@@ -3,13 +3,16 @@
 - **Historia:** #8
 - **Sprint:** 2
 - **Responsable:** Agustín Salinas
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de
   la consigna y de los criterios de aceptación de la issue. El responsable lo
-  revisa, lo corrige si hace falta y lo presenta a las puertas.
+  revisa, lo corrige si hace falta y lo presenta a las puertas. Revisado por el
+  responsable el 20/10: decidió los seis puntos de la puerta y sumó la persistencia
+  y el número del sprint abierto en el error de la RN-8.
 - **Depende de:** #3 (el sprint pertenece a un proyecto)
 - **La necesitan:** #9 (asignar historias al sprint), #10 (cerrar el sprint),
-  #11 (consultar sprints anteriores), #16 (métricas)
+  #11 (consultar sprints anteriores), #16 (métricas), #5 (el sprint en curso del proyecto) y
+  #15 (los sprints de detección y de resolución de un defecto)
 
 ## Fase 1 — Requisitos
 
@@ -23,7 +26,8 @@ sin un sprint no hay dónde asignar historias, qué cerrar ni qué medir.
 
 - Asignar historias al sprint y armar el Sprint Backlog, que es la historia #9.
 - Cerrar el sprint y registrar qué se completó, que es la #10.
-- Consultar los sprints ya cerrados y su detalle, que es la #11.
+- Listar los sprints ya cerrados y mostrar su detalle, que es la #11. Esta historia solo
+  permite encontrar un sprint por su número (RN-15).
 - Las métricas del sprint (story points planificados, completados, velocidad), que son la #16.
 - Modificar el Sprint Goal o las fechas de un sprint ya creado: en esta historia el sprint
   se crea y no se edita.
@@ -83,6 +87,9 @@ del proyecto.
 14. **[RN-14]** El sistema debe aceptar las fechas del sprint tal como se indiquen, sin
     compararlas con la fecha de hoy ni con las fechas del proyecto. La única comparación es
     la de la RN-6, entre las dos fechas del propio sprint.
+15. **[RN-15]** El sistema debe permitir consultar un sprint de un proyecto por su número,
+    esté abierto o cerrado. Si el proyecto no tiene ningún sprint con ese número, el sistema
+    debe informar que no se encontró el sprint.
 
 ### Estados de un sprint
 
@@ -119,6 +126,7 @@ historia #10.
 | Fecha de fin anterior a la de inicio | rechaza e informa que las fechas son incoherentes |
 | El proyecto ya tiene un sprint abierto | rechaza e informa cuál es el sprint que está abierto |
 | Proyecto inexistente al crear o al consultar | informa que no se encontró el proyecto y no crea nada |
+| Número de sprint que no existe en el proyecto | informa que no se encontró el sprint |
 
 ### Criterios de aceptación
 
@@ -142,6 +150,8 @@ historia #10.
 - [ ] Una creación rechazada no agrega ningún sprint al proyecto.
 - [ ] Crear un sprint o pedir el sprint abierto de un proyecto inexistente informa que no se
       encontró el proyecto.
+- [ ] Se puede consultar un sprint por su número, esté abierto o cerrado, y un número que no
+      existe informa que no se encontró el sprint.
 
 ### Escenarios BDD
 
@@ -248,9 +258,21 @@ Esquema del escenario: Operar sobre un proyecto que no existe
     | operacion                 |
     | "crear un sprint"         |
     | "pedir el sprint abierto" |
+
+Escenario: Consultar un sprint por su numero
+  Dado un proyecto cuyo sprint 1 esta cerrado y cuyo sprint 2 esta abierto
+  Cuando pido el sprint 1 del proyecto
+  Entonces recibo el sprint 1 con su goal, sus fechas y su estado "Cerrado"
+
+Escenario: Consultar un sprint que no existe
+  Dado un proyecto con un unico sprint, el numero 1
+  Cuando pido el sprint 5 del proyecto
+  Entonces se informa que no se encontro el sprint
 ```
 
-**Para decidir en la puerta:**
+**Decidido por el responsable antes de la puerta (20/10).** Los seis puntos que el
+borrador dejaba abiertos quedan como estaban propuestos. Si quien aprueba la puerta no está
+de acuerdo con alguno, es el momento de decirlo:
 
 1. **RN-1 — el número lo pone el sistema, no quien crea el sprint.** La issue dice "crear un
    sprint con numero", y acá se interpretó que el sprint *tiene* número, no que se escribe a
@@ -276,13 +298,13 @@ Esquema del escenario: Operar sobre un proyecto que no existe
    sprint asignar historias. La #11 consulta los **cerrados**.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805). Las condiciones de la revisión de las puertas (de Maxi, Juliana y Emiliano) se aplicaron el 21/10 en 3c5acf2 y 5fbf1df: consulta por número (RN-15, tarea 16), qué se controla al cargar (tarea 15) y sacar "datos en memoria".
 
 ## Fase 2 — Diseño
 
-Las decisiones transversales del proyecto —un solo paquete `internal/domain`, datos en
-memoria, errores como valores del dominio comparables con `errors.Is`, mensajes en
-castellano y validar todo antes de cambiar nada— están en
+Las decisiones transversales del proyecto —un solo paquete `internal/domain`, errores como
+valores del dominio comparables con `errors.Is`, mensajes en castellano, la persistencia en
+un archivo desde la #77 y validar todo antes de cambiar nada— están en
 [AGENTS.md](../../../AGENTS.md) y no se repiten acá. Los datos del sprint y los nombres de
 sus operaciones ya están fijados en [el contrato del dominio](../../diseno-dominio.md).
 Esta fase registra solo lo propio de esta historia.
@@ -320,7 +342,9 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
 | `internal/domain/sprint.go` | se crea | la entidad sprint con los datos del contrato, su estado como tipo propio, la creación dentro del proyecto, el listado de sprints y la consulta del sprint abierto |
 | `internal/domain/sprint_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/project.go` | se modifica | el proyecto pasa a contener sus sprints y el contador de números |
-| `internal/domain/errors.go` | se modifica | los cinco errores de esta historia |
+| `internal/domain/errors.go` | se modifica | los seis errores de esta historia |
+| `internal/domain/registry_json.go` | se modifica | los sprints se guardan y se vuelven a cargar con el proyecto |
+| `internal/domain/registry_json_test.go` | se modifica | el caso de los sprints en el test de ida y vuelta |
 
 ### Decisiones
 
@@ -333,6 +357,9 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
 | La RN-8 se verifica con la misma consulta de la RN-10 | guardar aparte cuál es el sprint abierto del proyecto | un dato aparte puede contradecir a la lista de sprints; con una sola fuente eso no puede pasar |
 | Las fechas del sprint se guardan por día, reusando la normalización que ya hace el proyecto | guardarlas tal como llegan, con hora y zona | los casos límite de la Fase 1 piden que dos fechas del mismo día sean la misma fecha; reusar lo de la #3 evita que el sprint compare distinto que el proyecto (defecto #59) |
 | La entidad se crea completa, con los datos del contrato que esta historia no usa | crear solo el número, el goal, las fechas y el estado | el contrato ya los fija, y si no están, la #9 y la #10 tienen que volver a tocar la entidad y chocan entre ellas en el mismo archivo |
+| El rechazo por sprint abierto **envuelve el error del dominio con el número** del sprint que está abierto | un error fijo sin el número, o un error distinto por cada número | la RN-8 pide informar cuál está abierto, y un error del paquete es un valor fijo. Envuelto, `errors.Is` lo sigue reconociendo y el mensaje que ve el usuario dice el número |
+| Los sprints se guardan en el archivo de datos junto con su proyecto, y al cargarlos se controla que el archivo sea coherente: el Sprint Goal no vacío y las fechas presentes y en orden (como en la RN-4 a la RN-6), **como mucho un sprint abierto por proyecto**, y números de sprint **únicos, desde 1 y menores que el contador** del proyecto. No se pueden usar literalmente "las mismas validaciones que al crear", porque crear siempre deja el sprint Abierto y un archivo puede traer sprints cerrados | dejarlos solo en memoria | desde la #77 la web guarda todo en un archivo, y `AGENTS.md` pide que toda entidad nueva entre en esa conversión con su caso de ida y vuelta: si no, la web perdería los sprints al cerrarse sin que ningún test lo note. Esta historia guarda los datos que crea; los del cierre los suma la #10 |
+| **La consulta de un sprint por su número y su error los adelanta esta historia**, aunque el contrato se los asignaba a la #11 | esperar a la #11 | la #15 los necesita desde su primera tarea para validar los sprints de detección y de resolución de un defecto, y la #11 está en el Sprint 3. Son pocas líneas, van en el PR temprano y la #11 las usa tal cual. Lo pidieron Maxi y Juliana en la revisión de las puertas (PR #104), y el contrato quedó actualizado |
 | Lo de esta historia va en `sprint.go`; la #9, la #10 y la #11 agregan archivos propios | que las cuatro historias del sprint escriban en `sprint.go` | es el criterio que ya se aprobó en la Puerta 2 de la #12 para `story_estimation.go`: separar por funcionalidad para que dos personas no editen el mismo archivo |
 
 ### Dependencias y restricciones
@@ -341,18 +368,22 @@ la fecha de cierre arranca vacía. Las llenan la #9 y la #10.
   #3 esté en `dev`.
 - **`errors.go` es compartido.** Los errores de esta historia se agregan ahí, al final, para
   achicar el conflicto con las otras historias del sprint.
+- **`registry_json.go` también es compartido.** La conversión del sprint va en funciones
+  propias, y del código que ya existe solo se toca lo mínimo para que el proyecto guarde y
+  cargue sus sprints.
 - **No se toca nada de las historias:** ni el backlog, ni el estado, ni la estimación. El
   sprint nace sin historias asignadas y quien las asigna es la #9.
 - **No se escribe el cierre.** El pase a Cerrado y la fecha de cierre son de la #10: esta
   historia solo deja el dato vacío.
 - **Las operaciones son las que ya nombra el contrato del dominio** (`p.AddSprint(...)`,
-  `p.Sprints()`, `p.OpenSprint()`). La consulta de un sprint por su número, que el contrato
-  también nombra, la escribe la #11.
+  `p.Sprints()`, `p.OpenSprint()` y `p.Sprint(number)`). La consulta por número la adelanta
+  esta historia; la #11 solo suma el listado de los cerrados.
 - **Las usan:** la #9 (necesita el sprint abierto para asignar), la #10 (lo cierra), la #11
-  (lista los cerrados) y la #16 (mide sobre ellos).
+  (lista los cerrados), la #16 (mide sobre ellos), la #5 (el sprint en curso) y la #15 (busca
+  los sprints de detección y de resolución por su número).
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805). Las condiciones de la revisión de las puertas (de Maxi, Juliana y Emiliano) se aplicaron el 21/10 en 3c5acf2 y 5fbf1df: consulta por número (RN-15, tarea 16), qué se controla al cargar (tarea 15) y sacar "datos en memoria".
 
 ## Fase 3 — Tareas
 
@@ -366,9 +397,9 @@ quedó con los mismos sprints que antes: es la RN-12.
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Un proyecto recién creado no tiene sprints y no tiene sprint abierto, y eso no es un error | Un proyecto sin sprints no tiene sprint abierto | RN-10 | pendiente |
-| 2 | Crear el primer sprint: queda con número 1, en Abierto y sin historias asignadas | Crear el primer sprint de un proyecto | RN-1, RN-2, RN-3 | pendiente |
-| 3 | La consulta del sprint abierto devuelve ese sprint con su goal, sus fechas y su estado | Consultar el sprint abierto de un proyecto | RN-10 | pendiente |
+| 1 | Un proyecto recién creado no tiene sprints y no tiene sprint abierto, y eso no es un error | Un proyecto sin sprints no tiene sprint abierto | RN-10 | hecha |
+| 2 | Crear el primer sprint: queda con número 1, en Abierto y sin historias asignadas | Crear el primer sprint de un proyecto | RN-1, RN-2, RN-3 | hecha |
+| 3 | La consulta del sprint abierto devuelve ese sprint con su goal, sus fechas y su estado | Consultar el sprint abierto de un proyecto | RN-10 | hecha |
 | 4 | Rechazar la creación sin Sprint Goal, con el goal de solo espacios incluido; el proyecto sigue sin sprints | Rechazar un sprint sin Sprint Goal | RN-4, RN-12 | pendiente |
 | 5 | Rechazar la creación sin fecha de inicio y sin fecha de fin, informando cuál de las dos falta | Rechazar un sprint sin las fechas obligatorias | RN-5, RN-12 | pendiente |
 | 6 | Rechazar la creación con la fecha de fin anterior a la de inicio | Rechazar un sprint con fechas incoherentes | RN-6, RN-12 | pendiente |
@@ -380,6 +411,13 @@ quedó con los mismos sprints que antes: es la RN-12.
 | 12 | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas | RN-11 | pendiente |
 | 13 | Dos proyectos tienen cada uno su sprint número 1, y el sprint abierto de uno no impide crear el del otro | Cada proyecto puede tener su propio sprint abierto | RN-9 | pendiente |
 | 14 | Crear un sprint o pedir el sprint abierto de un proyecto que no existe informa que no se encontró el proyecto | Operar sobre un proyecto que no existe | RN-13 | pendiente |
+| 15 | Los sprints de un proyecto se conservan al guardar y volver a cargar el registro, con su número, goal, fechas y estado, y el contador sigue desde donde estaba. Un archivo con el goal vacío, fechas faltantes o al revés, dos sprints abiertos, o un número repetido, menor que 1 o no menor que el contador se rechaza al cargar | — (casos en el test de ida y vuelta y en el de datos dañados de `registry_json_test.go`) | RN-1, RN-2, RN-4 a RN-6, RN-8 | pendiente |
+| 16 | Consultar un sprint por su número, abierto o cerrado, y un número que no existe informa que no se encontró el sprint | Consultar un sprint por su numero; Consultar un sprint que no existe | RN-15 | hecha |
+
+**Las tareas 1, 2, 3 y 16 van en un primer pull request**, que se mergea apenas esté: crean
+el sprint, la consulta del sprint abierto y la consulta por número, que es lo que necesitan la
+#5, la #10, la #15 y la #16 para empezar. Es el caso 1 de "Cuándo se puede partir una historia"
+en `CLAUDE.md`. El resto va en el segundo, que cierra la historia.
 
 ### Por qué este orden
 
@@ -393,12 +431,19 @@ quedó con los mismos sprints que antes: es la RN-12.
   del sprint abierto esté cerrada: son las que prueban que el número sigue avanzando.
 - **La 13 y la 14 van al final** porque miran el borde de afuera —otro proyecto, o ninguno— y
   solo tienen sentido cuando lo de adentro ya funciona.
+- **La 15 cierra la historia**: guarda en el archivo todo lo que las anteriores dejaron
+  armado. No sale de un escenario de la Fase 1 sino de la regla de persistencia de
+  `AGENTS.md`, y por eso es un caso del test de ida y vuelta que ya existe.
+- **La 16 se agregó en la revisión de las puertas** y va al final de la tabla para no
+  renumerar las demás, pero **se hace inmediatamente después de la 3**: va en el primer pull
+  request. Para probar el sprint cerrado, el test fija el estado desde dentro del paquete,
+  como las tareas 10 a 12.
 
 ### Cobertura
 
-Las catorce reglas quedan cubiertas: RN-1 (2, 10), RN-2 (2, 10), RN-3 (2), RN-4 (4),
+Las quince reglas quedan cubiertas: RN-1 (2, 10, 15), RN-2 (2, 10, 15), RN-3 (2), RN-4 (4),
 RN-5 (5), RN-6 (6, 7), RN-7 (8), RN-8 (9), RN-9 (13), RN-10 (1, 3, 11), RN-11 (12),
-RN-12 (4, 5, 6, 9), RN-13 (14), RN-14 (7).
+RN-12 (4, 5, 6, 9), RN-13 (14), RN-14 (7), RN-15 (16).
 
 | Criterio de aceptación | Tareas |
 |---|---|
@@ -416,8 +461,9 @@ RN-12 (4, 5, 6, 9), RN-13 (14), RN-14 (7).
 | El Sprint Goal se guarda sin los espacios de los extremos | 8 |
 | Una creación rechazada no agrega ningún sprint | 4, 5, 6, 9 |
 | Operar sobre un proyecto inexistente informa que no se encontró | 14 |
+| Se puede consultar un sprint por su número, y uno que no existe informa que no se encontró | 16 |
 
-Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los diecisiete escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
@@ -427,9 +473,31 @@ Los quince escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD"
   directamente. Es lo mismo que hizo la #12 con las historias Terminadas.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #104 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/104#issuecomment-6303567805). Las condiciones de la revisión de las puertas (de Maxi, Juliana y Emiliano) se aplicaron el 21/10 en 3c5acf2 y 5fbf1df: consulta por número (RN-15, tarea 16), qué se controla al cargar (tarea 15) y sacar "datos en memoria".
 
 ## Fase 4 — Implementación
+
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.**
+
+### Primer pull request (PR #104): tareas 1, 2, 3 y 16
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `5e2b377` | `ff3264e` |
+| 2 | `5d602fa` | `e3a9416` |
+| 3 | `6cf7475` | `de2ac50` |
+| 16 | `5de4cda` | `ee69eed` |
+
+Las cuatro fallaron antes de su implementación, y cada commit de test dice por qué.
+
+- **El contador de sprints guarda el último número asignado**, que arranca en cero, y no "el
+  próximo". Así un proyecto que se carga de un archivo que todavía no guarda sprints (la
+  tarea 15 va en el segundo pull request) numera igual desde 1, sin inicializar nada.
+- **Este pull request todavía no valida ni guarda en el archivo**: las validaciones son las
+  tareas 4 a 9 y la persistencia la 15. Nadie crea sprints desde la interfaz todavía (la
+  web es la #78), así que no hay forma de que entre un sprint inválido mientras tanto.
+
+### Segundo pull request: tareas 4 a 15
 
 _Se completa durante la implementación._
 
