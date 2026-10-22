@@ -44,33 +44,46 @@ esac
 
 ITEMS=$(gh project item-list "$PROYECTO" --owner "$OWNER" --limit 200 --format json)
 
+# Las historias con la etiqueta "adelantada" entraron al sprint en curso por la decision 11
+# del plan (quien termina lo suyo adelanta su proxima historia). No suman a lo comprometido
+# y se muestran aparte; si se terminan, suman a la velocidad del sprint. Si una no se termina
+# y vuelve a su sprint del plan, hay que sacarle la etiqueta.
+ADELANTADAS=$(gh issue list --repo "$REPO" --label adelantada --state all --limit 100 --json number --jq '[.[].number]')
+
 echo "# Metricas del $SPRINT"
 echo
 echo "_Calculadas el $(date '+%Y-%m-%d %H:%M') con scripts/metricas.sh._"
 echo
 echo "## Historias"
 echo
-echo "$ITEMS" | jq -r --arg s "$SPRINT" '
+echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" '
   [.items[] | select(.sprint == $s)]
   | (["| # | Historia | SP | Estado | Horas est. | Horas reales |", "|---|---|---|---|---|---|"]
      + (sort_by(.content.number) | map(
-         "| #\(.content.number) | \(.title) | \(.["story Points"] // 0) | \(.status // "-") "
+         "| #\(.content.number) | \(.title) | \(.["story Points"] // 0) | \(.status // "-")"
+         + "\(if (.content.number | IN($adel[])) then " (adelantada)" else "" end) "
          + "| \(.["horas estimadas"] // "-") | \(.["horas reales"] // "-") |")))
   | join("\n")'
 
 echo
 echo "## Resumen"
 echo
-echo "$ITEMS" | jq -r --arg s "$SPRINT" '
+echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" '
   # Redondea al entero mas cercano (o a "decimales" decimales). floor no sirve: con
   # numeros negativos redondea para abajo y una desviacion de -12,1% salia -13%.
   def redondear: round;
   def redondear(decimales): (. * pow(10; decimales) | round) / pow(10; decimales);
-  [.items[] | select(.sprint == $s)] as $todas
+  [.items[] | select(.sprint == $s)] as $del_sprint
+  | [$del_sprint[] | select((.content.number | IN($adel[])) | not)] as $todas
+  | [$del_sprint[] | select(.content.number | IN($adel[]))] as $adelantadas
   | [$todas[] | select(.status == "Hecho")] as $hechas
+  | [$adelantadas[] | select(.status == "Hecho")] as $adelantadas_hechas
   # Una historia sin estimar (sin story points, como la #77) no tiene contra que comparar
-  # sus horas reales: no entra en la desviacion ni en las horas por story point.
-  | [$hechas[] | select((.["story Points"] // 0) > 0)] as $hechas_estimadas
+  # sus horas reales: no entra en la desviacion ni en las horas por story point. Una
+  # adelantada terminada si entra, igual que en la velocidad.
+  | [($hechas + $adelantadas_hechas)[] | select((.["story Points"] // 0) > 0)] as $hechas_estimadas
+  | ([$adelantadas[] | .["story Points"] // 0] | add // 0) as $adelantados
+  | ([$adelantadas_hechas[] | .["story Points"] // 0] | add // 0) as $adelantados_hechos
   | ([$todas[] | .["story Points"] // 0] | add // 0) as $planificados
   | ([$hechas[] | .["story Points"] // 0] | add // 0) as $completados
   | ([$todas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) as $estimadas
@@ -80,7 +93,7 @@ echo "$ITEMS" | jq -r --arg s "$SPRINT" '
   | "| Metrica | Valor |\n|---|---|"
   + "\n| Story points planificados | \($planificados) |"
   + "\n| Story points completados | \($completados) |"
-  + "\n| **Velocidad del sprint** | **\($completados)** |"
+  + "\n| **Velocidad del sprint** | **\($completados + $adelantados_hechos)** (\($completados) + \($adelantados_hechos) adelantados) |"
   + "\n| Historias planificadas | \($todas | length) |"
   + "\n| Historias completadas | \($hechas | length) |"
   + "\n| Porcentaje de historias completadas | \(if ($todas|length) > 0 then (($hechas|length) * 100 / ($todas|length) | redondear) else 0 end)% |"
@@ -89,7 +102,15 @@ echo "$ITEMS" | jq -r --arg s "$SPRINT" '
   + "\n| Horas estimadas, historias terminadas | \($estimadas_hechas) |"
   + "\n| Horas reales, historias terminadas | \($reales_hechas) |"
   + "\n| Desviacion de esfuerzo, historias terminadas | \($reales_hechas - $estimadas_hechas | redondear(2)) h (\(if $estimadas_hechas > 0 then (($reales_hechas - $estimadas_hechas) * 100 / $estimadas_hechas | redondear) else 0 end)%) |"
-  + "\n| Horas por story point completado | \(if $completados > 0 then ($reales_hechas / $completados | redondear(1)) else "sin datos" end) |"'
+  + "\n| Horas por story point completado | \(if ($completados + $adelantados_hechos) > 0 then ($reales_hechas / ($completados + $adelantados_hechos) | redondear(1)) else "sin datos" end) |"
+  + "\n\n**Adelantadas** (decision 11 del plan: no suman a lo comprometido)\n"
+  + "\n| Metrica | Valor |\n|---|---|"
+  + "\n| Historias adelantadas | \($adelantadas | length)\(if ($adelantadas | length) > 0 then " (" + ($adelantadas | map("#\(.content.number)") | join(", ")) + ")" else "" end) |"
+  + "\n| Story points adelantados | \($adelantados) |"
+  + "\n| Historias adelantadas completadas | \($adelantadas_hechas | length) |"
+  + "\n| Story points adelantados completados | \($adelantados_hechos) |"
+  + "\n| Horas estimadas de las adelantadas | \([$adelantadas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) |"
+  + "\n| Horas reales de las adelantadas | \([$adelantadas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) |"'
 
 echo
 echo "## Defectos"
@@ -119,4 +140,6 @@ echo "Hecho: una historia a medias no suma story points, aunque tenga horas carg
 echo "sprint cerrado vale su acta de review: este script usa el Sprint que cada historia tiene hoy."
 echo "Las horas de una historia que viene de un sprint anterior se suman enteras: lo que ya se"
 echo "conto en ese sprint hay que restarlo a mano. Una historia terminada sin story points"
-echo "suma sus horas reales al total, pero no a la desviacion ni a las horas por story point._"
+echo "suma sus horas reales al total, pero no a la desviacion ni a las horas por story point."
+echo "Las adelantadas no suman a lo comprometido ni a sus horas; si se terminan, suman a la"
+echo "velocidad, a la desviacion y a las horas por story point._"
