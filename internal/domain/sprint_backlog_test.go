@@ -210,3 +210,25 @@ func TestOperarSinUnSprintAbierto(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Quitar una historia del sprint abierto
+// Cubre: RN-7
+func TestQuitarUnaHistoriaDelSprintAbierto(t *testing.T) {
+	project, sprint := unSprintAbierto(t)
+	story := unaHistoriaEstimada(t, project, 5)
+	if err := project.AssignStory(story.ID()); err != nil {
+		t.Fatalf("no se pudo asignar la historia de prueba: %v", err)
+	}
+
+	err := project.UnassignStory(story.ID())
+
+	if err != nil {
+		t.Fatalf("se esperaba quitar la historia sin error, salio: %v", err)
+	}
+	if stories := sprint.Stories(); len(stories) != 0 {
+		t.Errorf("se esperaba el Sprint Backlog del sprint 1 vacio, salio %v", stories)
+	}
+	if story.State() != StoryPending {
+		t.Errorf("se esperaba la historia Pendiente, salio %v", story.State())
+	}
+}
