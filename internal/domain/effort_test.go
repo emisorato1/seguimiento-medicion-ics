@@ -404,3 +404,18 @@ func TestConsultarElTotalDeHorasDeUnIntegrante(t *testing.T) {
 		t.Fatalf("se esperaban 5 horas, salio %v (error: %v)", hours, err)
 	}
 }
+
+// Escenario: Las horas cargadas en un proyecto no suman en otro
+// Cubre: RN-16
+func TestLasHorasCargadasEnUnProyectoNoSumanEnOtro(t *testing.T) {
+	a := unProyectoConJuliana(t)
+	b := unProyectoConJuliana(t)
+	cargar(t, a, 1, "Juliana Bustos", 4)
+	cargar(t, b, 1, "Juliana Bustos", 1)
+
+	hours, err := b.MemberHours("Juliana Bustos")
+
+	if err != nil || !mismasHorasReales(hours, 1) {
+		t.Fatalf("se esperaba 1 hora en el proyecto B, salio %v (error: %v)", hours, err)
+	}
+}
