@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-22 15:44. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-22 16:31. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,13 +14,14 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 
 ## Lista para implementar
@@ -69,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-68a3804 2026-10-22 Merge pull request #140 from emisorato1/historia-16-parte-2
-28140fa 2026-10-22 docs: las tareas 8, 12, 13 y 15 de la historia 16 en su fase 3, su fase 4 y el indice
-771ffff 2026-10-22 test: las metricas reflejan los datos cargados despues (historia 16, tarea 15, sin RED)
-d8b461e 2026-10-22 feat: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
-a03372b 2026-10-22 test: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
-81328ca 2026-10-22 feat: defectos detectados y resueltos de cada sprint (historia 16, tarea 12)
-b6806d0 2026-10-22 test: defectos detectados y resueltos de cada sprint (historia 16, tarea 12)
-1909bb4 2026-10-22 test: las metricas de un sprint abierto son parciales (historia 16, tarea 8, sin RED)
+7c7539c 2026-10-22 docs: registrar la implementación de la historia 13
+a86d0cd 2026-10-22 feat: las rondas entran en el archivo de datos, validadas como al votar (historia 13, tarea 14)
+dd3e2ac 2026-10-22 test: las rondas siguen al cerrar y volver a abrir (historia 13, tarea 14)
+ed97e3e 2026-10-22 feat: consultar la ronda actual de una historia (historia 13, tarea 13)
+baa7833 2026-10-22 test: consultar la ronda actual de una historia (historia 13, tarea 13)
+ad93071 2026-10-22 feat: la ronda se imprime sin valores en todas las formas de imprimir (historia 13, tarea 12)
+591adbc 2026-10-22 test: mostrar una ronda sin revelar no deja ver los votos (historia 13, tarea 12)
+cc70d85 2026-10-22 feat: una ronda revelada no acepta votos ni otro revelado (historia 13, tarea 11)
 ```
