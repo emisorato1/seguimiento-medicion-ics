@@ -96,3 +96,22 @@ func TestRechazarUnaRondaSobreUnaHistoriaQueNoSePuedeVotar(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Rechazar una ronda en un proyecto sin integrantes
+// Cubre: RN-6
+func TestRechazarUnaRondaEnUnProyectoSinIntegrantes(t *testing.T) {
+	project := unProyecto(t)
+	story, err := project.AddStory(unosDatos())
+	if err != nil {
+		t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+	}
+
+	round, err := project.OpenVotingRound(story.ID())
+
+	if !errors.Is(err, ErrVotingRoundNoMembers) {
+		t.Fatalf("se esperaba ErrVotingRoundNoMembers, salio: %v", err)
+	}
+	if round != nil {
+		t.Fatalf("se esperaba que no se abriera ninguna ronda, salio la ronda %d", round.Number())
+	}
+}
