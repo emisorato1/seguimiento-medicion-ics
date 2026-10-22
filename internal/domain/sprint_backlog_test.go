@@ -64,3 +64,24 @@ func TestAsignarUnaHistoriaEstimadaAlSprintAbierto(t *testing.T) {
 		t.Errorf("se esperaba la historia En curso, salio %v", story.State())
 	}
 }
+
+// Escenario: El Sprint Backlog respeta el orden en que se asignaron las historias
+// Cubre: RN-9, RN-15
+func TestElSprintBacklogRespetaElOrdenEnQueSeAsignaronLasHistorias(t *testing.T) {
+	project, sprint := unSprintAbierto(t)
+	first := unaHistoriaEstimada(t, project, 3)
+	second := unaHistoriaEstimada(t, project, 5)
+	third := unaHistoriaEstimada(t, project, 8)
+
+	for _, story := range []*Story{third, first, second} {
+		if err := project.AssignStory(story.ID()); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d: %v", story.ID(), err)
+		}
+	}
+
+	want := []int{third.ID(), first.ID(), second.ID()}
+	got := sprint.Stories()
+	if len(got) != len(want) || got[0] != want[0] || got[1] != want[1] || got[2] != want[2] {
+		t.Fatalf("se esperaba el Sprint Backlog %v, salio %v", want, got)
+	}
+}
