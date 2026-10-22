@@ -3,7 +3,7 @@
 - **Historia:** #15
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
   y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres
@@ -397,7 +397,7 @@ Esquema del escenario: Operar sobre algo que no existe
    **Decidido el 21/10: la tarea 1 espera ese PR temprano de la #8.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #101 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6303474020), con seis cambios a hacer antes de la tarea 1. Los ajustes se aplicaron el 21/10 en e318c2c, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6314720573).
 
 ## Fase 2 — Diseño
 
@@ -470,7 +470,7 @@ solo.
   `docs/diseno-dominio.md`.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada con una condición en el PR #101 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6303474020): que el PR temprano de la #8 traiga p.Sprint(number) y su error. Los ajustes se aplicaron el 21/10 en e318c2c, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6314720573).
 
 ## Fase 3 — Tareas
 
@@ -571,7 +571,7 @@ esta historia se parte en dos, que es el caso 1 de "Cuándo se puede partir una 
    se validan contra ellos al cargar.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-20 — Comentarios: aprobada en el PR #101 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6303474020), con seis cambios a hacer antes de la tarea 1. Los ajustes se aplicaron el 21/10 en e318c2c, y Maxi verificó el 21/10 que quedan cumplidas las condiciones (https://github.com/emisorato1/seguimiento-medicion-ics/pull/101#issuecomment-6314720573).
 
 ## Fase 4 — Implementación
 
