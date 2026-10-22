@@ -239,3 +239,47 @@ func TestCadaProyectoMuestraSoloLoSuyo(t *testing.T) {
 		t.Errorf("el proyecto B no tenia que contar nada del A, salio %d integrantes y %d historias", len(status.Members), status.Backlog.Total)
 	}
 }
+
+// statusSprint crea un sprint en el proyecto con el alta de la #8. Cerrarlo es de la #10 y
+// asignarle historias de la #9: se hace desde dentro del paquete, como en la #8.
+func statusSprint(t *testing.T, project *Project, goal string, closed bool, stories ...int) *Sprint {
+	t.Helper()
+	sprint, err := project.AddSprint(SprintData{Goal: goal, Start: date(2026, 10, 20), End: date(2026, 10, 25)})
+	if err != nil {
+		t.Fatalf("no se pudo preparar el sprint %q: %v", goal, err)
+	}
+	sprint.stories = stories
+	if closed {
+		sprint.state = SprintClosed
+	}
+	return sprint
+}
+
+// Escenario: El estado muestra el sprint en curso
+// Cubre: RN-8
+func TestElEstadoMuestraElSprintEnCurso(t *testing.T) {
+	project := statusProject(t, NewProjectRegistry(), 3, 0, 0)
+	statusSprint(t, project, "Tener el MVP", true)
+	statusSprint(t, project, "Tener el dashboard", false, 1, 2, 3)
+
+	status := project.Status()
+
+	want := SprintSummary{Number: 2, Goal: "Tener el dashboard", Start: date(2026, 10, 20), End: date(2026, 10, 25), AssignedStories: 3}
+	if !status.HasCurrentSprint || status.CurrentSprint != want {
+		t.Errorf("se esperaba el sprint en curso %+v, salio %+v (hay sprint en curso: %v)", want, status.CurrentSprint, status.HasCurrentSprint)
+	}
+}
+
+// Escenario: Un proyecto con todos sus sprints cerrados no tiene sprint en curso
+// Cubre: RN-9
+func TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCurso(t *testing.T) {
+	project := statusProject(t, NewProjectRegistry(), 1, 0, 0)
+	statusSprint(t, project, "Tener el MVP", true)
+	statusSprint(t, project, "Tener el dashboard", true)
+
+	status := project.Status()
+
+	if status.HasCurrentSprint {
+		t.Errorf("no se esperaba sprint en curso, salio %+v", status.CurrentSprint)
+	}
+}
