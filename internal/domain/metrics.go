@@ -48,15 +48,20 @@ type metricsScope struct {
 	// cuyas horas cuentan en este ámbito.
 	estimatedHours float64
 	actualHours    float64
+	// defectsDetected y defectsResolved son los defectos que cuentan en este ámbito.
+	defectsDetected int
+	defectsResolved int
 }
 
 // metrics convierte el ámbito en las once métricas. Es el único cálculo, compartido por el
 // sprint y el proyecto.
 func (sc metricsScope) metrics() Metrics {
 	m := Metrics{
-		StoriesPlanned: len(sc.plannedPoints),
-		EstimatedHours: sc.estimatedHours,
-		ActualHours:    sc.actualHours,
+		StoriesPlanned:  len(sc.plannedPoints),
+		EstimatedHours:  sc.estimatedHours,
+		ActualHours:     sc.actualHours,
+		DefectsDetected: sc.defectsDetected,
+		DefectsResolved: sc.defectsResolved,
 	}
 	// sin horas estimadas no hay contra qué comparar: la desviación queda en cero, y no es un
 	// error (RN-14)
@@ -90,6 +95,16 @@ func (p *Project) SprintMetrics(number int) (Metrics, error) {
 		if p.lastSprintOf(id) == sprint.number {
 			scope.estimatedHours += estimated[id]
 			scope.actualHours += actual[id]
+		}
+	}
+	// un defecto cuenta como detectado en su sprint de detección y como resuelto en el de
+	// resolución; uno sin resolver tiene 0, que no es el número de ningún sprint (RN-8)
+	for _, defect := range p.defects {
+		if defect.detectedIn == sprint.number {
+			scope.defectsDetected++
+		}
+		if defect.resolvedIn == sprint.number {
+			scope.defectsResolved++
 		}
 	}
 	return scope.metrics(), nil
