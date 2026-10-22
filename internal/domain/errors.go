@@ -120,4 +120,7 @@ var (
 	// ErrVotesMissing: revelar una ronda en la que todavía falta votar algún participante
 	// (historia #13, RN-15).
 	ErrVotesMissing = errors.New("todavía faltan votos para revelar la ronda")
+	// ErrAlreadyVoted: votar por segunda vez en la misma ronda (historia #13, RN-10). El
+	// mensaje no dice qué se votó.
+	ErrAlreadyVoted = errors.New("el integrante ya votó en esta ronda")
 )

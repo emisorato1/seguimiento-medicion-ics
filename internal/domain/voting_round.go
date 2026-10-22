@@ -69,9 +69,13 @@ func (r *VotingRound) hasVoted(name string) bool {
 
 // Vote registra el voto de un participante y lo pasa de los que faltan a los que votaron
 // (RN-8). La respuesta solo dice si se aceptó: nunca lleva el valor (RN-12). El voto tiene
-// que ser un valor de la escala de la #12, con su mismo error (RN-9). Si se rechaza, la
-// ronda queda como estaba (RN-18).
+// que ser un valor de la escala de la #12, con su mismo error (RN-9). Cada participante vota
+// una sola vez, y el aviso no dice qué votó (RN-10). Si se rechaza, la ronda queda como
+// estaba (RN-18). Los controles van en el orden de la Fase 2: ya votó → valor.
 func (r *VotingRound) Vote(member string, points int) error {
+	if r.hasVoted(member) {
+		return ErrAlreadyVoted
+	}
 	if !inScale(points) {
 		return ErrStoryPointsInvalid
 	}
