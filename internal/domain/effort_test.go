@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math"
 	"testing"
+	"time"
 )
 
 // mismasHorasReales compara dos cantidades de horas con una tolerancia chica: comparar
@@ -137,5 +138,22 @@ func TestRegistrarHorasDeUnDiaAnteriorAlInicioDelProyecto(t *testing.T) {
 	}
 	if len(project.Efforts()) != 1 {
 		t.Fatalf("se esperaba que quedara guardado el registro, hay %d", len(project.Efforts()))
+	}
+}
+
+// Escenario: Rechazar un registro sin fecha
+// Cubre: RN-5, RN-18
+func TestRechazarUnRegistroSinFecha(t *testing.T) {
+	project := unProyectoConJuliana(t)
+	data := unEsfuerzo()
+	data.Day = time.Time{}
+
+	_, err := project.LogEffort(data, hoy)
+
+	if !errors.Is(err, ErrEffortDayRequired) {
+		t.Fatalf("se esperaba ErrEffortDayRequired sin fecha, salio: %v", err)
+	}
+	if len(project.Efforts()) != 0 {
+		t.Fatalf("se esperaba que el proyecto siguiera sin registros, tiene %d", len(project.Efforts()))
 	}
 }
