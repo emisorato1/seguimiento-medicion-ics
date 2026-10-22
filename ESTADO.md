@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-21 19:22. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-21 21:49. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,13 +10,12 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 7
+- Terminadas: 8
 
 ## En review
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## En progreso
@@ -65,18 +64,19 @@ _No hay historias en este estado._
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 2 |
+| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-041257a 2026-10-21 docs: registrar las tres puertas de las historias 8 y 9
-296cf86 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-8-crear-sprint
-d9a3185 2026-10-21 Merge pull request #121 from emisorato1/docs-puertas-historia-19
-2c85c5d 2026-10-21 Merge pull request #122 from emisorato1/contrato-pdf-descarga
-8c27857 2026-10-21 Merge pull request #120 from emisorato1/docs-puertas-historia-10
-56140be 2026-10-21 docs: el PDF se descarga desde la web y Metrics se declara antes de su calculo
-9ad5eef 2026-10-21 docs: la #19 mide el renglon con los anchos de Helvetica, espera el reporte en dev y suma las decisiones del responsable
-54244f5 2026-10-21 docs: el responsable acepta el punto 9 de la #10
+97993f5 2026-10-21 Merge pull request #123 from emisorato1/actas-sprint-2-esqueleto
+09ffb57 2026-10-21 Merge pull request #107 from emisorato1/docs-documentacion-tecnica
+ded87ef 2026-10-21 Merge pull request #105 from emisorato1/historia-7-priorizar-backlog
+6488fff 2026-10-21 docs: el sprint de la historia 8 ya esta en dev desde el PR #104
+cb8dc0c 2026-10-21 Merge remote-tracking branch 'origin/dev' into docs-documentacion-tecnica
+cc5dc89 2026-10-21 Merge remote-tracking branch 'origin/dev' into historia-7-priorizar-backlog
+f39c097 2026-10-21 docs: regenerar la trazabilidad con el PR temprano de la historia 8
+7055343 2026-10-21 docs: el sprint 2 en el informe de metricas, con los numeros al 21/10
 ```
