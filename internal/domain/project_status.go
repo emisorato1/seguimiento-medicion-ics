@@ -52,6 +52,11 @@ type SprintSummary struct {
 // Status arma el estado del proyecto con lo que tiene en este momento, sin cambiar nada
 // (RN-10). El proyecto que no existe lo informa el registro al buscarlo (RN-11).
 func (p *Project) Status() ProjectStatus {
+	members := make([]MemberStatus, 0, len(p.members))
+	for _, member := range p.members {
+		members = append(members, MemberStatus{Name: member.name, Role: member.role})
+	}
+
 	return ProjectStatus{
 		ID:             p.id,
 		Name:           p.name,
@@ -60,6 +65,6 @@ func (p *Project) Status() ProjectStatus {
 		Start:          p.start,
 		End:            p.end,
 		HasEnd:         p.HasEnd(),
-		Members:        []MemberStatus{},
+		Members:        members,
 	}
 }
