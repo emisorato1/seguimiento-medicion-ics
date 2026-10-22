@@ -88,6 +88,24 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 			t.Fatalf("no se pudo registrar el esfuerzo de prueba: %v", err)
 		}
 	}
+
+	// los defectos son de la #15, que los suma a la conversion: uno Abierto, uno En curso y
+	// uno Resuelto, con las tres severidades, detectados en los dos sprints
+	for _, data := range []DefectData{
+		{Title: "La velocidad sale en cero", Description: "El resumen muestra 0 puntos", Severity: SeverityCritical, StoryID: estimated.ID(), DetectedIn: 1},
+		{Title: "Se pierde la media hora", Description: "El total redondea las horas", Severity: SeverityMinor, StoryID: 2, DetectedIn: 2},
+		{Title: "La fecha sale al reves", Description: "Muestra el mes antes que el dia", Severity: SeverityMajor, StoryID: done.ID(), DetectedIn: 1},
+	} {
+		if _, err := first.AddDefect(data); err != nil {
+			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+		}
+	}
+	if err := first.ChangeDefectState(2, DefectInProgress); err != nil {
+		t.Fatalf("no se pudo pasar a En curso el defecto de prueba: %v", err)
+	}
+	if err := first.ResolveDefect(3, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
+	}
 	return registry
 }
 
@@ -184,6 +202,23 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 					w.ID(), we.StoryID(), we.MemberName(), we.Activity(), we.Hours(), we.Day(),
 					ge.StoryID(), ge.MemberName(), ge.Activity(), ge.Hours(), ge.Day())
 			}
+		}
+
+		// Los defectos de la #15, con su numero, su estado y sus sprints, y el contador.
+		wantDefects, gotDefects := w.Defects(), g.Defects()
+		if len(gotDefects) != len(wantDefects) {
+			t.Fatalf("proyecto %d: se esperaban %d defectos, salieron %d", w.ID(), len(wantDefects), len(gotDefects))
+		}
+		for j, wd := range wantDefects {
+			gd := gotDefects[j]
+			if gd.ID() != wd.ID() || gd.Title() != wd.Title() || gd.Description() != wd.Description() ||
+				gd.Severity() != wd.Severity() || gd.State() != wd.State() || gd.StoryID() != wd.StoryID() ||
+				gd.DetectedIn() != wd.DetectedIn() || gd.ResolvedIn() != wd.ResolvedIn() {
+				t.Fatalf("proyecto %d: se esperaba el defecto %+v, salio %+v", w.ID(), *wd, *gd)
+			}
+		}
+		if g.lastDefectID != w.lastDefectID {
+			t.Fatalf("proyecto %d: se esperaba el contador de defectos en %d, salio en %d", w.ID(), w.lastDefectID, g.lastDefectID)
 		}
 	}
 }
