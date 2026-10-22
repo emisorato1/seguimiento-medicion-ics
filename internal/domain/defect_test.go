@@ -59,3 +59,21 @@ func TestRegistrarUnDefecto(t *testing.T) {
 		t.Fatalf("se esperaba que el proyecto tuviera ese unico defecto, tiene %d", len(defects))
 	}
 }
+
+// Escenario: El defecto nuevo recibe el identificador siguiente
+// Cubre: RN-1, RN-17
+func TestElDefectoNuevoRecibeElIdentificadorSiguiente(t *testing.T) {
+	project := unProyectoConDefectos(t, 1)
+	if _, err := project.AddDefect(unDefecto()); err != nil {
+		t.Fatalf("no se pudo registrar el primer defecto de prueba: %v", err)
+	}
+
+	defect, err := project.AddDefect(unDefecto())
+
+	if err != nil || defect.ID() != 2 {
+		t.Fatalf("se esperaba el defecto 2 con los mismos datos, salio %v (error: %v)", defect, err)
+	}
+	if len(project.Defects()) != 2 {
+		t.Fatalf("se esperaba que el proyecto quedara con 2 defectos, tiene %d", len(project.Defects()))
+	}
+}
