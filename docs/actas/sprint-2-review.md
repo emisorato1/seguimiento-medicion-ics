@@ -28,9 +28,9 @@ siguiente cuenta en el siguiente.
 | 7 | Priorizar el Product Backlog | 2 | **Hecho** | Agustín Salinas | PR #105 |
 | 8 | Crear un sprint con su Sprint Goal | 3 | En progreso | Agustín Salinas | el sprint ya está en `dev` desde el PR #104, con las tareas 1, 2, 3 y 16 (`Refs #8`); [completar al cierre] |
 | 9 | Asignar historias a un sprint | 5 | Lista para implementar | Agustín Salinas | [completar al cierre] |
-| 5 | Consultar el estado de un proyecto | 3 | **Hecho** | Juliana Bustos (la implementó una sesión de Emiliano) | PR #102 |
-| 14 | Registrar el esfuerzo real | 3 | **Hecho** | Juliana Bustos (la implementó una sesión de Emiliano) | PR #100 |
-| 15 | Gestionar defectos | 5 | Lista para implementar | Juliana Bustos (la implementa una sesión de Emiliano) | spec en `dev` desde el PR #101; [completar al cierre] |
+| 5 | Consultar el estado de un proyecto | 3 | **Hecho** | Juliana Bustos (la implementó Emiliano con asistencia de IA) | PR #102 |
+| 14 | Registrar el esfuerzo real | 3 | **Hecho** | Juliana Bustos (la implementó Emiliano con asistencia de IA) | PR #100 |
+| 15 | Gestionar defectos | 5 | Lista para implementar | Juliana Bustos (la implementa Emiliano con asistencia de IA) | spec en `dev` desde el PR #101; [completar al cierre] |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | **Hecho** | Emiliano Sorato | PR #95 |
 
 - **Story points comprometidos:** 31 (los 26 del plan más los 5 de la #6)
@@ -54,7 +54,7 @@ cada hora una sola vez, en el sprint donde se trabajó.
 
 - **Horas estimadas de las historias nuevas:** 56,7 (a 2,7 h por story point). La #6, la #12
   y la #24 traen sus 30 h estimadas del Sprint 1, donde ya se contaron.
-- **Horas trabajadas en el Sprint 2:** 13. Es lo que da el script (35,25) menos las 22,25 h que
+- **Horas trabajadas en el Sprint 2:** 15,5. Es lo que da el script (37,75) menos las 22,25 h que
   la #6, la #12 y la #24 ya tenían cargadas al cierre del Sprint 1.
 
 | Integrante | Horas reales en el Sprint 2 |
@@ -74,13 +74,21 @@ donde se terminaron:
 | #12 | 6 | 4 | −2 h |
 | #24 | 9 | 7,25 | −1,75 h |
 | #7 | 5,4 | 4 | −1,4 h |
-| **Total** | **35,4** | **28,25** | **−7,15 h (−20%)** |
+| #5 | 8,1 | 0,5 | −7,6 h |
+| #14 | 8,1 | 0,5 | −7,6 h |
+| **Total** | **51,6** | **29,25** | **−22,35 h (−43%)** |
 
-La #5 y la #14 no entran en esta tabla: están terminadas, pero no tienen horas reales
-cargadas. Contarlas con cero horas daría una desviación de −45% que no pasó. Entran cuando se
-carguen.
+**La #5 y la #14 se implementaron con asistencia de IA**, que la consigna permite. Sus horas
+reales son el tiempo humano de dirección y revisión (0,5 h cada una, de Emiliano Sorato), y por
+eso la desviación da muy negativa. Sin esas dos, las otras cuatro dan −20% (35,4 h estimadas
+contra 28,25 reales).
 
-- **Horas por story point completado al 21/10:** 2,4 (28,25 h ÷ 12 SP, sin la #5 ni la #14).
+La #77 también se hizo con asistencia de IA (1,5 h de Emiliano Sorato), pero no entra en esta
+tabla porque no tiene horas estimadas con qué compararla. Sus horas sí cuentan en las
+trabajadas del sprint.
+
+- **Horas por story point completado al 21/10:** 1,6 (29,25 h ÷ 18 SP). Sin la #5 y la #14
+  da 2,4 (28,25 h ÷ 12 SP).
 
 ## Defectos
 

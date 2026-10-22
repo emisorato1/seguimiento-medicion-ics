@@ -68,12 +68,15 @@ echo "$ITEMS" | jq -r --arg s "$SPRINT" '
   def redondear(decimales): (. * pow(10; decimales) | round) / pow(10; decimales);
   [.items[] | select(.sprint == $s)] as $todas
   | [$todas[] | select(.status == "Hecho")] as $hechas
+  # Una historia sin estimar (sin story points, como la #77) no tiene contra que comparar
+  # sus horas reales: no entra en la desviacion ni en las horas por story point.
+  | [$hechas[] | select((.["story Points"] // 0) > 0)] as $hechas_estimadas
   | ([$todas[] | .["story Points"] // 0] | add // 0) as $planificados
   | ([$hechas[] | .["story Points"] // 0] | add // 0) as $completados
   | ([$todas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) as $estimadas
   | ([$todas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) as $reales
-  | ([$hechas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) as $estimadas_hechas
-  | ([$hechas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) as $reales_hechas
+  | ([$hechas_estimadas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) as $estimadas_hechas
+  | ([$hechas_estimadas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) as $reales_hechas
   | "| Metrica | Valor |\n|---|---|"
   + "\n| Story points planificados | \($planificados) |"
   + "\n| Story points completados | \($completados) |"
@@ -115,4 +118,5 @@ echo "_La velocidad, la desviacion y las horas por story point solo cuentan hist
 echo "Hecho: una historia a medias no suma story points, aunque tenga horas cargadas. Para un"
 echo "sprint cerrado vale su acta de review: este script usa el Sprint que cada historia tiene hoy."
 echo "Las horas de una historia que viene de un sprint anterior se suman enteras: lo que ya se"
-echo "conto en ese sprint hay que restarlo a mano._"
+echo "conto en ese sprint hay que restarlo a mano. Una historia terminada sin story points"
+echo "suma sus horas reales al total, pero no a la desviacion ni a las horas por story point._"
