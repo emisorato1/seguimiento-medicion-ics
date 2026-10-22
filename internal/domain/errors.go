@@ -46,6 +46,8 @@ var (
 	ErrEffortHoursInvalid = errors.New("las horas tienen que ser mayores que cero")
 	// ErrEffortDayInFuture: registrar horas de un día posterior al de hoy (historia #14, RN-4).
 	ErrEffortDayInFuture = errors.New("no se pueden cargar horas de un día que todavía no pasó")
+	// ErrEffortDayRequired: registrar horas sin indicar el día (historia #14, RN-5).
+	ErrEffortDayRequired = errors.New("la fecha es obligatoria")
 	// ErrStoryPointsInvalid: valor fuera de la escala, cero o negativo (historia #12, RN-2, RN-3).
 	ErrStoryPointsInvalid = errors.New("los story points tienen que ser uno de estos valores: " + scaleText())
 	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
