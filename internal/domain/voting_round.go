@@ -74,9 +74,12 @@ func (r *VotingRound) hasVoted(name string) bool {
 // que ser un valor de la escala de la #12, con su mismo error (RN-9). Cada participante vota
 // una sola vez, y el aviso no dice qué votó (RN-10). Solo votan los participantes, buscados
 // como en la #4, y el voto queda con el nombre tal como está cargado (RN-11). Si se rechaza,
-// la ronda queda como estaba (RN-18). Los controles van en el orden de la Fase 2:
-// participa → ya votó → valor.
+// la ronda queda como estaba (RN-18). Una ronda revelada no acepta votos (RN-16). Los
+// controles van en el orden de la Fase 2: revelada → participa → ya votó → valor.
 func (r *VotingRound) Vote(member string, points int) error {
+	if r.revealed {
+		return ErrRoundRevealed
+	}
 	name, ok := r.participant(member)
 	if !ok {
 		return ErrNotParticipant
@@ -124,8 +127,12 @@ func (r *VotingRound) Votes() ([]Vote, error) {
 
 // Reveal da vuelta todos los votos juntos: desde entonces Votes los entrega, cada uno con
 // el nombre de quien lo dio y en el orden de los integrantes (RN-14). Si falta algún voto,
-// se rechaza y la ronda sigue como estaba (RN-15, RN-18).
+// se rechaza y la ronda sigue como estaba (RN-15, RN-18). Una ronda ya revelada no se
+// vuelve a revelar (RN-16).
 func (r *VotingRound) Reveal() error {
+	if r.revealed {
+		return ErrRoundRevealed
+	}
 	if len(r.Pending()) > 0 {
 		return ErrVotesMissing
 	}

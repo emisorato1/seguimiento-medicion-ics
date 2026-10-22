@@ -126,4 +126,6 @@ var (
 	// ErrNotParticipant: votar en una ronda de la que no se participa, porque no se era
 	// integrante del proyecto al abrirla (historia #13, RN-11).
 	ErrNotParticipant = errors.New("no participa de esta ronda")
+	// ErrRoundRevealed: votar o volver a revelar una ronda ya revelada (historia #13, RN-16).
+	ErrRoundRevealed = errors.New("la ronda ya fue revelada")
 )
