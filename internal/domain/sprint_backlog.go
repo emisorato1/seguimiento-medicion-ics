@@ -10,7 +10,11 @@ func (p *Project) AssignStory(id int) error {
 		return err
 	}
 	// Los controles van antes de cambiar nada, asi un rechazo deja el Sprint Backlog y la
-	// historia como estaban (RN-14).
+	// historia como estaban (RN-14), y de lo mas general a lo mas particular: no tiene
+	// sentido mirar la estimacion de una historia que no se puede mover.
+	if story.state == StoryDone {
+		return ErrStoryDone
+	}
 	if !story.IsEstimated() {
 		return ErrStoryNotEstimated
 	}
@@ -19,6 +23,20 @@ func (p *Project) AssignStory(id int) error {
 	}
 	sprint.stories = append(sprint.stories, story.id)
 	story.state = StoryInProgress
+	return nil
+}
+
+// UnassignStory saca la historia con ese identificador del Sprint Backlog del sprint abierto
+// y la devuelve al Product Backlog como Pendiente (historia #9, RN-7). Una historia Terminada
+// no se mueve (RN-6).
+func (p *Project) UnassignStory(id int) error {
+	story, err := p.Story(id)
+	if err != nil {
+		return err
+	}
+	if story.state == StoryDone {
+		return ErrStoryDone
+	}
 	return nil
 }
 
