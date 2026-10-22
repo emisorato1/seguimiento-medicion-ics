@@ -61,6 +61,7 @@ type storyJSON struct {
 	Priority           string   `json:"priority"`
 	State              string   `json:"state"`
 	StoryPoints        int      `json:"story_points"`
+	EstimatedHours     float64  `json:"estimated_hours,omitempty"`
 	AcceptanceCriteria []string `json:"acceptance_criteria"`
 }
 
@@ -93,6 +94,7 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 				Priority:           s.priority.String(),
 				State:              s.state.String(),
 				StoryPoints:        s.storyPoints,
+				EstimatedHours:     s.estimatedHours,
 				AcceptanceCriteria: s.acceptanceCriteria,
 			})
 		}
@@ -263,6 +265,11 @@ func storyFromJSON(sj storyJSON) (*Story, error) {
 	if sj.StoryPoints != 0 && !inScale(sj.StoryPoints) {
 		return nil, ErrStoryPointsInvalid
 	}
+	// cero es "sin horas estimadas" (historia #16, RN-17); un valor cargado tiene que ser mayor
+	// que cero (RN-18). NaN no puede llegar: JSON no tiene como escribirlo
+	if sj.EstimatedHours < 0 {
+		return nil, ErrEstimatedHoursInvalid
+	}
 	return &Story{
 		id:                 sj.ID,
 		title:              data.Title,
@@ -270,6 +277,7 @@ func storyFromJSON(sj storyJSON) (*Story, error) {
 		priority:           data.Priority,
 		state:              state,
 		storyPoints:        sj.StoryPoints,
+		estimatedHours:     sj.EstimatedHours,
 		acceptanceCriteria: data.AcceptanceCriteria,
 	}, nil
 }

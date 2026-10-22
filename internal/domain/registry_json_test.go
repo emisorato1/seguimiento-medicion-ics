@@ -39,6 +39,10 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 	if err := first.EstimateStory(estimated.ID(), 5); err != nil {
 		t.Fatalf("no se pudo estimar la historia de prueba: %v", err)
 	}
+	// las horas estimadas son de la #16, que las suma a la conversion
+	if err := first.EstimateHours(estimated.ID(), 6.5); err != nil {
+		t.Fatalf("no se pudieron cargar las horas estimadas de prueba: %v", err)
+	}
 	if _, err := first.AddStory(StoryData{
 		Title: "Gestionar defectos", Description: "Cargar defectos", Priority: PriorityMedium,
 		AcceptanceCriteria: []string{"Tiene severidad"},
@@ -55,6 +59,7 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 	// Terminar una historia es de la #10, que todavia no esta en dev: el test la prepara
 	// desde dentro del paquete.
 	done.storyPoints = 3
+	done.estimatedHours = 4
 	done.state = StoryDone
 	// el esfuerzo es de la #14, que lo suma a la conversion: dos registros, uno de media hora
 	for _, data := range []EffortData{
@@ -106,6 +111,10 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 				t.Fatalf("proyecto %d: se esperaba la historia %d %q (%v, %v, %d SP), salio %d %q (%v, %v, %d SP)",
 					w.ID(), ws.ID(), ws.Title(), ws.Priority(), ws.State(), ws.StoryPoints(),
 					gs.ID(), gs.Title(), gs.Priority(), gs.State(), gs.StoryPoints())
+			}
+			if !mismasHoras(gs.EstimatedHours(), ws.EstimatedHours()) {
+				t.Fatalf("proyecto %d: se esperaba la historia %d con %v horas estimadas, salio con %v",
+					w.ID(), ws.ID(), ws.EstimatedHours(), gs.EstimatedHours())
 			}
 			wantCriteria, gotCriteria := ws.AcceptanceCriteria(), gs.AcceptanceCriteria()
 			if len(gotCriteria) != len(wantCriteria) {
@@ -225,6 +234,7 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "historia sin titulo", change: func(d *registryJSON) { d.Projects[0].Stories[0].Title = "" }, want: ErrStoryTitleRequired},
 		{name: "prioridad inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[0].Priority = "Urgente" }, want: ErrStoryPriorityInvalid},
 		{name: "estado inexistente", change: func(d *registryJSON) { d.Projects[0].Stories[1].State = "Cerrada" }, want: ErrSavedDataInvalid},
+		{name: "horas estimadas negativas", change: func(d *registryJSON) { d.Projects[0].Stories[0].EstimatedHours = -2 }, want: ErrEstimatedHoursInvalid},
 		{name: "esfuerzo con horas en cero", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Hours = 0 }, want: ErrEffortHoursInvalid},
 		{name: "esfuerzo sin actividad", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Activity = "  " }, want: ErrEffortActivityRequired},
 		{name: "esfuerzo sin integrante", change: func(d *registryJSON) { d.Projects[0].Efforts[0].MemberName = "  " }, want: ErrMemberNotFound},
