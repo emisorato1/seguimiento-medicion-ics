@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-22 12:36. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-22 12:54. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,14 +10,11 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 11
+- Terminadas: 13
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
-| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+_No hay historias en este estado._
 
 ## En progreso
 
@@ -63,6 +60,8 @@ _No hay historias en este estado._
 | #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
 | #6 | Administrar el Product Backlog | 5 | Alta | Sprint 2 |
 | #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
+| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
+| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
@@ -71,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+363097c 2026-10-22 Merge pull request #138 from emisorato1/historia-8-9-sprints
+0ccd17d 2026-10-22 refactor: actualizar el comentario de AddSprint
+41eee9d 2026-10-22 docs: poner al dia la documentacion tecnica con los sprints
+8a048e5 2026-10-22 feat: rechazar al cargar una historia repetida en un Sprint Backlog (tarea 14, historia 9)
+40640f4 2026-10-22 test: rechazar al cargar una historia repetida en un Sprint Backlog (tarea 14, historia 9)
+e34f62f 2026-10-22 chore: mover las historias 8 y 9 a en review
 764596c 2026-10-22 docs: registrar la implementacion de las historias 8 y 9
 c885140 2026-10-22 test: marcar como sin escenario el test de la tarea 4 de la historia 7
-5cbe0c8 2026-10-22 feat: guardar y volver a cargar el Sprint Backlog (tarea 14, historia 9)
-2f5f674 2026-10-22 test: el Sprint Backlog se conserva al guardar y volver a cargar (tarea 14, historia 9)
-f22036f 2026-10-22 test: historia sin completar, un Sprint Backlog por proyecto y algo que no existe (tareas 11, 12 y 13, historia 9)
-7443a68 2026-10-22 feat: rechazar quitar una historia que no esta en el sprint (tarea 10, historia 9)
-c739a3a 2026-10-22 test: rechazar quitar una historia que no esta en el sprint (tarea 10, historia 9)
-f8681fa 2026-10-22 test: quitar una historia y volver a asignarla (tarea 9, historia 9)
 ```
