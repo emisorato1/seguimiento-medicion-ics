@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -96,15 +97,40 @@ func historiasEstimadas(t *testing.T, project *Project, points ...int) {
 	}
 }
 
+// conIntegrante agrega al proyecto la integrante "Juliana Bustos", para poder cargarle horas
+// con cargar (de la #14).
+func conIntegrante(t *testing.T, project *Project) {
+	t.Helper()
+	if _, err := project.AddMember("Juliana Bustos", RoleProductBuilder); err != nil {
+		t.Fatalf("no se pudo agregar la integrante de prueba: %v", err)
+	}
+}
+
+// conHorasEstimadas carga las horas estimadas de la historia o corta el test.
+func conHorasEstimadas(t *testing.T, project *Project, id int, hours float64) {
+	t.Helper()
+	if err := project.EstimateHours(id, hours); err != nil {
+		t.Fatalf("no se pudieron cargar las horas estimadas de la historia %d: %v", id, err)
+	}
+}
+
 // Escenario: Metricas de un sprint cerrado
-// Cubre: RN-3, RN-16
+// Cubre: RN-3, RN-7, RN-16
 //
-// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados, y
-// las tareas 6, 9, 10, 11 y 12 le suman su número. Asignar historias es de la #9 y cerrar el
-// sprint de la #10, que todavía no están en dev: el test arma el sprint dentro del paquete.
+// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados y
+// las horas, y las tareas 6, 10, 11 y 12 le suman su número. Asignar historias es de la #9 y
+// cerrar el sprint de la #10, que todavía no están en dev: el test arma el sprint dentro del
+// paquete.
 func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	project := unProyecto(t)
+	conIntegrante(t, project)
 	historiasEstimadas(t, project, 3, 5, 2, 3)
+	for i, hours := range []float64{4, 6, 2, 4} {
+		conHorasEstimadas(t, project, i+1, hours)
+	}
+	for i, hours := range []float64{5, 8, 3, 4} {
+		cargar(t, project, i+1, "Juliana Bustos", hours)
+	}
 	sprint := unSprint(t, project)
 	sprint.stories = []int{1, 2, 3, 4}
 	sprint.state = SprintClosed
@@ -116,5 +142,47 @@ func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	}
 	if got.PlannedPoints != 13 || got.StoriesPlanned != 4 {
 		t.Fatalf("se esperaban 13 story points y 4 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+	if !mismasHoras(got.EstimatedHours, 16) || !mismasHoras(got.ActualHours, 20) {
+		t.Fatalf("se esperaban 16 horas estimadas y 20 reales, salieron %v y %v", got.EstimatedHours, got.ActualHours)
+	}
+}
+
+// Escenario: Las horas de una historia que paso por dos sprints cuentan en el ultimo
+// Cubre: RN-7
+//
+// La historia 2 no se completó en el sprint 1 y volvió a comprometerse en el 2. Sus horas
+// cuentan una sola vez, en el último sprint en que estuvo, aunque se hayan cargado antes.
+func TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo(t *testing.T) {
+	project := unProyecto(t)
+	conIntegrante(t, project)
+	historiasEstimadas(t, project, 3, 5)
+	conHorasEstimadas(t, project, 2, 6)
+	cargar(t, project, 2, "Juliana Bustos", 3)
+	cargar(t, project, 2, "Juliana Bustos", 4)
+	first := unSprint(t, project)
+	first.stories = []int{2}
+	first.state = SprintClosed
+	second := unSprint(t, project)
+	second.stories = []int{2}
+
+	cases := []struct {
+		sprint            int
+		estimated, actual float64
+	}{
+		{1, 0, 0},
+		{2, 6, 7},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("sprint %d", tc.sprint), func(t *testing.T) {
+			got, err := project.SprintMetrics(tc.sprint)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if !mismasHoras(got.EstimatedHours, tc.estimated) || !mismasHoras(got.ActualHours, tc.actual) {
+				t.Fatalf("se esperaban %v horas estimadas y %v reales, salieron %v y %v", tc.estimated, tc.actual, got.EstimatedHours, got.ActualHours)
+			}
+		})
 	}
 }
