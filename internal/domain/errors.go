@@ -36,6 +36,29 @@ var (
 	ErrMemberAgileEnablerTaken = errors.New("el proyecto ya tiene un Agile Enabler")
 	// ErrMemberNotFound: quitar un integrante que no pertenece al proyecto (historia #4, RN-11).
 	ErrMemberNotFound = errors.New("no se encontró el integrante en el proyecto")
+	// ErrDefectTitleRequired y ErrDefectDescriptionRequired: registrar un defecto sin título o
+	// sin descripción (historia #15, RN-4). Los errores de la #15 van acá y no al final, para
+	// no chocar con los que agregan otras historias al mismo tiempo.
+	ErrDefectTitleRequired       = errors.New("falta el título del defecto")
+	ErrDefectDescriptionRequired = errors.New("falta la descripción del defecto")
+	// ErrDefectSeverityInvalid: severidad que no es Crítica, Mayor ni Menor, o ninguna
+	// (historia #15, RN-6).
+	ErrDefectSeverityInvalid = errors.New("la severidad debe ser Crítica, Mayor o Menor")
+	// ErrDefectResolveNeedsSprint: pasar un defecto a Resuelto cambiándole el estado, sin
+	// decir en qué sprint se resolvió (historia #15, RN-10).
+	ErrDefectResolveNeedsSprint = errors.New("para resolver un defecto hay que indicar en qué sprint se resolvió")
+	// ErrDefectStateInvalid: cambiar un defecto a un estado que no es Abierto ni En curso
+	// (historia #15, RN-9).
+	ErrDefectStateInvalid = errors.New("el estado de un defecto solo cambia entre Abierto y En curso")
+	// ErrDefectResolvedBeforeDetected: resolver un defecto en un sprint de número menor al de
+	// detección (historia #15, RN-13).
+	ErrDefectResolvedBeforeDetected = errors.New("un defecto no se resuelve en un sprint anterior al de detección")
+	// ErrDefectAlreadyResolved: cambiarle el estado o volver a resolver un defecto Resuelto
+	// (historia #15, RN-14).
+	ErrDefectAlreadyResolved = errors.New("el defecto ya está resuelto")
+	// ErrDefectNotFound: cambiarle el estado o resolver un defecto que no existe en el
+	// proyecto (historia #15, RN-19).
+	ErrDefectNotFound = errors.New("no se encontró el defecto")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.

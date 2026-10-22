@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 )
 
@@ -87,6 +88,24 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 		if _, err := first.LogEffort(data, unDia(2026, 10, 21)); err != nil {
 			t.Fatalf("no se pudo registrar el esfuerzo de prueba: %v", err)
 		}
+	}
+
+	// los defectos son de la #15, que los suma a la conversion: uno Abierto, uno En curso y
+	// uno Resuelto, con las tres severidades, detectados en los dos sprints
+	for _, data := range []DefectData{
+		{Title: "La velocidad sale en cero", Description: "El resumen muestra 0 puntos", Severity: SeverityCritical, StoryID: estimated.ID(), DetectedIn: 1},
+		{Title: "Se pierde la media hora", Description: "El total redondea las horas", Severity: SeverityMinor, StoryID: 2, DetectedIn: 2},
+		{Title: "La fecha sale al reves", Description: "Muestra el mes antes que el dia", Severity: SeverityMajor, StoryID: done.ID(), DetectedIn: 1},
+	} {
+		if _, err := first.AddDefect(data); err != nil {
+			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+		}
+	}
+	if err := first.ChangeDefectState(2, DefectInProgress); err != nil {
+		t.Fatalf("no se pudo pasar a En curso el defecto de prueba: %v", err)
+	}
+	if err := first.ResolveDefect(3, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
 	}
 	return registry
 }
@@ -185,6 +204,23 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 					ge.StoryID(), ge.MemberName(), ge.Activity(), ge.Hours(), ge.Day())
 			}
 		}
+
+		// Los defectos de la #15, con su numero, su estado y sus sprints, y el contador.
+		wantDefects, gotDefects := w.Defects(), g.Defects()
+		if len(gotDefects) != len(wantDefects) {
+			t.Fatalf("proyecto %d: se esperaban %d defectos, salieron %d", w.ID(), len(wantDefects), len(gotDefects))
+		}
+		for j, wd := range wantDefects {
+			gd := gotDefects[j]
+			if gd.ID() != wd.ID() || gd.Title() != wd.Title() || gd.Description() != wd.Description() ||
+				gd.Severity() != wd.Severity() || gd.State() != wd.State() || gd.StoryID() != wd.StoryID() ||
+				gd.DetectedIn() != wd.DetectedIn() || gd.ResolvedIn() != wd.ResolvedIn() {
+				t.Fatalf("proyecto %d: se esperaba el defecto %+v, salio %+v", w.ID(), *wd, *gd)
+			}
+		}
+		if g.lastDefectID != w.lastDefectID {
+			t.Fatalf("proyecto %d: se esperaba el contador de defectos en %d, salio en %d", w.ID(), w.lastDefectID, g.lastDefectID)
+		}
 	}
 }
 
@@ -243,6 +279,13 @@ func unosDatosGuardados() registryJSON {
 				Sprints: []sprintJSON{
 					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado", Stories: []int{2}},
 					{Number: 2, Goal: "Medir la velocidad", Start: "2026-10-15", End: "2026-10-28", State: "Abierto"},
+				},
+				LastDefectID: 2,
+				Defects: []defectJSON{
+					{ID: 1, Title: "La velocidad sale en cero", Description: "El resumen muestra 0 puntos", Severity: "Crítica",
+						State: "Abierto", StoryID: 1, DetectedIn: 1},
+					{ID: 2, Title: "La fecha sale al reves", Description: "Muestra el mes antes que el dia", Severity: "Mayor",
+						State: "Resuelto", StoryID: 2, DetectedIn: 1, ResolvedIn: 2},
 				}},
 			{ID: 2, Name: "Otro proyecto", Start: "2026-10-05", NextStoryID: 1},
 		},
@@ -304,6 +347,27 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "esfuerzo sin integrante", change: func(d *registryJSON) { d.Projects[0].Efforts[0].MemberName = "  " }, want: ErrMemberNotFound},
 		{name: "esfuerzo sobre una historia que no existe", change: func(d *registryJSON) { d.Projects[0].Efforts[0].StoryID = 99 }, want: ErrStoryNotFound},
 		{name: "esfuerzo con una fecha que no es fecha", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Day = "20/10/2026" }, want: ErrSavedDataInvalid},
+		// Los defectos de la #15 (tarea 16): las mismas reglas que al registrarlos, y lo que
+		// solo un archivo puede traer mal.
+		{name: "defecto sin titulo", change: func(d *registryJSON) { d.Projects[0].Defects[0].Title = "  " }, want: ErrDefectTitleRequired},
+		{name: "defecto sin descripcion", change: func(d *registryJSON) { d.Projects[0].Defects[0].Description = "" }, want: ErrDefectDescriptionRequired},
+		{name: "severidad de defecto inexistente", change: func(d *registryJSON) { d.Projects[0].Defects[0].Severity = "Urgente" }, want: ErrDefectSeverityInvalid},
+		{name: "estado de defecto inexistente", change: func(d *registryJSON) { d.Projects[0].Defects[0].State = "Cerrado" }, want: ErrSavedDataInvalid},
+		{name: "defecto sobre una historia que no existe", change: func(d *registryJSON) { d.Projects[0].Defects[0].StoryID = 99 }, want: ErrStoryNotFound},
+		{name: "defecto detectado en un sprint que no existe", change: func(d *registryJSON) { d.Projects[0].Defects[0].DetectedIn = 9 }, want: ErrSprintNotFound},
+		{name: "defecto Resuelto sin sprint de resolucion", change: func(d *registryJSON) { d.Projects[0].Defects[1].ResolvedIn = 0 }, want: ErrDefectResolveNeedsSprint},
+		{name: "defecto resuelto en un sprint que no existe", change: func(d *registryJSON) { d.Projects[0].Defects[1].ResolvedIn = 9 }, want: ErrSprintNotFound},
+		{name: "defecto resuelto antes de detectarse", change: func(d *registryJSON) {
+			d.Projects[0].Defects[1].DetectedIn = 2
+			d.Projects[0].Defects[1].ResolvedIn = 1
+		}, want: ErrDefectResolvedBeforeDetected},
+		{name: "defecto sin resolver con sprint de resolucion", change: func(d *registryJSON) { d.Projects[0].Defects[0].ResolvedIn = 2 }, want: ErrSavedDataInvalid},
+		{name: "numero de defecto repetido", change: func(d *registryJSON) { d.Projects[0].Defects[1].ID = 1 }, want: ErrSavedDataInvalid},
+		{name: "contador de defectos que no llega a los numeros usados", change: func(d *registryJSON) { d.Projects[0].LastDefectID = 1 }, want: ErrSavedDataInvalid},
+		// D16 de la #77: un dato que el sistema no conoce rechaza la carga, también dentro de
+		// un defecto.
+		{name: "defecto con un dato que el sistema no conoce", raw: strings.Replace(string(base),
+			`"title":"La velocidad sale en cero"`, `"title":"La velocidad sale en cero","responsable":"Ana Perez"`, 1), want: ErrSavedDataInvalid},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

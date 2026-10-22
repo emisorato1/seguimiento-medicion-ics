@@ -114,6 +114,12 @@ type Project struct {
 	// (historia #14). Viven dentro del proyecto, así las horas de un proyecto no suman en
 	// otro (RN-16). Las operaciones están en effort.go.
 	efforts []*Effort
+	// defects y lastDefectID son los defectos del proyecto (historia #15). Viven dentro del
+	// proyecto, así el identificador único por proyecto (RN-1, RN-16) sale solo. El contador
+	// guarda el último identificador dado y nunca retrocede: en cero, el próximo es el 1. Las
+	// operaciones están en defect.go.
+	defects      []*Defect
+	lastDefectID int
 }
 
 // ID devuelve el identificador del proyecto, que no cambia nunca.
