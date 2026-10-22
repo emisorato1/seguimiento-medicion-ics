@@ -55,6 +55,11 @@ type EffortData struct {
 // LogEffort registra esfuerzo en el proyecto (RN-1). El día de hoy lo recibe de quien llama:
 // el dominio no lee el reloj (AGENTS.md).
 func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
+	// el dia se compara solo con hoy, sin la hora, y no con las fechas del proyecto ni de los
+	// sprints (RN-4, RN-17)
+	if toDay(data.Day).After(toDay(today)) {
+		return nil, ErrEffortDayInFuture
+	}
 	// "mayor que cero" escrito asi rechaza tambien NaN, que no es mayor ni menor que nada;
 	// el infinito si es mayor que cero, y se rechaza aparte porque no son horas (RN-3)
 	if !(data.Hours > 0) || math.IsInf(data.Hours, 0) {
