@@ -3,7 +3,7 @@
 - **Historia:** #16
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **en implementación** (tareas 1 a 3 hechas)
+- **Estado:** Puerta 3 aprobada y ratificada por Juliana Bustos (20/10) — **en implementación** (tareas 1 a 5, 9, 10 y 16 hechas)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #8, #9 y #10 (los sprints, lo comprometido y lo completado), #11 (buscar un
   sprint por su número), #12 (los story points), #14 (las horas reales) y #15 (los defectos).
@@ -359,6 +359,7 @@ Esquema del escenario: Pedir algo que no existe
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #16. La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #16, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación. Antes de aprobar se corrigió: la velocidad del proyecto se redondea, como dice el contrato (10 y 13 dan 12); se agregaron el criterio y el escenario de los puntos de un sprint cerrado (RN-3), que ningún escenario probaba; y se actualizó el punto 1, porque las horas estimadas ya estaban en el contrato.
+> Ratificó: Juliana Bustos — Fecha: 2026-10-20 — Comentarios: en un comentario del PR #81 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/81#issuecomment-6300935343), desde su cuenta: «Ratifico las tres puertas de la Historia #16. La especificación y las decisiones planteadas son correctas para avanzar». La excepción pedía el comentario en la issue #16; quedó en el PR de la historia.
 
 ## Fase 2 — Diseño
 
@@ -427,6 +428,7 @@ historia, recorriendo los sprints del proyecto. No se guarda en ningún lado.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en el mismo comentario de la issue #16, con la misma excepción que la Puerta 1. Se agregó `PointsAtClose` a lo que se lee de `Sprint`, y se sacó `docs/diseno-dominio.md` de los archivos afectados porque el contrato ya tiene las horas estimadas.
+> Ratificó: Juliana Bustos — Fecha: 2026-10-20 — Comentarios: en un comentario del PR #81 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/81#issuecomment-6300935343), desde su cuenta: «Ratifico las tres puertas de la Historia #16. La especificación y las decisiones planteadas son correctas para avanzar». La excepción pedía el comentario en la issue #16; quedó en el PR de la historia.
 
 ## Fase 3 — Tareas
 
@@ -507,6 +509,7 @@ Los dieciséis escenarios BDD de la Fase 1 tienen su tarea en la columna "Escena
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en el mismo comentario de la issue #16, con la misma excepción que la Puerta 1. Se agregó la tarea 7, de los puntos de un sprint cerrado, y se renumeraron las siguientes.
+> Ratificó: Juliana Bustos — Fecha: 2026-10-20 — Comentarios: en un comentario del PR #81 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/81#issuecomment-6300935343), desde su cuenta: «Ratifico las tres puertas de la Historia #16. La especificación y las decisiones planteadas son correctas para avanzar». La excepción pedía el comentario en la issue #16; quedó en el PR de la historia.
 
 ## Fase 4 — Implementación
 
