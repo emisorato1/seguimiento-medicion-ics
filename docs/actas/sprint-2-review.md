@@ -31,14 +31,14 @@ siguiente cuenta en el siguiente.
 | 9 | Asignar historias a un sprint | 5 | **Hecho** | Agustín Salinas | PR #138 |
 | 5 | Consultar el estado de un proyecto | 3 | **Hecho** | Juliana Bustos (la implementó Emiliano con asistencia de IA) | PR #102 |
 | 14 | Registrar el esfuerzo real | 3 | **Hecho** | Juliana Bustos (la implementó Emiliano con asistencia de IA) | PR #100 |
-| 15 | Gestionar defectos | 5 | Lista para implementar | Juliana Bustos (la implementa Emiliano con asistencia de IA) | spec en `dev` desde el PR #101; [completar al cierre] |
+| 15 | Gestionar defectos | 5 | **Hecho** | Juliana Bustos (la implementó Emiliano con asistencia de IA) | PR #129 |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | **Hecho** | Emiliano Sorato | PR #95 |
 
 - **Story points comprometidos:** 31 (los 26 del plan más los 5 de la #6)
-- **Story points completados al 22/10:** 26
+- **Story points completados al 22/10:** 31
 - **Velocidad del Sprint 2:** [se fija al cierre]. Son los story points completados de lo
   comprometido, más los de las adelantadas que se terminen, mostrados aparte (ver abajo).
-- **Historias completadas al 22/10:** 8 de 9 (89%), sin contar la #77, que también está terminada
+- **Historias completadas al 22/10:** 9 de 9 (100%), sin contar la #77, que también está terminada
   (PR #95) pero no está estimada
 
 La #77 no suma story points ni horas mientras el equipo no la estime (ver el

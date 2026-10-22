@@ -3,7 +3,7 @@
 - **Historia:** #15
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Implementada — **en review** (PR #129)
+- **Estado:** Terminada en el Sprint 2 — **mergeada a `dev`** el 22/10 (PR #129)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
   y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres

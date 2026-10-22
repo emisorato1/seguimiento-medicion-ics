@@ -96,8 +96,8 @@ escritas las horas que tenía cada historia al cierre.
 |---|---|---|---|---|
 | Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
 | SP planificados | 16 | 31 | _pendiente_ | _pendiente_ |
-| SP completados (velocidad) | **6** | 26 * | _pendiente_ | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | 8 de 9 (89%) * | _pendiente_ | _pendiente_ |
+| SP completados (velocidad) | **6** | 31 * | _pendiente_ | _pendiente_ |
+| Historias completadas | 2 de 5 (40%) | 9 de 9 (100%) * | _pendiente_ | _pendiente_ |
 | Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
 | Horas reales | 38,25 | 24,5 * | _pendiente_ | _pendiente_ |
 | Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
@@ -242,13 +242,13 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 9 | Asignar historias a un sprint | 5 | Hecho (PR #138) |
 | 5 | Consultar el estado de un proyecto | 3 | Hecho |
 | 14 | Registrar el esfuerzo real | 3 | Hecho |
-| 15 | Gestionar defectos | 5 | Lista para implementar |
+| 15 | Gestionar defectos | 5 | Hecho (PR #129) |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
 
 - Adelantada desde el 21/10: la **#13** (8 SP y 21,6 h estimadas, Maximiliano Eula), que no
   suma a los 31 comprometidos. Está en el [acta de review](actas/sprint-2-review.md#historias-adelantadas).
-- Completados al 22/10: **26 SP**, 8 de 9 historias. Tres llegaron del Sprint 1, y las otras
-  cinco son nuevas del sprint: la #7, la #5, la #14, la #8 y la #9.
+- Completados al 22/10: **31 SP**, las 9 historias comprometidas. Tres llegaron del Sprint 1, y
+  las otras seis son nuevas del sprint: la #7, la #5, la #14, la #8, la #9 y la #15.
 
 ### Esfuerzo
 
