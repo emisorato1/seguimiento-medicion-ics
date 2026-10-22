@@ -59,7 +59,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #70) |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #106) |
 | [Consultar el estado de un proyecto](sprint-2/05-consultar-estado-proyecto.md) | #5 | 3 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #102) |
-| [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | ✅ Lista para implementar — puertas aprobadas por el responsable como excepción, falta ratificar |
+| [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #95) |
 
 ### Sprint 3 — del 26 al 30 de octubre (36 SP)
 

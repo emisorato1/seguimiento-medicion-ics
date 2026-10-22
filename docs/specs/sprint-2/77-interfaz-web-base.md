@@ -3,7 +3,7 @@
 - **Historia:** #77
 - **Sprint:** 2
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **lista para implementar**. Las aprobó el responsable como excepción y **las ratificó Maximiliano Eula el 2026-10-20** en la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279). Tres cosas se agregaron después de lo que él vio —la D16 (un dato desconocido rechaza la carga), la opción vacía de las listas y el 404 en castellano (Fase 4, "Desvíos")— y **las aceptó Maximiliano Eula el 21/10** en el PR #95 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/95#issuecomment-6329603750)
+- **Estado:** Terminada en el Sprint 2 — **mergeada a `dev`** el 21/10 (PR #95). Las puertas las aprobó el responsable como excepción y **las ratificó Maximiliano Eula el 2026-10-20** en la issue #77 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/77#issuecomment-6300845279). Tres cosas se agregaron después de lo que él vio —la D16 (un dato desconocido rechaza la carga), la opción vacía de las listas y el 404 en castellano (Fase 4, "Desvíos")— y **las aceptó Maximiliano Eula el 21/10** en el PR #95 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/95#issuecomment-6329603750)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
