@@ -514,3 +514,62 @@ func TestLosDefectosDeUnProyectoNoAparecenEnOtro(t *testing.T) {
 		t.Fatalf("se esperaba que el proyecto A siguiera con su defecto, salieron %v", got)
 	}
 }
+
+// Esquema del escenario: Operar sobre algo que no existe
+// Cubre: RN-18, RN-19
+// La fila del proyecto 99 pasa por el registro, como lo va a hacer la interfaz: si el
+// proyecto no existe, el registro informa el error de la #3 y el defecto no se registra.
+func TestOperarSobreAlgoQueNoExiste(t *testing.T) {
+	cases := []struct {
+		name string
+		want error
+		run  func(registry *ProjectRegistry, project *Project) error
+	}{
+		{"cambiarle el estado al defecto 99", ErrDefectNotFound, func(registry *ProjectRegistry, project *Project) error {
+			return project.ChangeDefectState(99, DefectInProgress)
+		}},
+		{"resolver el defecto 99", ErrDefectNotFound, func(registry *ProjectRegistry, project *Project) error {
+			return project.ResolveDefect(99, 1)
+		}},
+		{"registrar un defecto en el proyecto 99", ErrProjectNotFound, func(registry *ProjectRegistry, project *Project) error {
+			other, err := registry.Get(99)
+			if err != nil {
+				return err
+			}
+			_, err = other.AddDefect(unDefecto())
+			return err
+		}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: unDia(2026, 10, 1)})
+			if err != nil {
+				t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+			}
+			if _, err := project.AddStory(unosDatos()); err != nil {
+				t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+			}
+			conSprints(t, project, 1)
+			defect, err := project.AddDefect(unDefecto())
+			if err != nil {
+				t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+			}
+
+			err = tc.run(registry, project)
+
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+			if got := numerosDeDefectos(project.Defects()); fmt.Sprint(got) != "[1]" {
+				t.Fatalf("se esperaba que el proyecto siguiera con su defecto 1, salieron %v", got)
+			}
+			if defect.State() != DefectOpen || defect.ResolvedIn() != 0 {
+				t.Fatalf("se esperaba que el defecto 1 siguiera Abierto y sin resolver, quedo en %d con el sprint %d", defect.State(), defect.ResolvedIn())
+			}
+			if _, err := registry.Get(2); !errors.Is(err, ErrProjectNotFound) {
+				t.Fatalf("se esperaba que no se creara ningun proyecto nuevo, salio: %v", err)
+			}
+		})
+	}
+}
