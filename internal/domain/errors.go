@@ -111,4 +111,7 @@ var (
 	// ErrVotingRoundNoMembers: abrir una ronda de Planning Poker en un proyecto sin
 	// integrantes (historia #13, RN-6).
 	ErrVotingRoundNoMembers = errors.New("el proyecto no tiene integrantes que puedan votar")
+	// ErrVotingRoundInProgress: abrir una ronda sobre una historia que ya tiene una sin
+	// revelar (historia #13, RN-7).
+	ErrVotingRoundInProgress = errors.New("la historia ya tiene una ronda de votación en curso")
 )

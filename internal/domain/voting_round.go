@@ -54,9 +54,19 @@ func (p *Project) OpenVotingRound(storyID int) (*VotingRound, error) {
 	if len(p.members) == 0 {
 		return nil, ErrVotingRoundNoMembers
 	}
+	// Hasta que esté la #73, cada historia tiene una sola ronda: se rechaza toda segunda
+	// ronda, esté revelada o no la primera (punto 6 de la puerta). La #73 lo afloja para
+	// las reveladas.
+	for _, round := range p.votingRounds {
+		if round.storyID == storyID {
+			return nil, ErrVotingRoundInProgress
+		}
+	}
 	participants := make([]string, 0, len(p.members))
 	for _, member := range p.members {
 		participants = append(participants, member.name)
 	}
-	return &VotingRound{storyID: storyID, number: 1, participants: participants}, nil
+	round := &VotingRound{storyID: storyID, number: 1, participants: participants}
+	p.votingRounds = append(p.votingRounds, round)
+	return round, nil
 }
