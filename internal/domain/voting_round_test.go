@@ -473,3 +473,68 @@ func TestMostrarUnaRondaSinRevelarNoDejaVerLosVotos(t *testing.T) {
 		}
 	}
 }
+
+// Esquema del escenario: Consultar la ronda actual de una historia
+// Cubre: RN-19
+func TestConsultarLaRondaActualDeUnaHistoria(t *testing.T) {
+	cases := []struct {
+		name     string
+		open     bool
+		reveal   bool
+		found    bool
+		revealed bool
+	}{
+		{"ninguna ronda", false, false, false, false},
+		{"la ronda 1 sin revelar", true, false, true, false},
+		{"la ronda 1 revelada", true, true, true, true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, story := projectWithThreeMembers(t)
+			if tc.open {
+				round, err := project.OpenVotingRound(story.ID())
+				if err != nil {
+					t.Fatalf("no se pudo abrir la ronda de prueba: %v", err)
+				}
+				if tc.reveal {
+					for _, name := range round.Pending() {
+						if err := round.Vote(name, 5); err != nil {
+							t.Fatalf("no se pudo votar: %v", err)
+						}
+					}
+					if err := round.Reveal(); err != nil {
+						t.Fatalf("no se pudo revelar la ronda: %v", err)
+					}
+				}
+			}
+
+			round, found, err := project.CurrentVotingRound(story.ID())
+
+			if err != nil {
+				t.Fatalf("se esperaba consultar sin error, salio: %v", err)
+			}
+			if found != tc.found {
+				t.Fatalf("se esperaba encontrada: %v, salio: %v", tc.found, found)
+			}
+			if tc.found && (round.Number() != 1 || round.Revealed() != tc.revealed) {
+				t.Fatalf("se esperaba la ronda 1 con revelada: %v, salio la ronda %d con revelada: %v",
+					tc.revealed, round.Number(), round.Revealed())
+			}
+		})
+	}
+}
+
+// Escenario: Consultar la ronda actual de una historia que no existe
+// Cubre: RN-19
+func TestConsultarLaRondaActualDeUnaHistoriaQueNoExiste(t *testing.T) {
+	project, _ := projectWithThreeMembers(t)
+
+	_, found, err := project.CurrentVotingRound(99)
+
+	if !errors.Is(err, ErrStoryNotFound) {
+		t.Fatalf("se esperaba ErrStoryNotFound, salio: %v", err)
+	}
+	if found {
+		t.Fatal("se esperaba que no se encontrara ninguna ronda")
+	}
+}
