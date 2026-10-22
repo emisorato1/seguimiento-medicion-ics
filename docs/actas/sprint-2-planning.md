@@ -231,3 +231,14 @@ alcance completo** con el plan al 2 de noviembre, y **sumar la interfaz web** (#
 
 - **Confirmaron:** Agustín Salinas, Juliana Bustos y Maximiliano Eula, los tres Product
   Builders. Lo registra Emiliano Sorato, que llevó la propuesta al grupo.
+
+### Las historias de Juliana las adelantan las sesiones de Emiliano
+
+El 21/10 Juliana Bustos autorizó a Emiliano Sorato a adelantar sus historias (#5, #14 y #15);
+las implementan las sesiones de Claude Code de Emiliano, y Juliana sigue como responsable de la
+historia. Lo registra Emiliano Sorato, a quien Juliana se lo dijo.
+
+**Por qué.** La #14 (esfuerzo) y la #15 (defectos) son las que necesita la #16, que calcula las
+métricas a partir de las horas registradas y de los defectos.
+
+En el tablero, las tres tienen asignados a Juliana y a `emisorato1`.
