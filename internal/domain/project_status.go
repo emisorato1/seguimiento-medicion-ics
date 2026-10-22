@@ -70,15 +70,31 @@ func (p *Project) Status() ProjectStatus {
 		}
 	}
 
+	// El sprint en curso es el que da la consulta del sprint abierto de la #8: cual es el
+	// abierto es una regla de esa historia y no se repite aca.
+	var current SprintSummary
+	sprint, hasCurrent := p.OpenSprint()
+	if hasCurrent {
+		current = SprintSummary{
+			Number:          sprint.number,
+			Goal:            sprint.goal,
+			Start:           sprint.start,
+			End:             sprint.end,
+			AssignedStories: len(sprint.stories),
+		}
+	}
+
 	return ProjectStatus{
-		ID:             p.id,
-		Name:           p.name,
-		Description:    p.description,
-		HasDescription: p.description != "",
-		Start:          p.start,
-		End:            p.end,
-		HasEnd:         p.HasEnd(),
-		Members:        members,
-		Backlog:        backlog,
+		ID:               p.id,
+		Name:             p.name,
+		Description:      p.description,
+		HasDescription:   p.description != "",
+		Start:            p.start,
+		End:              p.end,
+		HasEnd:           p.HasEnd(),
+		Members:          members,
+		Backlog:          backlog,
+		CurrentSprint:    current,
+		HasCurrentSprint: hasCurrent,
 	}
 }
