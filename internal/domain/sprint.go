@@ -119,9 +119,10 @@ func (s *Sprint) Stories() []int {
 	return stories
 }
 
-// AddSprint crea un sprint en el proyecto con los datos indicados. Recibe el numero que
-// sigue al del ultimo sprint creado en el proyecto, nace abierto y sin historias (RN-1,
-// RN-3).
+// AddSprint crea un sprint en el proyecto con los datos indicados. Primero los normaliza y
+// valida (goal y fechas, RN-4 a RN-7) y controla que el proyecto no tenga otro sprint
+// abierto (RN-8); recien entonces lo crea, con el numero que sigue al del ultimo sprint del
+// proyecto, abierto y sin historias (RN-1, RN-3). Si algo falla, no agrega nada (RN-12).
 func (p *Project) AddSprint(data SprintData) (*Sprint, error) {
 	data, err := prepareSprint(data)
 	if err != nil {
