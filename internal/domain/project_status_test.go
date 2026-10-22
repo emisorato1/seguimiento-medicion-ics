@@ -2,9 +2,45 @@ package domain
 
 import (
 	"errors"
+	"fmt"
+	"reflect"
 	"slices"
 	"testing"
 )
+
+// statusProject registra un proyecto con historias en los estados que se piden, para los
+// escenarios del estado. Los estados En curso y Terminada son de la #9 y la #10: se fijan
+// desde dentro del paquete, como en la #12.
+func statusProject(t *testing.T, registry *ProjectRegistry, pending, inProgress, done int) *Project {
+	t.Helper()
+	project, err := registry.Create(ProjectData{Name: "Sistema de metricas", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+	states := []StoryState{}
+	for i := 0; i < pending; i++ {
+		states = append(states, StoryPending)
+	}
+	for i := 0; i < inProgress; i++ {
+		states = append(states, StoryInProgress)
+	}
+	for i := 0; i < done; i++ {
+		states = append(states, StoryDone)
+	}
+	for i, state := range states {
+		story, err := project.AddStory(StoryData{
+			Title:              fmt.Sprintf("Historia %d", i+1),
+			Description:        "Como integrante quiero algo",
+			Priority:           PriorityMedium,
+			AcceptanceCriteria: []string{"Se puede hacer"},
+		})
+		if err != nil {
+			t.Fatalf("no se pudo preparar la historia %d: %v", i+1, err)
+		}
+		story.state = state
+	}
+	return project
+}
 
 // Escenario: Consultar el estado de un proyecto recien creado
 // Cubre: RN-1, RN-4, RN-9
@@ -96,5 +132,110 @@ func TestElEstadoMuestraLosIntegrantesConSuRol(t *testing.T) {
 	want := []MemberStatus{{"Emiliano Sorato", RoleAgileEnabler}, {"Juliana Bustos", RoleProductBuilder}}
 	if !slices.Equal(status.Members, want) {
 		t.Errorf("se esperaban los integrantes %v, en ese orden, salio %v", want, status.Members)
+	}
+}
+
+// Esquema del escenario: Resumen del backlog segun el estado de las historias
+// Cubre: RN-5, RN-6, RN-7
+func TestResumenDelBacklogSegunElEstadoDeLasHistorias(t *testing.T) {
+	casos := []struct {
+		pendientesSinEmpezar, enCurso, terminadas int
+		want                                      BacklogSummary
+	}{
+		{3, 0, 0, BacklogSummary{Total: 3, Completed: 0, Pending: 3}},
+		{1, 2, 0, BacklogSummary{Total: 3, Completed: 0, Pending: 3}},
+		{1, 1, 2, BacklogSummary{Total: 4, Completed: 2, Pending: 2}},
+		{0, 0, 3, BacklogSummary{Total: 3, Completed: 3, Pending: 0}},
+	}
+
+	for _, caso := range casos {
+		nombre := fmt.Sprintf("%d pendientes, %d en curso, %d terminadas", caso.pendientesSinEmpezar, caso.enCurso, caso.terminadas)
+		t.Run(nombre, func(t *testing.T) {
+			project := statusProject(t, NewProjectRegistry(), caso.pendientesSinEmpezar, caso.enCurso, caso.terminadas)
+
+			got := project.Status().Backlog
+
+			if got != caso.want {
+				t.Errorf("se esperaba el resumen %+v, salio %+v", caso.want, got)
+			}
+			if got.Total != got.Completed+got.Pending {
+				t.Errorf("el total tiene que ser completadas mas pendientes, salio %+v", got)
+			}
+		})
+	}
+}
+
+// Escenario: El estado refleja los cambios del proyecto
+// Cubre: RN-12
+func TestElEstadoReflejaLosCambiosDelProyecto(t *testing.T) {
+	project := statusProject(t, NewProjectRegistry(), 2, 0, 0)
+	antes := project.Status()
+
+	if _, err := project.AddStory(StoryData{
+		Title: "Una mas", Description: "Como integrante quiero otra", Priority: PriorityLow, AcceptanceCriteria: []string{"Se carga"},
+	}); err != nil {
+		t.Fatalf("no se pudo agregar la historia: %v", err)
+	}
+	despues := project.Status()
+
+	if antes.Backlog.Total != 2 {
+		t.Errorf("antes del cambio se esperaban 2 historias, salieron %d", antes.Backlog.Total)
+	}
+	if despues.Backlog != (BacklogSummary{Total: 3, Completed: 0, Pending: 3}) {
+		t.Errorf("despues del cambio se esperaban 3 historias pendientes, salio %+v", despues.Backlog)
+	}
+}
+
+// Escenario: Consultar el estado no cambia nada
+// Cubre: RN-10
+func TestConsultarElEstadoNoCambiaNada(t *testing.T) {
+	project := statusProject(t, NewProjectRegistry(), 3, 0, 0)
+	for _, name := range []string{"Emiliano Sorato", "Juliana Bustos"} {
+		if _, err := project.AddMember(name, RoleProductBuilder); err != nil {
+			t.Fatalf("no se pudo preparar el integrante %q: %v", name, err)
+		}
+	}
+	if _, err := project.AddSprint(SprintData{Goal: "Tener el dashboard", Start: date(2026, 10, 1), End: date(2026, 10, 15)}); err != nil {
+		t.Fatalf("no se pudo preparar el sprint: %v", err)
+	}
+
+	primera := project.Status()
+	segunda := project.Status()
+
+	if !reflect.DeepEqual(primera, segunda) {
+		t.Errorf("dos consultas seguidas tenian que dar lo mismo, salieron:\n%+v\n%+v", primera, segunda)
+	}
+	// Cambiar lo recibido no cambia el proyecto: es una foto con copias.
+	primera.Members[0].Name = "Otra persona"
+	if len(project.Members()) != 2 || project.Members()[0].Name() != "Emiliano Sorato" {
+		t.Errorf("el proyecto tenia que seguir con sus 2 integrantes, quedo con %d", len(project.Members()))
+	}
+	if len(project.Backlog()) != 3 {
+		t.Errorf("el proyecto tenia que seguir con sus 3 historias, quedo con %d", len(project.Backlog()))
+	}
+	if sprint, ok := project.OpenSprint(); !ok || sprint.Number() != 1 {
+		t.Errorf("el sprint 1 tenia que seguir abierto")
+	}
+}
+
+// Escenario: Cada proyecto muestra solo lo suyo
+// Cubre: RN-13
+func TestCadaProyectoMuestraSoloLoSuyo(t *testing.T) {
+	registry := NewProjectRegistry()
+	a := statusProject(t, registry, 3, 0, 0)
+	for _, name := range []string{"Emiliano Sorato", "Juliana Bustos"} {
+		if _, err := a.AddMember(name, RoleProductBuilder); err != nil {
+			t.Fatalf("no se pudo preparar el integrante %q: %v", name, err)
+		}
+	}
+	b, err := registry.Create(ProjectData{Name: "Otro proyecto", Start: date(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo preparar el proyecto B: %v", err)
+	}
+
+	status := b.Status()
+
+	if len(status.Members) != 0 || status.Backlog.Total != 0 {
+		t.Errorf("el proyecto B no tenia que contar nada del A, salio %d integrantes y %d historias", len(status.Members), status.Backlog.Total)
 	}
 }
