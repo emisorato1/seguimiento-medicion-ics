@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-22 14:57. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-22 15:02. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-e58a81c 2026-10-22 Merge pull request #139 from emisorato1/historias-8-y-9-terminadas
-9cfa06d 2026-10-22 Merge pull request #129 from emisorato1/historia-15-codigo
-e7ff34c 2026-10-22 docs: la historia 15 implementada, con su fase 4 y su fila del indice
-6695d51 2026-10-22 feat: un defecto invalido en el archivo rechaza la carga (historia 15, tarea 16)
-6a2a664 2026-10-22 chore: regenerar ESTADO.md y la trazabilidad con las historias 8 y 9 terminadas
-2683be5 2026-10-22 docs: las historias 8 y 9 terminadas en sus specs, el indice, la review y el informe del sprint 2
-aa23b4f 2026-10-22 fix: trazabilidad.sh reconoce "paso en verde al escribirlo" igual que "sin RED"
-db591a3 2026-10-22 test: un defecto invalido en el archivo rechaza la carga (historia 15, tarea 16)
+bfe1282 2026-10-22 Merge remote-tracking branch 'origin/dev' into historia-15-terminada
+68a3804 2026-10-22 Merge pull request #140 from emisorato1/historia-16-parte-2
+28140fa 2026-10-22 docs: las tareas 8, 12, 13 y 15 de la historia 16 en su fase 3, su fase 4 y el indice
+771ffff 2026-10-22 test: las metricas reflejan los datos cargados despues (historia 16, tarea 15, sin RED)
+d8b461e 2026-10-22 feat: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
+a03372b 2026-10-22 test: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
+81328ca 2026-10-22 feat: defectos detectados y resueltos de cada sprint (historia 16, tarea 12)
+b6806d0 2026-10-22 test: defectos detectados y resueltos de cada sprint (historia 16, tarea 12)
 ```
