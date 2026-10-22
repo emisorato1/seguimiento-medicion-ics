@@ -194,3 +194,34 @@ func TestUnaSeveridadQueNoExisteSeMuestraSinSeveridad(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Rechazar un defecto sobre una historia que no es del proyecto
+// Cubre: RN-7, RN-18
+func TestRechazarUnDefectoSobreUnaHistoriaQueNoEsDelProyecto(t *testing.T) {
+	project := unProyectoConDefectos(t, 1)
+	data := unDefecto()
+	data.StoryID = 99
+
+	_, err := project.AddDefect(data)
+
+	if !errors.Is(err, ErrStoryNotFound) {
+		t.Fatalf("se esperaba ErrStoryNotFound para la historia 99, salio: %v", err)
+	}
+	if len(project.Defects()) != 0 {
+		t.Fatalf("se esperaba que el proyecto siguiera sin defectos, tiene %d", len(project.Defects()))
+	}
+}
+
+// Escenario: Registrar un defecto sobre una historia terminada
+// Cubre: RN-7
+func TestRegistrarUnDefectoSobreUnaHistoriaTerminada(t *testing.T) {
+	project := unProyectoConDefectos(t, 1)
+	story, _ := project.Story(1)
+	// Terminar una historia es de la #10, que todavia no esta en dev: el test la prepara
+	// desde dentro del paquete, como la #12 en su tarea 9.
+	story.state = StoryDone
+
+	if _, err := project.AddDefect(unDefecto()); err != nil {
+		t.Fatalf("se esperaba registrar un defecto sobre una historia Terminada, salio: %v", err)
+	}
+}
