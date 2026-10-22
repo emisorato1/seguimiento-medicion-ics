@@ -363,3 +363,42 @@ func TestRechazarLaResolucionConUnSprintQueNoExiste(t *testing.T) {
 		t.Fatalf("se esperaba que el defecto siguiera Abierto y sin sprint de resolucion, quedo en %d con el sprint %d", defect.State(), defect.ResolvedIn())
 	}
 }
+
+// Escenario: Rechazar la resolucion en un sprint anterior al de deteccion
+// Cubre: RN-13, RN-18
+func TestRechazarLaResolucionEnUnSprintAnteriorAlDeDeteccion(t *testing.T) {
+	project := unProyectoConDefectos(t, 2)
+	data := unDefecto()
+	data.DetectedIn = 2
+	defect, err := project.AddDefect(data)
+	if err != nil {
+		t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+	}
+
+	err = project.ResolveDefect(defect.ID(), 1)
+
+	if !errors.Is(err, ErrDefectResolvedBeforeDetected) {
+		t.Fatalf("se esperaba ErrDefectResolvedBeforeDetected, salio: %v", err)
+	}
+	if defect.State() != DefectOpen || defect.ResolvedIn() != 0 {
+		t.Fatalf("se esperaba que el defecto siguiera sin resolver, quedo en %d con el sprint %d", defect.State(), defect.ResolvedIn())
+	}
+}
+
+// Escenario: Resolver un defecto en el mismo sprint en que se detecto
+// Cubre: RN-13
+func TestResolverUnDefectoEnElMismoSprintEnQueSeDetecto(t *testing.T) {
+	project := unProyectoConDefectos(t, 2)
+	data := unDefecto()
+	data.DetectedIn = 2
+	defect, err := project.AddDefect(data)
+	if err != nil {
+		t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
+	}
+
+	err = project.ResolveDefect(defect.ID(), 2)
+
+	if err != nil || defect.State() != DefectResolved || defect.ResolvedIn() != 2 {
+		t.Fatalf("se esperaba el defecto Resuelto en el sprint 2, salio en %d con el sprint %d (error: %v)", defect.State(), defect.ResolvedIn(), err)
+	}
+}
