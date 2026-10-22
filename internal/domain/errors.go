@@ -114,4 +114,7 @@ var (
 	// ErrVotingRoundInProgress: abrir una ronda sobre una historia que ya tiene una sin
 	// revelar (historia #13, RN-7).
 	ErrVotingRoundInProgress = errors.New("la historia ya tiene una ronda de votación en curso")
+	// ErrVotesHidden: pedir los votos de una ronda que todavía no se reveló (historia #13,
+	// RN-12). El mensaje no lleva ningún valor.
+	ErrVotesHidden = errors.New("los votos están ocultos hasta que se revele la ronda")
 )

@@ -7,7 +7,15 @@ type VotingRound struct {
 	storyID      int
 	number       int
 	participants []string
+	votes        []Vote
 	revealed     bool
+}
+
+// Vote es un voto de una ronda revelada: quién lo dio y cuántos story points votó. Solo se
+// entrega por Votes, y recién cuando la ronda está revelada (RN-12, RN-14).
+type Vote struct {
+	MemberName string
+	Points     int
 }
 
 // StoryID devuelve el identificador de la historia que se vota en la ronda.
@@ -25,17 +33,52 @@ func (r *VotingRound) Revealed() bool {
 	return r.revealed
 }
 
-// Voted devuelve los nombres de los participantes que ya votaron, sin ningun valor (RN-13).
+// Voted devuelve los nombres de los participantes que ya votaron, en el orden de los
+// integrantes del proyecto y sin ningún valor (RN-13).
 func (r *VotingRound) Voted() []string {
-	return []string{}
+	return r.participantsWhere(true)
 }
 
-// Pending devuelve los nombres de los participantes que todavia no votaron, en el orden de
+// Pending devuelve los nombres de los participantes que todavía no votaron, en el orden de
 // los integrantes del proyecto (RN-13).
 func (r *VotingRound) Pending() []string {
-	pending := make([]string, len(r.participants))
-	copy(pending, r.participants)
-	return pending
+	return r.participantsWhere(false)
+}
+
+// participantsWhere devuelve, en el orden de los participantes, los que votaron o los que
+// faltan. Es la única forma de saber algo de los votos antes de revelar: solo nombres.
+func (r *VotingRound) participantsWhere(voted bool) []string {
+	names := []string{}
+	for _, name := range r.participants {
+		if r.hasVoted(name) == voted {
+			names = append(names, name)
+		}
+	}
+	return names
+}
+
+// hasVoted indica si el participante con ese nombre ya votó en la ronda.
+func (r *VotingRound) hasVoted(name string) bool {
+	for _, vote := range r.votes {
+		if vote.MemberName == name {
+			return true
+		}
+	}
+	return false
+}
+
+// Vote registra el voto de un participante y lo pasa de los que faltan a los que votaron
+// (RN-8). La respuesta solo dice si se aceptó: nunca lleva el valor (RN-12).
+func (r *VotingRound) Vote(member string, points int) error {
+	r.votes = append(r.votes, Vote{MemberName: member, Points: points})
+	return nil
+}
+
+// Votes devuelve los votos de la ronda con el nombre de quien los dio. Es la única consulta
+// que entrega valores, y mientras la ronda no esté revelada responde con un error, no con
+// una lista vacía, que se confundiría con "nadie votó" (RN-12, Fase 2).
+func (r *VotingRound) Votes() ([]Vote, error) {
+	return nil, ErrVotesHidden
 }
 
 // OpenVotingRound abre una ronda de votacion sobre la historia con ese identificador. Los
