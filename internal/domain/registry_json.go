@@ -38,10 +38,19 @@ type projectJSON struct {
 	NextStoryID int          `json:"next_story_id"`
 	Members     []memberJSON `json:"members"`
 	Stories     []storyJSON  `json:"stories"`
+	Efforts     []effortJSON `json:"efforts"`
 	// Los sprints son de la #8. Van con omitempty: un archivo de antes, sin sprints, se lee
 	// como un proyecto sin sprints y con el contador en cero.
 	LastSprintNumber int          `json:"last_sprint_number,omitempty"`
 	Sprints          []sprintJSON `json:"sprints,omitempty"`
+}
+
+type effortJSON struct {
+	StoryID    int     `json:"story_id"`
+	MemberName string  `json:"member_name"`
+	Activity   string  `json:"activity"`
+	Hours      float64 `json:"hours"`
+	Day        string  `json:"day"`
 }
 
 // sprintJSON es un sprint guardado (historia #8). El estado va con su nombre, como el de las
@@ -66,6 +75,7 @@ type storyJSON struct {
 	Priority           string   `json:"priority"`
 	State              string   `json:"state"`
 	StoryPoints        int      `json:"story_points"`
+	EstimatedHours     float64  `json:"estimated_hours,omitempty"`
 	AcceptanceCriteria []string `json:"acceptance_criteria"`
 }
 
@@ -82,6 +92,7 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 			NextStoryID: p.nextStoryID,
 			Members:     []memberJSON{},
 			Stories:     []storyJSON{},
+			Efforts:     []effortJSON{},
 		}
 		if p.HasEnd() {
 			project.End = p.end.Format(dayLayout)
@@ -97,7 +108,17 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 				Priority:           s.priority.String(),
 				State:              s.state.String(),
 				StoryPoints:        s.storyPoints,
+				EstimatedHours:     s.estimatedHours,
 				AcceptanceCriteria: s.acceptanceCriteria,
+			})
+		}
+		for _, e := range p.efforts {
+			project.Efforts = append(project.Efforts, effortJSON{
+				StoryID:    e.storyID,
+				MemberName: e.memberName,
+				Activity:   e.activity,
+				Hours:      e.hours,
+				Day:        e.day.Format(dayLayout),
 			})
 		}
 		project.LastSprintNumber = p.lastSprintNumber
@@ -228,6 +249,27 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 	}
 	project.sprints = sprints
 	project.lastSprintNumber = pj.LastSprintNumber
+
+	// El esfuerzo va al final, porque apunta a integrantes e historias que ya tienen que estar
+	// cargados. Pasa por las mismas reglas que al registrarlo, menos la del día futuro y la de
+	// seguir siendo integrante (Fase 2 de la #14).
+	for i, ej := range pj.Efforts {
+		day, err := parseDay(ej.Day)
+		if err != nil {
+			return nil, fmt.Errorf("esfuerzo %d: %w", i+1, err)
+		}
+		effort, err := project.newEffort(EffortData{
+			StoryID:    ej.StoryID,
+			MemberName: ej.MemberName,
+			Activity:   ej.Activity,
+			Hours:      ej.Hours,
+			Day:        day,
+		}, time.Time{}, true)
+		if err != nil {
+			return nil, fmt.Errorf("esfuerzo %d: %w", i+1, err)
+		}
+		project.efforts = append(project.efforts, effort)
+	}
 	return project, nil
 }
 
@@ -306,6 +348,11 @@ func storyFromJSON(sj storyJSON) (*Story, error) {
 	if sj.StoryPoints != 0 && !inScale(sj.StoryPoints) {
 		return nil, ErrStoryPointsInvalid
 	}
+	// cero es "sin horas estimadas" (historia #16, RN-17); un valor cargado tiene que ser mayor
+	// que cero (RN-18). NaN no puede llegar: JSON no tiene como escribirlo
+	if sj.EstimatedHours < 0 {
+		return nil, ErrEstimatedHoursInvalid
+	}
 	return &Story{
 		id:                 sj.ID,
 		title:              data.Title,
@@ -313,6 +360,7 @@ func storyFromJSON(sj storyJSON) (*Story, error) {
 		priority:           data.Priority,
 		state:              state,
 		storyPoints:        sj.StoryPoints,
+		estimatedHours:     sj.EstimatedHours,
 		acceptanceCriteria: data.AcceptanceCriteria,
 	}, nil
 }

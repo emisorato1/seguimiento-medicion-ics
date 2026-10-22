@@ -140,7 +140,7 @@ cambió el mismo día.
 ### Por qué
 
 Se presenta el **2 de noviembre** y el equipo prefiere defender el producto entero antes que
-defender un recorte. Los cuatro trabajan con Claude Code, así que el costo por story point
+defender un recorte. Los cuatro trabajan con asistencia de IA, así que el costo por story point
 puede bajar bastante respecto de las 2,6 horas medidas en el Sprint 1 —ese número incluía
 cuatro o cinco pull requests por historia y revisiones que tardaban un día— y el plan
 reorganiza el trabajo justamente para atacar eso.
@@ -231,3 +231,14 @@ alcance completo** con el plan al 2 de noviembre, y **sumar la interfaz web** (#
 
 - **Confirmaron:** Agustín Salinas, Juliana Bustos y Maximiliano Eula, los tres Product
   Builders. Lo registra Emiliano Sorato, que llevó la propuesta al grupo.
+
+### Las historias de Juliana las adelanta Emiliano
+
+El 21/10 Juliana Bustos autorizó a Emiliano Sorato a adelantar sus historias (#5, #14 y #15);
+las implementa Emiliano con asistencia de IA, y Juliana sigue como responsable de la
+historia. Lo registra Emiliano Sorato, a quien Juliana se lo dijo.
+
+**Por qué.** La #14 (esfuerzo) y la #15 (defectos) son las que necesita la #16, que calcula las
+métricas a partir de las horas registradas y de los defectos.
+
+En el tablero, las tres tienen asignados a Juliana y a `emisorato1`.

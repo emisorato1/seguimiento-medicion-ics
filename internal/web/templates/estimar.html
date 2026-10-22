@@ -1,0 +1,20 @@
+{{define "content"}}
+<h1>Estimar la historia {{.Data.Story.ID}}</h1>
+<p>{{.Data.Story.Title}}</p>
+{{template "error-formulario" .Data.Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}/estimar" novalidate>
+  {{with .Data.Form.Field "puntos"}}
+  <div class="campo">
+    <label for="puntos">Story points</label>
+    <select id="puntos" name="puntos"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí los story points" $.Data.Points .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Guardar estimación</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}">Cancelar</a>
+  </div>
+</form>
+{{end}}

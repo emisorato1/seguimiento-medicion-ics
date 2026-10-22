@@ -200,7 +200,12 @@ Las actas de retrospectiva son **entregable final**, así que ninguna se saltea.
   comprometió; en una historia ya especificada, con sus puertas pasadas y a medio hacer, ese
   riesgo no existe. La planning decide **qué entra nuevo**, no vuelve a decidir lo que ya
   estaba aprobado y empezado. La confirmación queda registrada en el acta de la planning.
-- El alcance del sprint no se amplía a mitad de camino.
+- El alcance del sprint no se amplía a mitad de camino, **con una excepción** que el equipo
+  acordó por chat el 21/10: quien termina lo suyo puede **adelantar su próxima historia del
+  plan** sin esperar la planning, siempre que tenga las tres puertas aprobadas y lo que
+  necesita ya esté en `dev`. Entra al sprint en curso y queda registrada en su acta de
+  review; si no se termina, vuelve al sprint que tenía en el plan. Así nadie queda parado
+  esperando una reunión.
 - Al cerrar, se registran los story points completados: esa es la **velocidad**, y es lo que
   se usa para planificar el sprint siguiente.
 
@@ -499,7 +504,12 @@ es parte de la documentación que se evalúa, no un trámite.
 - **Hacia `dev` mergea la sesión de revisión de Claude Code**, después de dejar la revisión
   escrita y con el CI en verde, para todos los PRs, también los del Agile Enabler. Así un PR
   ya revisado no queda parado esperando a su autor (decidido el 20/10). El autor sigue
-  resolviendo los conflictos de su rama. **Hacia `main`** hace falta la aprobación de una
+  resolviendo los conflictos de su rama, **salvo un caso**: si el PR ya está revisado y aprobado
+  y lo único que lo frena es un conflicto en archivos generados o de documentación
+  (`ESTADO.md`, el índice de specs, el README), una sesión de Claude Code puede traer `dev` a
+  esa rama y resolverlo **sin tocar el contenido del autor**, dejándole un comentario en el PR
+  para que haga `git pull` antes de seguir (decidido por el Agile Enabler el 21/10). Un
+  conflicto en código o en una spec lo sigue resolviendo el autor. **Hacia `main`** hace falta la aprobación de una
   persona.
 - Al mergear a `dev`: la historia pasa a *Hecho* en el tablero y se regenera `ESTADO.md`.
 - **Y se cierra su issue a mano**, con sus criterios tildados y un comentario con el PR y el

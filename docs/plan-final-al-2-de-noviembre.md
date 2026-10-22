@@ -181,7 +181,7 @@ Esto no es optativo: es lo único que hace que 36 puntos entren en cinco días.
 
 ## Decisiones de proceso
 
-Diez cambios, vigentes hasta el 2/11.
+Once cambios, vigentes hasta el 2/11.
 
 1. **Las specs se escriben todas ahora, no sprint por sprint.** Emiliano deja las 15
    especificaciones completas antes del jueves 22. Las tres puertas de cada historia se
@@ -206,6 +206,11 @@ Diez cambios, vigentes hasta el 2/11.
 10. **La #13 se parte en dos.** Queda #13 *Votar en secreto en una ronda* (8) y #73
     *Resolver diferencias y acordar la estimación* (5). Eran 13 puntos en una sola historia,
     demasiado para un pull request y demasiado para un dueño solo.
+11. **Quien termina lo suyo adelanta su próxima historia** (agregada el 21/10, el equipo la
+    confirmó por chat). Vale si la historia tiene las tres puertas aprobadas y lo que
+    necesita ya está en `dev`: entra al sprint en curso, queda en el acta de review y, si no
+    se termina, vuelve al sprint que tenía en el plan. La primera es la #13 de Maximiliano;
+    la #16 ya se venía adelantando.
 
 **Lo que no cambia: la Definición de Terminado.** Spec antes del código, escenarios BDD,
 tests que pasan, revisión escrita y cobertura. Se recorta ceremonia, nunca calidad.
