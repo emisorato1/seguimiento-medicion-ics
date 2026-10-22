@@ -184,6 +184,13 @@ func (p *Project) Defects() []*Defect {
 // ChangeDefectState pasa el defecto con ese identificador al estado indicado: entre Abierto y
 // En curso, en los dos sentidos e incluso al que ya tenía (RN-9).
 func (p *Project) ChangeDefectState(id int, state DefectState) error {
+	// a Resuelto solo se llega resolviendo, porque hace falta el sprint (RN-10)
+	if state == DefectResolved {
+		return ErrDefectResolveNeedsSprint
+	}
+	if state != DefectOpen && state != DefectInProgress {
+		return ErrDefectStateInvalid
+	}
 	for _, defect := range p.defects {
 		if defect.id == id {
 			defect.state = state

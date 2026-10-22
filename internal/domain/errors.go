@@ -44,6 +44,12 @@ var (
 	// ErrDefectSeverityInvalid: severidad que no es Crítica, Mayor ni Menor, o ninguna
 	// (historia #15, RN-6).
 	ErrDefectSeverityInvalid = errors.New("la severidad debe ser Crítica, Mayor o Menor")
+	// ErrDefectResolveNeedsSprint: pasar un defecto a Resuelto cambiándole el estado, sin
+	// decir en qué sprint se resolvió (historia #15, RN-10).
+	ErrDefectResolveNeedsSprint = errors.New("para resolver un defecto hay que indicar en qué sprint se resolvió")
+	// ErrDefectStateInvalid: cambiar un defecto a un estado que no es Abierto ni En curso
+	// (historia #15, RN-9).
+	ErrDefectStateInvalid = errors.New("el estado de un defecto solo cambia entre Abierto y En curso")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.
