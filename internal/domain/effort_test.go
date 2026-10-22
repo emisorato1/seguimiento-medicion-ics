@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"math"
 	"testing"
 )
@@ -72,5 +73,35 @@ func TestRegistrarMediaHora(t *testing.T) {
 	}
 	if !mismasHorasReales(effort.Hours(), 0.5) {
 		t.Fatalf("se esperaba el registro con media hora, salio con %v", effort.Hours())
+	}
+}
+
+// Esquema del escenario: Rechazar horas que no son mayores que cero
+// Cubre: RN-3, RN-18
+func TestRechazarHorasQueNoSonMayoresQueCero(t *testing.T) {
+	cases := []struct {
+		name  string
+		hours float64
+	}{
+		{"0", 0},
+		{"-2", -2},
+		{"infinito", math.Inf(1)},
+		{"no es un numero", math.NaN()},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyectoConJuliana(t)
+			data := unEsfuerzo()
+			data.Hours = tc.hours
+
+			_, err := project.LogEffort(data, hoy)
+
+			if !errors.Is(err, ErrEffortHoursInvalid) {
+				t.Fatalf("se esperaba ErrEffortHoursInvalid con %v horas, salio: %v", tc.hours, err)
+			}
+			if len(project.Efforts()) != 0 {
+				t.Fatalf("se esperaba que el proyecto siguiera sin registros, tiene %d", len(project.Efforts()))
+			}
+		})
 	}
 }
