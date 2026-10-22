@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -75,5 +76,52 @@ func TestElDefectoNuevoRecibeElIdentificadorSiguiente(t *testing.T) {
 	}
 	if len(project.Defects()) != 2 {
 		t.Fatalf("se esperaba que el proyecto quedara con 2 defectos, tiene %d", len(project.Defects()))
+	}
+}
+
+// Esquema del escenario: Rechazar un defecto sin titulo o sin descripcion
+// Cubre: RN-4, RN-18
+func TestRechazarUnDefectoSinTituloOSinDescripcion(t *testing.T) {
+	cases := []struct {
+		name   string
+		change func(d *DefectData)
+		want   error
+	}{
+		{"el titulo", func(d *DefectData) { d.Title = "   " }, ErrDefectTitleRequired},
+		{"la descripcion", func(d *DefectData) { d.Description = "" }, ErrDefectDescriptionRequired},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyectoConDefectos(t, 1)
+			data := unDefecto()
+			tc.change(&data)
+
+			_, err := project.AddDefect(data)
+
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+			if len(project.Defects()) != 0 {
+				t.Fatalf("se esperaba que el proyecto siguiera sin defectos, tiene %d", len(project.Defects()))
+			}
+		})
+	}
+}
+
+// Escenario: Guardar el titulo y la descripcion sin los espacios de los extremos
+// Cubre: RN-5
+func TestGuardarElTituloYLaDescripcionSinLosEspaciosDeLosExtremos(t *testing.T) {
+	project := unProyectoConDefectos(t, 1)
+	data := unDefecto()
+	data.Title = "  La velocidad sale en cero  "
+	data.Description = "  El resumen muestra 0  "
+
+	defect, err := project.AddDefect(data)
+
+	if err != nil {
+		t.Fatalf("se esperaba registrar el defecto sin error, salio: %v", err)
+	}
+	if defect.Title() != "La velocidad sale en cero" || defect.Description() != "El resumen muestra 0" {
+		t.Fatalf("se esperaban el titulo y la descripcion sin espacios de mas, salio %q y %q", defect.Title(), defect.Description())
 	}
 }
