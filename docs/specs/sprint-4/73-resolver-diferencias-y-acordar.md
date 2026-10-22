@@ -6,11 +6,12 @@
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
-  falta y lo presenta a las puertas.
-- **Depende de:** #13 (la ronda, el voto y el revelado) y #12 (la operación de estimar con la
-  que se graba el acuerdo, ya en `dev`). **No espera a la #13**: el contrato de la ronda está
-  en [`docs/diseno-dominio.md`](../../diseno-dominio.md) y los tests arman una ronda revelada
-  a mano (ver las dependencias de la Fase 3)
+  falta y lo presenta a las puertas. Revisado por el responsable el 22/10: decidió los
+  puntos de la puerta, dio por resuelto el 7 con el contrato, sumó la tarea de guardar el
+  acuerdo en el archivo y actualizó las dependencias con la #13 ya escrita (PR #141).
+- **Depende de:** #13 (la ronda, el voto y el revelado, en el PR #141) y #12 (la operación de
+  estimar con la que se graba el acuerdo, ya en `dev`). El código empieza cuando la #13 esté
+  en `dev` (ver las dependencias de la Fase 3)
 - **La necesitan:** nadie todavía: cierra la cadena del Planning Poker
 
 ## Fase 1 — Requisitos
@@ -254,23 +255,31 @@ Escenario: Solo se acuerda sobre la ultima ronda de la historia
 1. **Con empate se nombra a todos (RN-2).** La guía dice que hablan "el que puso el número
    más alto y el que puso el más bajo", en singular; con un empate no hay forma de elegir uno
    sin un criterio arbitrario. Si el equipo quiere uno solo, hay que decidir cuál.
+   **Decidido el 22/10: se nombra a todos.**
 2. **El acuerdo puede ser cualquier valor de la escala (RN-10)**, aunque nadie lo haya
    votado: con votos de 3 y 8 el equipo puede quedar en 5. Si se quiere que sea uno de los
    votados, es una regla más.
+   **Decidido el 22/10: se acepta como está.**
 3. **Se puede acordar aunque haya diferencias.** La guía misma cierra así: si después de tres
    rondas no hay acuerdo, "se toma el valor más alto". Exigir que no haya diferencias
    bloquearía esa salida.
+   **Decidido el 22/10: se acepta como está.**
 4. **No hay límite de rondas.** Las tres de la guía son una regla del equipo, no del sistema.
    Si se quiere que el sistema rechace la cuarta, es una regla más.
+   **Decidido el 22/10: sin límite.**
 5. **Solo se acuerda la última ronda, y una sola vez (RN-13 y RN-14).** Acordar una ronda que
    ya fue superada por otra dejaría la historia estimada mientras se sigue votando. Para
    cambiar un acuerdo se abre una ronda nueva.
+   **Decidido el 22/10: se acepta como está.**
 6. **El acuerdo de la ronda es un registro y no se sincroniza con la historia.** Si después
    se reestima o se le quita la estimación con la #12, la ronda conserva lo que se acordó ese
    día; lo que vale para planificar es la estimación de la historia.
-7. **Lo que le falta al contrato.** [`docs/diseno-dominio.md`](../../diseno-dominio.md) no
-   nombra la consulta de las rondas de una historia ni la de las diferencias. Acá no se les
-   inventó nombre: el dueño de la entidad los agrega al contrato antes de la tarea 1.
+   **Decidido el 22/10: se acepta como está.**
+7. **Lo que le faltaba al contrato.** El borrador marcaba que
+   [`docs/diseno-dominio.md`](../../diseno-dominio.md) no nombraba la consulta de las rondas
+   de una historia ni la de las diferencias.
+   **Resuelto en el contrato (PR #94, 20/10):** ya tiene `r.Differences()`, `r.Agree(points)`
+   y `p.VotingRounds(storyID)`. No hace falta tocarlo antes de implementar.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -278,8 +287,8 @@ Escenario: Solo se acuerda sobre la ultima ronda de la historia
 ## Fase 2 — Diseño
 
 Las decisiones transversales del proyecto están en [AGENTS.md](../../../AGENTS.md) y no se
-repiten acá. Los nombres son los del [contrato del dominio](../../diseno-dominio.md): `Agreed`
-y `Agree` sobre la ronda. Esta fase se apoya en la de la #13 —la ronda dentro del proyecto y
+repiten acá. Los nombres son los del [contrato del dominio](../../diseno-dominio.md): `Agreed`,
+`Agree` y `Differences` sobre la ronda, y `VotingRounds` sobre el proyecto. Esta fase se apoya en la de la #13 —la ronda dentro del proyecto y
 la consulta protegida de los votos— y en la de la #12, la operación de estimar.
 
 ### Enfoque
@@ -314,7 +323,7 @@ nunca es un acuerdo válido.
 | `internal/domain/voting_round_agreement_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/voting_round.go` | se modifica | que la ronda recuerde el proyecto que la abrió, y que la apertura acepte una ronda nueva cuando la última está revelada |
 | `internal/domain/errors.go` | se modifica | los tres errores nuevos: ronda sin revelar al acordar, ronda ya acordada y ronda que no es la última |
-| `docs/diseno-dominio.md` | se modifica | los nombres de la consulta de rondas y la de diferencias, antes del código (punto 7 de la puerta) |
+| `internal/domain/registry_json.go` y su test | se modifican | el acuerdo de cada ronda entra en la conversión del registro, y al cargar cada ronda recupera su proyecto (regla de la #77) |
 
 ### Decisiones
 
@@ -326,6 +335,7 @@ nunca es un acuerdo válido.
 | Las diferencias leen los votos por la consulta protegida de la #13 | leerlos directo, que dentro del paquete se puede | el secreto queda en un solo lugar; leyendo directo, la RN-4 habría que reprogramarla, y un olvido daría el más bajo y el más alto de una ronda sin revelar |
 | El número de la ronda nueva es el de la última de la historia más uno | un contador por historia guardado aparte, como el de las historias de la #6 | las rondas no se borran, así que contar no repite números; si algún día se pueden borrar, se revisa |
 | Lo nuevo va en `voting_round_agreement.go`; `voting_round.go` solo cambia en la apertura | agregarlo todo al archivo de la #13 | la trazabilidad queda directa por historia, como se aprobó en la #12 |
+| El acuerdo se guarda en el archivo con su ronda, y al cargar se controla igual que al acordar: valor de la escala, solo sobre una ronda revelada y solo en la última de su historia; además, los números de las rondas de cada historia van seguidos desde 1, y cada ronda recupera el proyecto que la abrió | no guardarlo; guardarlo sin controlar | `AGENTS.md` pide que todo dato nuevo entre en la conversión, y sin el proyecto una ronda cargada no se podría acordar. Controlar al cargar es lo que hace la #77 con las demás entidades: un archivo editado a mano no mete datos que el dominio rechazaría |
 
 ### Dependencias y restricciones
 
@@ -333,7 +343,9 @@ nunca es un acuerdo válido.
   votos) y de la **#12** (estimar), que ya está en `dev`.
 - **No se toca `story_estimation.go`**: el acuerdo usa la operación de estimar tal como está.
 - **Ningún test de la #13 se modifica.** El que rechaza una segunda ronda con la primera sin
-  revelar tiene que seguir pasando: es el que protege que la apertura no se afloje de más.
+  revelar tiene que seguir pasando: es el que protege que la apertura no se afloje de más. El
+  caso de ida y vuelta de `registry_json_test.go` se amplía con el acuerdo, sin cambiar lo
+  que ya verifica.
 - **`errors.go` es compartido**: los errores nuevos van al final.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
@@ -356,6 +368,7 @@ además que la ronda y la historia quedaron como estaban (RN-16).
 | 4 | Rechazar un segundo acuerdo sobre la misma ronda; quedan el primero en la ronda y en la historia | Rechazar un segundo acuerdo sobre la misma ronda | RN-13, RN-16 | pendiente |
 | 5 | Abrir una ronda nueva cuando la última está revelada: lleva el número siguiente de su historia, las anteriores quedan como estaban y se consultan en orden, y la ronda que abre el proyecto ya se puede acordar | Estimar una historia en dos rondas / Cada historia numera sus rondas desde 1 / Abrir una ronda nueva despues de acordar / Consultar las rondas de una historia | RN-5, RN-6, RN-7, RN-8 | pendiente |
 | 6 | Rechazar el acuerdo sobre una ronda que no es la última de su historia, antes de estimarla | Solo se acuerda sobre la ultima ronda de la historia | RN-14, RN-16 | pendiente |
+| 7 | El acuerdo entra en la conversión del registro: una ronda acordada y una sin acordar se reconstruyen iguales, y una ronda cargada se puede acordar. Rechaza la carga un acuerdo fuera de la escala, sobre una ronda sin revelar o en una ronda que no es la última, y números de ronda que no van seguidos desde 1 en su historia | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
 
 ### Por qué este orden
 
@@ -368,6 +381,9 @@ además que la ronda y la historia quedaron como estaban (RN-16).
   sus tests verifican que la historia no se estimó, que es lo que prueba ese orden.
 - **La 5 es la única que toca la apertura de la #13** y va después porque es la que necesita su
   código. La 6 necesita dos rondas de la misma historia, que recién existen con la 5.
+- **La 7 cierra la historia**: guarda lo que las anteriores dejaron armado. No sale de un
+  escenario de la Fase 1 sino de la regla de persistencia de `AGENTS.md`, como la tarea 14 de
+  la #13.
 
 ### Cobertura
 
@@ -389,20 +405,17 @@ RN-14 (6), RN-15 (2), RN-16 (2, 3, 4, 6).
 | No se acuerda sobre una historia Terminada | 2 |
 | Un acuerdo rechazado no cambia ni la ronda ni la historia | 2, 3, 4, 6 |
 
-Los trece escenarios de la Fase 1 tienen su tarea, en la columna "Escenario BDD".
+Los trece escenarios de la Fase 1 tienen su tarea, en la columna "Escenario BDD". La tarea 7
+no cubre una regla de la Fase 1: es la regla de la #77 de que los datos sigan al cerrar y
+volver a abrir.
 
 ### Dependencias
 
-- **Las tareas 1 a 4 no esperan a la #13**: el test arma la ronda revelada desde dentro del
-  paquete —sus votos, su historia y su proyecto—, contra el contrato. Solo necesitan que la
-  ronda exista como tipo para compilar.
-- **Las tareas 5 y 6 sí necesitan el código de la #13**, porque cambian su apertura y abren
-  rondas de verdad. Por el calendario la #13 cierra en el Sprint 3 y esta arranca en el 4; si
-  la #13 se atrasa, estas dos quedan para el final.
-- **Si al empezar la #73 la ronda todavía no está en `dev`**, no se define una ronda propia
-  para compilar, que chocaría con la de la #13 al mergear: se trabaja sobre la rama de la #13
-  o se cierran las dos en un mismo PR, como permite el modo sprint final para eslabones
-  seguidos de la misma cadena. Se decide con el equipo.
+- **Todas las tareas necesitan el código de la #13 en `dev`**, que está escrito en el PR #141:
+  la ronda, el voto, el revelado y la conversión de las rondas. Es la condición de la regla
+  del 21/10 para adelantar una historia: lo que necesita tiene que estar en `dev`. Las tareas 1
+  a 4 arman sus rondas con las operaciones de la #13; la 5 y la 6 cambian su apertura; la 7
+  amplía su conversión.
 - **La tarea 2 necesita una historia Terminada**: el test fija el estado desde dentro del
   paquete, como hizo la #12.
 
