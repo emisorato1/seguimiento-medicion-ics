@@ -117,4 +117,7 @@ var (
 	// ErrVotesHidden: pedir los votos de una ronda que todavía no se reveló (historia #13,
 	// RN-12). El mensaje no lleva ningún valor.
 	ErrVotesHidden = errors.New("los votos están ocultos hasta que se revele la ronda")
+	// ErrVotesMissing: revelar una ronda en la que todavía falta votar algún participante
+	// (historia #13, RN-15).
+	ErrVotesMissing = errors.New("todavía faltan votos para revelar la ronda")
 )

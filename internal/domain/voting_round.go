@@ -93,8 +93,12 @@ func (r *VotingRound) Votes() ([]Vote, error) {
 }
 
 // Reveal da vuelta todos los votos juntos: desde entonces Votes los entrega, cada uno con
-// el nombre de quien lo dio y en el orden de los integrantes (RN-14).
+// el nombre de quien lo dio y en el orden de los integrantes (RN-14). Si falta algún voto,
+// se rechaza y la ronda sigue como estaba (RN-15, RN-18).
 func (r *VotingRound) Reveal() error {
+	if len(r.Pending()) > 0 {
+		return ErrVotesMissing
+	}
 	r.revealed = true
 	return nil
 }
