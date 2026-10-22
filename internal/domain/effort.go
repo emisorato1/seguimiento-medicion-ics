@@ -62,6 +62,11 @@ func (p *Project) LogEffort(data EffortData, today time.Time) (*Effort, error) {
 	if member == nil {
 		return nil, ErrMemberNotFound
 	}
+	// la historia tiene que ser del proyecto; su estado no importa, porque las horas se
+	// cargan después de trabajar (RN-9, RN-10)
+	if _, err := p.Story(data.StoryID); err != nil {
+		return nil, err
+	}
 	if data.Day.IsZero() {
 		return nil, ErrEffortDayRequired
 	}
