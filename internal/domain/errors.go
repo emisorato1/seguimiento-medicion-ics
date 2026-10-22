@@ -36,6 +36,11 @@ var (
 	ErrMemberAgileEnablerTaken = errors.New("el proyecto ya tiene un Agile Enabler")
 	// ErrMemberNotFound: quitar un integrante que no pertenece al proyecto (historia #4, RN-11).
 	ErrMemberNotFound = errors.New("no se encontró el integrante en el proyecto")
+	// ErrDefectTitleRequired y ErrDefectDescriptionRequired: registrar un defecto sin título o
+	// sin descripción (historia #15, RN-4). Los errores de la #15 van acá y no al final, para
+	// no chocar con los que agregan otras historias al mismo tiempo.
+	ErrDefectTitleRequired       = errors.New("falta el título del defecto")
+	ErrDefectDescriptionRequired = errors.New("falta la descripción del defecto")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.

@@ -1,5 +1,7 @@
 package domain
 
+import "strings"
+
 // Severity es qué tan grave es un defecto (historia #15). Es un tipo propio para que no se
 // pueda guardar una severidad que no existe. El valor cero no es ninguna: significa "sin
 // severidad", así un defecto armado sin indicarla no queda como Crítico sin que nadie se
@@ -96,10 +98,20 @@ type DefectData struct {
 // AddDefect registra un defecto en el proyecto con el identificador que sigue al del último
 // registrado, en estado Abierto y sin sprint de resolución (RN-1, RN-3).
 func (p *Project) AddDefect(data DefectData) (*Defect, error) {
+	// el título y la descripción se controlan ya sin los espacios de los extremos, así un
+	// texto de solo espacios cuenta como vacío, y se guardan así (RN-4, RN-5)
+	title := strings.TrimSpace(data.Title)
+	if title == "" {
+		return nil, ErrDefectTitleRequired
+	}
+	description := strings.TrimSpace(data.Description)
+	if description == "" {
+		return nil, ErrDefectDescriptionRequired
+	}
 	defect := &Defect{
 		id:          p.lastDefectID + 1,
-		title:       data.Title,
-		description: data.Description,
+		title:       title,
+		description: description,
 		severity:    data.Severity,
 		state:       DefectOpen,
 		storyID:     data.StoryID,
