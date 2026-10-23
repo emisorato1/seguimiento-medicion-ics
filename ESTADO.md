@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-22 16:31. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-23 12:38. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -23,10 +23,13 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 
 ## Lista para implementar
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
 
 ## Especificacion SDD
 
@@ -34,10 +37,8 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
-| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Sprint Backlog
@@ -70,6 +71,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+ec458ee 2026-10-22 chore: regenerar ESTADO.md con la historia 13 en review
 7c7539c 2026-10-22 docs: registrar la implementación de la historia 13
 a86d0cd 2026-10-22 feat: las rondas entran en el archivo de datos, validadas como al votar (historia 13, tarea 14)
 dd3e2ac 2026-10-22 test: las rondas siguen al cerrar y volver a abrir (historia 13, tarea 14)
@@ -77,5 +79,4 @@ ed97e3e 2026-10-22 feat: consultar la ronda actual de una historia (historia 13,
 baa7833 2026-10-22 test: consultar la ronda actual de una historia (historia 13, tarea 13)
 ad93071 2026-10-22 feat: la ronda se imprime sin valores en todas las formas de imprimir (historia 13, tarea 12)
 591adbc 2026-10-22 test: mostrar una ronda sin revelar no deja ver los votos (historia 13, tarea 12)
-cc70d85 2026-10-22 feat: una ronda revelada no acepta votos ni otro revelado (historia 13, tarea 11)
 ```
