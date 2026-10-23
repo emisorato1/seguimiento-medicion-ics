@@ -208,11 +208,9 @@ Escenario: Consultar los sprints de un proyecto que no existe
    natural; una pantalla que quiera el último primero puede darlo vuelta. Si el equipo
    prefiere el orden inverso, cambia la RN-1 y la #17 lo hereda.
 5. **No hay paginado ni filtros.** Son cuatro o cinco sprints por proyecto.
-6. **La consulta de un sprint por su número ya la entregó la #8** (su RN-15), con el aviso de
-   sprint no encontrado. La RN-5 y la RN-6 quedan igual acá porque son criterios de esta
-   issue, pero no se vuelven a construir: sus escenarios se prueban contra lo que ya está en
-   `dev`. Lo que esta historia suma al detalle es lo del cierre (fecha de cierre e historias
-   completadas), que trae la #10.
+6. **La consulta de un sprint por su número ya la entregó la #8.** La RN-5 y la RN-6 quedan
+   acá porque son criterios de esta issue, pero no se vuelven a construir. Lo que esta
+   historia suma al detalle es lo del cierre, que trae la #10.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -314,9 +312,16 @@ el nombre del escenario.
 - **La 9, la 10 y la 11 van al final** porque son las garantías de que consultar no rompe
   nada: ni el sprint que se devuelve, ni otro proyecto, ni los sprints anteriores.
 - **La 12 cierra** con el borde de afuera, el proyecto que no existe.
-- **La 4, la 7 y la 9 se espera que pasen sin código nuevo**: la consulta por número, su
-  error y la copia de las historias asignadas ya los trae la #8. Van como un solo commit de
-  test con "sin RED" en el asunto, explicando por qué; forzar un RED sería simular TDD.
+- **La 4, la 7, la 9, la 10 y la 12 se espera que pasen sin código nuevo.** La consulta por
+  número, su error y la copia de las historias asignadas ya los trae la #8; un proyecto que
+  no existe lo informa el registro antes de llegar a sus sprints, igual que en la #8; y una
+  vez que existe el listado, cada proyecto solo tiene los suyos. Cada una va en un solo
+  commit de test con "sin RED" en el asunto, explicando por qué: forzar un RED sería simular
+  TDD.
+- **Mientras la #10 no esté en `dev`, el orden real cambia.** La 2, la 5, la 6, la 8 y la 11
+  necesitan la fecha de cierre o las historias completadas (ver Dependencias), así que se
+  hacen primero la 1, 3, 4, 7, 9, 10 y 12, y después la 2, 5, 6, 8 y 11. La 3 puede ir antes
+  que la 2 porque su escenario ya trae un sprint cerrado contra el cual probar el filtro.
 
 ### Cobertura
 
