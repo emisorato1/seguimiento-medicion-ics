@@ -7,8 +7,9 @@
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
-- **Depende de:** #8 (los sprints del proyecto), #9 (las historias que se le asignaron a
-  cada uno) y #10 (el estado Cerrado, la fecha de cierre y las historias completadas)
+- **Depende de:** #8 (los sprints del proyecto y la consulta por número, en `dev`), #9 (las
+  historias que se le asignaron a cada uno, en `dev`) y #10 (el estado Cerrado, la fecha de
+  cierre y las historias completadas, todavía no en `dev`)
 - **La necesitan:** #16 (recorre los sprints cerrados para medir), #17 (el dashboard los
   muestra), #18 (el reporte de sprint) y la interfaz
 
@@ -207,6 +208,9 @@ Escenario: Consultar los sprints de un proyecto que no existe
    natural; una pantalla que quiera el último primero puede darlo vuelta. Si el equipo
    prefiere el orden inverso, cambia la RN-1 y la #17 lo hereda.
 5. **No hay paginado ni filtros.** Son cuatro o cinco sprints por proyecto.
+6. **La consulta de un sprint por su número ya la entregó la #8.** La RN-5 y la RN-6 quedan
+   acá porque son criterios de esta issue, pero no se vuelven a construir. Lo que esta
+   historia suma al detalle es lo del cierre, que trae la #10.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -221,13 +225,16 @@ Fase 2 de la #8: los sprints viven dentro del proyecto, en el orden en que se cr
 ### Enfoque
 
 Esta historia **no cambia nada**: son dos consultas sobre los sprints que el proyecto ya
-tiene. No hay que normalizar, ni validar, ni aplicar: solo encontrar y entregar.
+tiene. No hay que normalizar, ni validar, ni aplicar: solo encontrar y entregar. **La segunda
+ya existe**: la #8 la adelantó (su RN-15), así que la única operación nueva es el listado de
+cerrados.
 
 - El **listado de cerrados** recorre los sprints del proyecto y deja los que están en estado
   Cerrado. Como la #8 los agrega en orden y el número nunca retrocede, el orden de la RN-1
   sale solo: no hay que ordenar nada.
-- El **detalle** busca el sprint por su número dentro del proyecto y lo devuelve, esté
-  abierto o cerrado (RN-7). Si no está, informa que no se encontró (RN-6).
+- El **detalle** es la consulta por número de la #8: busca el sprint dentro del proyecto y
+  lo devuelve, esté abierto o cerrado (RN-7). Si no está, informa que no se encontró (RN-6).
+  Esta historia no la modifica; sus tests la recorren con los datos del cierre.
 
 Lo que se entrega es el sprint guardado, no una copia, como ya decidió el proyecto para
 todas sus entidades: los datos están ocultos fuera del paquete y solo se cambian con
@@ -239,9 +246,10 @@ que quien las recibe no pueda cambiar el registro del sprint sin querer (RN-8).
 
 | Archivo | Se crea o se modifica | Para qué |
 |---|---|---|
-| `internal/domain/sprint_query.go` | se crea | el listado de sprints cerrados y la consulta de un sprint por su número |
+| `internal/domain/sprint_query.go` | se crea | el listado de sprints cerrados |
 | `internal/domain/sprint_query_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
-| `internal/domain/errors.go` | se modifica | el error de sprint no encontrado |
+
+`errors.go` no se toca: el error de sprint no encontrado ya lo declaró la #8.
 
 ### Decisiones
 
@@ -252,16 +260,17 @@ que quien las recibe no pueda cambiar el registro del sprint sin querer (RN-8).
 | Los sprints se buscan recorriendo la lista | llevar además un índice por número para encontrarlo directo | son cuatro o cinco sprints por proyecto; un índice es un segundo lugar donde guardar lo mismo, que se puede desincronizar |
 | Las listas de historias se entregan copiadas, el sprint no | copiar el sprint entero, o no copiar nada | el sprint tiene sus datos ocultos y ninguna operación lo modifica una vez cerrado, así que copiarlo no compra nada; las listas sí se podrían modificar desde afuera del paquete y por eso se copian, igual que ya hace el Product Backlog |
 | Lo de esta historia va en `sprint_query.go` | agregarlo a `sprint.go` | mismo criterio que la #9 y la #10: cuatro historias tocan el sprint y no conviene que se pisen en el mismo archivo |
-| El error de sprint no encontrado lo declara esta historia | declararlo en la #8 junto con los demás errores del sprint | es la primera y única que busca un sprint por su número; la #9 y la #10 trabajan siempre sobre el abierto |
+| El detalle reutiliza la consulta por número de la #8, sin cambiarla | escribir una consulta propia del detalle | la #8 la adelantó con su error porque la #15 la necesitaba antes; dos consultas para lo mismo podrían responder distinto |
 
 ### Dependencias y restricciones
 
-- **Depende de la #8** (los sprints dentro del proyecto) y de la **#10** (el estado Cerrado,
-  la fecha de cierre y el dato de las historias completadas). No se espera a que estén en
-  `dev`: los tests arman sprints cerrados dentro del paquete, contra el contrato.
-- **La consulta de un sprint por su número es la que nombra el contrato del dominio**
-  (`p.Sprint(number)`); el listado completo (`p.Sprints()`) lo crea la #8 y esta historia
-  solo lo usa.
+- **Depende de la #8**, que ya está en `dev` (los sprints dentro del proyecto, el listado
+  completo `p.Sprints()` y la consulta por número `p.Sprint(number)` con su error), y de la
+  **#10** (el estado Cerrado, la fecha de cierre y el dato de las historias completadas),
+  que todavía no. Mientras tanto los tests fijan el estado Cerrado desde dentro del paquete,
+  como ya hace el test de la consulta por número de la #8.
+- **El contrato del dominio nombra el listado de cerrados** (`p.ClosedSprints()`); es lo
+  único que esta historia crea.
 - **No se modifica nada.** Ninguna operación de esta historia cambia un sprint, una historia
   ni el proyecto.
 - **No se calcula ninguna métrica**: son de la #16, que consume estas consultas.
@@ -303,6 +312,16 @@ el nombre del escenario.
 - **La 9, la 10 y la 11 van al final** porque son las garantías de que consultar no rompe
   nada: ni el sprint que se devuelve, ni otro proyecto, ni los sprints anteriores.
 - **La 12 cierra** con el borde de afuera, el proyecto que no existe.
+- **La 4, la 7, la 9, la 10 y la 12 se espera que pasen sin código nuevo.** La consulta por
+  número, su error y la copia de las historias asignadas ya los trae la #8; un proyecto que
+  no existe lo informa el registro antes de llegar a sus sprints, igual que en la #8; y una
+  vez que existe el listado, cada proyecto solo tiene los suyos. Cada una va en un solo
+  commit de test con "sin RED" en el asunto, explicando por qué: forzar un RED sería simular
+  TDD.
+- **Mientras la #10 no esté en `dev`, el orden real cambia.** La 2, la 5, la 6, la 8 y la 11
+  necesitan la fecha de cierre o las historias completadas (ver Dependencias), así que se
+  hacen primero la 1, 3, 4, 7, 9, 10 y 12, y después la 2, 5, 6, 8 y 11. La 3 puede ir antes
+  que la 2 porque su escenario ya trae un sprint cerrado contra el cual probar el filtro.
 
 ### Cobertura
 
@@ -326,12 +345,11 @@ Los doce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
-- **Todas las tareas necesitan los sprints de la #8** y, salvo la 1 y la 8, **sprints
-  cerrados**, que son de la #10. Mientras no estén en `dev`, los tests los arman dentro del
-  paquete, contra el contrato.
-- **Las tareas 5 y 11 necesitan el dato de las historias completadas**, que agrega la #10 al
-  contrato del dominio: si ese cambio no está acordado, estas dos tareas no se pueden
-  escribir.
+- **Todas las tareas necesitan los sprints de la #8**, que ya están en `dev`, y salvo la 1 y
+  la 8, **sprints cerrados**. El estado Cerrado los tests lo fijan dentro del paquete.
+- **Las tareas 2, 5, 6, 8 y 11 necesitan leer la fecha de cierre o las historias
+  completadas**, que trae la #10. Esas cinco esperan a que la #10 esté en `dev`; las otras
+  siete se pueden hacer antes.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
@@ -349,4 +367,4 @@ _Se completa durante la implementación._
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
 | Tests | `internal/domain/sprint_query_test.go` |
-| Código Go | `internal/domain/sprint_query.go` y su error en `internal/domain/errors.go` |
+| Código Go | `internal/domain/sprint_query.go`; el detalle es `p.Sprint(number)` de `internal/domain/sprint.go` (#8) |
