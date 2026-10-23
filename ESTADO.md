@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-23 01:16. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-23 14:41. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -27,7 +27,9 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Lista para implementar
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
 
 ## Especificacion SDD
 
@@ -37,7 +39,6 @@ _No hay historias en este estado._
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Sprint Backlog
@@ -70,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+2e9b52a 2026-10-23 docs: las tareas 1 y 2 de la historia 17 hechas en su fase 3
+a3487f5 2026-10-23 feat: el estado general trae cada metrica del proyecto tal como llego (historia 17, tarea 2)
+5941e21 2026-10-23 test: el estado general trae cada metrica del proyecto tal como llego (historia 17, tarea 2)
+85bf44c 2026-10-23 chore: regenerar ESTADO.md con la #17 en progreso
 1b11f92 2026-10-23 feat: un proyecto sin sprints arma un dashboard sin datos (historia 17, tarea 1)
 6367a0e 2026-10-23 test: un proyecto sin sprints arma un dashboard sin datos (historia 17, tarea 1)
 9c00f23 2026-10-23 chore: regenerar ESTADO.md con la #17 lista para implementar
 ec26a53 2026-10-23 docs: las tres puertas de la #17 registradas y la spec lista para implementar
-9ce7080 2026-10-23 docs: las correcciones de las puertas de la #17 (contrato hecho, #16 en dev, ancho con punto y formato)
-6e60171 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-17-spec-datos-al-dia
-68a3804 2026-10-22 Merge pull request #140 from emisorato1/historia-16-parte-2
-28140fa 2026-10-22 docs: las tareas 8, 12, 13 y 15 de la historia 16 en su fase 3, su fase 4 y el indice
 ```
