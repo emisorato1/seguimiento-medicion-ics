@@ -76,3 +76,57 @@ func TestElEstadoGeneralMuestraLasMetricasTalComoSeCalcularon(t *testing.T) {
 		t.Fatalf("se esperaba el estado general %v, salio %v", want, dashboard.Overview)
 	}
 }
+
+// Escenario: Porcentajes, horas y enteros se muestran con su formato
+// Cubre: RN-15
+func TestPorcentajesHorasYEnterosSeMuestranConSuFormato(t *testing.T) {
+	cases := []struct {
+		name  string
+		label string
+		set   func(m *Metrics)
+		want  string
+	}{
+		{"porcentaje con decimales", "Porcentaje de historias completas", func(m *Metrics) { m.CompletionRate = 66.6666 }, "66,7 %"},
+		{"porcentaje entero", "Porcentaje de historias completas", func(m *Metrics) { m.CompletionRate = 100 }, "100,0 %"},
+		{"horas con decimales", "Horas reales", func(m *Metrics) { m.ActualHours = 12.5 }, "12,5 h"},
+		{"horas enteras", "Horas estimadas", func(m *Metrics) { m.EstimatedHours = 40 }, "40,0 h"},
+		{"desviacion negativa", "Desviación de horas", func(m *Metrics) { m.HoursDeviation = -12.5 }, "-12,5 %"},
+		{"desviacion cero", "Desviación de horas", func(m *Metrics) { m.HoursDeviation = 0 }, "0,0 %"},
+		{"desviacion positiva", "Desviación de horas", func(m *Metrics) { m.HoursDeviation = 25 }, "25,0 %"},
+		{"velocidad", "Velocidad", func(m *Metrics) { m.Velocity = 12 }, "12"},
+		{"story points completados", "Story points completados", func(m *Metrics) { m.CompletedPoints = 30 }, "30"},
+		// Dos bordes que la RN-15 implica y el escenario no muestra: una desviación negativa
+		// que se redondea a cero se escribe como cero, sin signo; y el empate se redondea
+		// hacia arriba, como se redondea a mano (un cuarto de hora).
+		{"desviacion negativa que redondea a cero", "Desviación de horas", func(m *Metrics) { m.HoursDeviation = -0.04 }, "0,0 %"},
+		{"horas que empatan al redondear", "Horas reales", func(m *Metrics) { m.ActualHours = 12.25 }, "12,3 h"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			project := unProyecto(t)
+			dashboardSprint(t, project, true)
+			var metrics Metrics
+			c.set(&metrics)
+
+			dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), projectMetrics: metrics})
+
+			got, ok := figureText(dashboard.Overview, c.label)
+			if !ok {
+				t.Fatalf("el estado general no tiene %q: %v", c.label, dashboard.Overview)
+			}
+			if got != c.want {
+				t.Fatalf("se esperaba %q como %q, salio %q", c.label, c.want, got)
+			}
+		})
+	}
+}
+
+// figureText devuelve el valor escrito del número con ese rótulo, y si está.
+func figureText(figures []Figure, label string) (string, bool) {
+	for _, figure := range figures {
+		if figure.Label == label {
+			return figure.Text, true
+		}
+	}
+	return "", false
+}
