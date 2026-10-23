@@ -51,15 +51,40 @@ type Figure struct {
 	Text  string
 }
 
-// dashboardSource es lo que necesita el armado del dashboard: los sprints del proyecto. Las
-// métricas llegan calculadas, nunca se calculan acá (D8).
+// dashboardSource es lo que necesita el armado del dashboard: los sprints del proyecto y las
+// métricas del proyecto entero. Las métricas llegan calculadas, nunca se calculan acá (D8).
 type dashboardSource struct {
-	sprints []*Sprint
+	sprints        []*Sprint
+	projectMetrics Metrics
 }
 
 // buildDashboard arma los datos del dashboard a partir de lo que trae source, sin cambiar
 // nada. Un proyecto sin sprints no tiene estado general, sprint en curso ni gráficos, y eso
 // no es un error (RN-7).
 func buildDashboard(source dashboardSource) Dashboard {
-	return Dashboard{HasSprints: len(source.sprints) > 0}
+	if len(source.sprints) == 0 {
+		return Dashboard{}
+	}
+	return Dashboard{
+		HasSprints: true,
+		Overview:   overview(source.projectMetrics),
+	}
+}
+
+// overview arma el estado general con las métricas del proyecto entero, en el orden de la
+// RN-4, tal como llegaron: no vuelve a calcular ninguna (RN-2).
+func overview(m Metrics) []Figure {
+	return []Figure{
+		{Label: "Story points planificados", Text: formatCount(m.PlannedPoints)},
+		{Label: "Story points completados", Text: formatCount(m.CompletedPoints)},
+		{Label: "Historias planificadas", Text: formatCount(m.StoriesPlanned)},
+		{Label: "Historias completadas", Text: formatCount(m.StoriesCompleted)},
+		{Label: "Porcentaje de historias completas", Text: formatPercent(m.CompletionRate)},
+		{Label: "Horas estimadas", Text: formatHours(m.EstimatedHours)},
+		{Label: "Horas reales", Text: formatHours(m.ActualHours)},
+		{Label: "Desviación de horas", Text: formatPercent(m.HoursDeviation)},
+		{Label: "Defectos detectados", Text: formatCount(m.DefectsDetected)},
+		{Label: "Defectos resueltos", Text: formatCount(m.DefectsResolved)},
+		{Label: "Velocidad", Text: formatCount(m.Velocity)},
+	}
 }
