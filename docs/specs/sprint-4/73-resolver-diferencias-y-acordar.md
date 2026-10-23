@@ -3,7 +3,7 @@
 - **Historia:** #73
 - **Sprint:** 4
 - **Responsable:** Maximiliano Eula
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 22/10: decidió los
@@ -78,7 +78,7 @@ ese valor.
 10. **[RN-10]** El sistema debe aceptar como estimación acordada cualquier valor de la escala
     de la #12, lo haya votado alguien o no.
 11. **[RN-11]** Si el valor acordado no está en la escala, o si la historia está Terminada, el
-    sistema debe rechazar el acuerdo con los mismos avisos de la #12 (sus RN-2 y RN-8).
+    sistema debe rechazar el acuerdo con los mismos avisos de la #12 (sus RN-2, RN-3 y RN-8).
 12. **[RN-12]** Si la ronda todavía no se reveló, el sistema debe rechazar el acuerdo e
     informar que primero hay que revelarla.
 13. **[RN-13]** Si la ronda ya tiene una estimación acordada, el sistema debe rechazar otro
@@ -213,10 +213,9 @@ Escenario: Rechazar un segundo acuerdo sobre la misma ronda
 Escenario: Estimar una historia en dos rondas
   Dado un proyecto con "Agustin Salinas" y "Juliana Bustos", y la historia 1 sin estimar
   Y la ronda 1 de la historia 1, donde votaron 3 y 8, revelada con diferencias
-  Cuando abro una ronda nueva sobre la historia 1
-  Y los dos votan 5, se revela la ronda y acuerdo la estimacion en 5
-  Entonces la ronda nueva tiene el numero 2
-  Y la historia 1 queda estimada en 5
+  Y la ronda 2 de la historia 1, donde los dos votaron 5, revelada
+  Cuando acuerdo la estimacion de la ronda 2 en 5
+  Entonces la historia 1 queda estimada en 5
   Y las rondas de la historia 1 son la 1 y la 2, en ese orden
   Y la ronda 1 sigue con sus votos 3 y 8 y sin acordar
 
@@ -278,11 +277,12 @@ Escenario: Solo se acuerda sobre la ultima ronda de la historia
 7. **Lo que le faltaba al contrato.** El borrador marcaba que
    [`docs/diseno-dominio.md`](../../diseno-dominio.md) no nombraba la consulta de las rondas
    de una historia ni la de las diferencias.
-   **Resuelto en el contrato (PR #94, 20/10):** ya tiene `r.Differences()`, `r.Agree(points)`
-   y `p.VotingRounds(storyID)`. No hace falta tocarlo antes de implementar.
+   **Resuelto en el contrato (PR #94, 20/10):** ya nombra la consulta de las diferencias, la
+   de las rondas de una historia y el acuerdo. No hace falta tocarlo antes de implementar; los
+   nombres están en la Fase 2.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Juliana Bustos — Fecha: 2026-10-23 — Comentarios: aprobada en el PR #142 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/142#issuecomment-6357143382), junto con las otras dos puertas. Sus tres observaciones menores (la cita de la RN-3 en la RN-11, los nombres de funciones fuera de la Fase 1 y una sola acción en el Cuando del escenario de dos rondas) se aplicaron antes del código.
 
 ## Fase 2 — Diseño
 
@@ -349,7 +349,7 @@ nunca es un acuerdo válido.
 - **`errors.go` es compartido**: los errores nuevos van al final.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Juliana Bustos — Fecha: 2026-10-23 — Comentarios: aprobada en el PR #142 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/142#issuecomment-6357143382), junto con las otras dos puertas. Sus tres observaciones menores (la cita de la RN-3 en la RN-11, los nombres de funciones fuera de la Fase 1 y una sola acción en el Cuando del escenario de dos rondas) se aplicaron antes del código.
 
 ## Fase 3 — Tareas
 
@@ -420,7 +420,7 @@ volver a abrir.
   paquete, como hizo la #12.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Juliana Bustos — Fecha: 2026-10-23 — Comentarios: aprobada en el PR #142 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/142#issuecomment-6357143382), junto con las otras dos puertas. Sus tres observaciones menores (la cita de la RN-3 en la RN-11, los nombres de funciones fuera de la Fase 1 y una sola acción en el Cuando del escenario de dos rondas) se aplicaron antes del código.
 
 ## Fase 4 — Implementación
 
