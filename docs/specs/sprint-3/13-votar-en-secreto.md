@@ -3,7 +3,7 @@
 - **Historia:** #13
 - **Sprint:** 3
 - **Responsable:** Maximiliano Eula
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**. Adelantada al Sprint 2 con la regla del 21/10 de CLAUDE.md
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 21/10: decidió los
@@ -449,20 +449,20 @@ verificados con `errors.Is`. Cada rechazo comprueba además que la ronda quedó 
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Abrir una ronda sobre una historia no terminada: queda como la ronda 1, sin revelar, sin votos y con todos los integrantes entre los que faltan; la historia no cambia | Abrir una ronda sobre una historia que no esta terminada | RN-1, RN-2, RN-3, RN-13 | pendiente |
-| 2 | Rechazar la apertura sobre una historia Terminada o inexistente, con los errores que ya existen | Rechazar una ronda sobre una historia que no se puede votar | RN-4, RN-5 | pendiente |
-| 3 | Rechazar la apertura en un proyecto sin integrantes | Rechazar una ronda en un proyecto sin integrantes | RN-6 | pendiente |
-| 4 | Rechazar una segunda ronda sobre una historia con una ronda sin revelar; otra historia abre la suya | Una historia no puede tener dos rondas en curso | RN-7 | pendiente |
-| 5 | Votar pasa al integrante de los que faltan a los que votaron, y los votos no se pueden leer mientras no se revele | Votar registra quien voto sin dejar ver los votos, ni siquiera el propio | RN-8, RN-12, RN-13 | pendiente |
-| 6 | Revelar con todos los votos deja ver cada voto con su nombre, en el orden de los integrantes, también con un solo integrante | Revelar cuando votaron todos | RN-14 | pendiente |
-| 7 | Rechazar revelar mientras falte algún voto; la ronda sigue sin revelar | Rechazar revelar mientras falten votos | RN-15, RN-18 | pendiente |
-| 8 | Rechazar un voto fuera de la escala con el error de la #12 | Rechazar un voto fuera de la escala | RN-9, RN-18 | pendiente |
-| 9 | Rechazar el segundo voto de un integrante, antes que el control del valor y sin mostrar el primero, que es el que queda | Rechazar un segundo voto del mismo integrante | RN-10, RN-12, RN-18 | pendiente |
-| 10 | Rechazar el voto de quien no participa, antes que el control del valor; reconocer el nombre escrito distinto y guardarlo como está cargado; quien sale del proyecto sigue participando | Rechazar el voto de quien no participa de la ronda / Reconocer al integrante aunque el nombre venga escrito distinto / Quien sale del proyecto despues de abrir la ronda sigue participando | RN-2, RN-11, RN-18 | pendiente |
-| 11 | Rechazar votar o revelar de nuevo en una ronda revelada, antes que cualquier otro control | Una ronda revelada ya no acepta cambios | RN-16, RN-18 | pendiente |
-| 12 | Imprimir una ronda sin revelar muestra número, historia y cuántos votaron, sin ningún valor, en todas las formas de imprimir de Go (`%v`, `%+v`, `%#v` y `%s`) | Mostrar una ronda sin revelar no deja ver los votos | RN-17 | pendiente |
-| 13 | La ronda actual de una historia: la última, revelada o no; sin rondas se informa y no es un error; historia inexistente | Consultar la ronda actual de una historia / Consultar la ronda actual de una historia que no existe | RN-19 | pendiente |
-| 14 | Las rondas entran en la conversión del registro: una sin revelar y una revelada, con sus participantes y sus votos, se reconstruyen iguales. Una ronda inválida en el archivo rechaza la carga: historia que no existe, voto fuera de la escala, voto de quien no participa o dos votos de la misma persona, dos rondas sin revelar sobre la misma historia, o una ronda revelada a la que le faltan votos | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
+| 1 | Abrir una ronda sobre una historia no terminada: queda como la ronda 1, sin revelar, sin votos y con todos los integrantes entre los que faltan; la historia no cambia | Abrir una ronda sobre una historia que no esta terminada | RN-1, RN-2, RN-3, RN-13 | hecha |
+| 2 | Rechazar la apertura sobre una historia Terminada o inexistente, con los errores que ya existen | Rechazar una ronda sobre una historia que no se puede votar | RN-4, RN-5 | hecha |
+| 3 | Rechazar la apertura en un proyecto sin integrantes | Rechazar una ronda en un proyecto sin integrantes | RN-6 | hecha |
+| 4 | Rechazar una segunda ronda sobre una historia con una ronda sin revelar; otra historia abre la suya | Una historia no puede tener dos rondas en curso | RN-7 | hecha |
+| 5 | Votar pasa al integrante de los que faltan a los que votaron, y los votos no se pueden leer mientras no se revele | Votar registra quien voto sin dejar ver los votos, ni siquiera el propio | RN-8, RN-12, RN-13 | hecha |
+| 6 | Revelar con todos los votos deja ver cada voto con su nombre, en el orden de los integrantes, también con un solo integrante | Revelar cuando votaron todos | RN-14 | hecha |
+| 7 | Rechazar revelar mientras falte algún voto; la ronda sigue sin revelar | Rechazar revelar mientras falten votos | RN-15, RN-18 | hecha |
+| 8 | Rechazar un voto fuera de la escala con el error de la #12 | Rechazar un voto fuera de la escala | RN-9, RN-18 | hecha |
+| 9 | Rechazar el segundo voto de un integrante, antes que el control del valor y sin mostrar el primero, que es el que queda | Rechazar un segundo voto del mismo integrante | RN-10, RN-12, RN-18 | hecha |
+| 10 | Rechazar el voto de quien no participa, antes que el control del valor; reconocer el nombre escrito distinto y guardarlo como está cargado; quien sale del proyecto sigue participando | Rechazar el voto de quien no participa de la ronda / Reconocer al integrante aunque el nombre venga escrito distinto / Quien sale del proyecto despues de abrir la ronda sigue participando | RN-2, RN-11, RN-18 | hecha |
+| 11 | Rechazar votar o revelar de nuevo en una ronda revelada, antes que cualquier otro control | Una ronda revelada ya no acepta cambios | RN-16, RN-18 | hecha |
+| 12 | Imprimir una ronda sin revelar muestra número, historia y cuántos votaron, sin ningún valor, en todas las formas de imprimir de Go (`%v`, `%+v`, `%#v` y `%s`) | Mostrar una ronda sin revelar no deja ver los votos | RN-17 | hecha |
+| 13 | La ronda actual de una historia: la última, revelada o no; sin rondas se informa y no es un error; historia inexistente | Consultar la ronda actual de una historia / Consultar la ronda actual de una historia que no existe | RN-19 | hecha |
+| 14 | Las rondas entran en la conversión del registro: una sin revelar y una revelada, con sus participantes y sus votos, se reconstruyen iguales. Una ronda inválida en el archivo rechaza la carga: historia que no existe, voto fuera de la escala, voto de quien no participa o dos votos de la misma persona, dos rondas sin revelar sobre la misma historia, o una ronda revelada a la que le faltan votos | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | hecha |
 
 **Cómo se verifica que no se filtra ningún valor.** Los tests de las tareas 9 y 12 votan 13 y
 21, valores que no aparecen en ningún otro dato de la ronda (historia 1, ronda 1, nombres sin
@@ -524,7 +524,62 @@ guarda.
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. El test en un commit, con la salida del test fallando después
+de `RED:` en el mensaje, y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `03740ab` | `a3cc842` |
+| 2 | `689cd7b` | `8dcf72a` |
+| 3 | `50098ab` | `3ac3da3` |
+| 4 | `29be0a2` | `72c965c` |
+| 5 | `ba90caa` | `6a78fd1` |
+| 6 | `ffc855c` | `f2bcb13` |
+| 7 | `f08badb` | `a911077` |
+| 8 | `0b37c88` | `3bfffc9` |
+| 9 | `16afd3a` | `0420074` |
+| 10 | `ef719c2` | `f7c5454` |
+| 11 | `b6e1bca` | `cc70d85` |
+| 12 | `591adbc` | `ad93071` |
+| 13 | `baa7833` | `ed97e3e` |
+| 14 | `dd3e2ac` | `a86d0cd` |
+
+Todas las tareas tuvieron RED, y cada commit se verificó por separado: los de test fallan y
+los de implementación pasan. `internal/domain` queda en 100% de cobertura.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Notas de proceso:
+
+- **La historia se adelantó al Sprint 2** (`cf3c947`), con la regla que el equipo acordó el
+  21/10 y está en CLAUDE.md: tenía las tres puertas aprobadas y todo lo que necesita estaba en
+  `dev`.
+- **Tarea 2:** el escenario dice "y el proyecto sigue sin rondas". En la tarea 2 el proyecto
+  todavía no guardaba rondas, así que el test lo verifica viendo que no se devuelve ninguna.
+  Que una apertura rechazada no deje una ronda guardada lo prueban después la tarea 4 (el
+  proyecto guarda solo las aceptadas) y la 13 (la ronda actual de una historia sin rondas).
+  El caso de la historia 99 de esa tarea ya pasaba con la búsqueda de la tarea 1; el de la
+  Terminada fue el RED.
+- **Tarea 10:** de sus tres tests, `TestQuienSaleDelProyectoDespuesDeAbrirLaRondaSigueParticipando`
+  pasaría sin código nuevo, porque los participantes quedan fijos desde la tarea 1. Va en esta
+  tarea porque la Fase 3 la agrupa así, y el RED lo dieron los otros dos.
+- **Tarea 14:** además de la lista de la Fase 3, la carga rechaza una ronda con número menor
+  que 1, el mismo control que se hace con los números de sprints y defectos.
+
+### Decisiones tomadas al implementar
+
+Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
+
+- **La ronda actual devuelve tres cosas** —la ronda, si hay alguna y el error—: que no haya
+  ronda no es un error (RN-19), como el sprint abierto de la #8, pero que la historia no
+  exista sí.
+- **El voto revelado es el tipo `Vote`**, con `MemberName` y `Points`, como dice el contrato.
+  Se llama igual que la operación de votar; en Go no chocan.
+- **La impresión cubre la ronda como valor y como puntero**: `String` y `Format` reciben la
+  ronda como valor, así quien imprime `*round` tampoco ve los votos.
+- **Al cargar del archivo, los votos entran con la misma operación que al votar** y una ronda
+  revelada pasa por la misma operación de revelar: las reglas de la escala, del participante,
+  del voto repetido y de los votos faltantes son las mismas, sin repetir código.
 
 ## Trazabilidad
 

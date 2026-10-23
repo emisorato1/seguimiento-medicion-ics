@@ -68,7 +68,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
 | [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 🟡 En implementación (tareas 1 a 5, 8 a 10, 12, 15 y 16 hechas; la 13 a medias) |
 | [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | ✅ Lista para implementar — puertas aprobadas en el PR #136 |
-| [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Lista para implementar — puertas aprobadas en el PR #115 |
+| [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | 🔍 Implementada — en review (adelantada al Sprint 2) |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | sin estimar | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |

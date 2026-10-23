@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-23 12:04. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-23 12:38. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -71,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
-8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
-2c2abd1 2026-10-23 Merge pull request #136 from emisorato1/historia-17-spec-datos-al-dia
-9c00f23 2026-10-23 chore: regenerar ESTADO.md con la #17 lista para implementar
-ec26a53 2026-10-23 docs: las tres puertas de la #17 registradas y la spec lista para implementar
-9ce7080 2026-10-23 docs: las correcciones de las puertas de la #17 (contrato hecho, #16 en dev, ancho con punto y formato)
-6e60171 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-17-spec-datos-al-dia
-7368ec5 2026-10-22 docs: revisar el borrador de la spec de la historia 73
+ec458ee 2026-10-22 chore: regenerar ESTADO.md con la historia 13 en review
+7c7539c 2026-10-22 docs: registrar la implementación de la historia 13
+a86d0cd 2026-10-22 feat: las rondas entran en el archivo de datos, validadas como al votar (historia 13, tarea 14)
+dd3e2ac 2026-10-22 test: las rondas siguen al cerrar y volver a abrir (historia 13, tarea 14)
+ed97e3e 2026-10-22 feat: consultar la ronda actual de una historia (historia 13, tarea 13)
+baa7833 2026-10-22 test: consultar la ronda actual de una historia (historia 13, tarea 13)
+ad93071 2026-10-22 feat: la ronda se imprime sin valores en todas las formas de imprimir (historia 13, tarea 12)
+591adbc 2026-10-22 test: mostrar una ronda sin revelar no deja ver los votos (historia 13, tarea 12)
 ```

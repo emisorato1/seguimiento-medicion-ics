@@ -120,6 +120,10 @@ type Project struct {
 	// operaciones están en defect.go.
 	defects      []*Defect
 	lastDefectID int
+	// votingRounds son las rondas de Planning Poker del proyecto, en el orden en que se
+	// abrieron (historia #13). Cada ronda sabe de qué historia es, así no se toca story.go.
+	// Las operaciones están en voting_round.go.
+	votingRounds []*VotingRound
 }
 
 // ID devuelve el identificador del proyecto, que no cambia nunca.
