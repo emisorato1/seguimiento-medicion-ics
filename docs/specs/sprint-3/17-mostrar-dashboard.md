@@ -3,7 +3,7 @@
 - **Historia:** #17
 - **Sprint:** 3
 - **Responsable:** Juliana Bustos
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. **Adaptado a la web el 20/10** (punto 1 de "Para decidir
@@ -340,7 +340,7 @@ Escenario: Usar el dashboard en un celular y sin internet
     como llega, y no es un cálculo: es cómo se muestra un dato que todavía no existe.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Agustín Salinas — Fecha: 2026-10-22 — Comentarios: aprobada en el PR #136 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/136#issuecomment-6345137761), con tres menores que no bloquean. Se aplicaron el 23/10 en 9ce7080: el ejemplo de la desviación positiva y la velocidad sin decimales en la RN-15; el punto 7 queda como está, como dijo él.
 
 ## Fase 2 — Diseño
 
@@ -432,7 +432,7 @@ la escribe la primera de la #17 y la #18 que llegue a `dev`, como pasó con `err
 - **No se modifica la consola.**
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: aprobada en el PR #136 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/136#issuecomment-6350299170), junto con la Puerta 3, con tres correcciones antes del código. Se aplicaron el 23/10 en 9ce7080: el contrato ya no figura como pendiente, la #16 figura en `dev` y el ancho de las barras va con punto (D3, tarea 13).
 
 ## Fase 3 — Tareas
 
@@ -537,7 +537,7 @@ tienen escenario: sus tests van encabezados con `// Tarea 8:` y `// Tarea 17:`.
   antes de que el dominio tenga el dashboard: arman sus datos a mano (D10).
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: aprobada en el PR #136 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/136#issuecomment-6350299170), junto con la Puerta 2, con tres correcciones antes del código. Se aplicaron el 23/10 en 9ce7080: el contrato ya no figura como pendiente, la #16 figura en `dev` y el ancho de las barras va con punto (D3, tarea 13).
 
 ## Fase 4 — Implementación
 
