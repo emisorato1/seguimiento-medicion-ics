@@ -3,7 +3,7 @@
 - **Historia:** #15
 - **Sprint:** 2
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review** (PR #129)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de
   los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta
   y lo presenta a las puertas. Revisado por la responsable el 20/10 y presentado a las tres
@@ -483,22 +483,22 @@ RN-18.
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Registrar un defecto válido: queda con identificador 1, en Abierto y sin sprint de resolución | Registrar un defecto | RN-1, RN-2, RN-3 | pendiente |
-| 2 | El defecto siguiente recibe el identificador siguiente, y dos defectos con los mismos datos conviven | El defecto nuevo recibe el identificador siguiente | RN-1, RN-17 | pendiente |
-| 3 | Rechazar un defecto sin título o sin descripción, y guardar los dos sin los espacios de los extremos | Rechazar un defecto sin titulo o sin descripcion / Guardar el titulo y la descripcion sin los espacios de los extremos | RN-4, RN-5 | pendiente |
-| 4 | Aceptar las tres severidades, sin distinguir mayúsculas ni espacios y con "critica" sin tilde, y rechazar cualquier otra | Registrar un defecto con cada severidad / Rechazar una severidad que no existe | RN-6 | pendiente |
-| 5 | La historia relacionada tiene que ser del proyecto, y una Terminada se acepta | Rechazar un defecto sobre una historia que no es del proyecto / Registrar un defecto sobre una historia terminada | RN-7 | pendiente |
-| 6 | El sprint de detección tiene que existir en el proyecto, y uno cerrado se acepta. Cerrar un sprint es de la #10, que no existe todavía: el test crea el sprint con el alta de la #8 y le fija el estado Cerrado desde dentro del paquete, como hace la #8 en sus tareas 10 a 12 y la #12 con las historias Terminadas | Rechazar un defecto con un sprint de deteccion que no existe / Registrar un defecto detectado en un sprint ya cerrado | RN-8 | pendiente |
-| 7 | Pasar el defecto entre Abierto y En curso, en los dos sentidos y al estado que ya tenía | Cambiar el estado de un defecto no resuelto | RN-9 | pendiente |
-| 8 | Rechazar el pase a Resuelto por cambio de estado | Rechazar el pase a Resuelto por cambio de estado | RN-10 | pendiente |
-| 9 | Resolver un defecto Abierto y uno En curso: quedan Resueltos con su sprint | Resolver un defecto | RN-11 | pendiente |
-| 10 | Rechazar la resolución con un sprint que no existe, dejando el defecto como estaba | Rechazar la resolucion con un sprint que no existe | RN-12, RN-18 | pendiente |
-| 11 | Rechazar la resolución en un sprint anterior al de detección, y aceptar el mismo sprint | Rechazar la resolucion en un sprint anterior al de deteccion / Resolver un defecto en el mismo sprint en que se detecto | RN-13 | pendiente |
-| 12 | Un defecto Resuelto no cambia de estado ni se vuelve a resolver | Un defecto resuelto no se vuelve a tocar | RN-14 | pendiente |
-| 13 | Consultar todos los defectos, los de un estado y los de una severidad, en orden de registro, y una consulta sin resultados devuelve lista vacía | Listar los defectos del proyecto | RN-15 | pendiente |
-| 14 | Los defectos de un proyecto no aparecen en otro, y cada proyecto numera desde 1 | Los defectos de un proyecto no aparecen en otro | RN-16 | pendiente |
-| 15 | Operar sobre un defecto o un proyecto que no existe informa que no se encontró y no cambia nada | Operar sobre algo que no existe | RN-19 | pendiente |
-| 16 | Los defectos entran en la conversión del registro: uno Abierto, uno En curso y uno Resuelto, con sus severidades y sus sprints, se reconstruyen iguales, con su número y el contador; uno inválido en el archivo (sin título, severidad desconocida, historia o sprint que no existen, Resuelto sin sprint de resolución) rechaza la carga | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
+| 1 | Registrar un defecto válido: queda con identificador 1, en Abierto y sin sprint de resolución | Registrar un defecto | RN-1, RN-2, RN-3 | hecha |
+| 2 | El defecto siguiente recibe el identificador siguiente, y dos defectos con los mismos datos conviven | El defecto nuevo recibe el identificador siguiente | RN-1, RN-17 | hecha |
+| 3 | Rechazar un defecto sin título o sin descripción, y guardar los dos sin los espacios de los extremos | Rechazar un defecto sin titulo o sin descripcion / Guardar el titulo y la descripcion sin los espacios de los extremos | RN-4, RN-5 | hecha |
+| 4 | Aceptar las tres severidades, sin distinguir mayúsculas ni espacios y con "critica" sin tilde, y rechazar cualquier otra | Registrar un defecto con cada severidad / Rechazar una severidad que no existe | RN-6 | hecha |
+| 5 | La historia relacionada tiene que ser del proyecto, y una Terminada se acepta | Rechazar un defecto sobre una historia que no es del proyecto / Registrar un defecto sobre una historia terminada | RN-7 | hecha |
+| 6 | El sprint de detección tiene que existir en el proyecto, y uno cerrado se acepta. Cerrar un sprint es de la #10, que no existe todavía: el test crea el sprint con el alta de la #8 y le fija el estado Cerrado desde dentro del paquete, como hace la #8 en sus tareas 10 a 12 y la #12 con las historias Terminadas | Rechazar un defecto con un sprint de deteccion que no existe / Registrar un defecto detectado en un sprint ya cerrado | RN-8 | hecha |
+| 7 | Pasar el defecto entre Abierto y En curso, en los dos sentidos y al estado que ya tenía | Cambiar el estado de un defecto no resuelto | RN-9 | hecha |
+| 8 | Rechazar el pase a Resuelto por cambio de estado | Rechazar el pase a Resuelto por cambio de estado | RN-10 | hecha |
+| 9 | Resolver un defecto Abierto y uno En curso: quedan Resueltos con su sprint | Resolver un defecto | RN-11 | hecha |
+| 10 | Rechazar la resolución con un sprint que no existe, dejando el defecto como estaba | Rechazar la resolucion con un sprint que no existe | RN-12, RN-18 | hecha |
+| 11 | Rechazar la resolución en un sprint anterior al de detección, y aceptar el mismo sprint | Rechazar la resolucion en un sprint anterior al de deteccion / Resolver un defecto en el mismo sprint en que se detecto | RN-13 | hecha |
+| 12 | Un defecto Resuelto no cambia de estado ni se vuelve a resolver | Un defecto resuelto no se vuelve a tocar | RN-14 | hecha |
+| 13 | Consultar todos los defectos, los de un estado y los de una severidad, en orden de registro, y una consulta sin resultados devuelve lista vacía | Listar los defectos del proyecto | RN-15 | hecha |
+| 14 | Los defectos de un proyecto no aparecen en otro, y cada proyecto numera desde 1 | Los defectos de un proyecto no aparecen en otro | RN-16 | hecha |
+| 15 | Operar sobre un defecto o un proyecto que no existe informa que no se encontró y no cambia nada | Operar sobre algo que no existe | RN-19 | hecha |
+| 16 | Los defectos entran en la conversión del registro: uno Abierto, uno En curso y uno Resuelto, con sus severidades y sus sprints, se reconstruyen iguales, con su número y el contador; uno inválido en el archivo (sin título, severidad desconocida, historia o sprint que no existen, Resuelto sin sprint de resolución) rechaza la carga | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | hecha |
 
 ### Por qué este orden
 
@@ -575,7 +575,85 @@ esta historia se parte en dos, que es el caso 1 de "Cuándo se puede partir una 
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+**La implementó la sesión de Claude Code de Emiliano Sorato, con autorización de Juliana
+Bustos, la responsable de la historia (21/10)**, para destrabar la #16, que cuenta los
+defectos en sus métricas. La spec, las puertas y las decisiones son de Juliana y no se
+cambiaron.
+
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro; cada commit
+de test lleva en su mensaje la salida del test fallando, después de la línea `RED:`.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `77f495b` | `f54c976` |
+| 2 | `2b54c74` | — (sin RED, ver Desvíos) |
+| 3 | `efd321e` | `9a533f3` |
+| 4 | `91fb4c9` | `9e643a5` |
+| 4 ("sin severidad") | `9e53b08` | — (sin RED, ver Desvíos) |
+| 5 | `231cc56` | `186dd0a` |
+| 6 | `7f4e8b6` | `2d6c903` |
+| 7 | `a58c971` | `1c03838` |
+| 8 | `90b1696` | `e06e055` |
+| 9 | `5aad442` | `39b8879` |
+| 10 | `28905e7` | `4f5f746` |
+| 11 | `801f055` | `940825d` |
+| 12 | `16c3069` | `7eacf55` |
+| 13 | `65af2a1` | `3a51103` |
+| 14 | `f686721` | — (sin RED, ver Desvíos) |
+| 15 | `b45a9fc` | `69ddd84` |
+| 16 (ida y vuelta) | `77ad695` | `cdff242` |
+| 16 (datos dañados) | `db591a3` | `6695d51` |
+
+Los RED de las tareas 1, 3, 4, 7, 8, 9, 11, 12, 13 y 15 fueron por compilación: la operación
+o el error todavía no existían. Los de las tareas 5, 6, 10 y 16, por comportamiento. En dos
+tareas, algunas filas pasaron solas y el RED lo dieron las otras:
+- En la 15, la del proyecto 99: el proyecto se busca en el registro de la #3, que ya informa
+  que no se encontró.
+- En la 16, tres casos de datos dañados que ya rechazaba el primer ciclo: la severidad y el
+  estado que no existen, que ya se leían por nombre, y el dato desconocido, que rechaza la
+  D16 de la #77.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Los de proceso y de detalle:
+
+- **Pasaron sin RED la tarea 2, la tarea 14 y el test "sin severidad" de la tarea 4.**
+  - El contador de defectos da el número siguiente desde la tarea 1, y ninguna regla impide
+    datos repetidos (RN-17), así que la 2 ya pasaba.
+  - Los defectos viven dentro de cada proyecto desde la tarea 1, así que nunca se mezclaron
+    (14).
+  - El nombre de cada severidad se escribió en el código de la tarea 4, y su caso "sin
+    severidad" quedó sin test: el dominio bajaba a 99,8%. Se agregó el test que lo cubre.
+
+  Los tests se escribieron igual, porque cada escenario necesita el suyo, y sus commits lo
+  dicen.
+- **Un error más, `ErrDefectStateInvalid`, sin escenario (tarea 8).** Rechaza un estado que
+  no es ninguno de los tres, armado a mano como `DefectState(9)`, para que nunca quede
+  guardado un estado que no existe. Tiene su test, que dice que no tiene escenario.
+- **Cambiar el estado y resolver buscan el defecto primero (tarea 15).** Es el orden de la
+  Fase 2: encontrar lo que se nombra, después el estado del defecto, después los datos. En la
+  tarea 8 se miraba primero el estado pedido. Con el orden nuevo, pasar a Resuelto un defecto
+  que ya está Resuelto informa que ya está resuelto (RN-14).
+- **La conversión de la tarea 16 se hizo en dos ciclos.**
+  - Primero la ida y vuelta: uno Abierto, uno En curso y uno Resuelto, con las tres
+    severidades.
+  - Después los datos dañados. El alta y la carga comparten la misma validación, así no
+    pueden quedar distintas. La carga además controla lo que solo un archivo puede traer mal:
+    - números repetidos o que el contador no alcanza;
+    - un Resuelto sin sprint de resolución, con uno que no existe o anterior al de
+      detección;
+    - uno sin resolver que ya tiene sprint de resolución.
+
+  Para guardarlo, el estado del defecto tiene nombre ("Abierto", "En curso", "Resuelto"), como
+  el de las historias.
+- **Al traer la #8 y la #9 (PR #138) cambiaron dos cosas de los tests.**
+  - El test del esquema "Operar sobre algo que no existe" pasó a llamarse
+    `TestOperarSobreAlgoQueNoExisteConDefectos`, porque la #9 tiene uno con el mismo nombre.
+  - El armado de sprints de los tests cierra el abierto antes de crear el siguiente, porque la
+    #8 deja uno solo abierto. Cerrar es de la #10, que todavía no está en `dev`.
+- **El PR #129 se abrió como borrador el 21/10, con las tareas 1 a 15.** La 16 esperaba que
+  los sprints entraran en la conversión del registro (#8, PR #138): sin eso, los defectos no
+  podían validar sus sprints al cargar.
 
 ## Trazabilidad
 
@@ -585,5 +663,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/defect_test.go` |
-| Código Go | `internal/domain/defect.go` y sus errores en `internal/domain/errors.go` |
+| Tests | `internal/domain/defect_test.go` y los casos de los defectos en `internal/domain/registry_json_test.go` |
+| Código Go | `internal/domain/defect.go`, la lista y el contador en `internal/domain/project.go`, la conversión en `internal/domain/registry_json.go` y sus errores en `internal/domain/errors.go` |

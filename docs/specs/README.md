@@ -51,10 +51,10 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | [Priorizar el Product Backlog](sprint-2/07-priorizar-backlog.md) | #7 | 2 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #105) |
-| [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | ⚙️ En implementación |
-| [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | 🟢 Puerta 3 aprobada — lista para implementar |
+| [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #138) |
+| [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #138) |
 | [Registrar el esfuerzo real](sprint-2/14-registrar-esfuerzo-real.md) | #14 | 3 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #100) |
-| [Gestionar defectos](sprint-2/15-gestionar-defectos.md) | #15 | 5 | Juliana Bustos | 🟢 Puerta 3 aprobada — lista para implementar |
+| [Gestionar defectos](sprint-2/15-gestionar-defectos.md) | #15 | 5 | Juliana Bustos | 🔍 Implementada — en review (PR #129) |
 | [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` el 19/10, entre el Sprint 1 y el 2 |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #70) |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #106) |
@@ -66,7 +66,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
+| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 🟡 En implementación (tareas 1 a 5, 8 a 10, 12, 15 y 16 hechas; la 13 a medias) |
 | [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | 📝 Borrador completo — pendiente de las tres puertas |
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Lista para implementar — puertas aprobadas en el PR #115 |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |

@@ -36,6 +36,29 @@ var (
 	ErrMemberAgileEnablerTaken = errors.New("el proyecto ya tiene un Agile Enabler")
 	// ErrMemberNotFound: quitar un integrante que no pertenece al proyecto (historia #4, RN-11).
 	ErrMemberNotFound = errors.New("no se encontró el integrante en el proyecto")
+	// ErrDefectTitleRequired y ErrDefectDescriptionRequired: registrar un defecto sin título o
+	// sin descripción (historia #15, RN-4). Los errores de la #15 van acá y no al final, para
+	// no chocar con los que agregan otras historias al mismo tiempo.
+	ErrDefectTitleRequired       = errors.New("falta el título del defecto")
+	ErrDefectDescriptionRequired = errors.New("falta la descripción del defecto")
+	// ErrDefectSeverityInvalid: severidad que no es Crítica, Mayor ni Menor, o ninguna
+	// (historia #15, RN-6).
+	ErrDefectSeverityInvalid = errors.New("la severidad debe ser Crítica, Mayor o Menor")
+	// ErrDefectResolveNeedsSprint: pasar un defecto a Resuelto cambiándole el estado, sin
+	// decir en qué sprint se resolvió (historia #15, RN-10).
+	ErrDefectResolveNeedsSprint = errors.New("para resolver un defecto hay que indicar en qué sprint se resolvió")
+	// ErrDefectStateInvalid: cambiar un defecto a un estado que no es Abierto ni En curso
+	// (historia #15, RN-9).
+	ErrDefectStateInvalid = errors.New("el estado de un defecto solo cambia entre Abierto y En curso")
+	// ErrDefectResolvedBeforeDetected: resolver un defecto en un sprint de número menor al de
+	// detección (historia #15, RN-13).
+	ErrDefectResolvedBeforeDetected = errors.New("un defecto no se resuelve en un sprint anterior al de detección")
+	// ErrDefectAlreadyResolved: cambiarle el estado o volver a resolver un defecto Resuelto
+	// (historia #15, RN-14).
+	ErrDefectAlreadyResolved = errors.New("el defecto ya está resuelto")
+	// ErrDefectNotFound: cambiarle el estado o resolver un defecto que no existe en el
+	// proyecto (historia #15, RN-19).
+	ErrDefectNotFound = errors.New("no se encontró el defecto")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.
@@ -55,7 +78,34 @@ var (
 	// ErrStoryEstimateDone: estimar, reestimar o quitar la estimacion de una historia
 	// Terminada (historia #12, RN-8).
 	ErrStoryEstimateDone = errors.New("la estimación de una historia terminada no se modifica")
+	// ErrEstimatedHoursInvalid: cargar horas estimadas en cero o negativas (historia #16, RN-18).
+	ErrEstimatedHoursInvalid = errors.New("las horas estimadas tienen que ser mayores que cero")
 	// ErrSprintNotFound: consultar un sprint con un numero que no existe en el proyecto
 	// (historia #8, RN-15). Lo usan tambien la #11 y la #15.
 	ErrSprintNotFound = errors.New("no se encontró el sprint")
+	// ErrSprintGoalRequired: crear un sprint sin Sprint Goal, o con uno de solo espacios
+	// (historia #8, RN-4).
+	ErrSprintGoalRequired = errors.New("el Sprint Goal es obligatorio")
+	// ErrSprintStartRequired: crear un sprint sin fecha de inicio (historia #8, RN-5).
+	ErrSprintStartRequired = errors.New("la fecha de inicio del sprint es obligatoria")
+	// ErrSprintEndRequired: crear un sprint sin fecha de fin (historia #8, RN-5).
+	ErrSprintEndRequired = errors.New("la fecha de fin del sprint es obligatoria")
+	// ErrSprintDatesInconsistent: fecha de fin del sprint anterior a la de inicio (historia #8,
+	// RN-6).
+	ErrSprintDatesInconsistent = errors.New("las fechas del sprint son incoherentes: la fecha de fin es anterior a la de inicio")
+	// ErrSprintAlreadyOpen: crear un sprint mientras el proyecto tiene otro abierto (historia
+	// #8, RN-8). Se devuelve envuelto con el numero del sprint abierto, asi el aviso dice cual
+	// es; errors.Is lo sigue reconociendo.
+	ErrSprintAlreadyOpen = errors.New("ya hay un sprint abierto en el proyecto")
+	// ErrStoryNotEstimated: asignar a un sprint una historia sin estimar (historia #9, RN-3).
+	ErrStoryNotEstimated = errors.New("solo se asignan a un sprint las historias estimadas")
+	// ErrStoryAlreadyInSprint: asignar una historia que ya esta en el Sprint Backlog (historia
+	// #9, RN-5).
+	ErrStoryAlreadyInSprint = errors.New("la historia ya está asignada al sprint")
+	// ErrNoOpenSprint: asignar o quitar una historia cuando el proyecto no tiene sprint abierto
+	// (historia #9, RN-2). Lo reusa la #10 al cerrar.
+	ErrNoOpenSprint = errors.New("el proyecto no tiene un sprint abierto")
+	// ErrStoryNotInSprint: quitar del sprint una historia que no esta en su Sprint Backlog
+	// (historia #9, RN-8).
+	ErrStoryNotInSprint = errors.New("la historia no está en el sprint")
 )

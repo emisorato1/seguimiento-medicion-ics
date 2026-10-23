@@ -30,9 +30,11 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#24 Operar el sistema desde una interfaz de consola](#24-operar-el-sistema-desde-una-interfaz-de-consola) | 13 | 13 | 0 | 5 |
 | [#5 Consultar el estado de un proyecto](#5-consultar-el-estado-de-un-proyecto) | 10 | 10 | 0 | 0 |
 | [#7 Priorizar el Product Backlog](#7-priorizar-el-product-backlog) | 15 | 15 | 0 | 1 |
-| [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 5 | 12 | 0 |
+| [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 17 | 0 | 0 |
+| [#9 Asignar historias a un sprint](#9-asignar-historias-a-un-sprint) | 14 | 14 | 0 | 0 |
 | [#14 Registrar el esfuerzo real](#14-registrar-el-esfuerzo-real) | 19 | 19 | 0 | 2 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 7 |
+| [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 8 | 8 | 2 |
 
 ## Qué dice el historial de TDD
 
@@ -41,10 +43,10 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 149 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 170 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 13 |
-| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 15 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 28 |
+| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
 ## #3 Crear y modificar proyectos
@@ -78,7 +80,7 @@ cinco casos posibles:
 | [Rechazar un proyecto sin fecha de inicio](specs/sprint-1/03-crear-proyectos.md?plain=1#L132) | `TestRechazarUnProyectoSinFechaDeInicio` [project_test.go:197](../internal/domain/project_test.go#L197) | [errors.go](../internal/domain/errors.go), [project_registry.go](../internal/domain/project_registry.go) | `b03aa4a` → `2c40255` |
 | [Guardar el nombre sin espacios en los extremos](specs/sprint-1/03-crear-proyectos.md?plain=1#L137) | `TestGuardarElNombreSinEspaciosEnLosExtremos` [project_test.go:134](../internal/domain/project_test.go#L134) | [project_registry.go](../internal/domain/project_registry.go) | `e9c0d69` → `2d6f386` |
 | [Aceptar un nombre de un solo caracter](specs/sprint-1/03-crear-proyectos.md?plain=1#L141) | `TestAceptarUnNombreDeUnSoloCaracter` [project_test.go:149](../internal/domain/project_test.go#L149) | [project_registry.go](../internal/domain/project_registry.go) | `e9c0d69` → `2d6f386` |
-| [Dos proyectos con el mismo nombre](specs/sprint-1/03-crear-proyectos.md?plain=1#L145) | `TestDosProyectosConElMismoNombre` [project_test.go:112](../internal/domain/project_test.go#L112) | ⚠️ ningún commit de código después del test | `239e570` → ⚠️ sin GREEN |
+| [Dos proyectos con el mismo nombre](specs/sprint-1/03-crear-proyectos.md?plain=1#L145) | `TestDosProyectosConElMismoNombre` [project_test.go:112](../internal/domain/project_test.go#L112) | el que ya estaba | `239e570` (sin RED: ya pasaba) |
 | [Rechazar fechas incoherentes](specs/sprint-1/03-crear-proyectos.md?plain=1#L151) | `TestRechazarFechasIncoherentes` [project_test.go:209](../internal/domain/project_test.go#L209) | [errors.go](../internal/domain/errors.go), [project_registry.go](../internal/domain/project_registry.go) | `da19160` → `f6a0ffb` |
 | [Aceptar un proyecto que empieza y termina el mismo dia](specs/sprint-1/03-crear-proyectos.md?plain=1#L156) | `TestAceptarUnProyectoQueEmpiezaYTerminaElMismoDia` [project_test.go:225](../internal/domain/project_test.go#L225) | [errors.go](../internal/domain/errors.go), [project_registry.go](../internal/domain/project_registry.go) | `da19160` → `f6a0ffb` |
 | [Comparar las fechas por dia, sin importar la hora](specs/sprint-1/03-crear-proyectos.md?plain=1#L160) | `TestCompararLasFechasPorDiaSinImportarLaHora` [project_test.go:244](../internal/domain/project_test.go#L244) | [project.go](../internal/domain/project.go) | `21325fb` → `9ba417c` |
@@ -382,19 +384,19 @@ cinco casos posibles:
 | [Dos listados seguidos devuelven lo mismo](specs/sprint-2/07-priorizar-backlog.md?plain=1#L218) | `TestDosListadosSeguidosDevuelvenLoMismo` [story_priority_test.go:276](../internal/domain/story_priority_test.go#L276) | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
 | [Cambiar una prioridad por la que ya tenia](specs/sprint-2/07-priorizar-backlog.md?plain=1#L223) | `TestCambiarUnaPrioridadPorLaQueYaTenia` [story_priority_test.go:219](../internal/domain/story_priority_test.go#L219) | [story_priority.go](../internal/domain/story_priority.go) | `eb1c628` → `f11be53` |
 | [Pedir el backlog ordenado de un proyecto que no existe](specs/sprint-2/07-priorizar-backlog.md?plain=1#L229) | `TestPedirElBacklogOrdenadoDeUnProyectoQueNoExiste` [story_priority_test.go:68](../internal/domain/story_priority_test.go#L68) | [story_priority.go](../internal/domain/story_priority.go) | `41f2471` → `d194fa8` |
-| [Las historias terminadas van al final](specs/sprint-2/07-priorizar-backlog.md?plain=1#L235) | `TestLasHistoriasTerminadasVanAlFinal` [story_priority_test.go:308](../internal/domain/story_priority_test.go#L308) | [story_priority.go](../internal/domain/story_priority.go) | `cc4e1f9` → `ba0c908` |
+| [Las historias terminadas van al final](specs/sprint-2/07-priorizar-backlog.md?plain=1#L235) | `TestLasHistoriasTerminadasVanAlFinal` [story_priority_test.go:309](../internal/domain/story_priority_test.go#L309) | [story_priority.go](../internal/domain/story_priority.go) | `cc4e1f9` → `ba0c908` |
 
 **Tests que no citan un escenario de la Fase 1 (1).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden` [story_priority_test.go:294](../internal/domain/story_priority_test.go#L294) ⚠️ no dice que no tiene escenario | RN-3 y la decision de la Fase 2 "El desempate por identificador se hace explicito" | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
+| `TestDesempatarPorIdentificadorAunqueElBacklogEsteGuardadoEnOtroOrden` [story_priority_test.go:295](../internal/domain/story_priority_test.go#L295) | RN-3 y la decision de la Fase 2 "El desempate por identificador se hace explicito" | [story_priority.go](../internal/domain/story_priority.go) | `50a9d3f` → `deef1b0` |
 
 ## #8 Crear un sprint con su Sprint Goal
 
 - **Historia:** issue #8
 - **Spec:** [docs/specs/sprint-2/08-crear-sprint.md](specs/sprint-2/08-crear-sprint.md)
-- **Código según la spec:** `internal/domain/sprint.go`, `internal/domain/project.go`, `internal/domain/errors.go`
+- **Código según la spec:** `internal/domain/sprint.go`, `internal/domain/project.go`, `internal/domain/registry_json.go`, `internal/domain/errors.go`
 
 <details><summary>Criterios de aceptación (15)</summary>
 
@@ -418,23 +420,63 @@ cinco casos posibles:
 
 | Escenario BDD | Test | Código | RED → GREEN |
 |---|---|---|---|
-| [Crear el primer sprint de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L159) | `TestCrearElPrimerSprintDeUnProyecto` [sprint_test.go:28](../internal/domain/sprint_test.go#L28) | [sprint.go](../internal/domain/sprint.go) | `5d602fa` → `e3a9416` |
-| ⚠️ [El sprint nuevo recibe el numero siguiente](specs/sprint-2/08-crear-sprint.md?plain=1#L166) | **sin test** | | |
-| ⚠️ [No se puede abrir un segundo sprint habiendo uno abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L172) | **sin test** | | |
-| ⚠️ [Rechazar un sprint sin Sprint Goal](specs/sprint-2/08-crear-sprint.md?plain=1#L179) | **sin test** | | |
-| ⚠️ [Rechazar un sprint sin las fechas obligatorias](specs/sprint-2/08-crear-sprint.md?plain=1#L191) | **sin test** | | |
-| ⚠️ [Rechazar un sprint con fechas incoherentes](specs/sprint-2/08-crear-sprint.md?plain=1#L203) | **sin test** | | |
-| ⚠️ [Un sprint de un solo dia es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L209) | **sin test** | | |
-| ⚠️ [Un sprint con fechas pasadas es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L214) | **sin test** | | |
-| ⚠️ [Guardar el Sprint Goal sin espacios en los extremos](specs/sprint-2/08-crear-sprint.md?plain=1#L219) | **sin test** | | |
-| ⚠️ [Cada proyecto puede tener su propio sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L224) | **sin test** | | |
-| [Consultar el sprint abierto de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L230) | `TestConsultarElSprintAbiertoDeUnProyecto` [sprint_test.go:56](../internal/domain/sprint_test.go#L56) | [sprint.go](../internal/domain/sprint.go) | `6cf7475` → `de2ac50` |
-| [Un proyecto sin sprints no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L235) | `TestUnProyectoSinSprintsNoTieneSprintAbierto` [sprint_test.go:10](../internal/domain/sprint_test.go#L10) | [project.go](../internal/domain/project.go), [sprint.go](../internal/domain/sprint.go) | `5e2b377` → `ff3264e` |
-| ⚠️ [Un proyecto con todos sus sprints cerrados no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L241) | **sin test** | | |
-| ⚠️ [Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas](specs/sprint-2/08-crear-sprint.md?plain=1#L246) | **sin test** | | |
-| ⚠️ [Operar sobre un proyecto que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L252) | **sin test** | | |
-| [Consultar un sprint por su numero](specs/sprint-2/08-crear-sprint.md?plain=1#L262) | `TestConsultarUnSprintPorSuNumero` [sprint_test.go:88](../internal/domain/sprint_test.go#L88) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
-| [Consultar un sprint que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L267) | `TestConsultarUnSprintQueNoExiste` [sprint_test.go:119](../internal/domain/sprint_test.go#L119) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
+| [Crear el primer sprint de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L159) | `TestCrearElPrimerSprintDeUnProyecto` [sprint_test.go:29](../internal/domain/sprint_test.go#L29) | [sprint.go](../internal/domain/sprint.go) | `5d602fa` → `e3a9416` |
+| [El sprint nuevo recibe el numero siguiente](specs/sprint-2/08-crear-sprint.md?plain=1#L166) | `TestElSprintNuevoRecibeElNumeroSiguiente` [sprint_test.go:281](../internal/domain/sprint_test.go#L281) | el que ya estaba | `19394e3` (sin RED: ya pasaba) |
+| [No se puede abrir un segundo sprint habiendo uno abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L172) | `TestNoSePuedeAbrirUnSegundoSprintHabiendoUnoAbierto` [sprint_test.go:254](../internal/domain/sprint_test.go#L254) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `ffaada8` → `c59f3b2` |
+| [Rechazar un sprint sin Sprint Goal](specs/sprint-2/08-crear-sprint.md?plain=1#L179) | `TestRechazarUnSprintSinSprintGoal` [sprint_test.go:138](../internal/domain/sprint_test.go#L138) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `07deed8` → `a2cadc9` |
+| [Rechazar un sprint sin las fechas obligatorias](specs/sprint-2/08-crear-sprint.md?plain=1#L191) | `TestRechazarUnSprintSinLasFechasObligatorias` [sprint_test.go:164](../internal/domain/sprint_test.go#L164) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `6991115` → `20eb08c` |
+| [Rechazar un sprint con fechas incoherentes](specs/sprint-2/08-crear-sprint.md?plain=1#L203) | `TestRechazarUnSprintConFechasIncoherentes` [sprint_test.go:191](../internal/domain/sprint_test.go#L191) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `8511e9d` → `734a903` |
+| [Un sprint de un solo dia es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L209) | `TestUnSprintDeUnSoloDiaEsValido` [sprint_test.go:206](../internal/domain/sprint_test.go#L206) | el que ya estaba | `fcbd577` (sin RED: ya pasaba) |
+| [Un sprint con fechas pasadas es valido](specs/sprint-2/08-crear-sprint.md?plain=1#L214) | `TestUnSprintConFechasPasadasEsValido` [sprint_test.go:221](../internal/domain/sprint_test.go#L221) | el que ya estaba | `fcbd577` (sin RED: ya pasaba) |
+| [Guardar el Sprint Goal sin espacios en los extremos](specs/sprint-2/08-crear-sprint.md?plain=1#L219) | `TestGuardarElSprintGoalSinEspaciosEnLosExtremos` [sprint_test.go:236](../internal/domain/sprint_test.go#L236) | [sprint.go](../internal/domain/sprint.go) | `41396e9` → `eb536ef` |
+| [Cada proyecto puede tener su propio sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L224) | `TestCadaProyectoPuedeTenerSuPropioSprintAbierto` [sprint_test.go:345](../internal/domain/sprint_test.go#L345) | el que ya estaba | `cfde49b` (sin RED: ya pasaba) |
+| [Consultar el sprint abierto de un proyecto](specs/sprint-2/08-crear-sprint.md?plain=1#L230) | `TestConsultarElSprintAbiertoDeUnProyecto` [sprint_test.go:57](../internal/domain/sprint_test.go#L57) | [sprint.go](../internal/domain/sprint.go) | `6cf7475` → `de2ac50` |
+| [Un proyecto sin sprints no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L235) | `TestUnProyectoSinSprintsNoTieneSprintAbierto` [sprint_test.go:11](../internal/domain/sprint_test.go#L11) | [project.go](../internal/domain/project.go), [sprint.go](../internal/domain/sprint.go) | `5e2b377` → `ff3264e` |
+| [Un proyecto con todos sus sprints cerrados no tiene sprint abierto](specs/sprint-2/08-crear-sprint.md?plain=1#L241) | `TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintAbierto` [sprint_test.go:304](../internal/domain/sprint_test.go#L304) | el que ya estaba | `7309747` (sin RED: ya pasaba) |
+| [Dos sprints del mismo proyecto pueden tener el mismo goal y las mismas fechas](specs/sprint-2/08-crear-sprint.md?plain=1#L246) | `TestDosSprintsDelMismoProyectoPuedenTenerElMismoGoalYLasMismasFechas` [sprint_test.go:321](../internal/domain/sprint_test.go#L321) | el que ya estaba | `cfde49b` (sin RED: ya pasaba) |
+| [Operar sobre un proyecto que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L252) | `TestOperarSprintsSobreUnProyectoQueNoExiste` [sprint_test.go:380](../internal/domain/sprint_test.go#L380) | el que ya estaba | `cfde49b` (sin RED: ya pasaba) |
+| [Consultar un sprint por su numero](specs/sprint-2/08-crear-sprint.md?plain=1#L262) | `TestConsultarUnSprintPorSuNumero` [sprint_test.go:89](../internal/domain/sprint_test.go#L89) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
+| [Consultar un sprint que no existe](specs/sprint-2/08-crear-sprint.md?plain=1#L267) | `TestConsultarUnSprintQueNoExiste` [sprint_test.go:120](../internal/domain/sprint_test.go#L120) | [errors.go](../internal/domain/errors.go), [sprint.go](../internal/domain/sprint.go) | `5de4cda` → `ee69eed` |
+
+## #9 Asignar historias a un sprint
+
+- **Historia:** issue #9
+- **Spec:** [docs/specs/sprint-2/09-asignar-historias-a-sprint.md](specs/sprint-2/09-asignar-historias-a-sprint.md)
+- **Código según la spec:** `AssignStory`, `UnassignStory`, `internal/domain/sprint_backlog.go`, `internal/domain/registry_json.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (12)</summary>
+
+- Se puede asignar una historia estimada al sprint abierto, y queda en el Sprint Backlog.
+- Al asignarla, la historia queda En curso.
+- No se puede asignar una historia sin estimar.
+- No se puede asignar dos veces la misma historia al mismo sprint.
+- No se puede asignar ni quitar una historia Terminada.
+- No se puede asignar ni quitar nada si el proyecto no tiene un sprint abierto.
+- Se puede quitar una historia del sprint mientras el sprint esté abierto, y vuelve al Product Backlog en estado Pendiente.
+- No se puede quitar una historia que no está en el sprint.
+- Se puede consultar el Sprint Backlog del sprint abierto, en el orden en que se asignaron las historias, y si está vacío eso no es un error.
+- Una historia que quedó sin completar en un sprint cerrado se puede asignar al sprint abierto siguiente.
+- Una operación rechazada no cambia el Sprint Backlog ni el estado de la historia.
+- Asignar o quitar en un proyecto o sobre una historia que no existe informa que no se encontró.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Asignar una historia estimada al sprint abierto](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L148) | `TestAsignarUnaHistoriaEstimadaAlSprintAbierto` [sprint_backlog_test.go:54](../internal/domain/sprint_backlog_test.go#L54) | [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `4eda9be` → `7405b81` |
+| [El Sprint Backlog respeta el orden en que se asignaron las historias](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L154) | `TestElSprintBacklogRespetaElOrdenEnQueSeAsignaronLasHistorias` [sprint_backlog_test.go:73](../internal/domain/sprint_backlog_test.go#L73) | el que ya estaba | `3356937` (sin RED: ya pasaba) |
+| [Un sprint recien abierto tiene el Sprint Backlog vacio](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L159) | `TestUnSprintRecienAbiertoTieneElSprintBacklogVacio` [sprint_backlog_test.go:22](../internal/domain/sprint_backlog_test.go#L22) | el que ya estaba | `7f9af97` (sin RED: ya pasaba) |
+| [Rechazar una historia sin estimar](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L165) | `TestRechazarUnaHistoriaSinEstimar` [sprint_backlog_test.go:94](../internal/domain/sprint_backlog_test.go#L94) | [errors.go](../internal/domain/errors.go), [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `9890acc` → `64ba2dc` |
+| [Rechazar una historia que ya esta en el sprint](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L173) | `TestRechazarUnaHistoriaQueYaEstaEnElSprint` [sprint_backlog_test.go:116](../internal/domain/sprint_backlog_test.go#L116) | [errors.go](../internal/domain/errors.go), [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `7b688bd` → `7c4dd2a` |
+| [Rechazar una historia terminada](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L180) | `TestRechazarUnaHistoriaTerminada` [sprint_backlog_test.go:141](../internal/domain/sprint_backlog_test.go#L141) | [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `cd46b06` → `936fb60` |
+| [Rechazar quitar una historia terminada](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L187) | `TestRechazarQuitarUnaHistoriaTerminada` [sprint_backlog_test.go:167](../internal/domain/sprint_backlog_test.go#L167) | [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `cd46b06` → `936fb60` |
+| [Operar sin un sprint abierto](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L195) | `TestOperarSinUnSprintAbierto` [sprint_backlog_test.go:192](../internal/domain/sprint_backlog_test.go#L192) | [errors.go](../internal/domain/errors.go), [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `3524b7f` → `670390e` |
+| [Quitar una historia del sprint abierto](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L206) | `TestQuitarUnaHistoriaDelSprintAbierto` [sprint_backlog_test.go:216](../internal/domain/sprint_backlog_test.go#L216) | [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `0d27e9e` → `edfbc46` |
+| [Quitar una historia y volver a asignarla](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L212) | `TestQuitarUnaHistoriaYVolverAAsignarla` [sprint_backlog_test.go:238](../internal/domain/sprint_backlog_test.go#L238) | el que ya estaba | `f8681fa` (sin RED: ya pasaba) |
+| [Rechazar quitar una historia que no esta en el sprint](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L217) | `TestRechazarQuitarUnaHistoriaQueNoEstaEnElSprint` [sprint_backlog_test.go:263](../internal/domain/sprint_backlog_test.go#L263) | [errors.go](../internal/domain/errors.go), [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `c739a3a` → `7443a68` |
+| [Una historia que quedo sin completar se puede asignar al sprint siguiente](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L224) | `TestUnaHistoriaQueQuedoSinCompletarSePuedeAsignarAlSprintSiguiente` [sprint_backlog_test.go:282](../internal/domain/sprint_backlog_test.go#L282) | el que ya estaba | `f22036f` (sin RED: ya pasaba) |
+| [Cada proyecto arma su propio Sprint Backlog](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L232) | `TestCadaProyectoArmaSuPropioSprintBacklog` [sprint_backlog_test.go:315](../internal/domain/sprint_backlog_test.go#L315) | el que ya estaba | `f22036f` (sin RED: ya pasaba) |
+| [Operar sobre algo que no existe](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L237) | `TestOperarSobreAlgoQueNoExiste` [sprint_backlog_test.go:347](../internal/domain/sprint_backlog_test.go#L347) | el que ya estaba | `f22036f` (sin RED: ya pasaba) |
 
 ## #14 Registrar el esfuerzo real
 
@@ -488,8 +530,8 @@ cinco casos posibles:
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:293](../internal/domain/registry_json_test.go#L293) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
-| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:319](../internal/domain/registry_json_test.go#L319) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
+| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:367](../internal/domain/registry_json_test.go#L367) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
+| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:393](../internal/domain/registry_json_test.go#L393) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
 
 ## #77 Interfaz web: proyectos, integrantes y backlog
 
@@ -526,15 +568,15 @@ cinco casos posibles:
 | [Mostrar el rechazo sin perder lo escrito](specs/sprint-2/77-interfaz-web-base.md?plain=1#L207) | `TestMostrarElRechazoSinPerderLoEscrito` [server_test.go:348](../internal/web/server_test.go#L348) | [forms.go](../internal/web/forms.go), [projects.go](../internal/web/projects.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyecto-nuevo.html](../internal/web/templates/proyecto-nuevo.html) | `99d8188` → `20180ce` |
 | [Las listas vacias dicen que hacer](specs/sprint-2/77-interfaz-web-base.md?plain=1#L225) | `TestSinDatosGuardadosSeArrancaSinProyectos` [file_test.go:54](../internal/store/file_test.go#L54) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | ″ | `TestLasListasVaciasDicenQueHacer` [server_test.go:289](../internal/web/server_test.go#L289) | [projects.go](../internal/web/projects.go), [proyectos.html](../internal/web/templates/proyectos.html) | `e9570b7` → `650752f` |
-| [Pedir algo que no existe](specs/sprint-2/77-interfaz-web-base.md?plain=1#L237) | `TestPedirAlgoQueNoExiste` [server_test.go:739](../internal/web/server_test.go#L739) | [backlog.go](../internal/web/backlog.go), [forms.go](../internal/web/forms.go), [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [historia.html](../internal/web/templates/historia.html), [no-encontrado.html](../internal/web/templates/no-encontrado.html) | `b90a385` → `e3dec70` |
+| [Pedir algo que no existe](specs/sprint-2/77-interfaz-web-base.md?plain=1#L237) | `TestPedirAlgoQueNoExiste` [server_test.go:739](../internal/web/server_test.go#L739) | el que ya estaba | `15a8336` (sin RED: ya pasaba) |
 | [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | `TestUnTextoConSignosSeMuestraTalCual` [projects_test.go:104](../internal/web/projects_test.go#L104) | el que ya estaba | `413660d` (sin RED: ya pasaba) |
 | [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [main_test.go:22](../cmd/web/main_test.go#L22) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
 | ″ | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [server_test.go:206](../internal/web/server_test.go#L206) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
-| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:139](../internal/domain/registry_json_test.go#L139) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
+| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:193](../internal/domain/registry_json_test.go#L193) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:69](../internal/store/file_test.go#L69) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1147](../internal/web/server_test.go#L1147) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:158](../cmd/web/main_test.go#L158) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
-| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:198](../internal/domain/registry_json_test.go#L198) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
+| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:257](../internal/domain/registry_json_test.go#L257) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
 | ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:160](../internal/store/file_test.go#L160) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:202](../internal/store/file_test.go#L202) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | ″ | `TestUnCambioQueNoSePudoGuardarSeAvisa` [server_test.go:949](../internal/web/server_test.go#L949) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
@@ -547,9 +589,60 @@ cinco casos posibles:
 |---|---|---|---|
 | `TestListarLosProyectosDeUnRegistroVacio` [project_registry_test.go:7](../internal/domain/project_registry_test.go#L7) | dependencia de la #77, RN-7 y RN-23 (la lista vacía no es un error) | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
-| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:267](../internal/domain/registry_json_test.go#L267) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:341](../internal/domain/registry_json_test.go#L341) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
 | `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1202](../internal/web/server_test.go#L1202) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
+
+## #16 Calcular las métricas del proyecto y de cada sprint
+
+- **Historia:** issue #16
+- **Spec:** [docs/specs/sprint-3/16-calcular-metricas.md](specs/sprint-3/16-calcular-metricas.md)
+- **Código según la spec:** `internal/domain/metrics.go`, `internal/domain/story_hours.go`, `internal/domain/story.go`, `internal/domain/registry_json.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (14)</summary>
+
+- Los planificados de un sprint son todas sus historias comprometidas, incluidas las que volvieron al Product Backlog.
+- Los completados de un sprint salen de lo registrado al cerrarlo: una historia que se completó en un sprint posterior no cuenta en el anterior.
+- Los puntos de un sprint cerrado son los que tenía cada historia al cerrarlo: reestimar una historia después no los cambia.
+- La velocidad de un sprint es igual a sus puntos completados, y la del proyecto es el promedio de sus sprints cerrados redondeado a entero.
+- Las métricas de un sprint abierto se calculan, con completados y velocidad en cero.
+- Las horas de un sprint suman las de sus historias, y las de una historia que pasó por dos sprints cuentan solo en el último.
+- La desviación es la diferencia porcentual entre horas reales y estimadas, con signo, y con cero horas estimadas es cero sin error.
+- El porcentaje de historias completas tiene decimales, y sin historias es cero sin error.
+- Los defectos de un sprint salen de su sprint de detección y de resolución; los del proyecto son todos los registrados y los que están resueltos.
+- Las métricas del proyecto incluyen todas sus historias, hayan entrado a un sprint o no.
+- Un sprint o un proyecto sin datos devuelve las once métricas en cero, sin error.
+- Pedir las métricas no cambia ningún dato, y si se cargan datos nuevos dan distinto.
+- Se pueden cargar y reemplazar las horas estimadas de una historia no terminada, con fracciones; con cero, con un negativo o sobre una Terminada se rechaza sin cambiar nada.
+- Un sprint, una historia o un proyecto inexistentes informan que no se encontraron.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Metricas de un sprint cerrado](specs/sprint-3/16-calcular-metricas.md?plain=1#L171) | `TestMetricasDeUnSprintCerrado` [metrics_test.go:124](../internal/domain/metrics_test.go#L124) | [metrics.go](../internal/domain/metrics.go) | `11f3554` → `fff2a46` |
+| ⚠️ [Una historia que volvio al backlog cuenta como completada solo donde se completo](specs/sprint-3/16-calcular-metricas.md?plain=1#L183) | **sin test** | | |
+| ⚠️ [Los puntos de un sprint cerrado no cambian si se reestima una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L191) | **sin test** | | |
+| [Las horas de una historia que paso por dos sprints cuentan en el ultimo](specs/sprint-3/16-calcular-metricas.md?plain=1#L198) | `TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo` [metrics_test.go:159](../internal/domain/metrics_test.go#L159) | [metrics.go](../internal/domain/metrics.go) | `cc515ff` → `b48e2be` |
+| ⚠️ [Las metricas de un sprint abierto son parciales](specs/sprint-3/16-calcular-metricas.md?plain=1#L206) | **sin test** | | |
+| [Sin datos cargados las metricas valen cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L214) | `TestSinDatosCargadosLasMetricasValenCero` [metrics_test.go:53](../internal/domain/metrics_test.go#L53) | [metrics.go](../internal/domain/metrics.go) | `7f4a880` → `0faa0aa` |
+| [Calcular la desviacion de horas](specs/sprint-3/16-calcular-metricas.md?plain=1#L225) | `TestCalcularLaDesviacionDeHoras` [metrics_test.go:199](../internal/domain/metrics_test.go#L199) | [metrics.go](../internal/domain/metrics.go) | `7bab460` → `96ed50e` |
+| ⚠️ [Calcular el porcentaje de historias completas](specs/sprint-3/16-calcular-metricas.md?plain=1#L238) | **sin test** | | |
+| ⚠️ [Defectos detectados y resueltos de cada sprint](specs/sprint-3/16-calcular-metricas.md?plain=1#L250) | **sin test** | | |
+| ⚠️ [Metricas del proyecto entero](specs/sprint-3/16-calcular-metricas.md?plain=1#L259) | **sin test** | | |
+| ⚠️ [Velocidad del proyecto](specs/sprint-3/16-calcular-metricas.md?plain=1#L271) | **sin test** | | |
+| ⚠️ [Las metricas reflejan los datos cargados despues](specs/sprint-3/16-calcular-metricas.md?plain=1#L282) | **sin test** | | |
+| [Cargar y reemplazar las horas estimadas de una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L289) | `TestCargarYReemplazarLasHorasEstimadasDeUnaHistoria` [story_hours_test.go:18](../internal/domain/story_hours_test.go#L18) | [story.go](../internal/domain/story.go), [story_hours.go](../internal/domain/story_hours.go) | `56ff0bc` → `7e4e3b8` |
+| [Rechazar horas estimadas que no son mayores que cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L295) | `TestRechazarHorasEstimadasQueNoSonMayoresQueCero` [story_hours_test.go:46](../internal/domain/story_hours_test.go#L46) | [errors.go](../internal/domain/errors.go), [story_hours.go](../internal/domain/story_hours.go) | `eb4ad3d` → `e636a5c` |
+| [No cambiar las horas estimadas de una historia terminada](specs/sprint-3/16-calcular-metricas.md?plain=1#L307) | `TestNoCambiarLasHorasEstimadasDeUnaHistoriaTerminada` [story_hours_test.go:79](../internal/domain/story_hours_test.go#L79) | [story_hours.go](../internal/domain/story_hours.go) | `4d24c31` → `9d00e6f` |
+| [Pedir algo que no existe](specs/sprint-3/16-calcular-metricas.md?plain=1#L314) | `TestPedirAlgoQueNoExiste` [metrics_test.go:15](../internal/domain/metrics_test.go#L15) | el que ya estaba | `15a8336` (sin RED: ya pasaba) |
+
+**Tests que no citan un escenario de la Fase 1 (2).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestRechazarHorasEstimadasQueNoSonUnNumero` [story_hours_test.go:105](../internal/domain/story_hours_test.go#L105) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `4708708` → `9dd7309` |
+| `TestRechazarHorasEstimadasInfinitas` [story_hours_test.go:132](../internal/domain/story_hours_test.go#L132) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `f0ee9fb` → `1a60943` |
 

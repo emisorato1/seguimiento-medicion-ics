@@ -3,11 +3,11 @@
 - **Historia:** #16
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada y ratificada por Juliana Bustos (20/10) — **en implementación** (tareas 1 a 5, 8 a 10, 12, 15 y 16 hechas; la 13 a medias)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #8, #9 y #10 (los sprints, lo comprometido y lo completado), #11 (buscar un
   sprint por su número), #12 (los story points), #14 (las horas reales) y #15 (los defectos).
-  Ninguna está en `dev` todavía: se trabaja contra el contrato del dominio
+  Salvo la #12, ninguna está en `dev` todavía: se trabaja contra el contrato del dominio
 - **La necesitan:** #17 (dashboard) y #18 (reporte), y detrás de la #18 la #19
 
 ## Fase 1 — Requisitos
@@ -65,8 +65,9 @@ Además, una historia queda con sus horas estimadas cuando se le cargan.
    ese momento, sin guardarlas y sin modificar ningún dato.
 3. **[RN-3]** Cuando se piden las métricas de un sprint, el sistema debe tomar como
    planificadas todas las historias comprometidas en ese sprint, incluidas las que al
-   cerrarlo volvieron al Product Backlog. Si el sprint está cerrado, debe usar los story
-   points que cada historia tenía al cerrar, no los actuales.
+   cerrarlo volvieron al Product Backlog. Si el sprint está cerrado, debe usar —para las
+   planificadas y para las completadas— los story points que cada historia tenía al cerrar,
+   no los actuales.
 4. **[RN-4]** Cuando se piden las métricas de un sprint, el sistema debe tomar como
    completadas las historias que quedaron registradas como completadas al cerrarlo, y no
    debe deducirlas del estado actual de las historias.
@@ -85,8 +86,9 @@ Además, una historia queda con sus horas estimadas cuando se le cargan.
    planificadas todas las historias del Product Backlog, cada una una vez, hayan entrado a un
    sprint o no, y como completadas las registradas como completadas en algún sprint cerrado.
 10. **[RN-10]** Cuando se piden las métricas del proyecto, el sistema debe tomar como
-    velocidad el promedio de las velocidades de sus sprints cerrados, descartando la parte
-    decimal. Si no tiene ningún sprint cerrado, la velocidad es cero.
+    velocidad el promedio de las velocidades de sus sprints cerrados, redondeado al entero más
+    cercano y con las mitades hacia arriba. Si no tiene ningún sprint cerrado, la velocidad es
+    cero.
 11. **[RN-11]** Cuando se piden las métricas del proyecto, el sistema debe sumar las horas
     estimadas de todas sus historias y todas las horas registradas en el proyecto, y contar
     como detectados todos sus defectos y como resueltos los que están en estado Resuelto.
@@ -123,7 +125,10 @@ Además, una historia queda con sus horas estimadas cuando se le cargan.
 - Defecto detectado y resuelto en el mismo sprint: suma en los dos números de ese sprint.
 - Historia comprometida a la que después le quitaron la estimación: aporta cero puntos, pero
   cuenta como historia planificada.
-- Sprints cerrados de velocidad 10 y 13: la del proyecto es 11, se descarta el ,5.
+- Sprints cerrados de velocidad 10 y 13: la del proyecto es 12, porque el 11,5 se redondea
+  hacia arriba.
+- Historia que volvió al backlog y se reestimó: el sprint cerrado sigue con los puntos que
+  tenía al cerrar.
 
 ### Condiciones de error
 
@@ -141,8 +146,10 @@ Que falten datos **no** es un error: las métricas dan cero (RN-14, RN-15).
       volvieron al Product Backlog.
 - [ ] Los completados de un sprint salen de lo registrado al cerrarlo: una historia que se
       completó en un sprint posterior no cuenta en el anterior.
+- [ ] Los puntos de un sprint cerrado son los que tenía cada historia al cerrarlo: reestimar
+      una historia después no los cambia.
 - [ ] La velocidad de un sprint es igual a sus puntos completados, y la del proyecto es el
-      promedio sin decimales de sus sprints cerrados.
+      promedio de sus sprints cerrados redondeado a entero.
 - [ ] Las métricas de un sprint abierto se calculan, con completados y velocidad en cero.
 - [ ] Las horas de un sprint suman las de sus historias, y las de una historia que pasó por
       dos sprints cuentan solo en el último.
@@ -180,6 +187,13 @@ Escenario: Una historia que volvio al backlog cuenta como completada solo donde 
   Cuando pido las metricas de los sprints 1 y 2
   Entonces el sprint 1 tiene 8 puntos planificados y 3 completados
   Y el sprint 2 tiene 5 puntos planificados y 5 completados
+
+Escenario: Los puntos de un sprint cerrado no cambian si se reestima una historia
+  Dado un proyecto con las historias 1 y 2, de 3 y 5 puntos
+  Y el sprint 1 cerrado con las historias 1 y 2 comprometidas y solo la 1 completada
+  Cuando reestimo la historia 2 en 8 puntos
+  Y pido las metricas del sprint 1
+  Entonces recibo 8 story points planificados y 3 completados
 
 Escenario: Las horas de una historia que paso por dos sprints cuentan en el ultimo
   Dado un proyecto con el sprint 1 cerrado, con la historia 2 comprometida y sin completar
@@ -262,7 +276,7 @@ Esquema del escenario: Velocidad del proyecto
   Ejemplos:
     | velocidades | velocidad |
     | 8, 5 y 6    | 6         |
-    | 10 y 13     | 11        |
+    | 10 y 13     | 12        |
     | ninguna     | 0         |
 
 Escenario: Las metricas reflejan los datos cargados despues
@@ -311,13 +325,13 @@ Esquema del escenario: Pedir algo que no existe
 
 **Para decidir en la puerta:**
 
-1. **Las horas estimadas no tienen dónde guardarse.** El contrato del dominio tiene la métrica
-   pero ninguna entidad guarda el dato, y la #14 dejó su carga para esta historia. Se
-   interpretó que es un dato **de cada historia**, como el campo *Horas estimadas* del
-   tablero, con las reglas de los story points de la #12 (RN-17 a RN-19). **Hay que
-   agregarlo al contrato y avisar al grupo antes de implementar.** Si el equipo no lo quiere,
-   las horas estimadas y la desviación valen siempre cero y el tercer criterio de la issue
-   queda a medias.
+1. **Las horas estimadas son un dato de cada historia.** La métrica las necesitaba, ninguna
+   entidad las guardaba y la #14 dejó su carga para esta historia. Se interpretó que es un
+   dato **de cada historia**, como el campo *Horas estimadas* del tablero, con las reglas de
+   los story points de la #12 (RN-17 a RN-19). **Ya está en el contrato** (`Story` suma
+   `EstimatedHours`, con `p.EstimateHours`). Como `story.go` es compartido, se avisa al grupo
+   antes de tocarlo. Sin este dato, las horas estimadas y la desviación valdrían siempre cero
+   y el tercer criterio de la issue quedaría a medias.
 2. **Las horas de un sprint caen en el último sprint de cada historia (RN-7).** Es la
    simplificación del contrato, porque el esfuerzo no tiene sprint. Se aplica también a las
    estimadas, para que la desviación compare las mismas historias. La consecuencia: las horas
@@ -332,8 +346,9 @@ Esquema del escenario: Pedir algo que no existe
    datos" cuando las horas estimadas son cero.
 5. **La velocidad del proyecto es el promedio de los sprints cerrados (RN-10).** El contrato
    la define solo para un sprint; en el proyecto, repetir los puntos completados no dice nada
-   nuevo y el promedio es lo que se usa para planificar. Va sin decimales porque el contrato
-   la define entera, y el sprint abierto no cuenta.
+   nuevo y el promedio es lo que se usa para planificar. Va redondeada a entero, con las
+   mitades hacia arriba, porque así la define el contrato y así redondea el dashboard (#17).
+   El sprint abierto no cuenta.
 6. **El proyecto cuenta todo su Product Backlog como planificado (RN-9)**, para que el
    porcentaje diga cuánto del proyecto está hecho. Contar solo lo que entró a un sprint
    repetiría lo que ya miden las métricas por sprint.
@@ -343,7 +358,8 @@ Esquema del escenario: Pedir algo que no existe
    pero una historia a medias no suma velocidad. Y como ahí, el redondeo es de quien muestra.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en un comentario de la issue #16. La aprueba el responsable de la historia porque el resto del equipo no estaba disponible: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #16, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación. Antes de aprobar se corrigió: la velocidad del proyecto se redondea, como dice el contrato (10 y 13 dan 12); se agregaron el criterio y el escenario de los puntos de un sprint cerrado (RN-3), que ningún escenario probaba; y se actualizó el punto 1, porque las horas estimadas ya estaban en el contrato.
+> Ratificó: Juliana Bustos — Fecha: 2026-10-20 — Comentarios: en un comentario del PR #81 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/81#issuecomment-6300935343), desde su cuenta, y lo repitió en la issue #16 el 2026-10-22, como pedía la excepción (https://github.com/emisorato1/seguimiento-medicion-ics/issues/16#issuecomment-6332374637): «Ratifico las tres puertas de la Historia #16. La especificación y las decisiones planteadas son correctas para avanzar».
 
 ## Fase 2 — Diseño
 
@@ -351,8 +367,9 @@ Las decisiones transversales —un solo paquete `internal/domain`, datos en memo
 comparables con `errors.Is`, mensajes en castellano y validar todo antes de cambiar nada—
 están en [AGENTS.md](../../../AGENTS.md). Los nombres son los del
 [contrato del dominio](../../diseno-dominio.md): `Metrics` con sus once datos, pedido con
-`SprintMetrics` y `ProjectMetrics`, y lo que se lee de `Sprint` (`Stories`,
-`CompletedStories`, `State`), `Effort` y `Defect`.
+`SprintMetrics` y `ProjectMetrics`; `EstimatedHours` y `p.EstimateHours` en `Story`; y lo
+que se lee de `Sprint` (`Stories`, `CompletedStories`, `PointsAtClose`, `State`), `Effort`
+y `Defect`.
 
 ### Enfoque
 
@@ -381,20 +398,19 @@ historia, recorriendo los sprints del proyecto. No se guarda en ningún lado.
 | `internal/domain/story_hours_test.go` | se crea | los tests de los escenarios de horas estimadas |
 | `internal/domain/story.go` | se modifica | la historia pasa a tener sus horas estimadas, con cero al nacer |
 | `internal/domain/errors.go` | se modifica | el error de horas estimadas inválidas |
-| `docs/diseno-dominio.md` | se modifica | las horas estimadas de la historia y su operación de carga, avisando al grupo antes |
 
 ### Decisiones
 
 | Decisión | Alternativa descartada | Por qué |
 |---|---|---|
-| Las horas estimadas son un dato de la historia, con el mismo nombre que la métrica | un registro aparte de estimaciones, o deducirlas de los story points con un factor | es como lo lleva el tablero, y un factor inventaría una regla que nadie pidió. **Cambia el contrato: se avisa antes** |
+| Las horas estimadas son un dato de la historia, con el mismo nombre que la métrica | un registro aparte de estimaciones, o deducirlas de los story points con un factor | es como lo lleva el tablero, y un factor inventaría una regla que nadie pidió. **Ya está en el contrato; se avisa al grupo antes de tocar `story.go`** |
 | Un error propio para las horas estimadas inválidas; para la Terminada, el de la #12 | reutilizar el de horas inválidas de la #14 | la #14 no está en `dev` y no se la espera; el caso de la Terminada es el mismo de la #12, con el mismo mensaje |
 | Un solo cálculo para los dos ámbitos, con el ámbito elegido antes | una consulta completa para el sprint y otra para el proyecto | las fórmulas son las mismas; escritas dos veces, tarde o temprano dan distinto |
 | Se calculan en cada pedido | guardarlas en el sprint al cerrarlo | un esfuerzo cargado después del cierre quedaría afuera sin aviso; con datos en memoria, recalcular no cuesta |
 | Los completados salen del registro de completadas del sprint | del estado actual de la historia | lo fija el contrato: deducirlo contaría dos veces una historia terminada en el sprint siguiente |
 | El último sprint de cada historia se averigua al calcular | que la #14 guarde el sprint en cada registro | es la simplificación que aceptó el contrato y no toca la #14 |
 | La división por cero devuelve cero | un error, o un valor especial de "sin datos" | lo pide la issue, y el dashboard y el reporte no tienen que manejar un caso aparte |
-| Sin redondear, salvo la velocidad del proyecto | redondear como `scripts/metricas.sh` | redondear es de quien muestra; la velocidad va entera porque el contrato la define así |
+| Sin redondear, salvo la velocidad del proyecto | redondear como `scripts/metricas.sh` | redondear es de quien muestra; la velocidad va redondeada a entero porque el contrato la define así |
 
 ### Dependencias y restricciones
 
@@ -411,7 +427,8 @@ historia, recorriendo los sprints del proyecto. No se guarda en ningún lado.
   número, se les avisa.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en el mismo comentario de la issue #16, con la misma excepción que la Puerta 1. Se agregó `PointsAtClose` a lo que se lee de `Sprint`, y se sacó `docs/diseno-dominio.md` de los archivos afectados porque el contrato ya tiene las horas estimadas.
+> Ratificó: Juliana Bustos — Fecha: 2026-10-20 — Comentarios: en un comentario del PR #81 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/81#issuecomment-6300935343), desde su cuenta, y lo repitió en la issue #16 el 2026-10-22, como pedía la excepción (https://github.com/emisorato1/seguimiento-medicion-ics/issues/16#issuecomment-6332374637): «Ratifico las tres puertas de la Historia #16. La especificación y las decisiones planteadas son correctas para avanzar».
 
 ## Fase 3 — Tareas
 
@@ -422,76 +439,190 @@ solo test con tabla de casos. Los números con decimales se comparan con una tol
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Una historia nace con cero horas estimadas; cargarlas las registra con fracciones, y volver a cargarlas reemplaza | Cargar y reemplazar las horas estimadas de una historia | RN-17 | pendiente |
-| 2 | Rechazar horas estimadas cero o negativas, sin cambiar la historia | Rechazar horas estimadas que no son mayores que cero | RN-18 | pendiente |
-| 3 | Rechazar la carga en una historia Terminada, sin cambiarla | No cambiar las horas estimadas de una historia terminada | RN-19 | pendiente |
-| 4 | Las métricas de un sprint y de un proyecto sin datos valen cero | Sin datos cargados las metricas valen cero | RN-1, RN-14, RN-15 | pendiente |
-| 5 | Planificados de un sprint: puntos y cantidad de todas sus historias comprometidas | Metricas de un sprint cerrado | RN-3, RN-16 | pendiente |
+| 1 | Una historia nace con cero horas estimadas; cargarlas las registra con fracciones, y volver a cargarlas reemplaza | Cargar y reemplazar las horas estimadas de una historia | RN-17 | hecha |
+| 2 | Rechazar horas estimadas cero o negativas, sin cambiar la historia | Rechazar horas estimadas que no son mayores que cero | RN-18 | hecha |
+| 3 | Rechazar la carga en una historia Terminada, sin cambiarla | No cambiar las horas estimadas de una historia terminada | RN-19 | hecha |
+| 4 | Las métricas de un sprint y de un proyecto sin datos valen cero | Sin datos cargados las metricas valen cero | RN-1, RN-14, RN-15 | hecha |
+| 5 | Planificados de un sprint: puntos y cantidad de todas sus historias comprometidas | Metricas de un sprint cerrado | RN-3, RN-16 | hecha |
 | 6 | Completados y velocidad de un sprint salen del registro del cierre | Una historia que volvio al backlog cuenta como completada solo donde se completo | RN-4, RN-5 | pendiente |
-| 7 | Un sprint abierto devuelve sus métricas con completados y velocidad en cero | Las metricas de un sprint abierto son parciales | RN-6 | pendiente |
-| 8 | Horas de un sprint, y las de una historia que pasó por dos sprints cuentan en el último | Las horas de una historia que paso por dos sprints cuentan en el ultimo | RN-7 | pendiente |
-| 9 | Desviación con signo, y cero sin horas estimadas | Calcular la desviacion de horas | RN-12, RN-14 | pendiente |
-| 10 | Porcentaje de historias completas con decimales, y cero sin historias | Calcular el porcentaje de historias completas | RN-13, RN-14, RN-16 | pendiente |
-| 11 | Defectos detectados y resueltos de cada sprint | Defectos detectados y resueltos de cada sprint | RN-8 | pendiente |
-| 12 | Métricas del proyecto: todo el backlog, todo el esfuerzo y todos los defectos | Metricas del proyecto entero | RN-9, RN-11 | pendiente |
-| 13 | Velocidad del proyecto: promedio sin decimales de los sprints cerrados, y cero sin ninguno | Velocidad del proyecto | RN-10 | pendiente |
-| 14 | Pedir las métricas no cambia ningún dato y refleja lo que se cargó después | Las metricas reflejan los datos cargados despues | RN-2 | pendiente |
-| 15 | Sprint, historia o proyecto inexistentes informan que no se encontraron | Pedir algo que no existe | RN-20 | pendiente |
+| 7 | Los puntos de un sprint cerrado salen de los registrados al cerrarlo, no de los actuales | Los puntos de un sprint cerrado no cambian si se reestima una historia | RN-3 | pendiente |
+| 8 | Un sprint abierto devuelve sus métricas con completados y velocidad en cero | Las metricas de un sprint abierto son parciales | RN-6 | hecha |
+| 9 | Horas de un sprint, y las de una historia que pasó por dos sprints cuentan en el último | Las horas de una historia que paso por dos sprints cuentan en el ultimo | RN-7 | hecha |
+| 10 | Desviación con signo, y cero sin horas estimadas | Calcular la desviacion de horas | RN-12, RN-14 | hecha |
+| 11 | Porcentaje de historias completas con decimales, y cero sin historias | Calcular el porcentaje de historias completas | RN-13, RN-14, RN-16 | pendiente |
+| 12 | Defectos detectados y resueltos de cada sprint | Defectos detectados y resueltos de cada sprint | RN-8 | hecha |
+| 13 | Métricas del proyecto: todo el backlog, todo el esfuerzo y todos los defectos | Metricas del proyecto entero | RN-9, RN-11 | a medias (los completados esperan la #10) |
+| 14 | Velocidad del proyecto: promedio redondeado de los sprints cerrados, y cero sin ninguno | Velocidad del proyecto | RN-10 | pendiente |
+| 15 | Pedir las métricas no cambia ningún dato y refleja lo que se cargó después | Las metricas reflejan los datos cargados despues | RN-2 | hecha |
+| 16 | Sprint, historia o proyecto inexistentes informan que no se encontraron | Pedir algo que no existe | RN-20 | hecha |
 
 **El escenario "Metricas de un sprint cerrado" se completa en varias tareas.** La 5 escribe su
-test verificando los planificados, y la 6, la 8, la 9, la 10 y la 11 le agregan la
-verificación de su número. Al terminar la 11, el escenario está entero.
+test verificando los planificados, y la 6, la 9, la 10, la 11 y la 12 le agregan la
+verificación de su número. Al terminar la 12, el escenario está entero.
 
 ### Por qué este orden
 
-- **De la 1 a la 3, las horas estimadas**: la tarea 8 las necesita, y es lo único que escribe.
+- **De la 1 a la 3, las horas estimadas**: la tarea 9 las necesita, y es lo único que escribe.
 - **La 4 fija las dos consultas** y su respuesta sin datos: lo que sigue es llenar los ceros.
-- **De la 5 a la 8 se arma el ámbito de un sprint**, de lo más simple (lo comprometido) a lo
-  más delicado (el último sprint de cada historia). La 9 y la 10 son las fórmulas con
-  división, que necesitan sus dos términos ya calculados.
-- **La 12 y la 13 agregan el proyecto**, que reutiliza el cálculo ya probado.
-- **La 14 y la 15 van al final**: protegen la consulta pura y los bordes de afuera.
+- **De la 5 a la 9 se arma el ámbito de un sprint**, de lo más simple (lo comprometido) a lo
+  más delicado (el último sprint de cada historia). La 7 va después de la 6 porque congela
+  los puntos que la 5 y la 6 ya calculan. La 10 y la 11 son las fórmulas con división, que
+  necesitan sus dos términos ya calculados.
+- **La 13 y la 14 agregan el proyecto**, que reutiliza el cálculo ya probado.
+- **La 15 y la 16 van al final**: protegen la consulta pura y los bordes de afuera.
 
 ### Cobertura
 
-Las veinte reglas quedan cubiertas: RN-1 (4), RN-2 (14), RN-3 (5), RN-4 (6), RN-5 (6),
-RN-6 (7), RN-7 (8), RN-8 (11), RN-9 (12), RN-10 (13), RN-11 (12), RN-12 (9), RN-13 (10),
-RN-14 (4, 9, 10), RN-15 (4), RN-16 (5, 10), RN-17 (1), RN-18 (2), RN-19 (3), RN-20 (15).
+Las veinte reglas quedan cubiertas: RN-1 (4), RN-2 (15), RN-3 (5, 7), RN-4 (6), RN-5 (6),
+RN-6 (8), RN-7 (9), RN-8 (12), RN-9 (13), RN-10 (14), RN-11 (13), RN-12 (10), RN-13 (11),
+RN-14 (4, 10, 11), RN-15 (4), RN-16 (5, 11), RN-17 (1), RN-18 (2), RN-19 (3), RN-20 (16).
 
 | Criterio de aceptación | Tareas |
 |---|---|
 | Planificados de un sprint, incluidas las que volvieron al backlog | 5 |
 | Completados del registro del cierre, sin contar dos veces | 6 |
-| Velocidad del sprint y del proyecto | 6, 13 |
-| Métricas de un sprint abierto | 7 |
-| Horas de un sprint, y de una historia que pasó por dos | 8 |
-| Desviación con signo, y cero sin horas estimadas | 9 |
-| Porcentaje con decimales, y cero sin historias | 10 |
-| Defectos de un sprint y del proyecto | 11, 12 |
-| El proyecto incluye todo su backlog | 12 |
+| Puntos de un sprint cerrado fijos al cerrarlo | 7 |
+| Velocidad del sprint y del proyecto | 6, 14 |
+| Métricas de un sprint abierto | 8 |
+| Horas de un sprint, y de una historia que pasó por dos | 9 |
+| Desviación con signo, y cero sin horas estimadas | 10 |
+| Porcentaje con decimales, y cero sin historias | 11 |
+| Defectos de un sprint y del proyecto | 12, 13 |
+| El proyecto incluye todo su backlog | 13 |
 | Sin datos, once ceros sin error | 4 |
-| Pedir no cambia nada y refleja los datos nuevos | 14 |
+| Pedir no cambia nada y refleja los datos nuevos | 15 |
 | Cargar y reemplazar horas estimadas, y sus rechazos | 1, 2, 3 |
-| Sprint, historia o proyecto inexistentes | 15 |
+| Sprint, historia o proyecto inexistentes | 16 |
 
-Los quince escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los dieciséis escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
-- **Las tareas 1 a 3 necesitan las horas estimadas en el contrato** (punto 1 de la puerta).
-  La 3 necesita una historia Terminada: el test la prepara desde dentro del paquete, como la
-  #12 en su tarea 9.
-- **De la 4 a la 15 se necesitan sprints, esfuerzo y defectos** (#8 a #11, #14 y #15), que no
-  están en `dev`: los tests los arman a mano contra el contrato. No se espera a nadie.
-- **La 15 necesita el error de sprint no encontrado de la #11.** Si todavía no está en `dev`,
+- **Las tareas 1 a 3 tocan `story.go`, que es compartido**: se avisa al grupo antes (punto 1
+  de la puerta). La 3 necesita una historia Terminada: el test la prepara desde dentro del
+  paquete, como la #12 en su tarea 9.
+- **De la 4 a la 16 se necesitan sprints, esfuerzo y defectos** (#8 a #11, #14 y #15), que no
+  están en `dev`: los tests los arman a mano contra el contrato. No se espera a nadie. La 7
+  reestima con la operación de la #12, que ya está en `dev`.
+- **La 16 necesita el error de sprint no encontrado de la #11.** Si todavía no está en `dev`,
   se declara acá con el nombre que fija la #11 y se resuelve el conflicto al traer `dev`.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-20 — Comentarios: aprobada en el mismo comentario de la issue #16, con la misma excepción que la Puerta 1. Se agregó la tarea 7, de los puntos de un sprint cerrado, y se renumeraron las siguientes.
+> Ratificó: Juliana Bustos — Fecha: 2026-10-20 — Comentarios: en un comentario del PR #81 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/81#issuecomment-6300935343), desde su cuenta, y lo repitió en la issue #16 el 2026-10-22, como pedía la excepción (https://github.com/emisorato1/seguimiento-medicion-ics/issues/16#issuecomment-6332374637): «Ratifico las tres puertas de la Historia #16. La especificación y las decisiones planteadas son correctas para avanzar».
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `56ff0bc` | `7e4e3b8` |
+| 2 | `eb4ad3d` | `e636a5c` |
+| 3 | `4d24c31` | `9d00e6f` |
+| 16 (fila de la historia) | `15a8336` | — (sin RED, ver Desvíos) |
+| 2 (NaN, hallazgo de la revisión) | `4708708` | `9dd7309` |
+| 2 (infinito, pedido de cambios de Agustín) | `f0ee9fb` | `1a60943` |
+| Conversión: las horas estimadas se guardan (regla de la #77) | `ac4eb74` | `8b364b3` |
+| Conversión: horas estimadas negativas en los datos guardados | `a2dbb04` | `eea8b48` |
+| `Metrics` declarado como dato plano, antes que su cálculo | — (sin test, ver Desvíos) | `ab6d4e7` |
+| 4 | `7f4a880` | `0faa0aa` |
+| 16 (filas del sprint y del proyecto) | `3f540d8` | `538264d` (la del proyecto, sin RED: ver Desvíos) |
+| 5 | `11f3554` | `fff2a46` |
+| 9 | `cc515ff` | `b48e2be` |
+| 10 | `7bab460` | `96ed50e` |
+| 8 | `1909bb4` | — (sin RED, ver abajo) |
+| 12 | `b6806d0` | `81328ca` |
+| 13 (sin los completados) | `a03372b` | `d8b461e` |
+| 15 | `771ffff` | — (sin RED, ver abajo) |
+
+Los RED de las tareas 1 y 2 fueron por compilación (la operación y el error todavía no
+existían); el de la tarea 3, por comportamiento: la carga aceptaba una historia Terminada.
+Los dos de la conversión, por comportamiento: las horas se perdían al reconstruir el
+registro, y unas horas negativas se cargaban sin error. Esos dos commits de test llevan la
+salida del test fallando en su mensaje, como pide AGENTS.md desde el PR #98.
+
+Las tareas 9 y 10 se hicieron el 21/10, apenas el esfuerzo de la #14 llegó a `dev` (PR #100).
+Sus RED fueron por comportamiento: las horas y la desviación salían en cero. En las dos,
+algunas filas pasaron solas porque esperan cero: el sprint 1 de la historia que pasó por dos
+sprints (9), y las filas sin horas estimadas (10). Quedan como protección: si el cálculo
+sumara las horas en cada sprint o dividiera por cero, fallarían. El RED lo dieron las otras
+filas de la misma tarea y el escenario del sprint cerrado, que suma sus horas y su
+desviación.
+
+**Segundo PR (`Refs #16`), 22/10**, apenas los defectos de la #15 llegaron a `dev` (PR #129):
+- **La 12** tuvo RED por comportamiento: los defectos salían en cero. El escenario del sprint
+  cerrado suma sus dos defectos detectados y uno resuelto.
+- **La 13 quedó a medias.** Calcula los planificados, las horas, la desviación y los defectos
+  del proyecto, con RED por comportamiento. Los completados, el porcentaje y la velocidad
+  salen del registro del cierre de la #10, y los suman las tareas 6, 11 y 14.
+- **La 8 y la 15 pasaron sin RED**, y sus commits lo dicen.
+  - La 8: los completados y la velocidad de un sprint abierto todavía valen cero porque no se
+    calculan. El test queda para cuidar que sigan en cero cuando la tarea 6 los calcule.
+  - La 15: las métricas se calculan en el momento desde la tarea 4, y el cálculo solo lee.
+    El test compara el registro entero en JSON antes y después de pedirlas.
+
+### Hallazgo de la revisión
+
+**La carga aceptaba NaN ("no es un número") como horas estimadas.** La RN-18 pide rechazar
+lo que no sea mayor que cero, y NaN no lo es, pero la condición estaba escrita como "menor o
+igual que cero", que con NaN da falso. Puede llegar desde la consola, porque la conversión de
+texto a número de Go acepta "NaN". Se encontró en la revisión del PR #81, antes de entrar a
+`dev`, así que no se abrió defecto: se agregó un test sin escenario que lo rechaza (RED por
+comportamiento) y la condición pasó a "no es mayor que cero".
+
+**La carga también aceptaba horas estimadas infinitas.** Responde al pedido de cambios de
+Agustín Salinas en el PR #81 (20/10). El infinito es mayor que cero y cumplía la RN-18 tal
+como está escrita, pero no son horas:
+- La consola lo puede mandar, porque `strconv.ParseFloat` acepta el texto "Inf".
+- JSON no lo puede escribir: con una sola historia en horas infinitas, la web ya no podía
+  guardar el archivo, que se reescribe entero en cada operación.
+- La desviación de la tarea 10 daba NaN.
+
+Se agregó un test sin escenario con el infinito positivo y el negativo. Su RED fue por
+comportamiento, en el positivo; el negativo ya se rechazaba. Después se agregó el arreglo:
+se rechaza con el mismo error, como hace la #14 con las horas reales. La carga del archivo
+no cambió, porque el decodificador de JSON ya rechaza un número infinito y uno que no es un
+número.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Uno de orden:
+
+- **La fila "cargar horas estimadas en la historia 99" de la tarea 16 se adelantó.** Con las
+  tareas 1 a 3 la carga ya busca la historia, así que el caso de la historia inexistente
+  pasó sin código nuevo; sin su test, la cobertura del dominio bajaba a 99,6%. Las filas del
+  sprint y del proyecto se agregan en la tarea 16.
+- **El error de horas inválidas se llama `ErrEstimatedHoursInvalid`** y no
+  `ErrStoryHoursInvalid`, para no confundirlo con `p.StoryHours(id)`, que en el contrato son
+  las horas **reales** de una historia (#14).
+
+- **Las horas estimadas entran en la conversión del registro** (`internal/domain/registry_json.go`
+  y su test), que no figura en los archivos afectados de la Fase 2. La conversión llegó a
+  `dev` con la #77 (PR #92) después de las puertas de esta historia, y su regla pide que la
+  historia que agrega un dato lo sume ahí, con su caso en el test de ida y vuelta. Como el
+  #92 entró antes que este PR, le tocó a esta historia. Al reconstruir, las horas pasan por
+  la misma regla que al cargarlas: cero es "sin horas estimadas" y un valor negativo rechaza
+  la carga (RN-17, RN-18).
+
+- **`Metrics` se declaró antes que su cálculo, sin test** (`ab6d4e7`, en `metrics.go`). Es un
+  dato plano con las once métricas del contrato y sus campos son públicos, porque la #17, la
+  #18 y la #19 lo arman a mano en sus tests desde fuera del paquete. Sin el tipo, esas
+  historias no compilan, y el cálculo de esta historia (tareas 4 a 16) espera a que existan
+  el sprint, el esfuerzo y los defectos. Lo decidió el 21/10 el Agile Enabler y quedó en el
+  contrato (PR #122). No lleva test ni RED porque es una declaración sin comportamiento: no
+  hay nada que un test pueda verificar que falle antes y pase después. El comportamiento
+  llega con las tareas 4 a 16, cada una con su test primero.
+
+- **La fila "pedir las métricas del proyecto 99" de la tarea 16 pasó sin código nuevo**: el
+  proyecto se busca en el registro de la #3, que ya informa que no se encontró. La del
+  sprint 99 sí tuvo RED. Las tareas 4, 5 y 16 se hicieron el 21/10, apenas el sprint de la #8
+  llegó a `dev`; asignar historias (#9) y cerrar el sprint (#10) todavía no están, así que
+  los tests arman esos datos dentro del paquete, sin tocar `sprint.go`.
+
+Nota de proceso: las tareas 4 a 16 necesitan `Sprint` (#8), `Effort` (#14) y `Defect` (#15).
+Como ninguna está en `dev` y esas entidades son de sus dueños, las tareas 1 a 3 entran en un
+primer PR con `Refs #16`, y el resto sigue cuando esas entidades lleguen a `dev`.
 
 ## Trazabilidad
 
@@ -501,5 +632,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/metrics_test.go` y `internal/domain/story_hours_test.go` |
-| Código Go | `internal/domain/metrics.go`, `internal/domain/story_hours.go`, el dato de horas estimadas en `internal/domain/story.go` y su error en `internal/domain/errors.go` |
+| Tests | `internal/domain/metrics_test.go`, `internal/domain/story_hours_test.go` y los casos de horas estimadas en `internal/domain/registry_json_test.go` |
+| Código Go | `internal/domain/metrics.go`, `internal/domain/story_hours.go`, el dato de horas estimadas en `internal/domain/story.go` y en `internal/domain/registry_json.go`, y su error en `internal/domain/errors.go` |
