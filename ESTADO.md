@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-23 00:50. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-23 01:16. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -23,12 +23,11 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -71,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+1b11f92 2026-10-23 feat: un proyecto sin sprints arma un dashboard sin datos (historia 17, tarea 1)
+6367a0e 2026-10-23 test: un proyecto sin sprints arma un dashboard sin datos (historia 17, tarea 1)
+9c00f23 2026-10-23 chore: regenerar ESTADO.md con la #17 lista para implementar
+ec26a53 2026-10-23 docs: las tres puertas de la #17 registradas y la spec lista para implementar
 9ce7080 2026-10-23 docs: las correcciones de las puertas de la #17 (contrato hecho, #16 en dev, ancho con punto y formato)
 6e60171 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-17-spec-datos-al-dia
 68a3804 2026-10-22 Merge pull request #140 from emisorato1/historia-16-parte-2
 28140fa 2026-10-22 docs: las tareas 8, 12, 13 y 15 de la historia 16 en su fase 3, su fase 4 y el indice
-771ffff 2026-10-22 test: las metricas reflejan los datos cargados despues (historia 16, tarea 15, sin RED)
-d8b461e 2026-10-22 feat: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
-a03372b 2026-10-22 test: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
-81328ca 2026-10-22 feat: defectos detectados y resueltos de cada sprint (historia 16, tarea 12)
 ```
