@@ -47,6 +47,25 @@ type projectJSON struct {
 	// sin defectos, se lee como un proyecto sin defectos y con el contador en cero.
 	LastDefectID int          `json:"last_defect_id,omitempty"`
 	Defects      []defectJSON `json:"defects,omitempty"`
+	// Las rondas de Planning Poker son de la #13. Van con omitempty: un archivo de antes, sin
+	// rondas, se lee como un proyecto sin rondas.
+	VotingRounds []votingRoundJSON `json:"voting_rounds,omitempty"`
+}
+
+// votingRoundJSON es una ronda de Planning Poker guardada (historia #13, tarea 14). Los votos
+// de una ronda sin revelar también se guardan: el secreto vale dentro del sistema, y el
+// archivo no es una interfaz (punto 8 de la puerta de la #13).
+type votingRoundJSON struct {
+	StoryID      int        `json:"story_id"`
+	Number       int        `json:"number"`
+	Participants []string   `json:"participants"`
+	Votes        []voteJSON `json:"votes,omitempty"`
+	Revealed     bool       `json:"revealed,omitempty"`
+}
+
+type voteJSON struct {
+	MemberName string `json:"member_name"`
+	Points     int    `json:"points"`
 }
 
 // defectJSON es un defecto guardado (historia #15). La severidad y el estado van con su
@@ -164,6 +183,13 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 				DetectedIn:  d.detectedIn,
 				ResolvedIn:  d.resolvedIn,
 			})
+		}
+		for _, r := range p.votingRounds {
+			round := votingRoundJSON{StoryID: r.storyID, Number: r.number, Participants: r.participants, Revealed: r.revealed}
+			for _, v := range r.votes {
+				round.Votes = append(round.Votes, voteJSON{MemberName: v.MemberName, Points: v.Points})
+			}
+			project.VotingRounds = append(project.VotingRounds, round)
 		}
 		out.Projects = append(out.Projects, project)
 	}
@@ -323,7 +349,54 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 		project.defects = append(project.defects, defect)
 	}
 	project.lastDefectID = pj.LastDefectID
+
+	// Las rondas van al final, porque apuntan a historias que ya tienen que estar cargadas
+	// (historia #13).
+	rounds, err := votingRoundsFromJSON(project, pj.VotingRounds)
+	if err != nil {
+		return nil, fmt.Errorf("rondas: %w", err)
+	}
+	project.votingRounds = rounds
 	return project, nil
+}
+
+// votingRoundsFromJSON reconstruye las rondas de Planning Poker de un proyecto (historia #13,
+// tarea 14). Cada voto entra con la misma operación que al votar, que controla que sea de un
+// participante, que no vote dos veces y que el valor esté en la escala; una ronda guardada
+// como revelada se revela igual, que controla que no le falten votos. Además se controla lo
+// que solo un archivo puede traer mal: una historia que no existe, un número de ronda que no
+// es válido y dos rondas sin revelar sobre la misma historia.
+func votingRoundsFromJSON(project *Project, in []votingRoundJSON) ([]*VotingRound, error) {
+	rounds := make([]*VotingRound, 0, len(in))
+	inProgress := map[int]bool{}
+	for _, rj := range in {
+		if _, err := project.Story(rj.StoryID); err != nil {
+			return nil, err
+		}
+		if rj.Number < 1 {
+			return nil, fmt.Errorf("la ronda de la historia %d tiene el número %d y tiene que ser al menos 1", rj.StoryID, rj.Number)
+		}
+		participants := make([]string, len(rj.Participants))
+		copy(participants, rj.Participants)
+		round := &VotingRound{storyID: rj.StoryID, number: rj.Number, participants: participants}
+		for _, vj := range rj.Votes {
+			if err := round.Vote(vj.MemberName, vj.Points); err != nil {
+				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, err)
+			}
+		}
+		if rj.Revealed {
+			if err := round.Reveal(); err != nil {
+				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, err)
+			}
+		} else {
+			if inProgress[rj.StoryID] {
+				return nil, fmt.Errorf("%w: la historia %d tiene dos rondas sin revelar", ErrVotingRoundInProgress, rj.StoryID)
+			}
+			inProgress[rj.StoryID] = true
+		}
+		rounds = append(rounds, round)
+	}
+	return rounds, nil
 }
 
 // defectFromJSON reconstruye un defecto con su número, su estado y sus sprints. Pasa por las

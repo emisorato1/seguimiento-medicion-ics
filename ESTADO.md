@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-23 14:41. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-23 16:17. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -71,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+b060bd6 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-17-dashboard
+e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
+a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
+78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
+8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
+2c2abd1 2026-10-23 Merge pull request #136 from emisorato1/historia-17-spec-datos-al-dia
 2e9b52a 2026-10-23 docs: las tareas 1 y 2 de la historia 17 hechas en su fase 3
 a3487f5 2026-10-23 feat: el estado general trae cada metrica del proyecto tal como llego (historia 17, tarea 2)
-5941e21 2026-10-23 test: el estado general trae cada metrica del proyecto tal como llego (historia 17, tarea 2)
-85bf44c 2026-10-23 chore: regenerar ESTADO.md con la #17 en progreso
-1b11f92 2026-10-23 feat: un proyecto sin sprints arma un dashboard sin datos (historia 17, tarea 1)
-6367a0e 2026-10-23 test: un proyecto sin sprints arma un dashboard sin datos (historia 17, tarea 1)
-9c00f23 2026-10-23 chore: regenerar ESTADO.md con la #17 lista para implementar
-ec26a53 2026-10-23 docs: las tres puertas de la #17 registradas y la spec lista para implementar
 ```
