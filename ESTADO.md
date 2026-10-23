@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-22 12:54. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-23 00:50. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,11 +10,13 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 13
+- Terminadas: 14
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 
 ## En progreso
 
@@ -26,8 +28,7 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
-| #15 | Gestionar defectos | 5 | Media | Sprint 2 |
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 
 ## Especificacion SDD
 
@@ -35,7 +36,6 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
-| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
@@ -64,18 +64,19 @@ _No hay historias en este estado._
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
+| #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-363097c 2026-10-22 Merge pull request #138 from emisorato1/historia-8-9-sprints
-0ccd17d 2026-10-22 refactor: actualizar el comentario de AddSprint
-41eee9d 2026-10-22 docs: poner al dia la documentacion tecnica con los sprints
-8a048e5 2026-10-22 feat: rechazar al cargar una historia repetida en un Sprint Backlog (tarea 14, historia 9)
-40640f4 2026-10-22 test: rechazar al cargar una historia repetida en un Sprint Backlog (tarea 14, historia 9)
-e34f62f 2026-10-22 chore: mover las historias 8 y 9 a en review
-764596c 2026-10-22 docs: registrar la implementacion de las historias 8 y 9
-c885140 2026-10-22 test: marcar como sin escenario el test de la tarea 4 de la historia 7
+9ce7080 2026-10-23 docs: las correcciones de las puertas de la #17 (contrato hecho, #16 en dev, ancho con punto y formato)
+6e60171 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-17-spec-datos-al-dia
+68a3804 2026-10-22 Merge pull request #140 from emisorato1/historia-16-parte-2
+28140fa 2026-10-22 docs: las tareas 8, 12, 13 y 15 de la historia 16 en su fase 3, su fase 4 y el indice
+771ffff 2026-10-22 test: las metricas reflejan los datos cargados despues (historia 16, tarea 15, sin RED)
+d8b461e 2026-10-22 feat: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
+a03372b 2026-10-22 test: metricas del proyecto entero, sin los completados todavia (historia 16, tarea 13)
+81328ca 2026-10-22 feat: defectos detectados y resueltos de cada sprint (historia 16, tarea 12)
 ```
