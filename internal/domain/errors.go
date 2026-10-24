@@ -108,4 +108,24 @@ var (
 	// ErrStoryNotInSprint: quitar del sprint una historia que no esta en su Sprint Backlog
 	// (historia #9, RN-8).
 	ErrStoryNotInSprint = errors.New("la historia no está en el sprint")
+	// ErrVotingRoundNoMembers: abrir una ronda de Planning Poker en un proyecto sin
+	// integrantes (historia #13, RN-6).
+	ErrVotingRoundNoMembers = errors.New("el proyecto no tiene integrantes que puedan votar")
+	// ErrVotingRoundInProgress: abrir una ronda sobre una historia que ya tiene una sin
+	// revelar (historia #13, RN-7).
+	ErrVotingRoundInProgress = errors.New("la historia ya tiene una ronda de votación en curso")
+	// ErrVotesHidden: pedir los votos de una ronda que todavía no se reveló (historia #13,
+	// RN-12). El mensaje no lleva ningún valor.
+	ErrVotesHidden = errors.New("los votos están ocultos hasta que se revele la ronda")
+	// ErrVotesMissing: revelar una ronda en la que todavía falta votar algún participante
+	// (historia #13, RN-15).
+	ErrVotesMissing = errors.New("todavía faltan votos para revelar la ronda")
+	// ErrAlreadyVoted: votar por segunda vez en la misma ronda (historia #13, RN-10). El
+	// mensaje no dice qué se votó.
+	ErrAlreadyVoted = errors.New("el integrante ya votó en esta ronda")
+	// ErrNotParticipant: votar en una ronda de la que no se participa, porque no se era
+	// integrante del proyecto al abrirla (historia #13, RN-11).
+	ErrNotParticipant = errors.New("no participa de esta ronda")
+	// ErrRoundRevealed: votar o volver a revelar una ronda ya revelada (historia #13, RN-16).
+	ErrRoundRevealed = errors.New("la ronda ya fue revelada")
 )

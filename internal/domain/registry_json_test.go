@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"errors"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -106,6 +107,28 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 	}
 	if err := first.ResolveDefect(3, 2); err != nil {
 		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
+	}
+
+	// las rondas de Planning Poker son de la #13, que las suma a la conversion (tarea 14): una
+	// revelada, sobre la historia estimada, y una sin revelar con un voto oculto, sobre la 2
+	revealed, err := first.OpenVotingRound(estimated.ID())
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda de prueba: %v", err)
+	}
+	for name, points := range map[string]int{"Ana Perez": 5, "Juan Gomez": 8} {
+		if err := revealed.Vote(name, points); err != nil {
+			t.Fatalf("no se pudo votar en la ronda de prueba: %v", err)
+		}
+	}
+	if err := revealed.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar la ronda de prueba: %v", err)
+	}
+	hidden, err := first.OpenVotingRound(2)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda de prueba: %v", err)
+	}
+	if err := hidden.Vote("Ana Perez", 3); err != nil {
+		t.Fatalf("no se pudo votar en la ronda de prueba: %v", err)
 	}
 	return registry
 }
@@ -221,6 +244,21 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 		if g.lastDefectID != w.lastDefectID {
 			t.Fatalf("proyecto %d: se esperaba el contador de defectos en %d, salio en %d", w.ID(), w.lastDefectID, g.lastDefectID)
 		}
+
+		// Las rondas de la #13, con sus participantes y sus votos, tambien los de una ronda sin
+		// revelar. El test esta dentro del paquete y compara los datos ocultos directamente.
+		if len(g.votingRounds) != len(w.votingRounds) {
+			t.Fatalf("proyecto %d: se esperaban %d rondas, salieron %d", w.ID(), len(w.votingRounds), len(g.votingRounds))
+		}
+		for j, wr := range w.votingRounds {
+			gr := g.votingRounds[j]
+			if gr.storyID != wr.storyID || gr.number != wr.number || gr.revealed != wr.revealed ||
+				!slices.Equal(gr.participants, wr.participants) || !slices.Equal(gr.votes, wr.votes) {
+				t.Fatalf("proyecto %d: se esperaba la ronda %d de la historia %d (revelada %v, %v, %v), salio la %d de la %d (revelada %v, %v, %v)",
+					w.ID(), wr.number, wr.storyID, wr.revealed, wr.participants, wr.votes,
+					gr.number, gr.storyID, gr.revealed, gr.participants, gr.votes)
+			}
+		}
 	}
 }
 
@@ -286,6 +324,10 @@ func unosDatosGuardados() registryJSON {
 						State: "Abierto", StoryID: 1, DetectedIn: 1},
 					{ID: 2, Title: "La fecha sale al reves", Description: "Muestra el mes antes que el dia", Severity: "Mayor",
 						State: "Resuelto", StoryID: 2, DetectedIn: 1, ResolvedIn: 2},
+				},
+				VotingRounds: []votingRoundJSON{
+					{StoryID: 1, Number: 1, Participants: []string{"Ana Perez", "Juan Gomez"},
+						Votes: []voteJSON{{MemberName: "Ana Perez", Points: 5}}},
 				}},
 			{ID: 2, Name: "Otro proyecto", Start: "2026-10-05", NextStoryID: 1},
 		},
@@ -368,6 +410,19 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		// un defecto.
 		{name: "defecto con un dato que el sistema no conoce", raw: strings.Replace(string(base),
 			`"title":"La velocidad sale en cero"`, `"title":"La velocidad sale en cero","responsable":"Ana Perez"`, 1), want: ErrSavedDataInvalid},
+		// Las rondas de la #13 (tarea 14): las mismas reglas que al votar, y lo que solo un
+		// archivo puede traer mal.
+		{name: "ronda sobre una historia que no existe", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].StoryID = 99 }, want: ErrStoryNotFound},
+		{name: "ronda con numero cero", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Number = 0 }, want: ErrSavedDataInvalid},
+		{name: "voto fuera de la escala", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Votes[0].Points = 4 }, want: ErrStoryPointsInvalid},
+		{name: "voto de quien no participa", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Votes[0].MemberName = "Pedro Gomez" }, want: ErrNotParticipant},
+		{name: "dos votos de la misma persona", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds[0].Votes = append(d.Projects[0].VotingRounds[0].Votes, voteJSON{MemberName: "Ana Perez", Points: 3})
+		}, want: ErrAlreadyVoted},
+		{name: "dos rondas sin revelar sobre la misma historia", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds = append(d.Projects[0].VotingRounds, votingRoundJSON{StoryID: 1, Number: 2, Participants: []string{"Ana Perez"}})
+		}, want: ErrVotingRoundInProgress},
+		{name: "ronda revelada a la que le faltan votos", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Revealed = true }, want: ErrVotesMissing},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
