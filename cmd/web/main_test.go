@@ -121,6 +121,99 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 		})
 	}
 
+	// Con -red se muestran las direcciones de la red local para abrirlo desde un celular. De
+	// las direcciones de la computadora quedan solo las IPv4 que no son de ella misma.
+	t.Run("con -red muestra solo las direcciones IPv4 de la red local", func(t *testing.T) {
+		addrs := []net.Addr{
+			&net.IPNet{IP: net.ParseIP("127.0.0.1"), Mask: net.CIDRMask(8, 32)},
+			&net.IPNet{IP: net.ParseIP("192.168.1.20"), Mask: net.CIDRMask(24, 32)},
+			&net.IPNet{IP: net.ParseIP("fe80::1"), Mask: net.CIDRMask(64, 128)},
+			&net.IPNet{IP: net.ParseIP("::1"), Mask: net.CIDRMask(128, 128)},
+			&net.IPAddr{IP: net.ParseIP("10.0.0.5")},
+			&net.IPNet{IP: net.ParseIP("10.0.0.7"), Mask: net.CIDRMask(8, 32)},
+		}
+
+		ips := localIPv4(addrs)
+
+		if strings.Join(ips, " ") != "192.168.1.20 10.0.0.7" {
+			t.Errorf("se esperaban 192.168.1.20 y 10.0.0.7, salio %v", ips)
+		}
+	})
+
+	t.Run("con -red muestra una linea por cada direccion de la red local", func(t *testing.T) {
+		opts, _ := parseOptions([]string{"-puerto", "9090", "-red"})
+		var out bytes.Buffer
+
+		showAddress(&out, opts)
+
+		lineas := strings.Count(out.String(), "Desde otra computadora o un celular de la red: http://")
+		if lineas != len(lanAddresses()) {
+			t.Errorf("se esperaba una linea por cada una de %v, salio:\n%s", lanAddresses(), out.String())
+		}
+		if !strings.Contains(out.String(), "http://127.0.0.1:9090") {
+			t.Errorf("se esperaba tambien la direccion local, salio:\n%s", out.String())
+		}
+	})
+
+	t.Run("una opcion que no existe cierra el comando con el codigo 2 y sin abrir nada", func(t *testing.T) {
+		var out, errOut bytes.Buffer
+
+		code := run([]string{"-color"}, &out, &errOut, noServe(t))
+
+		if code != 2 {
+			t.Errorf("se esperaba el codigo 2, salio %d", code)
+		}
+		if !strings.Contains(errOut.String(), "No se pudo abrir el sistema:") || out.Len() != 0 {
+			t.Errorf("se esperaba solo el aviso en la salida de errores, salio:\n%s\n%s", out.String(), errOut.String())
+		}
+	})
+
+	t.Run("con el puerto ocupado no muestra ninguna direccion y cierra con el codigo 1", func(t *testing.T) {
+		otro, err := net.Listen("tcp", ":0")
+		if err != nil {
+			t.Fatalf("no se pudo ocupar el puerto para la prueba: %v", err)
+		}
+		defer otro.Close()
+		puerto := fmt.Sprint(otro.Addr().(*net.TCPAddr).Port)
+		var out, errOut bytes.Buffer
+
+		code := run([]string{"-puerto", puerto, "-datos", filepath.Join(t.TempDir(), "datos-ics.json")}, &out, &errOut, noServe(t))
+
+		if code != 1 {
+			t.Errorf("se esperaba el codigo 1, salio %d", code)
+		}
+		if out.Len() != 0 || !strings.Contains(errOut.String(), errPortInUse.Error()) {
+			t.Errorf("se esperaba solo el aviso del puerto, salio:\n%s\n%s", out.String(), errOut.String())
+		}
+	})
+
+	t.Run("con todo en orden muestra la direccion y atiende ahi la web", func(t *testing.T) {
+		var out, errOut bytes.Buffer
+		var atendio string
+		serve := func(listener net.Listener, handler http.Handler) error {
+			defer listener.Close()
+			atendio = listener.Addr().String()
+			res := httptest.NewRecorder()
+			handler.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/proyectos", nil))
+			if res.Code != http.StatusOK {
+				t.Errorf("se esperaba la lista de proyectos con el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			return http.ErrServerClosed
+		}
+
+		code := run([]string{"-puerto", "0", "-datos", filepath.Join(t.TempDir(), "datos-ics.json")}, &out, &errOut, serve)
+
+		if !strings.HasPrefix(atendio, "127.0.0.1:") {
+			t.Errorf("se esperaba atender en 127.0.0.1, salio %q", atendio)
+		}
+		if !strings.Contains(out.String(), "Abrilo en el navegador: http://127.0.0.1:0") {
+			t.Errorf("se esperaba la direccion para el navegador, salio:\n%s", out.String())
+		}
+		if code != 1 || !strings.Contains(errOut.String(), "La web se detuvo:") {
+			t.Errorf("cuando la web se detiene se esperaba el codigo 1 y el aviso, salio %d:\n%s", code, errOut.String())
+		}
+	})
+
 	t.Run("con el puerto libre escucha en esa direccion", func(t *testing.T) {
 		opts, _ := parseOptions([]string{"-puerto", "0"})
 
@@ -171,5 +264,27 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 	quedo, _ := os.ReadFile(path)
 	if !bytes.Equal(quedo, danado) {
 		t.Errorf("los datos guardados tenian que quedar como estaban, y cambiaron a:\n%s", quedo)
+	}
+
+	t.Run("el comando avisa que el archivo quedo como estaba y cierra con el codigo 1", func(t *testing.T) {
+		var out, errOut bytes.Buffer
+
+		code := run([]string{"-datos", path}, &out, &errOut, noServe(t))
+
+		if code != 1 {
+			t.Errorf("se esperaba el codigo 1, salio %d", code)
+		}
+		if !strings.Contains(errOut.String(), "El archivo "+path+" quedó como estaba.") || out.Len() != 0 {
+			t.Errorf("se esperaba solo el aviso del archivo, salio:\n%s\n%s", out.String(), errOut.String())
+		}
+	})
+}
+
+// noServe es la web que no se tiene que llegar a atender: el comando se cierra antes.
+func noServe(t *testing.T) func(net.Listener, http.Handler) error {
+	return func(listener net.Listener, _ http.Handler) error {
+		listener.Close()
+		t.Error("no se esperaba que la web llegara a atender")
+		return nil
 	}
 }
