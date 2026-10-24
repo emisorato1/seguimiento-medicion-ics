@@ -33,8 +33,10 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 17 | 0 | 0 |
 | [#9 Asignar historias a un sprint](#9-asignar-historias-a-un-sprint) | 14 | 14 | 0 | 0 |
 | [#14 Registrar el esfuerzo real](#14-registrar-el-esfuerzo-real) | 19 | 19 | 0 | 2 |
+| [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 2 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 7 |
-| [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 8 | 8 | 2 |
+| [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
+| [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 12 | 4 | 2 |
 
 ## Qué dice el historial de TDD
 
@@ -43,9 +45,9 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 170 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 207 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 28 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 32 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
@@ -476,7 +478,7 @@ cinco casos posibles:
 | [Rechazar quitar una historia que no esta en el sprint](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L217) | `TestRechazarQuitarUnaHistoriaQueNoEstaEnElSprint` [sprint_backlog_test.go:263](../internal/domain/sprint_backlog_test.go#L263) | [errors.go](../internal/domain/errors.go), [sprint_backlog.go](../internal/domain/sprint_backlog.go) | `c739a3a` → `7443a68` |
 | [Una historia que quedo sin completar se puede asignar al sprint siguiente](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L224) | `TestUnaHistoriaQueQuedoSinCompletarSePuedeAsignarAlSprintSiguiente` [sprint_backlog_test.go:282](../internal/domain/sprint_backlog_test.go#L282) | el que ya estaba | `f22036f` (sin RED: ya pasaba) |
 | [Cada proyecto arma su propio Sprint Backlog](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L232) | `TestCadaProyectoArmaSuPropioSprintBacklog` [sprint_backlog_test.go:315](../internal/domain/sprint_backlog_test.go#L315) | el que ya estaba | `f22036f` (sin RED: ya pasaba) |
-| [Operar sobre algo que no existe](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L237) | `TestOperarSobreAlgoQueNoExiste` [sprint_backlog_test.go:347](../internal/domain/sprint_backlog_test.go#L347) | el que ya estaba | `f22036f` (sin RED: ya pasaba) |
+| [Operar sobre algo que no existe](specs/sprint-2/09-asignar-historias-a-sprint.md?plain=1#L237) | `TestOperarSobreAlgoQueNoExiste` [sprint_backlog_test.go:347](../internal/domain/sprint_backlog_test.go#L347) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `b45a9fc` → `69ddd84` |
 
 ## #14 Registrar el esfuerzo real
 
@@ -530,8 +532,62 @@ cinco casos posibles:
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:367](../internal/domain/registry_json_test.go#L367) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
-| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:393](../internal/domain/registry_json_test.go#L393) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
+| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:486](../internal/domain/registry_json_test.go#L486) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
+| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:512](../internal/domain/registry_json_test.go#L512) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
+
+## #15 Gestionar defectos
+
+- **Historia:** issue #15
+- **Spec:** [docs/specs/sprint-2/15-gestionar-defectos.md](specs/sprint-2/15-gestionar-defectos.md)
+- **Código según la spec:** `internal/domain/defect.go`, `internal/domain/project.go`, `internal/domain/registry_json.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (13)</summary>
+
+- Se registra un defecto con título, descripción, severidad, historia relacionada y sprint de detección, y queda con su identificador, en Abierto y sin sprint de resolución. El primero del proyecto recibe el 1 y cada uno nuevo el siguiente.
+- No se puede registrar un defecto sin título o sin descripción; un texto de solo espacios cuenta como vacío y lo que se guarda va sin los espacios de los extremos.
+- La severidad solo puede ser Crítica, Mayor o Menor, sin distinguir mayúsculas ni espacios de los extremos, y "Critica" sin tilde se acepta como "Crítica".
+- No se puede registrar un defecto sobre una historia que no es del proyecto, y sí sobre una historia Terminada.
+- No se puede registrar un defecto con un sprint de detección que no existe, y sí con uno ya cerrado.
+- Un defecto no resuelto se puede pasar de Abierto a En curso y de En curso a Abierto.
+- No se puede pasar un defecto a Resuelto cambiándole el estado: hay que indicar el sprint de resolución.
+- Al resolver un defecto queda en Resuelto con su sprint de resolución, viniera de Abierto o de En curso.
+- No se puede resolver un defecto en un sprint anterior al de detección ni con un sprint que no existe en el proyecto, y sí en el mismo sprint en que se detectó.
+- Un defecto Resuelto no cambia de estado ni se vuelve a resolver.
+- Se pueden listar todos los defectos, los de un estado y los de una severidad, en el orden en que se registraron, y una consulta sin resultados devuelve una lista vacía sin ser un error.
+- Los defectos de un proyecto no aparecen en las consultas de otro, y cada proyecto numera desde 1.
+- Una operación rechazada deja el proyecto y sus defectos como estaban, y operar sobre un defecto o un proyecto que no existe informa que no se encontró.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Registrar un defecto](specs/sprint-2/15-gestionar-defectos.md?plain=1#L185) | `TestRegistrarUnDefecto` [defect_test.go:50](../internal/domain/defect_test.go#L50) | [defect.go](../internal/domain/defect.go), [project.go](../internal/domain/project.go) | `77f495b` → `f54c976` |
+| [El defecto nuevo recibe el identificador siguiente](specs/sprint-2/15-gestionar-defectos.md?plain=1#L192) | `TestElDefectoNuevoRecibeElIdentificadorSiguiente` [defect_test.go:73](../internal/domain/defect_test.go#L73) | el que ya estaba | `2b54c74` (sin RED: ya pasaba) |
+| [Rechazar un defecto sin titulo o sin descripcion](specs/sprint-2/15-gestionar-defectos.md?plain=1#L198) | `TestRechazarUnDefectoSinTituloOSinDescripcion` [defect_test.go:91](../internal/domain/defect_test.go#L91) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `efd321e` → `9a533f3` |
+| [Guardar el titulo y la descripcion sin los espacios de los extremos](specs/sprint-2/15-gestionar-defectos.md?plain=1#L210) | `TestGuardarElTituloYLaDescripcionSinLosEspaciosDeLosExtremos` [defect_test.go:120](../internal/domain/defect_test.go#L120) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `efd321e` → `9a533f3` |
+| [Registrar un defecto con cada severidad](specs/sprint-2/15-gestionar-defectos.md?plain=1#L215) | `TestRegistrarUnDefectoConCadaSeveridad` [defect_test.go:138](../internal/domain/defect_test.go#L138) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `91fb4c9` → `9e643a5` |
+| [Rechazar una severidad que no existe](specs/sprint-2/15-gestionar-defectos.md?plain=1#L227) | `TestRechazarUnaSeveridadQueNoExiste` [defect_test.go:175](../internal/domain/defect_test.go#L175) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `91fb4c9` → `9e643a5` |
+| [Rechazar un defecto sobre una historia que no es del proyecto](specs/sprint-2/15-gestionar-defectos.md?plain=1#L234) | `TestRechazarUnDefectoSobreUnaHistoriaQueNoEsDelProyecto` [defect_test.go:207](../internal/domain/defect_test.go#L207) | [defect.go](../internal/domain/defect.go) | `231cc56` → `186dd0a` |
+| [Registrar un defecto sobre una historia terminada](specs/sprint-2/15-gestionar-defectos.md?plain=1#L240) | `TestRegistrarUnDefectoSobreUnaHistoriaTerminada` [defect_test.go:224](../internal/domain/defect_test.go#L224) | [defect.go](../internal/domain/defect.go) | `231cc56` → `186dd0a` |
+| [Rechazar un defecto con un sprint de deteccion que no existe](specs/sprint-2/15-gestionar-defectos.md?plain=1#L245) | `TestRechazarUnDefectoConUnSprintDeDeteccionQueNoExiste` [defect_test.go:238](../internal/domain/defect_test.go#L238) | [defect.go](../internal/domain/defect.go) | `7f4e8b6` → `2d6c903` |
+| [Registrar un defecto detectado en un sprint ya cerrado](specs/sprint-2/15-gestionar-defectos.md?plain=1#L252) | `TestRegistrarUnDefectoDetectadoEnUnSprintYaCerrado` [defect_test.go:255](../internal/domain/defect_test.go#L255) | [defect.go](../internal/domain/defect.go) | `7f4e8b6` → `2d6c903` |
+| [Cambiar el estado de un defecto no resuelto](specs/sprint-2/15-gestionar-defectos.md?plain=1#L257) | `TestCambiarElEstadoDeUnDefectoNoResuelto` [defect_test.go:281](../internal/domain/defect_test.go#L281) | [defect.go](../internal/domain/defect.go) | `a58c971` → `1c03838` |
+| [Rechazar el pase a Resuelto por cambio de estado](specs/sprint-2/15-gestionar-defectos.md?plain=1#L268) | `TestRechazarElPaseAResueltoPorCambioDeEstado` [defect_test.go:309](../internal/domain/defect_test.go#L309) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `90b1696` → `e06e055` |
+| [Resolver un defecto](specs/sprint-2/15-gestionar-defectos.md?plain=1#L275) | `TestResolverUnDefecto` [defect_test.go:343](../internal/domain/defect_test.go#L343) | [defect.go](../internal/domain/defect.go) | `5aad442` → `39b8879` |
+| [Resolver un defecto en el mismo sprint en que se detecto](specs/sprint-2/15-gestionar-defectos.md?plain=1#L286) | `TestResolverUnDefectoEnElMismoSprintEnQueSeDetecto` [defect_test.go:397](../internal/domain/defect_test.go#L397) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `801f055` → `940825d` |
+| [Rechazar la resolucion en un sprint anterior al de deteccion](specs/sprint-2/15-gestionar-defectos.md?plain=1#L292) | `TestRechazarLaResolucionEnUnSprintAnteriorAlDeDeteccion` [defect_test.go:376](../internal/domain/defect_test.go#L376) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `801f055` → `940825d` |
+| [Rechazar la resolucion con un sprint que no existe](specs/sprint-2/15-gestionar-defectos.md?plain=1#L299) | `TestRechazarLaResolucionConUnSprintQueNoExiste` [defect_test.go:361](../internal/domain/defect_test.go#L361) | [defect.go](../internal/domain/defect.go) | `28905e7` → `4f5f746` |
+| [Un defecto resuelto no se vuelve a tocar](specs/sprint-2/15-gestionar-defectos.md?plain=1#L306) | `TestUnDefectoResueltoNoSeVuelveATocar` [defect_test.go:415](../internal/domain/defect_test.go#L415) | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `16c3069` → `7eacf55` |
+| [Listar los defectos del proyecto](specs/sprint-2/15-gestionar-defectos.md?plain=1#L318) | `TestListarLosDefectosDelProyecto` [defect_test.go:453](../internal/domain/defect_test.go#L453) | [defect.go](../internal/domain/defect.go) | `65af2a1` → `3a51103` |
+| [Los defectos de un proyecto no aparecen en otro](specs/sprint-2/15-gestionar-defectos.md?plain=1#L330) | `TestLosDefectosDeUnProyectoNoAparecenEnOtro` [defect_test.go:488](../internal/domain/defect_test.go#L488) | el que ya estaba | `f686721` (sin RED: ya pasaba) |
+| [Operar sobre algo que no existe](specs/sprint-2/15-gestionar-defectos.md?plain=1#L336) | `TestOperarSobreAlgoQueNoExisteConDefectos` [defect_test.go:528](../internal/domain/defect_test.go#L528) | ⚠️ no se encontró el commit del test | — |
+
+**Tests que no citan un escenario de la Fase 1 (2).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestUnaSeveridadQueNoExisteSeMuestraSinSeveridad` [defect_test.go:197](../internal/domain/defect_test.go#L197) | RN-6 | el que ya estaba | `9e53b08` (sin RED: ya pasaba) |
+| `TestRechazarUnEstadoQueNoExiste` [defect_test.go:328](../internal/domain/defect_test.go#L328) | RN-9, RN-18 | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `90b1696` → `e06e055` |
 
 ## #77 Interfaz web: proyectos, integrantes y backlog
 
@@ -572,11 +628,11 @@ cinco casos posibles:
 | [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | `TestUnTextoConSignosSeMuestraTalCual` [projects_test.go:104](../internal/web/projects_test.go#L104) | el que ya estaba | `413660d` (sin RED: ya pasaba) |
 | [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [main_test.go:22](../cmd/web/main_test.go#L22) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
 | ″ | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [server_test.go:206](../internal/web/server_test.go#L206) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
-| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:193](../internal/domain/registry_json_test.go#L193) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
+| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:267](../internal/domain/registry_json_test.go#L267) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:69](../internal/store/file_test.go#L69) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1147](../internal/web/server_test.go#L1147) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:158](../cmd/web/main_test.go#L158) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
-| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:257](../internal/domain/registry_json_test.go#L257) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
+| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:342](../internal/domain/registry_json_test.go#L342) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
 | ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:160](../internal/store/file_test.go#L160) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:202](../internal/store/file_test.go#L202) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | ″ | `TestUnCambioQueNoSePudoGuardarSeAvisa` [server_test.go:949](../internal/web/server_test.go#L949) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
@@ -589,11 +645,55 @@ cinco casos posibles:
 |---|---|---|---|
 | `TestListarLosProyectosDeUnRegistroVacio` [project_registry_test.go:7](../internal/domain/project_registry_test.go#L7) | dependencia de la #77, RN-7 y RN-23 (la lista vacía no es un error) | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
-| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:341](../internal/domain/registry_json_test.go#L341) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:460](../internal/domain/registry_json_test.go#L460) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
 | `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1202](../internal/web/server_test.go#L1202) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
+
+## #13 Votar en secreto en una ronda de Planning Poker
+
+- **Historia:** issue #13
+- **Spec:** [docs/specs/sprint-3/13-votar-en-secreto.md](specs/sprint-3/13-votar-en-secreto.md)
+- **Código según la spec:** `internal/domain/voting_round.go`, `internal/domain/project.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (14)</summary>
+
+- Se puede abrir una ronda sobre una historia no Terminada, esté estimada o no, y queda como la ronda 1, sin revelar y sin votos.
+- No se puede abrir una ronda sobre una historia Terminada ni sobre una que no existe.
+- No se puede abrir una ronda en un proyecto sin integrantes.
+- No se puede abrir otra ronda sobre una historia que tiene una sin revelar.
+- Cada participante vota una sola vez por ronda, y el segundo voto no muestra el primero.
+- El voto tiene que ser un valor de la escala 1, 2, 3, 5, 8, 13 o 21.
+- Solo votan los integrantes que tenía el proyecto al abrir la ronda, y el nombre se reconoce aunque venga con otras mayúsculas o espacios de más.
+- Sin revelar, nadie puede ver ningún voto, ni siquiera el propio; solo se sabe quién votó y quién falta.
+- Mostrar una ronda sin revelar no deja ver ningún valor votado.
+- La ronda se revela recién cuando votaron todos; antes, el pedido se rechaza.
+- Al revelarse se ven todos los votos con el nombre de quien los dio.
+- No se puede votar ni volver a revelar una ronda ya revelada.
+- Un voto o un pedido de revelar rechazado deja la ronda como estaba.
+- Se puede consultar la ronda actual de una historia, revelada o no; si no tiene ninguna, se informa y no es un error.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Abrir una ronda sobre una historia que no esta terminada](specs/sprint-3/13-votar-en-secreto.md?plain=1#L149) | `TestAbrirUnaRondaSobreUnaHistoriaQueNoEstaTerminada` [voting_round_test.go:32](../internal/domain/voting_round_test.go#L32) | [voting_round.go](../internal/domain/voting_round.go) | `03740ab` → `a3cc842` |
+| [Rechazar una ronda sobre una historia que no se puede votar](specs/sprint-3/13-votar-en-secreto.md?plain=1#L163) | `TestRechazarUnaRondaSobreUnaHistoriaQueNoSePuedeVotar` [voting_round_test.go:74](../internal/domain/voting_round_test.go#L74) | [voting_round.go](../internal/domain/voting_round.go) | `689cd7b` → `8dcf72a` |
+| [Rechazar una ronda en un proyecto sin integrantes](specs/sprint-3/13-votar-en-secreto.md?plain=1#L175) | `TestRechazarUnaRondaEnUnProyectoSinIntegrantes` [voting_round_test.go:105](../internal/domain/voting_round_test.go#L105) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `50098ab` → `3ac3da3` |
+| [Una historia no puede tener dos rondas en curso](specs/sprint-3/13-votar-en-secreto.md?plain=1#L181) | `TestUnaHistoriaNoPuedeTenerDosRondasEnCurso` [voting_round_test.go:124](../internal/domain/voting_round_test.go#L124) | [errors.go](../internal/domain/errors.go), [project.go](../internal/domain/project.go), [voting_round.go](../internal/domain/voting_round.go) | `29be0a2` → `72c965c` |
+| [Votar registra quien voto sin dejar ver los votos, ni siquiera el propio](specs/sprint-3/13-votar-en-secreto.md?plain=1#L188) | `TestVotarRegistraQuienVotoSinDejarVerLosVotosNiSiquieraElPropio` [voting_round_test.go:161](../internal/domain/voting_round_test.go#L161) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `ba90caa` → `6a78fd1` |
+| [Revelar cuando votaron todos](specs/sprint-3/13-votar-en-secreto.md?plain=1#L195) | `TestRevelarCuandoVotaronTodos` [voting_round_test.go:188](../internal/domain/voting_round_test.go#L188) | [voting_round.go](../internal/domain/voting_round.go) | `ffc855c` → `f2bcb13` |
+| [Rechazar revelar mientras falten votos](specs/sprint-3/13-votar-en-secreto.md?plain=1#L206) | `TestRechazarRevelarMientrasFaltenVotos` [voting_round_test.go:244](../internal/domain/voting_round_test.go#L244) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `f08badb` → `a911077` |
+| [Rechazar un voto fuera de la escala](specs/sprint-3/13-votar-en-secreto.md?plain=1#L218) | `TestRechazarUnVotoFueraDeLaEscala` [voting_round_test.go:278](../internal/domain/voting_round_test.go#L278) | [voting_round.go](../internal/domain/voting_round.go) | `0b37c88` → `3bfffc9` |
+| [Rechazar un segundo voto del mismo integrante](specs/sprint-3/13-votar-en-secreto.md?plain=1#L232) | `TestRechazarUnSegundoVotoDelMismoIntegrante` [voting_round_test.go:300](../internal/domain/voting_round_test.go#L300) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `16afd3a` → `0420074` |
+| [Rechazar el voto de quien no participa de la ronda](specs/sprint-3/13-votar-en-secreto.md?plain=1#L239) | `TestRechazarElVotoDeQuienNoParticipaDeLaRonda` [voting_round_test.go:343](../internal/domain/voting_round_test.go#L343) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `ef719c2` → `f7c5454` |
+| [Quien sale del proyecto despues de abrir la ronda sigue participando](specs/sprint-3/13-votar-en-secreto.md?plain=1#L251) | `TestQuienSaleDelProyectoDespuesDeAbrirLaRondaSigueParticipando` [voting_round_test.go:390](../internal/domain/voting_round_test.go#L390) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `ef719c2` → `f7c5454` |
+| [Reconocer al integrante aunque el nombre venga escrito distinto](specs/sprint-3/13-votar-en-secreto.md?plain=1#L257) | `TestReconocerAlIntegranteAunqueElNombreVengaEscritoDistinto` [voting_round_test.go:375](../internal/domain/voting_round_test.go#L375) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `ef719c2` → `f7c5454` |
+| [Una ronda revelada ya no acepta cambios](specs/sprint-3/13-votar-en-secreto.md?plain=1#L263) | `TestUnaRondaReveladaYaNoAceptaCambios` [voting_round_test.go:413](../internal/domain/voting_round_test.go#L413) | [errors.go](../internal/domain/errors.go), [voting_round.go](../internal/domain/voting_round.go) | `b6e1bca` → `cc70d85` |
+| [Mostrar una ronda sin revelar no deja ver los votos](specs/sprint-3/13-votar-en-secreto.md?plain=1#L275) | `TestMostrarUnaRondaSinRevelarNoDejaVerLosVotos` [voting_round_test.go:454](../internal/domain/voting_round_test.go#L454) | [voting_round.go](../internal/domain/voting_round.go) | `591adbc` → `ad93071` |
+| [Consultar la ronda actual de una historia](specs/sprint-3/13-votar-en-secreto.md?plain=1#L281) | `TestConsultarLaRondaActualDeUnaHistoria` [voting_round_test.go:479](../internal/domain/voting_round_test.go#L479) | [voting_round.go](../internal/domain/voting_round.go) | `baa7833` → `ed97e3e` |
+| [Consultar la ronda actual de una historia que no existe](specs/sprint-3/13-votar-en-secreto.md?plain=1#L292) | `TestConsultarLaRondaActualDeUnaHistoriaQueNoExiste` [voting_round_test.go:529](../internal/domain/voting_round_test.go#L529) | [voting_round.go](../internal/domain/voting_round.go) | `baa7833` → `ed97e3e` |
 
 ## #16 Calcular las métricas del proyecto y de cada sprint
 
@@ -625,15 +725,15 @@ cinco casos posibles:
 | [Metricas de un sprint cerrado](specs/sprint-3/16-calcular-metricas.md?plain=1#L171) | `TestMetricasDeUnSprintCerrado` [metrics_test.go:124](../internal/domain/metrics_test.go#L124) | [metrics.go](../internal/domain/metrics.go) | `11f3554` → `fff2a46` |
 | ⚠️ [Una historia que volvio al backlog cuenta como completada solo donde se completo](specs/sprint-3/16-calcular-metricas.md?plain=1#L183) | **sin test** | | |
 | ⚠️ [Los puntos de un sprint cerrado no cambian si se reestima una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L191) | **sin test** | | |
-| [Las horas de una historia que paso por dos sprints cuentan en el ultimo](specs/sprint-3/16-calcular-metricas.md?plain=1#L198) | `TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo` [metrics_test.go:159](../internal/domain/metrics_test.go#L159) | [metrics.go](../internal/domain/metrics.go) | `cc515ff` → `b48e2be` |
-| ⚠️ [Las metricas de un sprint abierto son parciales](specs/sprint-3/16-calcular-metricas.md?plain=1#L206) | **sin test** | | |
+| [Las horas de una historia que paso por dos sprints cuentan en el ultimo](specs/sprint-3/16-calcular-metricas.md?plain=1#L198) | `TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo` [metrics_test.go:170](../internal/domain/metrics_test.go#L170) | [metrics.go](../internal/domain/metrics.go) | `cc515ff` → `b48e2be` |
+| [Las metricas de un sprint abierto son parciales](specs/sprint-3/16-calcular-metricas.md?plain=1#L206) | `TestLasMetricasDeUnSprintAbiertoSonParciales` [metrics_test.go:250](../internal/domain/metrics_test.go#L250) | el que ya estaba | `1909bb4` (sin RED: ya pasaba) |
 | [Sin datos cargados las metricas valen cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L214) | `TestSinDatosCargadosLasMetricasValenCero` [metrics_test.go:53](../internal/domain/metrics_test.go#L53) | [metrics.go](../internal/domain/metrics.go) | `7f4a880` → `0faa0aa` |
-| [Calcular la desviacion de horas](specs/sprint-3/16-calcular-metricas.md?plain=1#L225) | `TestCalcularLaDesviacionDeHoras` [metrics_test.go:199](../internal/domain/metrics_test.go#L199) | [metrics.go](../internal/domain/metrics.go) | `7bab460` → `96ed50e` |
+| [Calcular la desviacion de horas](specs/sprint-3/16-calcular-metricas.md?plain=1#L225) | `TestCalcularLaDesviacionDeHoras` [metrics_test.go:210](../internal/domain/metrics_test.go#L210) | [metrics.go](../internal/domain/metrics.go) | `7bab460` → `96ed50e` |
 | ⚠️ [Calcular el porcentaje de historias completas](specs/sprint-3/16-calcular-metricas.md?plain=1#L238) | **sin test** | | |
-| ⚠️ [Defectos detectados y resueltos de cada sprint](specs/sprint-3/16-calcular-metricas.md?plain=1#L250) | **sin test** | | |
-| ⚠️ [Metricas del proyecto entero](specs/sprint-3/16-calcular-metricas.md?plain=1#L259) | **sin test** | | |
+| [Defectos detectados y resueltos de cada sprint](specs/sprint-3/16-calcular-metricas.md?plain=1#L250) | `TestDefectosDetectadosYResueltosDeCadaSprint` [metrics_test.go:276](../internal/domain/metrics_test.go#L276) | [metrics.go](../internal/domain/metrics.go) | `b6806d0` → `81328ca` |
+| [Metricas del proyecto entero](specs/sprint-3/16-calcular-metricas.md?plain=1#L259) | `TestMetricasDelProyectoEntero` [metrics_test.go:319](../internal/domain/metrics_test.go#L319) | [metrics.go](../internal/domain/metrics.go) | `a03372b` → `d8b461e` |
 | ⚠️ [Velocidad del proyecto](specs/sprint-3/16-calcular-metricas.md?plain=1#L271) | **sin test** | | |
-| ⚠️ [Las metricas reflejan los datos cargados despues](specs/sprint-3/16-calcular-metricas.md?plain=1#L282) | **sin test** | | |
+| [Las metricas reflejan los datos cargados despues](specs/sprint-3/16-calcular-metricas.md?plain=1#L282) | `TestLasMetricasReflejanLosDatosCargadosDespues` [metrics_test.go:363](../internal/domain/metrics_test.go#L363) | el que ya estaba | `771ffff` (sin RED: ya pasaba) |
 | [Cargar y reemplazar las horas estimadas de una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L289) | `TestCargarYReemplazarLasHorasEstimadasDeUnaHistoria` [story_hours_test.go:18](../internal/domain/story_hours_test.go#L18) | [story.go](../internal/domain/story.go), [story_hours.go](../internal/domain/story_hours.go) | `56ff0bc` → `7e4e3b8` |
 | [Rechazar horas estimadas que no son mayores que cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L295) | `TestRechazarHorasEstimadasQueNoSonMayoresQueCero` [story_hours_test.go:46](../internal/domain/story_hours_test.go#L46) | [errors.go](../internal/domain/errors.go), [story_hours.go](../internal/domain/story_hours.go) | `eb4ad3d` → `e636a5c` |
 | [No cambiar las horas estimadas de una historia terminada](specs/sprint-3/16-calcular-metricas.md?plain=1#L307) | `TestNoCambiarLasHorasEstimadasDeUnaHistoriaTerminada` [story_hours_test.go:79](../internal/domain/story_hours_test.go#L79) | [story_hours.go](../internal/domain/story_hours.go) | `4d24c31` → `9d00e6f` |

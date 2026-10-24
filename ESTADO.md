@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-23 12:38. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-24 16:09. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,13 +10,11 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 14
+- Terminadas: 15
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
+_No hay historias en este estado._
 
 ## En progreso
 
@@ -63,6 +61,7 @@ _No hay historias en este estado._
 | #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
@@ -71,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-ec458ee 2026-10-22 chore: regenerar ESTADO.md con la historia 13 en review
-7c7539c 2026-10-22 docs: registrar la implementación de la historia 13
-a86d0cd 2026-10-22 feat: las rondas entran en el archivo de datos, validadas como al votar (historia 13, tarea 14)
-dd3e2ac 2026-10-22 test: las rondas siguen al cerrar y volver a abrir (historia 13, tarea 14)
-ed97e3e 2026-10-22 feat: consultar la ronda actual de una historia (historia 13, tarea 13)
-baa7833 2026-10-22 test: consultar la ronda actual de una historia (historia 13, tarea 13)
-ad93071 2026-10-22 feat: la ronda se imprime sin valores en todas las formas de imprimir (historia 13, tarea 12)
-591adbc 2026-10-22 test: mostrar una ronda sin revelar no deja ver los votos (historia 13, tarea 12)
+cbef874 2026-10-24 Merge remote-tracking branch 'origin/dev' into historia-15-terminada
+b45cbe6 2026-10-23 Merge pull request #141 from emisorato1/historia-13-votar-en-secreto
+f7133d3 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-13-votar-en-secreto
+e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
+a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
+78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
+8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
+2c2abd1 2026-10-23 Merge pull request #136 from emisorato1/historia-17-spec-datos-al-dia
 ```

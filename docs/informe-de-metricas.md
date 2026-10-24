@@ -96,22 +96,24 @@ escritas las horas que tenía cada historia al cierre.
 |---|---|---|---|---|
 | Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
 | SP planificados | 16 | 31 | _pendiente_ | _pendiente_ |
-| SP completados (velocidad) | **6** | 26 * | _pendiente_ | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | 8 de 9 (89%) * | _pendiente_ | _pendiente_ |
+| SP completados (velocidad) | **6** | 31 + 8 adelantados = 39 * | _pendiente_ | _pendiente_ |
+| Historias completadas | 2 de 5 (40%) | 9 de 9 (100%) * | _pendiente_ | _pendiente_ |
 | Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
-| Horas reales | 38,25 | 24,5 * | _pendiente_ | _pendiente_ |
+| Horas reales | 38,25 | 27,5 * ‡ | _pendiente_ | _pendiente_ |
 | Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
-| Desviación de las historias terminadas | −11% | −38% * † | _pendiente_ | _pendiente_ |
-| Horas por story point completado | 2,7 | 1,7 * † | _pendiente_ | _pendiente_ |
+| Desviación de las historias terminadas | −11% | −49% * † ‡ | _pendiente_ | _pendiente_ |
+| Horas por story point completado | 2,7 | 1,4 * † ‡ | _pendiente_ | _pendiente_ |
 | Defectos detectados / resueltos | 2 / 1 | 1 / 2 * | _pendiente_ | _pendiente_ |
 | Cobertura del dominio | 100% | 100% * | _pendiente_ | _pendiente_ |
-| Tests | 52 | 121 * | _pendiente_ | _pendiente_ |
+| Tests | 52 | 263 * | _pendiente_ | _pendiente_ |
 
-_* Sprint 2 al 22/10: se actualiza al cierre, el domingo 25._
+_* Sprint 2 al 24/10: se revisa al cierre, el domingo 25._
 
 _† En el Sprint 2 la #5 y la #14 se implementaron con asistencia de IA, que la consigna
 permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
 desviación da muy negativa (ver el [Sprint 2](#sprint-2--interfaz-usable))._
+
+_‡ Sin la #15, que está terminada pero todavía no tiene sus horas reales cargadas._
 
 **Velocidad del proyecto:** 6 (el promedio de los sprints cerrados; por ahora, uno solo).
 
@@ -218,7 +220,7 @@ los casos donde no hay un commit de implementación por cada test.]_
 
 ## Sprint 2 — interfaz usable
 
-> **Al 22/10, se actualiza al cierre** del domingo 25 con el acta de review.
+> **Al 24/10, se revisa al cierre** del domingo 25 con el acta de review.
 
 - **Sprint Goal:** que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda
   operar desde la consola.
@@ -232,7 +234,7 @@ El compromiso es de **31 SP**: los 26 del plan más los 5 de la #6, que se merge
 entre el Sprint 1 y el 2, y por eso cuenta acá. La #77 (interfaz web) entró al sprint sin
 estimar: no suma puntos ni horas hasta que el equipo la estime.
 
-| # | Historia | SP | Estado al 22/10 |
+| # | Historia | SP | Estado al 24/10 |
 |---|---|---|---|
 | 6 | Administrar el Product Backlog | 5 | Hecho |
 | 12 | Estimar historias con Story Points | 2 | Hecho |
@@ -242,27 +244,30 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 | 9 | Asignar historias a un sprint | 5 | Hecho (PR #138) |
 | 5 | Consultar el estado de un proyecto | 3 | Hecho |
 | 14 | Registrar el esfuerzo real | 3 | Hecho |
-| 15 | Gestionar defectos | 5 | Lista para implementar |
+| 15 | Gestionar defectos | 5 | Hecho (PR #129) |
 | 77 | Interfaz web: proyectos, integrantes y backlog | sin estimar | Hecho (PR #95) |
 
 - Adelantada desde el 21/10: la **#13** (8 SP y 21,6 h estimadas, Maximiliano Eula), que no
-  suma a los 31 comprometidos. Está en el [acta de review](actas/sprint-2-review.md#historias-adelantadas).
-- Completados al 22/10: **26 SP**, 8 de 9 historias. Tres llegaron del Sprint 1, y las otras
-  cinco son nuevas del sprint: la #7, la #5, la #14, la #8 y la #9.
+  suma a los 31 comprometidos. **Se terminó el 23/10** (PR #141), así que la velocidad del
+  sprint es **31 + 8 = 39**, y el Sprint 3 se planifica sin esos 8 puntos. Está en el
+  [acta de review](actas/sprint-2-review.md#historias-adelantadas).
+- Completados al 24/10: **31 SP**, las 9 historias comprometidas. Tres llegaron del Sprint 1, y
+  las otras seis son nuevas del sprint: la #7, la #5, la #14, la #8, la #9 y la #15.
 
 ### Esfuerzo
 
 - Horas estimadas de las historias nuevas: **56,7**, a 2,7 h por story point. Las de la #6,
   la #12 y la #24 (30 h) ya están en el Sprint 1.
-- Horas trabajadas en el sprint al 22/10: **24,5**. Es el total del tablero (46,75) menos las
-  22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
-- Historias terminadas, medidas enteras: **73,2 h estimadas contra 45,25 reales (−38%)**, 1,7 h
-  por story point.
+- Horas trabajadas en el sprint al 24/10: **27,5**, contando la #13. Es el total del tablero
+  (49,75) menos las 22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
+- Historias terminadas, medidas enteras: **94,8 h estimadas contra 48,25 reales (−49%)**, 1,4 h
+  por story point. Entra la #13 (21,6 h contra 3). **Falta la #15**, terminada pero sin sus
+  horas reales cargadas: contarla con cero daría una desviación que no pasó.
 - **La #5, la #14 y la #77 se implementaron con asistencia de IA**, que la consigna permite.
   Sus horas reales son el tiempo humano de dirección y revisión, todas de Emiliano Sorato:
   0,5 h en la #5, 0,5 h en la #14 y 1,5 h en la #77. Por eso la desviación da muy negativa.
-  Sin la #5 y la #14, las otras seis terminadas dan **−22%** (57 h contra 44,25) y 2,2 h por
-  story point.
+  Sin la #5 y la #14, las otras siete terminadas dan **−40%** (78,6 h contra 47,25) y 1,7 h
+  por story point. La #15 también se hizo con asistencia de IA.
 - **Cuánto cuesta un punto en el Sprint 2.** La #6, la #12 y la #24 se trabajaron casi todas
   en el Sprint 1. Las nuevas del sprint hechas a mano, la #7, la #8 y la #9 (las tres de
   Agustín Salinas), dan **27 h estimadas contra 20 reales (−26%)**, 2 h por story point.
@@ -280,8 +285,10 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 
 ### Cobertura y tests
 
-Medido sobre `dev` en `6ad7ac7` (21/10): dominio **100%**, `internal/store` 96,0%, consola
-(`cmd/app`) 96,2% y **98,8% en total**, con **121 tests** (234 casos). Desde el arreglo del
+Medido sobre `dev` en `b45cbe6` (24/10): dominio **100%**, `internal/store` 96,0%,
+`internal/web` 93,8%, consola (`cmd/app`) 96,2%, arranque de la web (`cmd/web`) 56,2% y
+**96,0% en total**, con **263 tests** (589 casos). Al 21/10 eran 121 tests y 98,8%: el total
+baja porque entró la web, y en `cmd/web` no tienen test `main` ni `lanAddresses`. Desde el arreglo del
 #108 el CI corre los tests también en Windows.
 
 ### Evidencia de TDD
