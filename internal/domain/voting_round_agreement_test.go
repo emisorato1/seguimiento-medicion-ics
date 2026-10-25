@@ -242,3 +242,24 @@ func TestRechazarUnAcuerdoSobreUnaRondaSinRevelar(t *testing.T) {
 		t.Fatalf("se esperaba la ronda sin acordar, salio acordada en %d", round.Agreed())
 	}
 }
+
+// Escenario: Rechazar un segundo acuerdo sobre la misma ronda
+// Cubre: RN-13, RN-16
+func TestRechazarUnSegundoAcuerdoSobreLaMismaRonda(t *testing.T) {
+	project, round := revealedRound(t, twoVotes)
+	if err := round.Agree(5); err != nil {
+		t.Fatalf("no se pudo registrar el primer acuerdo: %v", err)
+	}
+
+	err := round.Agree(8)
+
+	if !errors.Is(err, ErrRoundAlreadyAgreed) {
+		t.Fatalf("se esperaba ErrRoundAlreadyAgreed, salio: %v", err)
+	}
+	if round.Agreed() != 5 {
+		t.Fatalf("se esperaba la ronda acordada en 5, salio en %d", round.Agreed())
+	}
+	if story, _ := project.Story(round.StoryID()); story.StoryPoints() != 5 {
+		t.Fatalf("se esperaba la historia estimada en 5, salio en %d", story.StoryPoints())
+	}
+}
