@@ -50,3 +50,23 @@ func extreme(votes []Vote, points int) VoteExtreme {
 	}
 	return VoteExtreme{Points: points, Members: members}
 }
+
+// Agreed devuelve la estimación acordada de la ronda, o 0 si todavía no se acordó, que no
+// es un error (RN-15). Es un registro de lo que se acordó ese día: si después se reestima la
+// historia con la #12, la ronda no cambia (punto 6 de la puerta).
+func (r *VotingRound) Agreed() int {
+	return r.agreed
+}
+
+// Agree registra la estimación acordada y deja la historia estimada con ese valor (RN-9).
+// Estima con la operación de la #12, que controla la escala y que la historia no esté
+// Terminada, con sus mismos errores (RN-10, RN-11), y cambia la historia solo si pasa. Recién
+// entonces la ronda registra el valor: si algo se rechaza, la ronda y la historia quedan como
+// estaban (RN-16).
+func (r *VotingRound) Agree(points int) error {
+	if err := r.project.EstimateStory(r.storyID, points); err != nil {
+		return err
+	}
+	r.agreed = points
+	return nil
+}

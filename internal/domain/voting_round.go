@@ -14,6 +14,11 @@ type VotingRound struct {
 	participants []string
 	votes        []Vote
 	revealed     bool
+	// project es el proyecto que abrió la ronda: la #73 lo necesita para estimar la historia
+	// al acordar y para saber si hay una ronda posterior (su Fase 2).
+	project *Project
+	// agreed es la estimación acordada de la ronda (historia #73); 0 es "sin acordar".
+	agreed int
 }
 
 // Vote es un voto de una ronda revelada: quién lo dio y cuántos story points votó. Solo se
@@ -185,7 +190,7 @@ func (p *Project) OpenVotingRound(storyID int) (*VotingRound, error) {
 	for _, member := range p.members {
 		participants = append(participants, member.name)
 	}
-	round := &VotingRound{storyID: storyID, number: 1, participants: participants}
+	round := &VotingRound{storyID: storyID, number: 1, participants: participants, project: p}
 	p.votingRounds = append(p.votingRounds, round)
 	return round, nil
 }
