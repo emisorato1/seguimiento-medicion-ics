@@ -1,0 +1,45 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Ronda {{.Round.Number}} de la historia {{.Story.ID}}</h1>
+<p>{{.Story.Title}}</p>
+<p>Votaron {{len .Voted}} de {{.Participants}}.</p>
+<div class="columnas">
+  <div>
+    <h2>Votaron</h2>
+    <ul id="votaron">{{range .Voted}}<li>{{.}}</li>{{else}}<li class="sin-dato">nadie todavía</li>{{end}}</ul>
+  </div>
+  <div>
+    <h2>Faltan</h2>
+    <ul id="faltan">{{range .Pending}}<li>{{.}}</li>{{else}}<li class="sin-dato">nadie</li>{{end}}</ul>
+  </div>
+</div>
+{{if .Pending}}
+<h2>Votar</h2>
+<p>El voto queda oculto hasta que se revele la ronda, también para quien lo da.</p>
+{{template "error-formulario" .Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/historias/{{.Story.ID}}/rondas/{{.Round.Number}}/votar" novalidate>
+  {{with .Form.Field "integrante"}}
+  <div class="campo">
+    <label for="integrante">Quién vota</label>
+    <select id="integrante" name="integrante"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí quién vota" $.Data.Pending .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Form.Field "puntos"}}
+  <div class="campo">
+    <label for="puntos">Story points</label>
+    <select id="puntos" name="puntos"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí los story points" $.Data.Points .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Votar</button>
+  </div>
+</form>
+{{end}}
+{{end}}
+{{end}}
