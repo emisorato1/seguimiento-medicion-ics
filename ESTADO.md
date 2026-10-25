@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-24 16:09. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-24 21:01. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -22,12 +22,11 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -70,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+1537556 2026-10-24 Merge pull request #144 from emisorato1/historia-15-terminada
+7fb3b85 2026-10-24 chore: regenerar ESTADO.md y la trazabilidad con la historia 13 terminada
+86ea60c 2026-10-24 docs: review del sprint 2 con los datos del tablero al 24/10 y los numeros del punto de control
 cbef874 2026-10-24 Merge remote-tracking branch 'origin/dev' into historia-15-terminada
 b45cbe6 2026-10-23 Merge pull request #141 from emisorato1/historia-13-votar-en-secreto
 f7133d3 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-13-votar-en-secreto
 e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
 a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
-78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
-8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
-2c2abd1 2026-10-23 Merge pull request #136 from emisorato1/historia-17-spec-datos-al-dia
 ```
