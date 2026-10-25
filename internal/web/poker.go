@@ -157,10 +157,14 @@ func (s *Server) vote(w http.ResponseWriter, r *http.Request) {
 	f := readForm(r, "integrante", "puntos")
 	points := f.number("puntos", errInvalidPoints)
 	if f.hasErrors() {
+		f.Values["puntos"] = ""
 		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, f)
 		return
 	}
 	if err := round.Vote(f.Values["integrante"], points); err != nil {
+		// El formulario vuelve sin el valor elegido: mostrarlo romperia el secreto delante
+		// de quien este mirando (RN-6, D3). Es la unica excepcion a volver con lo escrito.
+		f.Values["puntos"] = ""
 		f.reject(err)
 		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, f)
 		return
