@@ -119,6 +119,10 @@ var fieldErrors = []struct {
 	{domain.ErrStoryPriorityInvalid, "prioridad"},
 	{domain.ErrStoryCriteriaRequired, "criterios"},
 	{domain.ErrStoryPointsInvalid, "puntos"},
+	{domain.ErrSprintGoalRequired, "goal"},
+	{domain.ErrSprintStartRequired, "inicio"},
+	{domain.ErrSprintEndRequired, "fin"},
+	{domain.ErrSprintDatesInconsistent, "fin"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje
