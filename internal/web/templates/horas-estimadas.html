@@ -1,0 +1,18 @@
+{{define "content"}}
+<h1>Horas estimadas de la historia {{.Data.Story.ID}}</h1>
+<p>{{.Data.Story.Title}}</p>
+{{template "error-formulario" .Data.Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}/horas-estimadas" novalidate>
+  {{with .Data.Form.Field "horas"}}
+  <div class="campo">
+    <label for="horas">Horas estimadas</label>
+    <input type="text" inputmode="decimal" id="horas" name="horas" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Guardar horas estimadas</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}">Cancelar</a>
+  </div>
+</form>
+{{end}}

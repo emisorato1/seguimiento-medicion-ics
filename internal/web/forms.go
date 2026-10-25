@@ -131,6 +131,7 @@ var fieldErrors = []struct {
 	{domain.ErrEffortDayInFuture, "dia"},
 	{domain.ErrEffortHoursInvalid, "horas"},
 	{domain.ErrEffortActivityRequired, "actividad"},
+	{domain.ErrEstimatedHoursInvalid, "horas"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje

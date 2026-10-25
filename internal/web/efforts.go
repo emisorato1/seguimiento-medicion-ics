@@ -170,3 +170,53 @@ func (s *Server) createEffort(w http.ResponseWriter, r *http.Request) {
 	message := fmt.Sprintf("Se registraron %s horas de %s en la historia %d", formatHours(effort.Hours()), effort.MemberName(), effort.StoryID())
 	s.done(w, r, message, fmt.Sprintf("/proyectos/%d/esfuerzo", project.ID()))
 }
+
+// renderEstimatedHoursForm muestra el formulario para cargar las horas estimadas de una
+// historia.
+func (s *Server) renderEstimatedHoursForm(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, story *domain.Story, f *form) {
+	s.render(w, r, status, "horas-estimadas.html", page{
+		Title:   fmt.Sprintf("Horas estimadas de la historia %d", story.ID()),
+		Project: project,
+		Section: "backlog",
+		Data: struct {
+			ProjectID int
+			Story     *domain.Story
+			Form      *form
+		}{ProjectID: project.ID(), Story: story, Form: f},
+	})
+}
+
+// estimatedHoursForm muestra el formulario de horas estimadas, con las que ya tenga.
+func (s *Server) estimatedHoursForm(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	f := newForm()
+	if story.EstimatedHours() > 0 {
+		f.Values["horas"] = formatHours(story.EstimatedHours())
+	}
+	s.renderEstimatedHoursForm(w, r, http.StatusOK, project, story, f)
+}
+
+// estimateHours carga las horas estimadas de la historia (#16) y vuelve a ella con 303.
+func (s *Server) estimateHours(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	f := readForm(r, "horas")
+	hours := f.hours("horas")
+	if f.hasErrors() {
+		s.renderEstimatedHoursForm(w, r, http.StatusUnprocessableEntity, project, story, f)
+		return
+	}
+	if err := project.EstimateHours(story.ID(), hours); err != nil {
+		f.reject(err)
+		s.renderEstimatedHoursForm(w, r, http.StatusUnprocessableEntity, project, story, f)
+		return
+	}
+	s.done(w, r, fmt.Sprintf("Se cargaron las horas estimadas de la historia %d", story.ID()), fmt.Sprintf("/proyectos/%d/historias/%d", project.ID(), story.ID()))
+}
