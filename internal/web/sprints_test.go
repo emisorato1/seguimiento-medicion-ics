@@ -23,6 +23,7 @@ func TestLaBarraDeUnProyectoLlevaATodasSusSecciones(t *testing.T) {
 	}{
 		{nombre: "Sprints", pagina: "/proyectos/1/sprints"},
 		{nombre: "Esfuerzo", pagina: "/proyectos/1/esfuerzo"},
+		{nombre: "Planning Poker", pagina: "/proyectos/1/planning-poker"},
 	}
 
 	registry := domain.NewProjectRegistry()
