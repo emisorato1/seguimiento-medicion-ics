@@ -385,3 +385,24 @@ func TestConsultarLasRondasDeUnaHistoria(t *testing.T) {
 		}
 	})
 }
+
+// Escenario: Solo se acuerda sobre la ultima ronda de la historia
+// Cubre: RN-14, RN-16
+func TestSoloSeAcuerdaSobreLaUltimaRondaDeLaHistoria(t *testing.T) {
+	project, first := revealedRound(t, twoVotes)
+	if _, err := project.OpenVotingRound(first.StoryID()); err != nil {
+		t.Fatalf("no se pudo abrir la ronda 2: %v", err)
+	}
+
+	err := first.Agree(5)
+
+	if !errors.Is(err, ErrNotLastRound) {
+		t.Fatalf("se esperaba ErrNotLastRound, salio: %v", err)
+	}
+	if story, _ := project.Story(first.StoryID()); story.IsEstimated() {
+		t.Fatalf("se esperaba la historia sin estimar, salio estimada en %d", story.StoryPoints())
+	}
+	if first.Agreed() != 0 {
+		t.Fatalf("se esperaba la ronda 1 sin acordar, salio acordada en %d", first.Agreed())
+	}
+}
