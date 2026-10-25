@@ -1361,6 +1361,62 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	}
 }
 
+// Escenario: Los datos nuevos siguen al cerrar y volver a abrir
+// Cubre: RN-2 de la #78 (RN-21 a RN-25 de la #77)
+//
+// Por ahora con sprints, esfuerzo y rondas: los defectos se suman con la tarea 12, y que el
+// sprint siguiente reciba el numero 2 necesita cerrar el sprint (#10).
+func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "datos-ics.json")
+	abrir := func() *browser {
+		file := store.NewFile(path)
+		registry, err := file.Load()
+		if err != nil {
+			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
+		}
+		return newBrowser(t, NewServer(registry, file, testToday))
+	}
+	operar := func(navegador *browser, path string, datos url.Values) {
+		t.Helper()
+		if res := navegador.post(path, datos); res.Code != http.StatusSeeOther {
+			t.Fatalf("%s: se esperaba el estado %d, salio %d:\n%s", path, http.StatusSeeOther, res.Code, res.Body.String())
+		}
+	}
+
+	// Dado que cargue el sprint 1, un registro de esfuerzo y una ronda revelada.
+	primera := abrir()
+	operar(primera, "/proyectos/nuevo", url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-10-01"}})
+	operar(primera, "/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}})
+	operar(primera, "/proyectos/1/historias/nueva", url.Values{
+		"titulo": {"Registrar esfuerzo"}, "descripcion": {"Como integrante quiero registrar esfuerzo"},
+		"prioridad": {"Alta"}, "criterios": {"Se puede registrar esfuerzo"},
+	})
+	operar(primera, "/proyectos/1/historias/1/estimar", url.Values{"puntos": {"3"}})
+	operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Tener el MVP"}, "inicio": {"2026-10-26"}, "fin": {"2026-10-30"}})
+	operar(primera, "/proyectos/1/sprints/asignar", url.Values{"historia": {"1"}})
+	operar(primera, "/proyectos/1/esfuerzo/nuevo", url.Values{
+		"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"2,5"}, "actividad": {"Escribir tests"},
+	})
+	operar(primera, "/proyectos/1/planning-poker", url.Values{"historia": {"1"}})
+	operar(primera, "/proyectos/1/historias/1/rondas/1/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"5"}})
+	operar(primera, "/proyectos/1/historias/1/rondas/1/revelar", nil)
+
+	// Cuando cierro el sistema y lo vuelvo a abrir.
+	segunda := abrir()
+
+	esperado := map[string]string{
+		"/proyectos/1/sprints":              "Tener el MVP",
+		"/proyectos/1/sprints/1":            "Registrar esfuerzo",
+		"/proyectos/1/esfuerzo":             "Escribir tests",
+		"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td>\n        <td>5</td>",
+	}
+	for pagina, texto := range esperado {
+		if html := segunda.get(pagina).Body.String(); !strings.Contains(html, texto) {
+			t.Errorf("al volver a abrir se esperaba en %s %q, y no esta en:\n%s", pagina, texto, html)
+		}
+	}
+}
+
 // Sin escenario: hallazgo de la revisión de Maximiliano Eula (pedidos de otro sitio).
 // Cubre: #77, D20 (sin usuarios ni contraseñas)
 // Sin usuarios ni contraseñas, otra pagina abierta en el mismo navegador podria enviar un
