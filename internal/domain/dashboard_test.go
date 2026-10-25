@@ -121,6 +121,55 @@ func TestPorcentajesHorasYEnterosSeMuestranConSuFormato(t *testing.T) {
 	}
 }
 
+// Escenario: El sprint en curso muestra su meta y lo que lleva registrado
+// Cubre: RN-5
+func TestElSprintEnCursoMuestraSuMetaYLoQueLlevaRegistrado(t *testing.T) {
+	project := unProyecto(t)
+	dashboardSprint(t, project, true)
+	open := dashboardSprint(t, project, false)
+	// Las métricas de un sprint abierto traen los completados y la velocidad en cero (#16):
+	// se cargan igual con otro valor para ver que el sprint en curso no los muestra.
+	sprintMetrics := map[int]Metrics{
+		open.Number(): {PlannedPoints: 13, CompletedPoints: 5, ActualHours: 6.5, DefectsDetected: 2, Velocity: 5},
+	}
+
+	dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), sprintMetrics: sprintMetrics})
+
+	want := &CurrentSprint{
+		Number: 2,
+		Goal:   "Tener el dashboard",
+		Start:  date(2026, 10, 26),
+		End:    date(2026, 10, 30),
+		Figures: []Figure{
+			{Label: "Story points planificados", Text: "13"},
+			{Label: "Horas reales", Text: "6,5 h"},
+			{Label: "Defectos detectados", Text: "2"},
+		},
+	}
+	if !reflect.DeepEqual(dashboard.CurrentSprint, want) {
+		t.Fatalf("se esperaba el sprint en curso %+v, salio %+v", want, dashboard.CurrentSprint)
+	}
+}
+
+// Escenario: Un proyecto con todos sus sprints cerrados no tiene sprint en curso
+// Cubre: RN-6
+// El escenario se llama igual que uno de la #5 (project_status_test.go): el sufijo evita que
+// los dos tests choquen en el mismo paquete.
+func TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCursoEnElDashboard(t *testing.T) {
+	project := unProyecto(t)
+	dashboardSprint(t, project, true)
+	dashboardSprint(t, project, true)
+
+	dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), projectMetrics: Metrics{PlannedPoints: 21}})
+
+	if dashboard.CurrentSprint != nil {
+		t.Fatalf("se esperaba un dashboard sin sprint en curso, salio: %+v", dashboard.CurrentSprint)
+	}
+	if got, ok := figureText(dashboard.Overview, "Story points planificados"); !ok || got != "21" {
+		t.Fatalf("se esperaba el estado general igual, con 21 story points planificados, salio: %v", dashboard.Overview)
+	}
+}
+
 // figureText devuelve el valor escrito del número con ese rótulo, y si está.
 func figureText(figures []Figure, label string) (string, bool) {
 	for _, figure := range figures {
