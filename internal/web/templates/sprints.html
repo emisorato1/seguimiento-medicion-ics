@@ -1,3 +1,39 @@
 {{define "content"}}
+{{with .Data}}
 <h1>Sprints</h1>
+{{if not .Sprints}}
+<div class="vacio">
+  <p>Todavía no hay sprints.</p>
+  <a class="boton" href="/proyectos/{{.ID}}/sprints/nuevo">Crear el primer sprint</a>
+</div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ID}}/sprints/nuevo">Nuevo sprint</a>
+</div>
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Sprint Goal</th>
+        <th scope="col">Inicio</th>
+        <th scope="col">Fin</th>
+        <th scope="col">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Sprints}}
+      <tr>
+        <td>{{.Number}}</td>
+        <td class="principal">{{.Goal}}</td>
+        <td>{{fecha .Start}}</td>
+        <td>{{fecha .End}}</td>
+        <td>{{.State}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
 {{end}}

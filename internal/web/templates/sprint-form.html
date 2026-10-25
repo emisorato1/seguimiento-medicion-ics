@@ -1,0 +1,31 @@
+{{define "content"}}
+<h1>Nuevo sprint</h1>
+{{template "error-formulario" .Data.General}}
+<form class="formulario" method="post" action="/proyectos/{{.Project.ID}}/sprints/nuevo" novalidate>
+  {{with .Data.Field "goal"}}
+  <div class="campo">
+    <label for="goal">Sprint Goal</label>
+    <input type="text" id="goal" name="goal" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Field "inicio"}}
+  <div class="campo">
+    <label for="inicio">Fecha de inicio</label>
+    <input type="date" id="inicio" name="inicio" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Field "fin"}}
+  <div class="campo">
+    <label for="fin">Fecha de fin</label>
+    <input type="date" id="fin" name="fin" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Crear sprint</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.Project.ID}}/sprints">Cancelar</a>
+  </div>
+</form>
+{{end}}
