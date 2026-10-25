@@ -32,11 +32,17 @@ func (f *fakeSaver) Save(registry *domain.ProjectRegistry) error {
 	return f.err
 }
 
+// testToday es la fecha de hoy de los tests (D1 de la #78): fija, asi los escenarios con
+// "hoy es 27/10/2026" se prueban igual cualquier dia.
+func testToday() time.Time {
+	return time.Date(2026, 10, 27, 0, 0, 0, 0, time.UTC)
+}
+
 // newTestServer arma una web nueva sobre el registro que recibe, con un guardado falso.
 // Cada test arma el suyo y arranca de cero.
 func newTestServer(t *testing.T, registry *domain.ProjectRegistry) *Server {
 	t.Helper()
-	return NewServer(registry, &fakeSaver{})
+	return NewServer(registry, &fakeSaver{}, testToday)
 }
 
 // get pide una pagina a la web, como lo haria el navegador.
@@ -335,6 +341,15 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			mensaje: "Todavía no hay sprints",
 			acceso:  `href="/proyectos/1/sprints/nuevo"`,
 		},
+		{
+			nombre: "un proyecto sin esfuerzo (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/esfuerzo",
+			mensaje: "Todavía no hay horas registradas",
+			acceso:  `href="/proyectos/1/esfuerzo/nuevo"`,
+		},
 	}
 
 	for _, caso := range casos {
@@ -606,7 +621,7 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 				caso.preparar(t, registry)
 			}
 			saver := &fakeSaver{}
-			server := NewServer(registry, saver)
+			server := NewServer(registry, saver, testToday)
 			antes := snapshot(registry)
 
 			res := newBrowser(t, server).post(caso.formulario, caso.datos)
@@ -974,7 +989,7 @@ func TestConfirmarOCancelarAntesDeQuitar(t *testing.T) {
 				t.Fatalf("no se pudo preparar la estimacion: %v", err)
 			}
 			saver := &fakeSaver{}
-			navegador := newBrowser(t, NewServer(registry, saver))
+			navegador := newBrowser(t, NewServer(registry, saver, testToday))
 			antes := snapshot(registry)
 
 			// Pedir que se quite no quita nada: muestra la confirmacion.
@@ -1020,7 +1035,7 @@ func TestConfirmarOCancelarAntesDeQuitar(t *testing.T) {
 func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 	registry := domain.NewProjectRegistry()
 	saver := &fakeSaver{err: errors.New("el cambio no quedó guardado: permiso denegado")}
-	navegador := newBrowser(t, NewServer(registry, saver))
+	navegador := newBrowser(t, NewServer(registry, saver, testToday))
 
 	res := navegador.post("/proyectos/nuevo", url.Values{
 		"nombre": {"Sistema de metricas"},
@@ -1045,7 +1060,7 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 func TestDosPestanasALaVez(t *testing.T) {
 	registry := domain.NewProjectRegistry()
 	saver := &fakeSaver{}
-	server := NewServer(registry, saver)
+	server := NewServer(registry, saver, testToday)
 	const pestanas = 20
 
 	// Veinte pestañas crean un proyecto cada una, todas al mismo tiempo. Con go test -race,
@@ -1224,7 +1239,7 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 		if err != nil {
 			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
 		}
-		return newBrowser(t, NewServer(registry, file))
+		return newBrowser(t, NewServer(registry, file, testToday))
 	}
 	operar := func(navegador *browser, path string, datos url.Values) *httptest.ResponseRecorder {
 		t.Helper()
@@ -1293,7 +1308,7 @@ func TestUnPedidoDeOtroSitioSeRechaza(t *testing.T) {
 			registry := domain.NewProjectRegistry()
 			saver := &fakeSaver{}
 
-			res := enviar(NewServer(registry, saver), encabezados)
+			res := enviar(NewServer(registry, saver, testToday), encabezados)
 
 			if res.Code != http.StatusForbidden {
 				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusForbidden, res.Code)
@@ -1310,7 +1325,7 @@ func TestUnPedidoDeOtroSitioSeRechaza(t *testing.T) {
 	t.Run("el mismo pedido desde la propia web se acepta", func(t *testing.T) {
 		registry := domain.NewProjectRegistry()
 
-		res := enviar(NewServer(registry, &fakeSaver{}), map[string]string{
+		res := enviar(NewServer(registry, &fakeSaver{}, testToday), map[string]string{
 			"Origin":         "http://127.0.0.1:8080",
 			"Sec-Fetch-Site": "same-origin",
 		})

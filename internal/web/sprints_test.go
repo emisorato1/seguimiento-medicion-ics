@@ -22,6 +22,7 @@ func TestLaBarraDeUnProyectoLlevaATodasSusSecciones(t *testing.T) {
 		pagina string
 	}{
 		{nombre: "Sprints", pagina: "/proyectos/1/sprints"},
+		{nombre: "Esfuerzo", pagina: "/proyectos/1/esfuerzo"},
 	}
 
 	registry := domain.NewProjectRegistry()
@@ -58,7 +59,7 @@ func TestCrearUnSprintDesdeLaWeb(t *testing.T) {
 	registry := domain.NewProjectRegistry()
 	project := addProject(t, registry, "Sistema de metricas")
 	saver := &fakeSaver{}
-	navegador := newBrowser(t, NewServer(registry, saver))
+	navegador := newBrowser(t, NewServer(registry, saver, testToday))
 
 	res := navegador.post("/proyectos/1/sprints/nuevo", url.Values{
 		"goal":   {"Tener el MVP"},

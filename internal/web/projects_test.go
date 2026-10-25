@@ -14,7 +14,7 @@ import (
 func TestCrearUnProyectoDesdeLaWeb(t *testing.T) {
 	registry := domain.NewProjectRegistry()
 	saver := &fakeSaver{}
-	navegador := newBrowser(t, NewServer(registry, saver))
+	navegador := newBrowser(t, NewServer(registry, saver, testToday))
 	mensaje := "Se creó el proyecto Sistema de metricas"
 
 	res := navegador.post("/proyectos/nuevo", url.Values{
