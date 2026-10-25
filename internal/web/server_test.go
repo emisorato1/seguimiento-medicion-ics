@@ -570,6 +570,30 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			campo:      "",
 			err:        domain.ErrSprintAlreadyOpen,
 		},
+		{
+			nombre: "asignar una historia sin estimar (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Sin estimar", domain.PriorityLow)
+				addSprint(t, registry, 1)
+			},
+			formulario: "/proyectos/1/sprints/asignar",
+			datos:      url.Values{"historia": {"1"}},
+			campo:      "historia",
+			err:        domain.ErrStoryNotEstimated,
+		},
+		{
+			nombre: "asignar sin elegir la historia (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Sin estimar", domain.PriorityLow)
+				addSprint(t, registry, 1)
+			},
+			formulario: "/proyectos/1/sprints/asignar",
+			datos:      url.Values{"historia": {""}},
+			campo:      "historia",
+			err:        errInvalidStory,
+		},
 	}
 
 	for _, caso := range casos {
