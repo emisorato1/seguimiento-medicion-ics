@@ -3,7 +3,9 @@
 - **Historia:** #78
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** En implementación. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
+  (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), con dos cambios que esta spec ya incorpora (la
+  tarea 17 y el punto 8 de "Para decidir en la puerta") y una nota sobre los casos límite
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna, de
   los criterios de aceptación de la issue y de las specs de las historias de dominio que
   muestra. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
@@ -11,7 +13,8 @@
   guardado) y, para cada pantalla, de su historia de dominio: #8 y #9 (crear un sprint y
   asignarle historias), #10 (cerrarlo), #11 (sprints anteriores), #14 (esfuerzo), #15
   (defectos), #13 y #73 (Planning Poker), #18 y #19 (reporte y PDF). Además, #5 (resumen del
-  proyecto) y #16 (horas estimadas). Ninguna de esas está en `dev` todavía
+  proyecto) y #16 (horas estimadas). Al 25/10 están en `dev` la #5, la #8, la #9, la #13, la
+  #14, la #15 y las horas estimadas de la #16; faltan la #10, la #11, la #73, la #18 y la #19
 - **La necesitan:** nadie todavía
 
 ## Fase 1 — Requisitos
@@ -165,6 +168,8 @@ operación aceptada:
 - Una ronda con un solo participante: se vota, se revela y no hay diferencias.
 - Recargar la página de una ronda sin revelar después de votar: sigue sin mostrar el valor.
 - Un integrante que se suma al proyecto con la ronda abierta no aparece para votar (#13).
+- Un integrante que se quitó del proyecto con la ronda abierta sigue apareciendo para votar,
+  porque la lista sale de los que faltan según el núcleo (#13, su punto 1). No es un error.
 - El reporte de un sprint abierto se muestra igual, con el aviso de números parciales que
   arma el núcleo (#18).
 
@@ -294,7 +299,9 @@ Escenario: Una ronda de Planning Poker sin ver los votos hasta revelar
 Escenario: Nadie ve un voto antes de revelar
   Dado una ronda de la historia 1 sin revelar en la que "Ana Perez" voto 13
   Cuando recorro todas las paginas del proyecto y recargo la de la ronda
-  Entonces el 13 de "Ana Perez" no aparece en ninguna pagina ni en ningun mensaje
+  Entonces ninguna pagina muestra la tabla de votos
+  Y en ninguna pagina aparece el 13 junto a "Ana Perez"
+  Y el mensaje que confirma su voto no lleva ningun numero
 
 Escenario: Un voto rechazado no muestra el valor elegido
   Dado una ronda de la historia 1 sin revelar en la que "Ana Perez" ya voto
@@ -439,9 +446,18 @@ Escenario: Los datos nuevos siguen al cerrar y volver a abrir
    se puede conectar a una operación que todavía no existe. Las tareas siguen el orden
    en que llegan las historias de dominio, y se pueden entregar por partes (D13).
    **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
+8. **El estado de un defecto llega como texto.** Lo señaló Maximiliano Eula al aprobar las
+   puertas. La RN-2 dice que, si se envía sin elegir, el estado lo rechaza el núcleo, pero la
+   #15 solo convierte desde texto la severidad (`ParseSeverity`): `ChangeDefectState` recibe
+   el estado como valor del dominio. Si la web tradujera «Abierto» y «En curso» por su cuenta,
+   copiaría una regla fuera del núcleo, que es lo que la #4 y la #15 evitaron con el rol y la
+   severidad. Hay dos caminos: que la #15 sume la conversión del estado igual que la de la
+   severidad (ya tiene una sin exportar, para la carga del archivo), o que la RN-2 diga cómo
+   se trata el estado. **Pendiente: lo acuerdan el responsable de la #15 (Juliana Bustos) y el
+   equipo antes de la tarea 12.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: en un comentario de la issue #78 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), desde su cuenta. Aprueba las tres puertas y acepta los puntos 1 a 7 de "Para decidir en la puerta". Pide dos cambios antes de las tareas que los usan: que el test de la tarea 17 no busque el número suelto (incorporado en el escenario y en la tarea) y resolver el estado de un defecto como texto (punto 8, pendiente). Nota: sumar a los casos límite al integrante que se quitó con la ronda abierta (incorporado).
 
 ## Fase 2 — Diseño
 
@@ -542,7 +558,7 @@ falta algo del núcleo, se pide en la historia de dominio que corresponde (ver D
   dashboard (#17).
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: en un comentario de la issue #78 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), desde su cuenta. Aprueba las tres puertas y acepta los puntos 1 a 7 de "Para decidir en la puerta". Pide dos cambios antes de las tareas que los usan: que el test de la tarea 17 no busque el número suelto (incorporado en el escenario y en la tarea) y resolver el estado de un defecto como texto (punto 8, pendiente). Nota: sumar a los casos límite al integrante que se quitó con la ronda abierta (incorporado).
 
 ## Fase 3 — Tareas
 
@@ -565,12 +581,12 @@ lo comparten le suman sus filas. Un test que pase sin código nuevo va a Desvío
 | 9 | Esfuerzo: lista vacía, día propuesto hoy, registrar con integrante e historia de la lista, la tabla y los totales por historia y por integrante | Registrar esfuerzo y ver los totales / Las listas vacias dicen que hacer | RN-1, RN-11 | pendiente |
 | 10 | Día futuro y cero horas junto a su campo; unas horas que no son número se marcan sin llamar al dominio; sin integrantes, el aviso en lugar del formulario | Mostrar el rechazo sin perder lo escrito / Las listas vacias dicen que hacer | RN-2, RN-12, RN-17 | pendiente |
 | 11 | Cargar las horas estimadas de una historia | Cargar las horas estimadas de una historia | RN-1 | pendiente |
-| 12 | Defectos: lista vacía; cargar con severidad, historia y sprint de la lista; cambiar a «En curso» | Cargar un defecto, pasarlo a en curso y resolverlo / Las listas vacias dicen que hacer | RN-1, RN-16 | pendiente |
+| 12 | Defectos: lista vacía; cargar con severidad, historia y sprint de la lista; cambiar a «En curso». Espera el acuerdo del punto 8 | Cargar un defecto, pasarlo a en curso y resolverlo / Las listas vacias dicen que hacer | RN-1, RN-16 | pendiente |
 | 13 | Resolver con confirmación; un resuelto no ofrece cambiar ni resolver | Cargar un defecto, pasarlo a en curso y resolverlo / Confirmar o cancelar antes de lo que no se deshace | RN-9 | pendiente |
 | 14 | Filtrar por un estado o por una severidad, y sin filtro todos | Filtrar los defectos | RN-13 | pendiente |
 | 15 | Título vacío, resolver en un sprint anterior y defecto 99 | Mostrar el rechazo sin perder lo escrito / Pedir algo que no existe | RN-2, RN-18 | pendiente |
 | 16 | Abrir una ronda; quién votó, quién falta y cuántos; votar eligiendo de los que faltan, con el mensaje sin el valor | Una ronda de Planning Poker sin ver los votos hasta revelar | RN-1, RN-5, RN-7 | pendiente |
-| 17 | Ningún valor antes de revelar en ninguna página, mensaje ni recarga; un voto rechazado vuelve sin el valor | Nadie ve un voto antes de revelar / Un voto rechazado no muestra el valor elegido | RN-4, RN-6 | pendiente |
+| 17 | Ningún valor antes de revelar en ninguna página, mensaje ni recarga; un voto rechazado vuelve sin el valor. El test no busca el número suelto, porque el formulario de votar ofrece la escala entera y el número puede estar en una fecha o un identificador: comprueba que la tabla de votos no existe hasta revelar, que ninguna fila ni elemento que nombra a quien votó lleva su valor, y que el mensaje que confirma el voto no lleva ningún número (revisión de Maximiliano Eula) | Nadie ve un voto antes de revelar / Un voto rechazado no muestra el valor elegido | RN-4, RN-6 | pendiente |
 | 18 | Revelar: con votos faltantes, el mensaje arriba; con todos, cada voto con su integrante | No se puede revelar con votos faltantes / Una ronda de Planning Poker sin ver los votos hasta revelar | RN-2, RN-8 | pendiente |
 | 19 | Diferencias, ronda nueva, acuerdo y la lista de rondas de una historia; historia 99 | Diferencias, nueva ronda y acuerdo / Pedir algo que no existe | RN-1, RN-8, RN-18 | pendiente |
 | 20 | El reporte del proyecto y el de un sprint, con la fecha de hoy y las líneas del dominio sin reformatear | Ver el reporte | RN-1, RN-12, RN-14 | pendiente |
@@ -634,7 +650,7 @@ Los veintidós escenarios de la Fase 1 tienen su tarea en la columna "Escenario 
 - **La 23 necesita que cada historia de dominio haya sumado su entidad a la conversión.**
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: en un comentario de la issue #78 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), desde su cuenta. Aprueba las tres puertas y acepta los puntos 1 a 7 de "Para decidir en la puerta". Pide dos cambios antes de las tareas que los usan: que el test de la tarea 17 no busque el número suelto (incorporado en el escenario y en la tarea) y resolver el estado de un defecto como texto (punto 8, pendiente). Nota: sumar a los casos límite al integrante que se quitó con la ronda abierta (incorporado).
 
 ## Fase 4 — Implementación
 
