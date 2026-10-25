@@ -3,6 +3,7 @@ package web
 import (
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -24,10 +25,11 @@ func formatHours(hours float64) string {
 }
 
 // hours lee unas horas escritas con coma o con punto (D11). Si no son un numero, marca el
-// campo y devuelve cero, sin llamar al dominio.
+// campo y devuelve cero, sin llamar al dominio. NaN e Inf tampoco son un numero que alguien
+// escriba como horas, aunque la conversion de Go los acepte.
 func (f *form) hours(name string) float64 {
 	value, err := strconv.ParseFloat(strings.Replace(strings.TrimSpace(f.Values[name]), ",", ".", 1), 64)
-	if err != nil {
+	if err != nil || math.IsNaN(value) || math.IsInf(value, 0) {
 		f.fail(name, errInvalidHours.Error())
 		return 0
 	}

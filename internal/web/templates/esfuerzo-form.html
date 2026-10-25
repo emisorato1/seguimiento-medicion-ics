@@ -1,5 +1,11 @@
 {{define "content"}}
 <h1>Registrar horas</h1>
+{{if not .Data.Members}}
+<div class="vacio">
+  <p>Este proyecto todavía no tiene integrantes: las horas se registran a nombre de uno.</p>
+  <a class="boton" href="/proyectos/{{.Data.ProjectID}}/integrantes/nuevo">Agregar el primer integrante</a>
+</div>
+{{else}}
 {{template "error-formulario" .Data.Form.General}}
 <form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/esfuerzo/nuevo" novalidate>
   {{with .Data.Form.Field "integrante"}}
@@ -46,4 +52,5 @@
     <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/esfuerzo">Cancelar</a>
   </div>
 </form>
+{{end}}
 {{end}}

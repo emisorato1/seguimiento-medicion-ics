@@ -125,6 +125,12 @@ var fieldErrors = []struct {
 	{domain.ErrSprintDatesInconsistent, "fin"},
 	{domain.ErrStoryNotEstimated, "historia"},
 	{domain.ErrStoryAlreadyInSprint, "historia"},
+	{domain.ErrStoryNotFound, "historia"},
+	{domain.ErrMemberNotFound, "integrante"},
+	{domain.ErrEffortDayRequired, "dia"},
+	{domain.ErrEffortDayInFuture, "dia"},
+	{domain.ErrEffortHoursInvalid, "horas"},
+	{domain.ErrEffortActivityRequired, "actividad"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje
