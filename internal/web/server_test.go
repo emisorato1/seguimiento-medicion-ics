@@ -350,6 +350,16 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			mensaje: "Todavía no hay horas registradas",
 			acceso:  `href="/proyectos/1/esfuerzo/nuevo"`,
 		},
+		{
+			nombre: "un proyecto sin integrantes al registrar esfuerzo (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			pagina:  "/proyectos/1/esfuerzo/nuevo",
+			mensaje: "Este proyecto todavía no tiene integrantes",
+			acceso:  `href="/proyectos/1/integrantes/nuevo"`,
+		},
 	}
 
 	for _, caso := range casos {
@@ -608,6 +618,66 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			datos:      url.Values{"historia": {""}},
 			campo:      "historia",
 			err:        errInvalidStory,
+		},
+		{
+			nombre: "esfuerzo de un dia que todavia no paso (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-28"}, "horas": {"2"}, "actividad": {"Escribir tests"}},
+			campo:      "dia",
+			err:        domain.ErrEffortDayInFuture,
+		},
+		{
+			nombre: "esfuerzo de cero horas (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"0"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        domain.ErrEffortHoursInvalid,
+		},
+		{
+			nombre: "esfuerzo con horas que no son numero (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"dos"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        errInvalidHours,
+		},
+		{
+			nombre: "esfuerzo con NaN horas (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"NaN"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        errInvalidHours,
+		},
+		{
+			nombre: "esfuerzo con horas infinitas (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"Inf"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        errInvalidHours,
 		},
 	}
 
