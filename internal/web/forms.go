@@ -123,6 +123,8 @@ var fieldErrors = []struct {
 	{domain.ErrSprintStartRequired, "inicio"},
 	{domain.ErrSprintEndRequired, "fin"},
 	{domain.ErrSprintDatesInconsistent, "fin"},
+	{domain.ErrStoryNotEstimated, "historia"},
+	{domain.ErrStoryAlreadyInSprint, "historia"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje
