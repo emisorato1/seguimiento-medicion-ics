@@ -51,11 +51,13 @@ type Figure struct {
 	Text  string
 }
 
-// dashboardSource es lo que necesita el armado del dashboard: los sprints del proyecto y las
-// métricas del proyecto entero. Las métricas llegan calculadas, nunca se calculan acá (D8).
+// dashboardSource es lo que necesita el armado del dashboard: los sprints del proyecto, las
+// métricas del proyecto entero y las de cada sprint, por su número. Las métricas llegan
+// calculadas, nunca se calculan acá (D8).
 type dashboardSource struct {
 	sprints        []*Sprint
 	projectMetrics Metrics
+	sprintMetrics  map[int]Metrics
 }
 
 // buildDashboard arma los datos del dashboard a partir de lo que trae source, sin cambiar
@@ -66,9 +68,34 @@ func buildDashboard(source dashboardSource) Dashboard {
 		return Dashboard{}
 	}
 	return Dashboard{
-		HasSprints: true,
-		Overview:   overview(source.projectMetrics),
+		HasSprints:    true,
+		Overview:      overview(source.projectMetrics),
+		CurrentSprint: currentSprint(source),
 	}
+}
+
+// currentSprint arma el sprint en curso con el sprint abierto y lo que lleva registrado. No
+// trae los completados ni la velocidad, que se registran recién al cerrarlo (RN-5). Sin
+// sprint abierto devuelve nil, y la web informa que no hay sprint en curso (RN-6).
+func currentSprint(source dashboardSource) *CurrentSprint {
+	for _, sprint := range source.sprints {
+		if sprint.State() != SprintOpen {
+			continue
+		}
+		m := source.sprintMetrics[sprint.Number()]
+		return &CurrentSprint{
+			Number: sprint.Number(),
+			Goal:   sprint.Goal(),
+			Start:  sprint.Start(),
+			End:    sprint.End(),
+			Figures: []Figure{
+				{Label: "Story points planificados", Text: formatCount(m.PlannedPoints)},
+				{Label: "Horas reales", Text: formatHours(m.ActualHours)},
+				{Label: "Defectos detectados", Text: formatCount(m.DefectsDetected)},
+			},
+		}
+	}
+	return nil
 }
 
 // overview arma el estado general con las métricas del proyecto entero, en el orden de la
