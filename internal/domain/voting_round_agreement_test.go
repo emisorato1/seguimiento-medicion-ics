@@ -263,3 +263,125 @@ func TestRechazarUnSegundoAcuerdoSobreLaMismaRonda(t *testing.T) {
 		t.Fatalf("se esperaba la historia estimada en 5, salio en %d", story.StoryPoints())
 	}
 }
+
+// voteAndReveal hace votar a todos los que faltan con el mismo valor y revela la ronda.
+func voteAndReveal(t *testing.T, round *VotingRound, points int) {
+	t.Helper()
+	for _, name := range round.Pending() {
+		if err := round.Vote(name, points); err != nil {
+			t.Fatalf("no se pudo votar: %v", err)
+		}
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar la ronda: %v", err)
+	}
+}
+
+// roundNumbers devuelve los números de una lista de rondas, en su orden.
+func roundNumbers(rounds []*VotingRound) []int {
+	numbers := make([]int, 0, len(rounds))
+	for _, round := range rounds {
+		numbers = append(numbers, round.Number())
+	}
+	return numbers
+}
+
+// Escenario: Estimar una historia en dos rondas
+// Cubre: RN-5, RN-7, RN-8
+func TestEstimarUnaHistoriaEnDosRondas(t *testing.T) {
+	project, first := revealedRound(t, twoVotes)
+	second, err := project.OpenVotingRound(first.StoryID())
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda 2: %v", err)
+	}
+	voteAndReveal(t, second, 5)
+
+	err = second.Agree(5)
+
+	if err != nil {
+		t.Fatalf("se esperaba acordar la ronda 2 sin error, salio: %v", err)
+	}
+	if story, _ := project.Story(first.StoryID()); story.StoryPoints() != 5 {
+		t.Fatalf("se esperaba la historia estimada en 5, salio en %d", story.StoryPoints())
+	}
+	rounds, err := project.VotingRounds(first.StoryID())
+	if err != nil {
+		t.Fatalf("se esperaban las rondas de la historia sin error, salio: %v", err)
+	}
+	if got := roundNumbers(rounds); !slices.Equal(got, []int{1, 2}) {
+		t.Fatalf("se esperaban las rondas 1 y 2, en ese orden, salio: %v", got)
+	}
+	if votes, _ := first.Votes(); !slices.Equal(votes, twoVotes) || first.Agreed() != 0 {
+		t.Fatalf("se esperaba la ronda 1 con sus votos %v y sin acordar, salio %v acordada en %d", twoVotes, votes, first.Agreed())
+	}
+}
+
+// Escenario: Cada historia numera sus rondas desde 1
+// Cubre: RN-6
+func TestCadaHistoriaNumeraSusRondasDesde1(t *testing.T) {
+	project, first := revealedRound(t, twoVotes)
+	if _, err := project.OpenVotingRound(first.StoryID()); err != nil {
+		t.Fatalf("no se pudo abrir la ronda 2 de la historia 1: %v", err)
+	}
+	other, err := project.AddStory(unosDatos())
+	if err != nil {
+		t.Fatalf("no se pudo crear la historia 2: %v", err)
+	}
+
+	round, err := project.OpenVotingRound(other.ID())
+
+	if err != nil {
+		t.Fatalf("se esperaba abrir la ronda de la historia 2 sin error, salio: %v", err)
+	}
+	if round.Number() != 1 {
+		t.Fatalf("se esperaba la ronda 1 de la historia 2, salio la %d", round.Number())
+	}
+}
+
+// Escenario: Abrir una ronda nueva despues de acordar
+// Cubre: RN-5, RN-7
+func TestAbrirUnaRondaNuevaDespuesDeAcordar(t *testing.T) {
+	project, first := revealedRound(t, twoVotes)
+	if err := first.Agree(5); err != nil {
+		t.Fatalf("no se pudo acordar la ronda 1: %v", err)
+	}
+
+	round, err := project.OpenVotingRound(first.StoryID())
+
+	if err != nil {
+		t.Fatalf("se esperaba abrir la ronda nueva sin error, salio: %v", err)
+	}
+	if round.Number() != 2 {
+		t.Fatalf("se esperaba la ronda 2, salio la %d", round.Number())
+	}
+	if story, _ := project.Story(first.StoryID()); story.StoryPoints() != 5 {
+		t.Fatalf("se esperaba que la historia siguiera estimada en 5, salio en %d", story.StoryPoints())
+	}
+	if first.Agreed() != 5 {
+		t.Fatalf("se esperaba que la ronda 1 siguiera acordada en 5, salio en %d", first.Agreed())
+	}
+}
+
+// Esquema del escenario: Consultar las rondas de una historia
+// Cubre: RN-8
+func TestConsultarLasRondasDeUnaHistoria(t *testing.T) {
+	project, _ := revealedRound(t, twoVotes)
+	if _, err := project.AddStory(unosDatos()); err != nil {
+		t.Fatalf("no se pudo crear la historia 2: %v", err)
+	}
+
+	t.Run("2, sin rondas", func(t *testing.T) {
+		rounds, err := project.VotingRounds(2)
+		if err != nil {
+			t.Fatalf("se esperaba una lista vacia sin error, salio: %v", err)
+		}
+		if rounds == nil || len(rounds) != 0 {
+			t.Fatalf("se esperaba una lista vacia, salio: %v", rounds)
+		}
+	})
+	t.Run("99, que no existe", func(t *testing.T) {
+		if _, err := project.VotingRounds(99); !errors.Is(err, ErrStoryNotFound) {
+			t.Fatalf("se esperaba ErrStoryNotFound, salio: %v", err)
+		}
+	})
+}
