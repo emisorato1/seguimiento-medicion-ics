@@ -679,6 +679,17 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			campo:      "horas",
 			err:        errInvalidHours,
 		},
+		{
+			nombre: "horas estimadas en cero (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/historias/1/horas-estimadas",
+			datos:      url.Values{"horas": {"0"}},
+			campo:      "horas",
+			err:        domain.ErrEstimatedHoursInvalid,
+		},
 	}
 
 	for _, caso := range casos {

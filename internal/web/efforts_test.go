@@ -63,3 +63,33 @@ func TestRegistrarEsfuerzoYVerLosTotales(t *testing.T) {
 		t.Errorf("se esperaba guardar una vez, se guardo %d", saver.saves)
 	}
 }
+
+// Escenario: Cargar las horas estimadas de una historia
+// Cubre: RN-1
+func TestCargarLasHorasEstimadasDeUnaHistoria(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := addProject(t, registry, "Sistema de metricas")
+	addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+	navegador := newBrowser(t, newTestServer(t, registry))
+
+	html := between(navegador.get("/proyectos/1/historias/1").Body.String(), "<main", "</main>")
+	if !strings.Contains(html, "sin horas estimadas") || !strings.Contains(html, `href="/proyectos/1/historias/1/horas-estimadas"`) {
+		t.Errorf("se esperaba la historia sin horas estimadas y el acceso para cargarlas, y no estan en:\n%s", html)
+	}
+
+	res := navegador.post("/proyectos/1/historias/1/horas-estimadas", url.Values{"horas": {"6,5"}})
+
+	if res.Code != http.StatusSeeOther || res.Header().Get("Location") != "/proyectos/1/historias/1" {
+		t.Fatalf("se esperaba volver a la historia con el estado %d, salio %d hacia %q:\n%s", http.StatusSeeOther, res.Code, res.Header().Get("Location"), res.Body.String())
+	}
+	html = between(navegador.get("/proyectos/1/historias/1").Body.String(), "<main", "</main>")
+	if !strings.Contains(html, "Se cargaron las horas estimadas de la historia 1") {
+		t.Errorf("se esperaba el mensaje, y no esta en:\n%s", html)
+	}
+	if !strings.Contains(html, "<dt>Horas estimadas</dt>\n  <dd>6,5</dd>") {
+		t.Errorf("se esperaba la historia con 6,5 horas estimadas, y no esta en:\n%s", html)
+	}
+	if story, _ := project.Story(1); story.EstimatedHours() != 6.5 {
+		t.Errorf("se esperaban 6,5 horas estimadas en el nucleo, hay %v", story.EstimatedHours())
+	}
+}
