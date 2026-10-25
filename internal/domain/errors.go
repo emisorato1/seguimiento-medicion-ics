@@ -128,4 +128,7 @@ var (
 	ErrNotParticipant = errors.New("no participa de esta ronda")
 	// ErrRoundRevealed: votar o volver a revelar una ronda ya revelada (historia #13, RN-16).
 	ErrRoundRevealed = errors.New("la ronda ya fue revelada")
+	// ErrRoundNotRevealed: acordar la estimación de una ronda que todavía no se reveló
+	// (historia #73, RN-12).
+	ErrRoundNotRevealed = errors.New("primero hay que revelar la ronda para acordar la estimación")
 )
