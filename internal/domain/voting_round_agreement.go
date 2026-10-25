@@ -63,10 +63,13 @@ func (r *VotingRound) Agreed() int {
 // Terminada, con sus mismos errores (RN-10, RN-11), y cambia la historia solo si pasa. Recién
 // entonces la ronda registra el valor: si algo se rechaza, la ronda y la historia quedan como
 // estaban (RN-16). Antes de estimar van los controles de la ronda: tiene que estar revelada
-// (RN-12).
+// (RN-12) y sin acuerdo (RN-13).
 func (r *VotingRound) Agree(points int) error {
 	if !r.revealed {
 		return ErrRoundNotRevealed
+	}
+	if r.agreed != 0 {
+		return ErrRoundAlreadyAgreed
 	}
 	if err := r.project.EstimateStory(r.storyID, points); err != nil {
 		return err
