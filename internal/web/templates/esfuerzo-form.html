@@ -1,0 +1,49 @@
+{{define "content"}}
+<h1>Registrar horas</h1>
+{{template "error-formulario" .Data.Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/esfuerzo/nuevo" novalidate>
+  {{with .Data.Form.Field "integrante"}}
+  <div class="campo">
+    <label for="integrante">Integrante</label>
+    <select id="integrante" name="integrante"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí un integrante" $.Data.Members .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "historia"}}
+  <div class="campo">
+    <label for="historia">Historia</label>
+    <select id="historia" name="historia"{{template "invalido" .}}>
+      {{template "opciones-con-texto" (labeled "Elegí una historia" $.Data.Stories .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "dia"}}
+  <div class="campo">
+    <label for="dia">Día</label>
+    <input type="date" id="dia" name="dia" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "horas"}}
+  <div class="campo">
+    <label for="horas">Horas</label>
+    <input type="text" inputmode="decimal" id="horas" name="horas" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "actividad"}}
+  <div class="campo">
+    <label for="actividad">Actividad</label>
+    <input type="text" id="actividad" name="actividad" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Registrar horas</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/esfuerzo">Cancelar</a>
+  </div>
+</form>
+{{end}}

@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"os"
 	"syscall"
+	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/store"
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/web"
@@ -105,7 +106,7 @@ func open(o options) (http.Handler, error) {
 	if err != nil {
 		return nil, err
 	}
-	return web.NewServer(registry, file), nil
+	return web.NewServer(registry, file, time.Now), nil
 }
 
 // showAddress muestra donde abrir el sistema en el navegador y donde se guardan los datos.

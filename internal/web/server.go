@@ -46,16 +46,22 @@ type Server struct {
 	// handler es el mux detras de la proteccion contra pedidos de otro sitio.
 	handler http.Handler
 	pages   map[string]*template.Template
+	// today da la fecha de hoy (D1 de la #78): el dominio no lee el reloj, y la web se la
+	// pasa cuando una operacion la necesita. El comando le da la de la computadora y los
+	// tests una fija.
+	today func() time.Time
 	// lock hace que los pedidos usen el registro de a uno (RN-20, D12): net/http atiende
 	// cada pedido en paralelo y el dominio no esta hecho para eso.
 	lock sync.RWMutex
 }
 
 // NewServer arma la web sobre el registro de proyectos que recibe, guardandolo con saver.
-func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
+// today es de donde toma la fecha de hoy.
+func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.Time) *Server {
 	s := &Server{
 		registry: registry,
 		saver:    saver,
+		today:    today,
 		mux:      http.NewServeMux(),
 		pages:    parsePages(),
 	}
@@ -91,6 +97,9 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver) *Server {
 	s.mux.HandleFunc("GET /proyectos/{id}/sprints/quitar", s.confirmUnassign)
 	s.mux.HandleFunc("POST /proyectos/{id}/sprints/quitar", s.unassignStory)
 	s.mux.HandleFunc("GET /proyectos/{id}/sprints/{n}", s.showSprint)
+	s.mux.HandleFunc("GET /proyectos/{id}/esfuerzo", s.listEfforts)
+	s.mux.HandleFunc("GET /proyectos/{id}/esfuerzo/nuevo", s.newEffort)
+	s.mux.HandleFunc("POST /proyectos/{id}/esfuerzo/nuevo", s.createEffort)
 
 	// Sin usuarios ni contraseñas (D20), otra pagina abierta en el mismo navegador podria
 	// enviar un formulario a la web. La proteccion de la biblioteca estandar rechaza todo
@@ -130,6 +139,7 @@ var templateFuncs = template.FuncMap{
 	"fecha":   formatDate,
 	"choices": newChoices,
 	"labeled": newLabeledChoices,
+	"horas":   formatHours,
 }
 
 // choices es una lista para elegir: el texto de la opcion vacia que pide elegir, las
