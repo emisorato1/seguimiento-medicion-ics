@@ -921,12 +921,22 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/1/sprints/99", err: domain.ErrSprintNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/99/sprints", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/99/sprints/nuevo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/sprints/1", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/sprints/quitar?historia=1", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/esfuerzo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/esfuerzo/nuevo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/historias/99/horas-estimadas", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/planning-poker", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/historias/99/rondas/1", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/historias/1/rondas/1", err: errRoundNotFound, volver: "/proyectos/1"},
 	}
 
 	for _, caso := range casos {
 		t.Run(caso.pedido, func(t *testing.T) {
 			registry := domain.NewProjectRegistry()
-			addProject(t, registry, "Sistema de metricas")
+			project := addProject(t, registry, "Sistema de metricas")
+			// La historia 1 existe, sin rondas, para pedir una ronda que no tiene (#78).
+			addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
 			server := newTestServer(t, registry)
 
 			res := get(t, server, caso.pedido)
