@@ -106,6 +106,7 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.
 	s.mux.HandleFunc("POST /proyectos/{id}/planning-poker", s.openRound)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/rondas/{r}", s.showRound)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/votar", s.vote)
+	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/revelar", s.reveal)
 
 	// Sin usuarios ni contraseñas (D20), otra pagina abierta en el mismo navegador podria
 	// enviar un formulario a la web. La proteccion de la biblioteca estandar rechaza todo

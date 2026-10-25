@@ -113,12 +113,16 @@ type roundPage struct {
 	Pending   []string
 	// Participants es cuantos participan: los que votaron mas los que faltan.
 	Participants int
-	Points       []string
-	Form         *form
+	// Votes son los votos con su integrante, que el nucleo entrega recien al revelar.
+	Votes  []domain.Vote
+	Points []string
+	Form   *form
 }
 
 // renderRound muestra la pagina de una ronda.
 func (s *Server) renderRound(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, story *domain.Story, round *domain.VotingRound, f *form) {
+	// Antes de revelar, Votes responde con un error y no hay votos que mostrar (D2).
+	votes, _ := round.Votes()
 	s.render(w, r, status, "ronda.html", page{
 		Title:   fmt.Sprintf("Ronda %d de la historia %d", round.Number(), story.ID()),
 		Project: project,
@@ -130,6 +134,7 @@ func (s *Server) renderRound(w http.ResponseWriter, r *http.Request, status int,
 			Voted:        round.Voted(),
 			Pending:      round.Pending(),
 			Participants: len(round.Voted()) + len(round.Pending()),
+			Votes:        votes,
 			Points:       pointOptions(),
 			Form:         f,
 		},
@@ -170,4 +175,21 @@ func (s *Server) vote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.done(w, r, "Se registró el voto de "+f.Values["integrante"], roundPath(project.ID(), round))
+}
+
+// reveal revela la ronda y vuelve a ella con 303. Si faltan votos, el rechazo no es de
+// ningun campo y va arriba (RN-2).
+func (s *Server) reveal(w http.ResponseWriter, r *http.Request) {
+	project, story, round, err := s.findRound(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	if err := round.Reveal(); err != nil {
+		f := newForm()
+		f.reject(err)
+		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, f)
+		return
+	}
+	s.done(w, r, fmt.Sprintf("Se reveló la ronda %d de la historia %d", round.Number(), story.ID()), roundPath(project.ID(), round))
 }

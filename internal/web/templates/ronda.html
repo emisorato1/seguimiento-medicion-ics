@@ -2,6 +2,23 @@
 {{with .Data}}
 <h1>Ronda {{.Round.Number}} de la historia {{.Story.ID}}</h1>
 <p>{{.Story.Title}}</p>
+{{template "error-formulario" .Form.General}}
+{{if .Round.Revealed}}
+<h2>Votos</h2>
+<div class="tabla">
+  <table id="votos">
+    <thead><tr><th scope="col">Integrante</th><th scope="col">Story points</th></tr></thead>
+    <tbody>
+      {{range .Votes}}
+      <tr>
+        <td>{{.MemberName}}</td>
+        <td>{{.Points}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
 <p>Votaron {{len .Voted}} de {{.Participants}}.</p>
 <div class="columnas">
   <div>
@@ -16,7 +33,6 @@
 {{if .Pending}}
 <h2>Votar</h2>
 <p>El voto queda oculto hasta que se revele la ronda, también para quien lo da.</p>
-{{template "error-formulario" .Form.General}}
 <form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/historias/{{.Story.ID}}/rondas/{{.Round.Number}}/votar" novalidate>
   {{with .Form.Field "integrante"}}
   <div class="campo">
@@ -41,5 +57,14 @@
   </div>
 </form>
 {{end}}
+<form method="post" action="/proyectos/{{.ProjectID}}/historias/{{.Story.ID}}/rondas/{{.Round.Number}}/revelar">
+  <div class="acciones">
+    <button type="submit">Revelar la ronda</button>
+  </div>
+</form>
+{{end}}
+<div class="acciones">
+  <a class="boton boton-secundario" href="/proyectos/{{.ProjectID}}/planning-poker">Volver al Planning Poker</a>
+</div>
 {{end}}
 {{end}}
