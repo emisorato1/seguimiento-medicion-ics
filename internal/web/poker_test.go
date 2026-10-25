@@ -66,3 +66,103 @@ func TestUnaRondaDePlanningPokerSinVerLosVotosHastaRevelar(t *testing.T) {
 		t.Errorf("se esperaba que solo falte votar Juan Gomez, salio %v", got)
 	}
 }
+
+// elements devuelve el contenido de cada elemento de la pagina con esas etiquetas, como cada
+// fila de una tabla o cada renglon de una lista, para mirar que va junto a que.
+func elements(html string, tags ...string) []string {
+	var found []string
+	for _, tag := range tags {
+		rest := html
+		for {
+			i := strings.Index(rest, "<"+tag)
+			if i < 0 {
+				break
+			}
+			j := strings.Index(rest[i:], "</"+tag+">")
+			if j < 0 {
+				break
+			}
+			found = append(found, rest[i:i+j])
+			rest = rest[i+j:]
+		}
+	}
+	return found
+}
+
+// Escenario: Nadie ve un voto antes de revelar
+// Cubre: RN-4
+//
+// No se busca el 13 suelto, porque el formulario de votar ofrece la escala entera y el
+// numero puede estar en una fecha o un identificador (revision de Maximiliano Eula, puerta
+// de la #78): se mira que la tabla de votos no exista, que ningun elemento que nombra a Ana
+// Perez lleve el 13 y que el mensaje de su voto no lleve ningun numero.
+func TestNadieVeUnVotoAntesDeRevelar(t *testing.T) {
+	registry, project := pokerRegistry(t)
+	addSprint(t, registry, 1)
+	if _, err := project.OpenVotingRound(1); err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	navegador := newBrowser(t, newTestServer(t, registry))
+	ronda := "/proyectos/1/historias/1/rondas/1"
+
+	res := navegador.post(ronda+"/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"13"}})
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("se esperaba aceptar el voto con el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
+	}
+
+	paginas := []string{ronda, ronda, "/proyectos/1", "/proyectos/1/backlog", "/proyectos/1/historias/1",
+		"/proyectos/1/integrantes", "/proyectos/1/sprints", "/proyectos/1/sprints/1", "/proyectos/1/esfuerzo",
+		"/proyectos/1/planning-poker", "/proyectos"}
+	for i, pagina := range paginas {
+		html := navegador.get(pagina).Body.String()
+		// La primera vez, la ronda trae el mensaje del voto, que no lleva ningun numero.
+		if i == 0 {
+			mensaje := between(html, `role="status">`, "</p>")
+			if !strings.Contains(mensaje, "Ana Perez") || strings.ContainsAny(mensaje, "0123456789") {
+				t.Errorf("se esperaba el mensaje del voto de Ana Perez sin ningun numero, salio %q", mensaje)
+			}
+		}
+		if strings.Contains(html, `id="votos"`) {
+			t.Errorf("en %s no tenia que estar la tabla de votos antes de revelar", pagina)
+		}
+		for _, elemento := range elements(html, "tr", "li", "p", "dd", "td", "option", "span", "h1", "h2") {
+			if strings.Contains(elemento, "Ana Perez") && strings.Contains(elemento, "13") {
+				t.Errorf("en %s el 13 aparece junto a Ana Perez: %s", pagina, elemento)
+			}
+		}
+	}
+}
+
+// Escenario: Un voto rechazado no muestra el valor elegido
+// Cubre: RN-6
+func TestUnVotoRechazadoNoMuestraElValorElegido(t *testing.T) {
+	registry, project := pokerRegistry(t)
+	round, err := project.OpenVotingRound(1)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	if err := round.Vote("Ana Perez", 5); err != nil {
+		t.Fatalf("no se pudo preparar el voto: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	res := newBrowser(t, server).post("/proyectos/1/historias/1/rondas/1/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"21"}})
+
+	if res.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+	}
+	html := res.Body.String()
+	if !strings.Contains(html, domain.ErrAlreadyVoted.Error()) {
+		t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", domain.ErrAlreadyVoted, html)
+	}
+	// El 21 esta en la escala que se ofrece, pero no puede volver elegido.
+	puntos := between(html, `<select id="puntos"`, "</select>")
+	if strings.Contains(puntos, "selected") {
+		t.Errorf("no se esperaba ningun valor elegido en los story points:\n%s", puntos)
+	}
+	for _, elemento := range elements(html, "tr", "li", "p", "div", "span", "option") {
+		if strings.Contains(elemento, "Ana Perez") && strings.Contains(elemento, "21") && !strings.Contains(elemento, "<select") {
+			t.Errorf("el 21 aparece junto a Ana Perez: %s", elemento)
+		}
+	}
+}
