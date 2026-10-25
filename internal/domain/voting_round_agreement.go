@@ -77,3 +77,31 @@ func (r *VotingRound) Agree(points int) error {
 	r.agreed = points
 	return nil
 }
+
+// VotingRounds devuelve las rondas de la historia, en orden de número, con sus votos y su
+// acuerdo si lo tienen (RN-7, RN-8). Una historia sin rondas devuelve una lista vacía, que no
+// es un error; una que no existe informa que no se encontró.
+func (p *Project) VotingRounds(storyID int) ([]*VotingRound, error) {
+	if _, err := p.Story(storyID); err != nil {
+		return nil, err
+	}
+	rounds := []*VotingRound{}
+	for _, round := range p.votingRounds {
+		if round.storyID == storyID {
+			rounds = append(rounds, round)
+		}
+	}
+	return rounds, nil
+}
+
+// lastVotingRound devuelve la última ronda que se abrió sobre la historia, o nil si no tiene
+// ninguna. El proyecto guarda las rondas en orden de apertura, así que es la última de la
+// lista con esa historia.
+func (p *Project) lastVotingRound(storyID int) *VotingRound {
+	for i := len(p.votingRounds) - 1; i >= 0; i-- {
+		if p.votingRounds[i].storyID == storyID {
+			return p.votingRounds[i]
+		}
+	}
+	return nil
+}

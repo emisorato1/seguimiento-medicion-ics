@@ -178,19 +178,20 @@ func (p *Project) OpenVotingRound(storyID int) (*VotingRound, error) {
 	if len(p.members) == 0 {
 		return nil, ErrVotingRoundNoMembers
 	}
-	// Hasta que esté la #73, cada historia tiene una sola ronda: se rechaza toda segunda
-	// ronda, esté revelada o no la primera (punto 6 de la puerta). La #73 lo afloja para
-	// las reveladas.
-	for _, round := range p.votingRounds {
-		if round.storyID == storyID {
+	// Mientras la última ronda de la historia siga sin revelar, no se abre otra (RN-7). Con la
+	// última revelada, la nueva lleva el número siguiente de su historia (#73, RN-5 y RN-6).
+	number := 1
+	if last := p.lastVotingRound(storyID); last != nil {
+		if !last.revealed {
 			return nil, ErrVotingRoundInProgress
 		}
+		number = last.number + 1
 	}
 	participants := make([]string, 0, len(p.members))
 	for _, member := range p.members {
 		participants = append(participants, member.name)
 	}
-	round := &VotingRound{storyID: storyID, number: 1, participants: participants, project: p}
+	round := &VotingRound{storyID: storyID, number: number, participants: participants, project: p}
 	p.votingRounds = append(p.votingRounds, round)
 	return round, nil
 }
