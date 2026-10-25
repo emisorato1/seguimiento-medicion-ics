@@ -1204,9 +1204,19 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 	project := addProject(t, registry, "Sistema de metricas")
 	addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
 	addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+	// Lo que usan los formularios de la #78: un sprint, un registro de esfuerzo y una ronda.
+	addSprint(t, registry, 1)
+	if _, err := project.LogEffort(domain.EffortData{StoryID: 1, MemberName: "Ana Perez", Activity: "Escribir tests",
+		Hours: 2, Day: testToday()}, testToday()); err != nil {
+		t.Fatalf("no se pudo preparar el esfuerzo: %v", err)
+	}
+	if _, err := project.OpenVotingRound(1); err != nil {
+		t.Fatalf("no se pudo preparar la ronda: %v", err)
+	}
 	navegador := newBrowser(t, newTestServer(t, registry))
 
 	historia := url.Values{"titulo": {"Una"}, "descripcion": {"Otra"}, "prioridad": {"Alta"}, "criterios": {"Un criterio"}}
+	esfuerzo := url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"2"}, "actividad": {"Escribir tests"}}
 	sin := func(datos url.Values, campo string) url.Values {
 		copia := url.Values{}
 		for k, v := range datos {
@@ -1233,6 +1243,24 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		"historia sin prioridad":      navegador.post("/proyectos/1/historias/nueva", sin(historia, "prioridad")),
 		"historia sin criterios":      navegador.post("/proyectos/1/historias/nueva", sin(historia, "criterios")),
 		"estimacion sin story points": navegador.post("/proyectos/1/historias/1/estimar", url.Values{}),
+		// Los formularios de la #78 (tarea 24).
+		"sprint nuevo":                 navegador.get("/proyectos/1/sprints/nuevo"),
+		"sprint sin goal ni fechas":    navegador.post("/proyectos/1/sprints/nuevo", url.Values{"inicio": {"x"}, "fin": {"y"}}),
+		"asignar al sprint":            navegador.get("/proyectos/1/sprints/1"),
+		"asignar sin historia":         navegador.post("/proyectos/1/sprints/asignar", url.Values{}),
+		"esfuerzo nuevo":               navegador.get("/proyectos/1/esfuerzo/nuevo"),
+		"esfuerzo sin integrante":      navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "integrante")),
+		"esfuerzo sin historia":        navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "historia")),
+		"esfuerzo sin dia":             navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "dia")),
+		"esfuerzo sin horas":           navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "horas")),
+		"esfuerzo sin actividad":       navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "actividad")),
+		"horas estimadas":              navegador.get("/proyectos/1/historias/1/horas-estimadas"),
+		"horas estimadas que no son":   navegador.post("/proyectos/1/historias/1/horas-estimadas", url.Values{"horas": {"x"}}),
+		"abrir una ronda":              navegador.get("/proyectos/1/planning-poker"),
+		"abrir una ronda sin historia": navegador.post("/proyectos/1/planning-poker", url.Values{}),
+		"votar":                        navegador.get("/proyectos/1/historias/1/rondas/1"),
+		"votar sin elegir":             navegador.post("/proyectos/1/historias/1/rondas/1/votar", url.Values{}),
+		"votar sin elegir quien vota":  navegador.post("/proyectos/1/historias/1/rondas/1/votar", url.Values{"puntos": {"5"}}),
 	}
 
 	for nombre, res := range paginas {
@@ -1300,7 +1328,8 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 	}
 
 	// Toda tabla esta dentro de su recuadro, que se desplaza de costado si no entra.
-	for _, pagina := range []string{"/proyectos", "/proyectos/1/integrantes", "/proyectos/1/backlog"} {
+	for _, pagina := range []string{"/proyectos", "/proyectos/1/integrantes", "/proyectos/1/backlog",
+		"/proyectos/1/sprints", "/proyectos/1/esfuerzo", "/proyectos/1/planning-poker"} {
 		html := navegador.get(pagina).Body.String()
 		tablas := strings.Count(html, "<table")
 		if tablas == 0 || len(tableStart.FindAllString(html, -1)) != tablas {
