@@ -157,6 +157,13 @@ func snapshot(registry *domain.ProjectRegistry) string {
 				h.Priority(), h.State(), h.StoryPoints(), h.AcceptanceCriteria())
 		}
 	}
+	// Lo que se guarda incluye lo que suman las historias de la #78 (sprints, esfuerzo,
+	// defectos y rondas), asi un cambio en cualquiera de ellos tambien se nota.
+	guardado, err := registry.ToJSON()
+	if err != nil {
+		return "no se pudo describir el registro: " + err.Error()
+	}
+	b.Write(guardado)
 	return b.String()
 }
 
@@ -542,6 +549,27 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			campo:      "",
 			err:        domain.ErrStoryEstimateDone,
 		},
+		{
+			nombre: "sprint con el goal vacio (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/sprints/nuevo",
+			datos:      url.Values{"goal": {"  "}, "inicio": {"2026-10-26"}, "fin": {"2026-10-30"}},
+			campo:      "goal",
+			err:        domain.ErrSprintGoalRequired,
+		},
+		{
+			nombre: "segundo sprint abierto (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+				addSprint(t, registry, 1)
+			},
+			formulario: "/proyectos/1/sprints/nuevo",
+			datos:      url.Values{"goal": {"Cerrar el MVP"}, "inicio": {"2026-11-02"}, "fin": {"2026-11-06"}},
+			campo:      "",
+			err:        domain.ErrSprintAlreadyOpen,
+		},
 	}
 
 	for _, caso := range casos {
@@ -576,10 +604,12 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 
 			// El mensaje del dominio, junto a su campo o, si no es de ningun campo, arriba.
 			donde := "arriba del formulario"
-			junto := fmt.Sprintf(`id="error-formulario">%s<`, template.HTMLEscapeString(caso.err.Error()))
+			// Sin el cierre del elemento: el dominio puede sumarle un detalle al mensaje, como
+			// el numero del sprint que ya esta abierto (#8).
+			junto := fmt.Sprintf(`id="error-formulario">%s`, template.HTMLEscapeString(caso.err.Error()))
 			if caso.campo != "" {
 				donde = "junto al campo " + caso.campo
-				junto = fmt.Sprintf(`id="%s-error">%s<`, caso.campo, template.HTMLEscapeString(caso.err.Error()))
+				junto = fmt.Sprintf(`id="%s-error">%s`, caso.campo, template.HTMLEscapeString(caso.err.Error()))
 			}
 			if !strings.Contains(html, junto) {
 				t.Errorf("se esperaba %s el mensaje %q, y no esta en:\n%s", donde, caso.err, html)

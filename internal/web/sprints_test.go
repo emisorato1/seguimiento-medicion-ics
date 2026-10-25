@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
@@ -90,4 +91,22 @@ func TestCrearUnSprintDesdeLaWeb(t *testing.T) {
 	if n := len(project.Sprints()); n != 1 || saver.saves != 1 {
 		t.Errorf("se esperaba un solo sprint guardado una vez, hay %d sprints y %d guardados", n, saver.saves)
 	}
+}
+
+// addSprint crea en el proyecto un sprint abierto del 26/10/2026 al 30/10/2026.
+func addSprint(t *testing.T, registry *domain.ProjectRegistry, projectID int) *domain.Sprint {
+	t.Helper()
+	project, err := registry.Get(projectID)
+	if err != nil {
+		t.Fatalf("no se encontro el proyecto %d: %v", projectID, err)
+	}
+	sprint, err := project.AddSprint(domain.SprintData{
+		Goal:  "Tener el MVP",
+		Start: time.Date(2026, 10, 26, 0, 0, 0, 0, time.UTC),
+		End:   time.Date(2026, 10, 30, 0, 0, 0, 0, time.UTC),
+	})
+	if err != nil {
+		t.Fatalf("no se pudo preparar el sprint: %v", err)
+	}
+	return sprint
 }
