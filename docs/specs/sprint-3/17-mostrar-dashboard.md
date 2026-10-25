@@ -452,7 +452,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 1 | Un proyecto sin sprints arma un dashboard sin estado general, sin sprint en curso y sin gráficos, y sin error | Un proyecto sin sprints avisa que no hay datos | RN-7 | hecha |
 | 2 | El estado general trae cada métrica del proyecto con su rótulo y su valor, tal como llegó, incluida la velocidad promedio | El estado general muestra las metricas tal como se calcularon | RN-2, RN-4 | hecha |
 | 3 | Porcentajes y horas con un decimal, coma y unidad; enteros sin decimales; la desviación negativa, con su signo | Porcentajes, horas y enteros se muestran con su formato | RN-15 | hecha |
-| 4 | El sprint en curso trae el sprint abierto y lo que lleva registrado, sin completados ni velocidad; sin sprint abierto, no trae nada | El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-5, RN-6 | pendiente |
+| 4 | El sprint en curso trae el sprint abierto y lo que lleva registrado, sin completados ni velocidad; sin sprint abierto, no trae nada | El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-5, RN-6 | hecha |
 | 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | pendiente |
 | 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso, y la velocidad del estado general escrita como «sin sprints cerrados» | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-4, RN-8, RN-9 | pendiente |
 | 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | pendiente |
@@ -549,6 +549,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 1 | `6367a0e` | `1b11f92` |
 | 2 | `5941e21` | `a3487f5` |
 | 3 | `92c6a8b` | `b66feed` |
+| 4 | `6330fb4` | `e84abc3` |
 
 ### Decisiones tomadas al implementar
 
@@ -561,6 +562,17 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   -0,04 % es "0,0 %" y no "-0,0 %", porque la RN-15 escribe el cero sin signo.
 - **La regla de formato quedó en `internal/domain/format.go`**, aparte del dashboard, para
   que la #18 la use tal como está.
+- **El armado recibe las métricas de cada sprint por su número** (tarea 4): las del sprint
+  abierto para el sprint en curso, y las mismas le van a servir a la tarea 6 para la
+  velocidad de cada sprint cerrado.
+
+### Desvíos respecto de la spec
+
+- **Tarea 4:** el escenario "Un proyecto con todos sus sprints cerrados no tiene sprint en
+  curso" se llama igual que uno de la #5, y los dos tests están en el mismo paquete. El del
+  dashboard se llama `TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCursoEnElDashboard`,
+  con el escenario exacto en su comentario. Además pasaría sin código nuevo, porque hasta esta
+  tarea el sprint en curso venía siempre vacío; el RED lo dio el otro test de la tarea.
 
 ## Trazabilidad
 
