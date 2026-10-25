@@ -219,3 +219,26 @@ func TestRechazarUnAcuerdoQueLaEstimacionNoPermite(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Rechazar un acuerdo sobre una ronda sin revelar
+// Cubre: RN-12, RN-16
+func TestRechazarUnAcuerdoSobreUnaRondaSinRevelar(t *testing.T) {
+	project, round := openRound(t)
+	for _, name := range round.Pending() {
+		if err := round.Vote(name, 5); err != nil {
+			t.Fatalf("no se pudo votar: %v", err)
+		}
+	}
+
+	err := round.Agree(5)
+
+	if !errors.Is(err, ErrRoundNotRevealed) {
+		t.Fatalf("se esperaba ErrRoundNotRevealed, salio: %v", err)
+	}
+	if story, _ := project.Story(round.StoryID()); story.IsEstimated() {
+		t.Fatalf("se esperaba la historia sin estimar, salio estimada en %d", story.StoryPoints())
+	}
+	if round.Agreed() != 0 {
+		t.Fatalf("se esperaba la ronda sin acordar, salio acordada en %d", round.Agreed())
+	}
+}
