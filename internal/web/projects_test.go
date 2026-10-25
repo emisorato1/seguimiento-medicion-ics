@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -118,5 +119,46 @@ func TestUnTextoConSignosSeMuestraTalCual(t *testing.T) {
 	}
 	if strings.Contains(lista, "<b>") {
 		t.Errorf("no se esperaba que el nombre se muestre en negrita, y esta en:\n%s", lista)
+	}
+}
+
+// Escenario: El proyecto muestra su resumen
+// Cubre: RN-20 de la #78
+func TestElProyectoMuestraSuResumen(t *testing.T) {
+	historia := func(id int, estado string) string {
+		return fmt.Sprintf(`{"id": %d, "title": "Historia %d", "description": "Como integrante quiero algo",
+			"priority": "Media", "state": %q, "story_points": 3, "acceptance_criteria": ["Se puede"]}`, id, id, estado)
+	}
+	registry, err := domain.RegistryFromJSON([]byte(`{
+		"next_id": 2,
+		"projects": [{
+			"id": 1, "name": "Sistema de metricas", "start": "2026-10-01", "next_story_id": 4,
+			"members": [], "efforts": [],
+			"stories": [` + historia(1, "Terminada") + `, ` + historia(2, "En curso") + `, ` + historia(3, "Pendiente") + `],
+			"last_sprint_number": 2,
+			"sprints": [
+				{"number": 1, "goal": "Tener el MVP", "start": "2026-10-12", "end": "2026-10-23", "state": "Cerrado"},
+				{"number": 2, "goal": "Cerrar la interfaz", "start": "2026-10-26", "end": "2026-11-06", "state": "Abierto", "stories": [2]}
+			]
+		}]
+	}`))
+	if err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+
+	html := between(get(t, newTestServer(t, registry), "/proyectos/1").Body.String(), `<section id="resumen"`, "</section>")
+
+	for _, texto := range []string{"<dt>Historias</dt>\n    <dd>3</dd>", "<dt>Completadas</dt>\n    <dd>1</dd>", "<dt>Pendientes</dt>\n    <dd>2</dd>", "Sprint 2", "Cerrar la interfaz"} {
+		if !strings.Contains(html, texto) {
+			t.Errorf("se esperaba en el resumen %q, y no esta en:\n%s", texto, html)
+		}
+	}
+
+	// Sin sprint abierto, el resumen dice que no hay ninguno.
+	vacio := domain.NewProjectRegistry()
+	addProject(t, vacio, "Sistema de metricas")
+	html = between(get(t, newTestServer(t, vacio), "/proyectos/1").Body.String(), `<section id="resumen"`, "</section>")
+	if !strings.Contains(html, "No hay ningún sprint en curso") {
+		t.Errorf("se esperaba que no hay sprint en curso, y no esta en:\n%s", html)
 	}
 }
