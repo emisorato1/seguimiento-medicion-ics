@@ -319,6 +319,15 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			mensaje: "El backlog está vacío",
 			acceso:  `href="/proyectos/1/historias/nueva"`,
 		},
+		{
+			nombre: "un proyecto sin sprints (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/sprints",
+			mensaje: "Todavía no hay sprints",
+			acceso:  `href="/proyectos/1/sprints/nuevo"`,
+		},
 	}
 
 	for _, caso := range casos {

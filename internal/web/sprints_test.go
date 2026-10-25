@@ -2,6 +2,7 @@ package web
 
 import (
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -46,5 +47,47 @@ func TestLaBarraDeUnProyectoLlevaATodasSusSecciones(t *testing.T) {
 				t.Errorf("se esperaba %s marcada como la seccion actual, y no esta en:\n%s", seccion.nombre, barra)
 			}
 		})
+	}
+}
+
+// Escenario: Crear un sprint desde la web
+// Cubre: RN-1, RN-2
+func TestCrearUnSprintDesdeLaWeb(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := addProject(t, registry, "Sistema de metricas")
+	saver := &fakeSaver{}
+	navegador := newBrowser(t, NewServer(registry, saver))
+
+	res := navegador.post("/proyectos/1/sprints/nuevo", url.Values{
+		"goal":   {"Tener el MVP"},
+		"inicio": {"2026-10-26"},
+		"fin":    {"2026-10-30"},
+	})
+
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("se esperaba el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
+	}
+	lista := res.Header().Get("Location")
+	if lista != "/proyectos/1/sprints" {
+		t.Fatalf("se esperaba volver a la lista de sprints, salio %q", lista)
+	}
+	html := between(navegador.get(lista).Body.String(), "<main", "</main>")
+	if !strings.Contains(html, "Se creó el sprint 1") {
+		t.Errorf("se esperaba el mensaje %q, y no esta en:\n%s", "Se creó el sprint 1", html)
+	}
+	fila := between(html, "<tbody>", "</tbody>")
+	for _, texto := range []string{"<td>1</td>", "Tener el MVP", "26/10/2026", "30/10/2026", "<td>Abierto</td>"} {
+		if !strings.Contains(fila, texto) {
+			t.Errorf("se esperaba en la lista de sprints %q, y no esta en:\n%s", texto, fila)
+		}
+	}
+
+	// Recargar la lista no crea otro sprint, y el mensaje ya no aparece.
+	html = between(navegador.get(lista).Body.String(), "<main", "</main>")
+	if strings.Contains(html, "Se creó el sprint 1") {
+		t.Errorf("el mensaje no tenia que repetirse al recargar:\n%s", html)
+	}
+	if n := len(project.Sprints()); n != 1 || saver.saves != 1 {
+		t.Errorf("se esperaba un solo sprint guardado una vez, hay %d sprints y %d guardados", n, saver.saves)
 	}
 }
