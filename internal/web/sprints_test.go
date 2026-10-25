@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -109,4 +110,71 @@ func addSprint(t *testing.T, registry *domain.ProjectRegistry, projectID int) *d
 		t.Fatalf("no se pudo preparar el sprint: %v", err)
 	}
 	return sprint
+}
+
+// Escenario: Asignar y quitar historias del sprint abierto
+// Cubre: RN-1, RN-16
+func TestAsignarYQuitarHistoriasDelSprintAbierto(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := addProject(t, registry, "Sistema de metricas")
+	for _, h := range []struct {
+		titulo string
+		puntos int
+	}{{"Registrar esfuerzo", 3}, {"Cargar defectos", 5}} {
+		story := addStory(t, project, h.titulo, domain.PriorityHigh)
+		if err := project.EstimateStory(story.ID(), h.puntos); err != nil {
+			t.Fatalf("no se pudo estimar la historia: %v", err)
+		}
+	}
+	addStory(t, project, "Sin estimar", domain.PriorityLow)
+	addSprint(t, registry, 1)
+	navegador := newBrowser(t, newTestServer(t, registry))
+
+	// Para asignar se elige de la lista con todo el backlog, aunque el nucleo despues
+	// rechace la historia sin estimar (RN-16).
+	html := navegador.get("/proyectos/1/sprints/1").Body.String()
+	if got := options(html, "historia"); !slices.Equal(got, []string{"1", "2", "3"}) {
+		t.Errorf("se esperaban para asignar las historias 1, 2 y 3, salieron %v", got)
+	}
+
+	for _, historia := range []string{"1", "2"} {
+		res := navegador.post("/proyectos/1/sprints/asignar", url.Values{"historia": {historia}})
+		if res.Code != http.StatusSeeOther || res.Header().Get("Location") != "/proyectos/1/sprints/1" {
+			t.Fatalf("se esperaba volver al sprint 1 con el estado %d, salio %d hacia %q", http.StatusSeeOther, res.Code, res.Header().Get("Location"))
+		}
+	}
+	html = between(navegador.get("/proyectos/1/sprints/1").Body.String(), "<main", "</main>")
+	if !strings.Contains(html, "Se asignó la historia 2 al sprint 1") {
+		t.Errorf("se esperaba el mensaje de la asignacion, y no esta en:\n%s", html)
+	}
+	backlog := between(html, "<tbody>", "</tbody>")
+	for _, texto := range []string{"Registrar esfuerzo", "Cargar defectos", "<td>3</td>", "<td>5</td>"} {
+		if !strings.Contains(backlog, texto) {
+			t.Errorf("se esperaba en el Sprint Backlog %q, y no esta en:\n%s", texto, backlog)
+		}
+	}
+	if n := strings.Count(backlog, "<td>En curso</td>"); n != 2 {
+		t.Errorf("se esperaban las dos historias En curso, hay %d:\n%s", n, backlog)
+	}
+
+	// Quitar pide confirmacion, y al confirmar la historia vuelve a Pendiente.
+	html = navegador.get("/proyectos/1/sprints/quitar?historia=1").Body.String()
+	if !strings.Contains(html, "¿Quitar la historia 1 del sprint 1?") {
+		t.Fatalf("se esperaba la pregunta para confirmar, y no esta en:\n%s", html)
+	}
+	res := navegador.post("/proyectos/1/sprints/quitar", url.Values{"historia": {"1"}})
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("se esperaba el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
+	}
+	html = between(navegador.get(res.Header().Get("Location")).Body.String(), "<main", "</main>")
+	if !strings.Contains(html, "Se quitó la historia 1 del sprint 1") {
+		t.Errorf("se esperaba el mensaje de quitar, y no esta en:\n%s", html)
+	}
+	backlog = between(html, "<tbody>", "</tbody>")
+	if strings.Contains(backlog, "Registrar esfuerzo") || !strings.Contains(backlog, "Cargar defectos") {
+		t.Errorf("se esperaba que solo quede la historia 2 en el Sprint Backlog:\n%s", backlog)
+	}
+	if story, _ := project.Story(1); story.State() != domain.StoryPending {
+		t.Errorf("se esperaba la historia 1 Pendiente, esta %v", story.State())
+	}
 }
