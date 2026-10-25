@@ -133,4 +133,7 @@ var (
 	ErrRoundNotRevealed = errors.New("primero hay que revelar la ronda para acordar la estimación")
 	// ErrRoundAlreadyAgreed: acordar por segunda vez la misma ronda (historia #73, RN-13).
 	ErrRoundAlreadyAgreed = errors.New("esa ronda ya tiene una estimación acordada")
+	// ErrNotLastRound: acordar sobre una ronda que ya fue superada por otra de la misma
+	// historia (historia #73, RN-14).
+	ErrNotLastRound = errors.New("solo se puede acordar sobre la última ronda de la historia")
 )
