@@ -803,6 +803,7 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 	casos := []struct {
 		pedido string
 		err    error
+		volver string // el acceso al proyecto, si el pedido es de algo dentro de uno
 	}{
 		{pedido: "/proyectos/99", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/abc", err: domain.ErrProjectNotFound},
@@ -820,6 +821,10 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/1/historias/99/estimar", err: domain.ErrStoryNotFound},
 		{pedido: "/proyectos/1/historias/99/quitar-estimacion", err: domain.ErrStoryNotFound},
 		{pedido: "/proyectos/1/integrantes/quitar?nombre=Nadie", err: domain.ErrMemberNotFound},
+		// La #78 (RN-18) pide ademas el acceso para volver al proyecto.
+		{pedido: "/proyectos/1/sprints/99", err: domain.ErrSprintNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/sprints", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/sprints/nuevo", err: domain.ErrProjectNotFound},
 	}
 
 	for _, caso := range casos {
@@ -839,6 +844,9 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 			}
 			if !strings.Contains(contenido, `href="/proyectos"`) {
 				t.Errorf("se esperaba el acceso para volver a la lista de proyectos, y no esta en:\n%s", contenido)
+			}
+			if caso.volver != "" && !strings.Contains(contenido, `href="`+caso.volver+`"`) {
+				t.Errorf("se esperaba el acceso para volver al proyecto (%s), y no esta en:\n%s", caso.volver, contenido)
 			}
 		})
 	}
