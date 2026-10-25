@@ -132,3 +132,90 @@ func TestNoSeInformanDiferenciasDeUnaRondaSinRevelar(t *testing.T) {
 		t.Fatalf("se esperaba no informar nada de los votos, salio: %+v", differences)
 	}
 }
+
+// twoVotes son los votos de los escenarios de acordar: "una ronda revelada donde se voto 3
+// y 8".
+var twoVotes = []Vote{{"Agustin Salinas", 3}, {"Juliana Bustos", 8}}
+
+// Esquema del escenario: Acordar la estimacion de una ronda revelada
+// Cubre: RN-9, RN-10
+func TestAcordarLaEstimacionDeUnaRondaRevelada(t *testing.T) {
+	cases := []struct {
+		name   string
+		before int
+		agreed int
+	}{
+		{"sin estimar, el valor mas alto", 0, 8},
+		{"estimada en 3, reemplaza la estimacion anterior", 3, 8},
+		{"sin estimar, un valor que nadie voto", 0, 5},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, round := revealedRound(t, twoVotes)
+			story, _ := project.Story(round.StoryID())
+			story.storyPoints = tc.before
+
+			err := round.Agree(tc.agreed)
+
+			if err != nil {
+				t.Fatalf("se esperaba acordar sin error, salio: %v", err)
+			}
+			if round.Agreed() != tc.agreed {
+				t.Fatalf("se esperaba la ronda acordada en %d, salio %d", tc.agreed, round.Agreed())
+			}
+			if story.StoryPoints() != tc.agreed {
+				t.Fatalf("se esperaba la historia estimada en %d, salio %d", tc.agreed, story.StoryPoints())
+			}
+		})
+	}
+}
+
+// Escenario: Una ronda revelada sin acuerdo figura como sin estimacion acordada
+// Cubre: RN-15
+func TestUnaRondaReveladaSinAcuerdoFiguraComoSinEstimacionAcordada(t *testing.T) {
+	_, round := revealedRound(t, twoVotes)
+
+	if round.Agreed() != 0 {
+		t.Fatalf("se esperaba la ronda sin acordar, salio acordada en %d", round.Agreed())
+	}
+}
+
+// Esquema del escenario: Rechazar un acuerdo que la estimacion no permite
+// Cubre: RN-11, RN-16
+func TestRechazarUnAcuerdoQueLaEstimacionNoPermite(t *testing.T) {
+	cases := []struct {
+		name   string
+		done   bool
+		before int
+		points int
+		want   error
+	}{
+		{"Pendiente y sin estimar, 4", false, 0, 4, ErrStoryPointsInvalid},
+		{"Pendiente y sin estimar, 0", false, 0, 0, ErrStoryPointsInvalid},
+		{"Terminada y estimada en 3, 5", true, 3, 5, ErrStoryEstimateDone},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project, round := revealedRound(t, twoVotes)
+			story, _ := project.Story(round.StoryID())
+			story.storyPoints = tc.before
+			// La historia pasa a Terminada entre el revelado y el acuerdo; terminar es de la
+			// #10, así que el test fija el estado desde dentro del paquete.
+			if tc.done {
+				story.state = StoryDone
+			}
+
+			err := round.Agree(tc.points)
+
+			if !errors.Is(err, tc.want) {
+				t.Fatalf("se esperaba %v, salio: %v", tc.want, err)
+			}
+			if round.Agreed() != 0 {
+				t.Fatalf("se esperaba la ronda sin acordar, salio acordada en %d", round.Agreed())
+			}
+			if story.StoryPoints() != tc.before {
+				t.Fatalf("se esperaba la historia con %d story points, salio con %d", tc.before, story.StoryPoints())
+			}
+		})
+	}
+}
