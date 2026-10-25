@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-23 16:52. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-25 15:05. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,7 +14,9 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 
 ## En progreso
 
@@ -25,9 +27,7 @@ _No hay historias en este estado._
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+8cbe11f 2026-10-23 docs: la tarea 3 de la historia 17 hecha, con sus decisiones de redondeo en la fase 4
+b66feed 2026-10-23 feat: porcentajes, horas y enteros se muestran con su formato (historia 17, tarea 3)
+92c6a8b 2026-10-23 test: porcentajes, horas y enteros se muestran con su formato (historia 17, tarea 3)
+d1302ad 2026-10-23 chore: regenerar ESTADO.md con la #13 en hecho
 5229b15 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-17-dashboard
 b45cbe6 2026-10-23 Merge pull request #141 from emisorato1/historia-13-votar-en-secreto
 b060bd6 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-17-dashboard
 f7133d3 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-13-votar-en-secreto
-e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
-a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
-78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
-8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
 ```
