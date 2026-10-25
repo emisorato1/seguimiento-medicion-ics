@@ -205,10 +205,6 @@ func (p *Project) CurrentVotingRound(storyID int) (*VotingRound, bool, error) {
 	if _, err := p.Story(storyID); err != nil {
 		return nil, false, err
 	}
-	for i := len(p.votingRounds) - 1; i >= 0; i-- {
-		if p.votingRounds[i].storyID == storyID {
-			return p.votingRounds[i], true, nil
-		}
-	}
-	return nil, false, nil
+	round := p.lastVotingRound(storyID)
+	return round, round != nil, nil
 }
