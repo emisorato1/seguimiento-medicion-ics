@@ -25,7 +25,7 @@
       {{range .Sprints}}
       <tr>
         <td>{{.Number}}</td>
-        <td class="principal">{{.Goal}}</td>
+        <td class="principal"><a href="/proyectos/{{$.Data.ID}}/sprints/{{.Number}}">{{.Goal}}</a></td>
         <td>{{fecha .Start}}</td>
         <td>{{fecha .End}}</td>
         <td>{{.State}}</td>
