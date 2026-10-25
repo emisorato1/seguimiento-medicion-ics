@@ -16,5 +16,18 @@
 <div class="acciones">
   <a class="boton" href="/proyectos/{{.ID}}/editar">Modificar proyecto</a>
 </div>
+<section id="resumen" aria-labelledby="resumen-titulo">
+  <h2 id="resumen-titulo">Resumen</h2>
+  <dl class="datos">
+    <dt>Historias</dt>
+    <dd>{{.Status.Backlog.Total}}</dd>
+    <dt>Completadas</dt>
+    <dd>{{.Status.Backlog.Completed}}</dd>
+    <dt>Pendientes</dt>
+    <dd>{{.Status.Backlog.Pending}}</dd>
+    <dt>Sprint en curso</dt>
+    <dd>{{if .Status.HasCurrentSprint}}{{with .Status.CurrentSprint}}<a href="/proyectos/{{$.Data.ID}}/sprints/{{.Number}}">Sprint {{.Number}}</a>: {{.Goal}} ({{fecha .Start}} al {{fecha .End}}){{end}}{{else}}<span class="sin-dato">No hay ningún sprint en curso</span>{{end}}</dd>
+  </dl>
+</section>
 {{end}}
 {{end}}
