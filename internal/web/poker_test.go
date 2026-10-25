@@ -1,6 +1,7 @@
 package web
 
 import (
+	"html/template"
 	"net/http"
 	"net/url"
 	"slices"
@@ -64,6 +65,48 @@ func TestUnaRondaDePlanningPokerSinVerLosVotosHastaRevelar(t *testing.T) {
 	}
 	if got := options(html, "integrante"); !slices.Equal(got, []string{"Juan Gomez"}) {
 		t.Errorf("se esperaba que solo falte votar Juan Gomez, salio %v", got)
+	}
+
+	// Con todos los votos, al revelar se ve cada voto con su integrante (tarea 18, RN-8).
+	navegador.post(ronda+"/votar", url.Values{"integrante": {"Juan Gomez"}, "puntos": {"8"}})
+	res = navegador.post(ronda+"/revelar", nil)
+	if res.Code != http.StatusSeeOther || res.Header().Get("Location") != ronda {
+		t.Fatalf("se esperaba volver a la ronda con el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
+	}
+	html = between(navegador.get(ronda).Body.String(), "<main", "</main>")
+	votos := between(html, `<table id="votos">`, "</table>")
+	for _, fila := range []string{"<td>Ana Perez</td>\n        <td>5</td>", "<td>Juan Gomez</td>\n        <td>8</td>"} {
+		if !strings.Contains(votos, fila) {
+			t.Errorf("se esperaba en los votos revelados %q, y no esta en:\n%s", fila, votos)
+		}
+	}
+}
+
+// Escenario: No se puede revelar con votos faltantes
+// Cubre: RN-2
+func TestNoSePuedeRevelarConVotosFaltantes(t *testing.T) {
+	registry, project := pokerRegistry(t)
+	round, err := project.OpenVotingRound(1)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	if err := round.Vote("Ana Perez", 5); err != nil {
+		t.Fatalf("no se pudo preparar el voto: %v", err)
+	}
+	saver := &fakeSaver{}
+	server := NewServer(registry, saver, testToday)
+
+	res := newBrowser(t, server).post("/proyectos/1/historias/1/rondas/1/revelar", nil)
+
+	if res.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+	}
+	html := res.Body.String()
+	if !strings.Contains(html, `id="error-formulario">`+template.HTMLEscapeString(domain.ErrVotesMissing.Error())) {
+		t.Errorf("se esperaba arriba el mensaje %q, y no esta en:\n%s", domain.ErrVotesMissing, html)
+	}
+	if round.Revealed() || saver.saves != 0 {
+		t.Errorf("la ronda tenia que seguir sin revelar y sin guardarse")
 	}
 }
 
