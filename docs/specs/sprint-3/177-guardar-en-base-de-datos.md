@@ -3,7 +3,7 @@
 - **Historia:** #177
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Borrador completo — pendiente de las tres puertas, que aprueba Emiliano Sorato en persona
+- **Estado:** Puerta 1, Puerta 2 y Puerta 3 aprobadas por el responsable el 2026-10-26 en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), como excepción — **pendientes de que un compañero las ratifique**; ningún PR de la historia entra a `dev` antes de eso
 - **Depende de:** #77 (guardar los datos de la web), y de que cada historia de dominio ya
   haya sumado sus datos a lo que se guarda (#8 a #15, #13, #73)
 - **La necesitan:** nadie todavía
@@ -268,7 +268,8 @@ Emiliano Sorato decidió el 26/10 los puntos que el borrador dejaba abiertos:
    Emiliano Sorato el 26/10.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-26 — Comentarios: aprobada en un comentario de la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), sobre el commit `4d74453`. La aprueba el responsable de la historia: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #177, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: [pendiente]
 
 ## Fase 2 — Diseño
 
@@ -339,7 +340,8 @@ escribir ese archivo con lo que ya existe.
   anota en la Fase 4.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-26 — Comentarios: aprobada en un comentario de la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), sobre el commit `4d74453`. La aprueba el responsable de la historia: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #177, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: [pendiente]
 
 ## Fase 3 — Tareas
 
@@ -367,7 +369,8 @@ Los tests corren en los dos sistemas del CI, Linux y Windows (RN-12): ninguno de
 permisos de Unix ni de rutas con `/`.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-26 — Comentarios: aprobada en un comentario de la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), sobre el commit `4d74453`. La aprueba el responsable de la historia: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #177, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
+> Ratificó: [pendiente]
 
 ## Fase 4 — Implementación
 
