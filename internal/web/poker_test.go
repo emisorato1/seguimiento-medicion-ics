@@ -282,3 +282,22 @@ func TestDiferenciasNuevaRondaYAcuerdo(t *testing.T) {
 		t.Errorf("una ronda que no es la ultima no deberia ofrecer acordar:\n%s", html)
 	}
 }
+
+// revealedRound abre la ronda 1 de la historia 1, con 3 de Ana Perez y 8 de Juan Gomez, y la
+// revela.
+func revealedRound(t *testing.T, project *domain.Project) *domain.VotingRound {
+	t.Helper()
+	round, err := project.OpenVotingRound(1)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	for nombre, puntos := range map[string]int{"Ana Perez": 3, "Juan Gomez": 8} {
+		if err := round.Vote(nombre, puntos); err != nil {
+			t.Fatalf("no se pudo votar: %v", err)
+		}
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar: %v", err)
+	}
+	return round
+}
