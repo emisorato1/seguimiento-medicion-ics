@@ -225,3 +225,18 @@ func TestNoSePuedeCerrarDosVecesElMismoSprint(t *testing.T) {
 			sprint.ClosedOn(), sprint.CompletedStories())
 	}
 }
+
+// Escenario: Una fecha de cierre distinta de la fecha de fin se acepta
+// Cubre: RN-11
+func TestUnaFechaDeCierreDistintaDeLaFechaDeFinSeAcepta(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t)
+	sprint.end = unDia(2026, 10, 25)
+
+	if err := project.CloseSprint(nil, unDia(2026, 10, 23)); err != nil {
+		t.Fatalf("se esperaba cerrar el sprint sin error, salio: %v", err)
+	}
+
+	if !sprint.ClosedOn().Equal(unDia(2026, 10, 23)) {
+		t.Fatalf("se esperaba la fecha de cierre 23/10/2026, quedo %v", sprint.ClosedOn())
+	}
+}
