@@ -3,14 +3,14 @@
 - **Historia:** #10
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **en implementación**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
 - **Depende de:** #8 (el sprint abierto), #9 (las historias que se le asignaron) y #6 (los
   estados de una historia); por ellas, también de la #3. Además, de la #77 (la conversión del
-  registro, donde se guardan los datos del cierre). El código de la #8 y la #9 tiene que estar
-  en `dev` antes de empezar (ver Dependencias de la Fase 2)
+  registro, donde se guardan los datos del cierre). El código de la #8 y la #9 ya está en `dev`
+  (PR #138)
 - **La necesitan:** #11 (lista los sprints cerrados y su detalle), #16 (calcula velocidad,
   puntos completados y porcentaje de historias completas), y detrás de la #16 la #17 y la #18
 
@@ -292,7 +292,7 @@ Escenario: Una historia sin estimar al cerrar registra cero puntos
    (Emiliano Sorato) el 21/10: se acepta como está.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Agustín Salinas — Fecha: 2026-10-25 — Comentarios: aprobó las tres puertas en un comentario de la issue #10 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/10#issuecomment-6406625442), desde su cuenta, con dos ajustes que se aplicaron antes de la tarea 1: que `sprint_close.go` entregue también la fecha de cierre y los puntos al cerrar, con las listas copiadas como `Stories()`, y sacar las frases viejas sobre el PR temprano de la #8.
 
 ## Fase 2 — Diseño
 
@@ -338,15 +338,13 @@ cerrar tienen una entrada por cada historia asignada, con un valor de la escala 
 
 | Archivo | Se crea o se modifica | Para qué |
 |---|---|---|
-| `internal/domain/sprint_close.go` | se crea | la operación de cierre y la lectura de las historias completadas de un sprint |
+| `internal/domain/sprint_close.go` | se crea | la operación de cierre y la lectura de los datos del cierre de un sprint: la fecha de cierre, las historias completadas y los puntos al cerrar, con las listas copiadas como hace `Stories()` (ajuste 1 de la Puerta 2: la #11 usa la fecha y la #18 los puntos) |
 | `internal/domain/sprint_close_test.go` | se crea | los tests de los escenarios BDD de la Fase 1, nombrados como cada escenario |
 | `internal/domain/registry_json.go` y su test | se modifican | los datos del cierre se guardan y se validan al cargar, con su caso de ida y vuelta |
 | `internal/domain/errors.go` | se modifica | el error de la fecha de cierre obligatoria |
 
 **`sprint.go` no se modifica**: la #8 declara la entidad completa, con todos los datos del
-contrato —también los del cierre—, y deja que la #9, la #10 y la #11 sumen archivos propios
-(Fase 2 de la #8, en revisión en su rama). Si al llegar a `dev` le faltara algún dato del
-cierre, se agrega en `sprint.go` avisándole antes a Agustín Salinas.
+contrato —también los del cierre—, y deja que la #9, la #10 y la #11 sumen archivos propios.
 
 ### Decisiones
 
@@ -365,11 +363,10 @@ cierre, se agrega en `sprint.go` avisándole antes a Agustín Salinas.
 
 ### Dependencias y restricciones
 
-- **El código espera el PR temprano de la #8 en `dev`**: la entidad `Sprint` con los datos
+- **Usa lo que la #8 y la #9 dejaron en `dev`** (PR #138): la entidad `Sprint` con los datos
   del contrato, los sprints del proyecto, el sprint abierto, `p.Sprint(number)` y su
-  conversión en `registry_json.go`. **Y de la #9**, la asignación y sus errores «no hay
-  sprint abierto» y «la historia no está en el sprint». Sin eso no compila: un test no puede
-  armar un sprint con un tipo que todavía no existe.
+  conversión en `registry_json.go`, y la asignación con sus errores «no hay sprint abierto»
+  y «la historia no está en el sprint».
 - **No cambia el contrato.** `CompletedStories`, `PointsAtClose` y `ClosedOn` ya están en
   `docs/diseno-dominio.md` desde el 20/10. La #11 y la #16 los consumen.
 - **`registry_json.go` es compartido**: la conversión del sprint la crea la #8; esta historia
@@ -381,7 +378,7 @@ cierre, se agrega en `sprint.go` avisándole antes a Agustín Salinas.
 - **No se modifica el estado de ninguna historia fuera del sprint que se cierra.**
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Agustín Salinas — Fecha: 2026-10-25 — Comentarios: aprobó las tres puertas en un comentario de la issue #10 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/10#issuecomment-6406625442), desde su cuenta, con dos ajustes que se aplicaron antes de la tarea 1: que `sprint_close.go` entregue también la fecha de cierre y los puntos al cerrar, con las listas copiadas como `Stories()`, y sacar las frases viejas sobre el PR temprano de la #8.
 
 ## Fase 3 — Tareas
 
@@ -455,15 +452,14 @@ que se guarda y validarlo al cargar.
 
 ### Dependencias
 
-- **Ninguna tarea empieza sin el PR temprano de la #8 y la asignación de la #9 en `dev`**
-  (Dependencias de la Fase 2): sin la entidad `Sprint` el código no compila.
+- **La #8 y la #9 ya están en `dev`** (PR #138): la entidad `Sprint` y la asignación.
 - **La tarea 1 necesita además la creación de sprints de la #8** para verificar que, cerrado
   el primero, se puede crear el siguiente.
 - **La 14 y la 15 necesitan la conversión de los sprints de la #8**, a la que le suman los
   datos del cierre.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Agustín Salinas — Fecha: 2026-10-25 — Comentarios: aprobó las tres puertas en un comentario de la issue #10 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/10#issuecomment-6406625442), desde su cuenta, con dos ajustes que se aplicaron antes de la tarea 1: que `sprint_close.go` entregue también la fecha de cierre y los puntos al cerrar, con las listas copiadas como `Stories()`, y sacar las frases viejas sobre el PR temprano de la #8.
 
 ## Fase 4 — Implementación
 
