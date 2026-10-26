@@ -1,10 +1,10 @@
 # Informe final del proyecto — esqueleto
 
 > **Borrador, 26/10.** Ya tiene cargados el Sprint 0, el 1 y el 2, la cobertura al 26/10, la
-> evidencia de TDD y la trazabilidad de la #13. Es la estructura del informe en PDF que se entrega el
-> 1/11. Lo arma y lo revisa Emiliano Sorato (Agile Enabler), con las métricas del repo, antes de
+> evidencia de TDD y la trazabilidad de la #13. Es la estructura del informe en PDF que queda listo el
+> 29/10 y se presenta el 2/11. Lo arma y lo revisa Emiliano Sorato (Agile Enabler), con las métricas del repo, antes de
 > exportarlo. Cada sección dice de dónde salen sus datos. Lo que está entre corchetes,
-> **[pendiente]**, se completa al cierre del producto (30/10) y del Sprint 4.
+> **[pendiente]**, se completa al cierre del Sprint 3 (28/10) y del Sprint 4 (29/10).
 >
 > El PDF se arma como `.docx` con los estilos de Word (Título 1, 2 y 3) y se exporta desde
 > Word. **Antes de exportar:** la portada va sin símbolos ni logos (solo universidad, facultad,
@@ -50,7 +50,7 @@ uno y por qué el tablero solo no alcanza para un sprint cerrado.
 
 | Métrica | Sprint 0 | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|---|
-| Fechas | 07/09 → 28/09 | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
+| Fechas | 07/09 → 28/09 | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 28/10 | 29/10 |
 | SP planificados | — | 16 | 31 (44 con la #77) | 41 | [pendiente] |
 | SP completados (velocidad) | — | **6** | **52** (44 + 8 adelantados) | [pendiente] | [pendiente] |
 | Historias completadas | 2 ítems de preparación | 2 de 5 (40%) | 10 de 10 (100%) | [pendiente] | [pendiente] |
@@ -88,7 +88,7 @@ reales son el tiempo de dirección y revisión de Emiliano Sorato, y por eso la 
 tan negativa; por eso se muestra también la cuenta sin esas tres. La #77 tampoco entra en la
 desviación, porque no tiene horas estimadas: se estimó cuando ya estaba terminada.
 
-**Sprint 3 y Sprint 4:** [pendiente: se completan con sus reviews, el 30/10 y el 1/11]. Del
+**Sprint 3 y Sprint 4:** [pendiente: se completan con sus reviews, el 28/10 y el 29/10]. Del
 Sprint 3, la tabla ya tiene lo planificado: 41 SP y 110,7 horas estimadas.
 
 **Historias adelantadas, agregadas y estimadas después.**
