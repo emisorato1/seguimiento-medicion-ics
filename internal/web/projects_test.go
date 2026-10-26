@@ -137,7 +137,7 @@ func TestElProyectoMuestraSuResumen(t *testing.T) {
 			"stories": [` + historia(1, "Terminada") + `, ` + historia(2, "En curso") + `, ` + historia(3, "Pendiente") + `],
 			"last_sprint_number": 2,
 			"sprints": [
-				{"number": 1, "goal": "Tener el MVP", "start": "2026-10-12", "end": "2026-10-23", "state": "Cerrado"},
+				{"number": 1, "goal": "Tener el MVP", "start": "2026-10-12", "end": "2026-10-23", "state": "Cerrado", "closed_on": "2026-10-23"},
 				{"number": 2, "goal": "Cerrar la interfaz", "start": "2026-10-26", "end": "2026-11-06", "state": "Abierto", "stories": [2]}
 			]
 		}]
