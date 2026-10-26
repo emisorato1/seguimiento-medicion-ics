@@ -422,3 +422,42 @@ func TestImportarSobreUnaBaseConDatosSeRechaza(t *testing.T) {
 		t.Errorf("se esperaba el codigo 1 y el aviso de que no importa sobre datos, salio %d:\n%s", code, errOut.String())
 	}
 }
+
+// Escenario: Lo guardado con la versión anterior se importa solo
+// Cubre: #177 RN-14, RN-15
+func TestElArchivoDeLaVersionAnteriorSeImportaAlAbrir(t *testing.T) {
+	dir := t.TempDir()
+	viejo := filepath.Join(dir, "datos-ics.json")
+	registry := domain.NewProjectRegistry()
+	if _, err := registry.Create(domain.ProjectData{Name: "Sistema de metricas", Start: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)}); err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+	if err := store.NewFile(viejo).Save(registry); err != nil {
+		t.Fatalf("no se pudo preparar el archivo viejo: %v", err)
+	}
+	abrir := func() (string, string) {
+		var out, errOut bytes.Buffer
+		var proyectos string
+		serve := func(listener net.Listener, handler http.Handler) error {
+			listener.Close()
+			res := httptest.NewRecorder()
+			handler.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/proyectos", nil))
+			proyectos = res.Body.String()
+			return http.ErrServerClosed
+		}
+		run([]string{"-puerto", "0", "-datos", filepath.Join(dir, "datos-ics.db")}, &out, &errOut, serve)
+		return out.String(), proyectos
+	}
+
+	out, proyectos := abrir()
+
+	aviso := "Se importaron los datos de " + viejo + " y el archivo se renombró a " + viejo + ".importado"
+	if !strings.Contains(out, aviso) || strings.Count(proyectos, "Sistema de metricas") != 1 {
+		t.Errorf("se esperaba el aviso y el proyecto importado, salio:\n%s\n%s", out, proyectos)
+	}
+	// Al volver a abrir no se importa otra vez.
+	out, proyectos = abrir()
+	if strings.Contains(out, "Se importaron") || strings.Count(proyectos, "Sistema de metricas") != 1 {
+		t.Errorf("la segunda vez no tenia que importar nada, salio:\n%s\n%s", out, proyectos)
+	}
+}
