@@ -1,9 +1,11 @@
 package domain
 
 import (
+	"bytes"
 	"fmt"
 	"math"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -287,6 +289,74 @@ func TestUnEncabezadoSinLineasAlFinalNoAgregaPaginaVacia(t *testing.T) {
 	for i, page := range pages {
 		if len(page.rows) == 0 {
 			t.Errorf("la pagina %d quedo vacia", i+1)
+		}
+	}
+}
+
+// parseXref lee la tabla de posiciones del PDF: devuelve donde empieza la tabla y la posicion
+// de cada objeto en uso, en orden (el objeto 1 primero). Corta el test si la tabla no se puede
+// leer.
+func parseXref(t *testing.T, pdf []byte) (int, []int) {
+	t.Helper()
+	tail := string(pdf[bytes.LastIndex(pdf, []byte("startxref")):])
+	fields := strings.Fields(tail)
+	if len(fields) < 3 || fields[2] != "%%EOF" {
+		t.Fatalf("el final del archivo no es startxref, su posicion y %%%%EOF: %q", tail)
+	}
+	start, err := strconv.Atoi(fields[1])
+	if err != nil || start >= len(pdf) || !bytes.HasPrefix(pdf[start:], []byte("xref\n")) {
+		t.Fatalf("startxref no apunta al comienzo de la tabla xref (%q)", fields[1])
+	}
+	lines := strings.Split(string(pdf[start:]), "\n")
+	var first, count int
+	fmt.Sscanf(lines[1], "%d %d", &first, &count)
+	var offsets []int
+	for _, entry := range lines[2 : 2+count] {
+		if len(entry) != 19 {
+			t.Fatalf("cada entrada de la tabla mide 20 bytes con su fin de linea, %q no", entry)
+		}
+		if strings.HasSuffix(entry, "n ") {
+			offset, _ := strconv.Atoi(entry[:10])
+			offsets = append(offsets, offset)
+		}
+	}
+	return start, offsets
+}
+
+// Escenario: El archivo se abre en un lector de PDF
+// Cubre: RN-1, RN-4
+//
+// Lo que un lector controla antes de mostrar nada (Fase 3 de la spec). Que de verdad abra se
+// verifica a mano, y se anota en la Fase 4.
+func TestElArchivoSeAbreEnUnLectorDePDF(t *testing.T) {
+	pdf := buildPDF(layoutReport(unDocConLineas(100)))
+
+	if !bytes.HasPrefix(pdf, []byte("%PDF-1.4\n")) {
+		t.Errorf("el archivo no empieza con la cabecera de PDF 1.4: %q", pdf[:min(len(pdf), 12)])
+	}
+	if !bytes.HasSuffix(pdf, []byte("%%EOF\n")) {
+		t.Errorf("el archivo no termina con la marca de fin")
+	}
+	start, offsets := parseXref(t, pdf)
+	for i, offset := range offsets {
+		if want := fmt.Sprintf("%d 0 obj\n", i+1); !bytes.HasPrefix(pdf[offset:], []byte(want)) {
+			t.Errorf("la tabla dice que el objeto %d empieza en %d, y ahi no empieza", i+1, offset)
+		}
+	}
+	trailer := string(pdf[start:])
+	if !strings.Contains(trailer, "/Root 1 0 R") || !strings.Contains(trailer, fmt.Sprintf("/Size %d", len(offsets)+1)) {
+		t.Errorf("el trailer no nombra el catalogo o no cuenta los objetos: %q", trailer)
+	}
+	text := string(pdf)
+	if !strings.Contains(text, "/Type /Pages") || !strings.Contains(text, "/Count 3") {
+		t.Errorf("el arbol de paginas no cuenta las 3 paginas")
+	}
+	if got := strings.Count(text, "/MediaBox [0 0 595.28 841.89]"); got != 3 {
+		t.Errorf("se esperaban 3 paginas A4, salieron %d", got)
+	}
+	for _, font := range []string{"/BaseFont /Helvetica ", "/BaseFont /Helvetica-Bold "} {
+		if !strings.Contains(text, font+"/Encoding /WinAnsiEncoding") {
+			t.Errorf("falta la letra %q con la codificacion WinAnsi", font)
 		}
 	}
 }
