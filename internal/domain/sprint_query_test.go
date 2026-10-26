@@ -232,3 +232,28 @@ func TestConsultarUnSprintNoLoModifica(t *testing.T) {
 		t.Errorf("se esperaba que el sprint 1 siguiera registrando completada la historia [1], tiene %v", again.CompletedStories())
 	}
 }
+
+// Escenario: Cada proyecto lista solamente sus sprints
+// Cubre: RN-9
+func TestCadaProyectoListaSolamenteSusSprints(t *testing.T) {
+	registry := NewProjectRegistry()
+	a, err := registry.Create(ProjectData{Name: "Proyecto A", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto A: %v", err)
+	}
+	b, err := registry.Create(ProjectData{Name: "Proyecto B", Start: unDia(2026, 10, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto B: %v", err)
+	}
+	unSprintCerrado(t, a, "Meta de A", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), nil)
+	unSprintCerrado(t, b, "Meta de B", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), nil)
+
+	sprints := a.ClosedSprints()
+
+	if len(sprints) != 1 {
+		t.Fatalf("se esperaba un solo sprint, salieron %d", len(sprints))
+	}
+	if sprints[0].Number() != 1 || sprints[0].Goal() != "Meta de A" {
+		t.Errorf("se esperaba el sprint 1 del proyecto A, salio el %d con %q", sprints[0].Number(), sprints[0].Goal())
+	}
+}
