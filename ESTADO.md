@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 16:30. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 19:40. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -20,14 +20,13 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -70,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-4f7644b 2026-10-26 Merge pull request #168 from emisorato1/manual-78-textos
-2679db7 2026-10-26 docs: los mensajes del manual tal como salen en pantalla
-5ec2ef2 2026-10-26 Merge pull request #167 from emisorato1/manual-78
-04fb015 2026-10-26 Merge pull request #166 from emisorato1/chore-trazabilidad-78-parte-3
-f5d7d9a 2026-10-26 docs: la revisión de accesibilidad de las pantallas de la #78 en su spec
-d34d60a 2026-10-26 docs: el manual de usuario con las pantallas de la #78 (sprints, esfuerzo, defectos y Planning Poker)
-55451e9 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con la parte 3 de la historia 78
-24bf6b1 2026-10-26 Merge pull request #165 from emisorato1/historia-78-cierre-acuerdo
+bd522fe 2026-10-26 Merge pull request #171 from emisorato1/planning-s3-ronda2-maxi
+ea75e4d 2026-10-26 docs: ronda 2 de Maximiliano para la 77 y la 78 en la planning del sprint 3
+6f2abfe 2026-10-26 Merge pull request #170 from emisorato1/historia-78-poker-dos-pestanas
+04a098b 2026-10-26 Merge pull request #169 from emisorato1/actas-cierre-sprint-2
+ef4c6d1 2026-10-26 docs: la ronda votada desde dos pestañas en la verificación de la #78
+70d8529 2026-10-26 test: una ronda de Planning Poker votada desde dos pestañas (historia 78, sin RED)
+9278879 2026-10-26 docs: la historia 19 se termina antes del cierre del producto
+81cb877 2026-10-26 docs: decisiones del 26/10 en las actas y fecha de cierre del producto en el plan
 ```
