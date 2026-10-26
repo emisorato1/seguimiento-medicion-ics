@@ -10,8 +10,14 @@ func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
 	// las completadas quedan registradas aparte de las asignadas (RN-2); las asignadas quedan
 	// Terminadas si se completaron y vuelven al Product Backlog como Pendientes si no (RN-3,
 	// RN-4)
+	// una historia indicada dos veces se registra una sola vez, en el orden en que apareció
+	// primero (RN-8)
 	done := map[int]bool{}
+	unique := []int{}
 	for _, id := range completed {
+		if !done[id] {
+			unique = append(unique, id)
+		}
 		done[id] = true
 	}
 	for _, id := range sprint.stories {
@@ -22,7 +28,7 @@ func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
 			story.state = StoryPending
 		}
 	}
-	sprint.completedStories = append([]int{}, completed...)
+	sprint.completedStories = unique
 	sprint.state = SprintClosed
 	sprint.closedOn = toDay(closedOn)
 	return nil
