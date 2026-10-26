@@ -1021,6 +1021,7 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/99/planning-poker", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/1/historias/99/rondas/1", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/historias/1/rondas/1", err: errRoundNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/historias/99/rondas", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/defectos/99", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/99/defectos", err: domain.ErrProjectNotFound},
