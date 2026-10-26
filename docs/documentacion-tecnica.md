@@ -23,9 +23,9 @@ defectos, métricas, dashboard y reportes.
 
 | | |
 |---|---|
-| Lenguaje | Go 1.27, **solo la biblioteca estándar**: sin dependencias externas |
+| Lenguaje | Go 1.27, con la biblioteca estándar y **una sola dependencia externa**, acordada con el equipo: el driver de SQLite `modernc.org/sqlite`, en Go puro y sin CGO (#177) |
 | Interfaces | consola (historia #24) y web (historias #77 y #78) |
-| Datos | en memoria en la consola; en un archivo JSON en la web |
+| Datos | en memoria en la consola; en una base SQLite en la web (#177). El archivo JSON de la #77 queda para importar y exportar |
 | Pruebas | `testing` de la biblioteca estándar, escritas con TDD |
 | Integración continua | GitHub Actions: formato, análisis estático, tests, cobertura y coherencia de las specs |
 
@@ -38,10 +38,10 @@ siempre hacia el dominio**, y el dominio no depende de nadie.
 
 ```
 cmd/app                        cmd/web + internal/web
-consola (#24), en memoria      web (#77), con los datos en un archivo
+consola (#24), en memoria      web (#77), con los datos en una base SQLite
         │                              │
         │                              ▼
-        │                      internal/store     lee y escribe el archivo de datos
+        │                      internal/store     lee y escribe la base y el archivo de datos
         │                              │
         ▼                              ▼
 internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métricas, errores
@@ -50,7 +50,7 @@ internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métr
 | Paquete | Qué hace | Qué **no** hace |
 |---|---|---|
 | `internal/domain` | todas las reglas de negocio y validaciones; arma el texto del reporte y del PDF, y los valores del dashboard ya escritos | no imprime, no lee del teclado, no toca archivos, no lee el reloj del sistema, no dibuja |
-| `internal/store` | lee y escribe el archivo de datos | no convierte ni valida datos: eso lo hace el dominio |
+| `internal/store` | lee y escribe la base SQLite y el archivo de datos, e importa y exporta | no valida datos: eso lo hace el dominio, con su conversión |
 | `cmd/app` | la consola: lee lo que escribe el usuario, llama al dominio y muestra el resultado | no valida nada por su cuenta: le pregunta al dominio |
 | `cmd/web` | arranca el servidor web | — |
 | `internal/web` *(en construcción, #77)* | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas; dibuja las barras del dashboard | no valida reglas: las valida el dominio |
@@ -163,13 +163,46 @@ medio cambiar**.
 
 ---
 
-## 6. Persistencia *(en construcción)*
+## 6. Persistencia
 
-La consola trabaja en memoria. La web guarda todo en **un archivo JSON** que se reescribe
-entero después de cada operación aceptada (historia #77).
+La consola trabaja en memoria. La web guarda todo en **una base SQLite**, `datos-ics.db`
+(historia #177). Hasta la #177 lo guardaba en un archivo JSON, que ahora sirve para importar
+y exportar los datos.
 
 | Parte | Dónde | Qué hace |
 |---|---|---|
+| Conversión a JSON y desde JSON | `internal/domain/registry_json.go` | vive en el dominio porque es lo único que puede leer los datos ocultos sin exportarlos; al cargar, valida cada entidad |
+| La base | `internal/store/database.go` | guarda y carga el registro, en una transacción |
+| El esquema | `internal/store/migrations/` | las migraciones, numeradas y embebidas en el binario |
+| El puente entre las dos | `internal/store/rows.go` | la forma del archivo, como tipos propios del store |
+| Importar y exportar | `internal/store/exchange.go` | el archivo JSON, y el de la versión anterior |
+
+- **El dominio no sabe de la base.** Al guardar, el registro se convierte con la conversión
+  del dominio, se desarma en filas y se escribe **en una transacción** que vacía las tablas y
+  las vuelve a llenar: si algo falla, la base queda como estaba. Al cargar, las filas se
+  rearman en el mismo formato y se le pasan a la conversión del dominio. El texto nunca se
+  guarda en una columna: **hay una tabla por entidad**, y tablas aparte para lo que una
+  entidad tiene varias veces (criterios, historias de un sprint, participantes y votos).
+- **Al cargar, cada entidad pasa por las mismas validaciones que al crearla**: una base
+  editada a mano no puede meter datos inválidos.
+- **Y además se controla lo que solo los datos guardados pueden traer mal**, porque usando el
+  sistema nunca pasaría. Por ejemplo, en los sprints: números repetidos o que el contador no
+  alcanza, más de un sprint abierto, y en el Sprint Backlog una historia que no existe o que
+  aparece dos veces.
+- **Los contadores de la numeración se guardan como vienen** (en `registry` y en
+  `projects`), nunca se deducen del número más alto: así no se reutiliza el número de algo
+  que se quitó.
+- **Toda historia que agrega una entidad o un dato lo suma a la conversión**, con su caso en
+  el test de ida y vuelta (`registry_json_test.go`), **y a la base**: a los tipos de
+  `rows.go`, a una tabla con **una migración nueva** (`0002_…sql`; nunca se edita una que ya
+  se usó), y al test `TestUnRegistroCompletoVuelveIgual`. Si se suma a la conversión y no a
+  la base, el guardado falla con «No quedó guardado» en vez de perder el dato en silencio.
+- Las fechas se guardan como `AAAA-MM-DD`, y las prioridades, estados y roles con su nombre:
+  la base y el archivo se pueden leer y no se rompen si se reordenan las constantes.
+- La base guarda en `PRAGMA user_version` el número de la última migración aplicada. Una base
+  con un número mayor que el que conoce el sistema no se abre.
+
+---|---|---|
 | Conversión a JSON y desde JSON | `internal/domain/registry_json.go` | vive en el dominio porque es lo único que puede leer los datos ocultos sin exportarlos |
 | Leer y escribir el archivo | `internal/store/file.go` | solo mueve bytes: no valida nada |
 
@@ -288,7 +321,9 @@ go vet ./...                   # análisis estático
 gofmt -l .                     # archivos sin formatear (no tiene que devolver nada)
 scripts/coherencia.sh          # coherencia de las specs
 go run ./cmd/app               # la consola
-go run ./cmd/web               # la web, en http://127.0.0.1:8080 (cuando entre la #77)
+go run ./cmd/web               # la web, en http://127.0.0.1:8080, con la base datos-ics.db
+go run ./cmd/web -exportar copia.json            # todos los datos a un archivo
+go run ./cmd/web -datos otra.db -importar copia.json  # un archivo a una base nueva
 ```
 
 Antes de abrir un pull request: los tests en verde, `gofmt -l .` vacío y `dev` traído a la
