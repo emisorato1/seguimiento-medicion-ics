@@ -3,8 +3,9 @@
 - **Historia:** #78
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** En implementación (PR #149): sprints sin el cierre, esfuerzo, horas
-  estimadas, Planning Poker hasta revelar y el resumen del proyecto. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
+- **Estado:** En implementación. Parte 1 en dev (PR #149): sprints sin el cierre, esfuerzo,
+  horas estimadas, Planning Poker hasta revelar y el resumen del proyecto. Parte 2 (los
+  defectos) en su PR, rama `historia-78-defectos`. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
   (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), con dos cambios que esta spec ya incorpora (la
   tarea 17 y el punto 8 de "Para decidir en la puerta") y una nota sobre los casos límite
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna, de
@@ -583,10 +584,10 @@ lo comparten le suman sus filas. Un test que pase sin código nuevo va a Desvío
 | 9 | Esfuerzo: lista vacía, día propuesto hoy, registrar con integrante e historia de la lista, la tabla y los totales por historia y por integrante | Registrar esfuerzo y ver los totales / Las listas vacias dicen que hacer | RN-1, RN-11 | hecha |
 | 10 | Día futuro y cero horas junto a su campo; unas horas que no son número se marcan sin llamar al dominio; sin integrantes, el aviso en lugar del formulario | Mostrar el rechazo sin perder lo escrito / Las listas vacias dicen que hacer | RN-2, RN-12, RN-17 | hecha |
 | 11 | Cargar las horas estimadas de una historia | Cargar las horas estimadas de una historia | RN-1 | hecha |
-| 12 | Defectos: lista vacía; cargar con severidad, historia y sprint de la lista; cambiar a «En curso». Espera el acuerdo del punto 8 | Cargar un defecto, pasarlo a en curso y resolverlo / Las listas vacias dicen que hacer | RN-1, RN-16 | espera el punto 8 |
-| 13 | Resolver con confirmación; un resuelto no ofrece cambiar ni resolver | Cargar un defecto, pasarlo a en curso y resolverlo / Confirmar o cancelar antes de lo que no se deshace | RN-9 | espera el punto 8 |
-| 14 | Filtrar por un estado o por una severidad, y sin filtro todos | Filtrar los defectos | RN-13 | espera el punto 8 |
-| 15 | Título vacío, resolver en un sprint anterior y defecto 99 | Mostrar el rechazo sin perder lo escrito / Pedir algo que no existe | RN-2, RN-18 | espera el punto 8 |
+| 12 | Defectos: lista vacía; cargar con severidad, historia y sprint de la lista; cambiar a «En curso» (punto 8: `ParseDefectState`) | Cargar un defecto, pasarlo a en curso y resolverlo / Las listas vacias dicen que hacer | RN-1, RN-16 | hecha |
+| 13 | Resolver con confirmación; un resuelto no ofrece cambiar ni resolver | Cargar un defecto, pasarlo a en curso y resolverlo / Confirmar o cancelar antes de lo que no se deshace | RN-9 | hecha |
+| 14 | Filtrar por un estado o por una severidad, y sin filtro todos | Filtrar los defectos | RN-13 | hecha |
+| 15 | Título vacío, resolver en un sprint anterior y defecto 99 | Mostrar el rechazo sin perder lo escrito / Pedir algo que no existe | RN-2, RN-18 | hecha |
 | 16 | Abrir una ronda; quién votó, quién falta y cuántos; votar eligiendo de los que faltan, con el mensaje sin el valor | Una ronda de Planning Poker sin ver los votos hasta revelar | RN-1, RN-5, RN-7 | hecha |
 | 17 | Ningún valor antes de revelar en ninguna página, mensaje ni recarga; un voto rechazado vuelve sin el valor. El test no busca el número suelto, porque el formulario de votar ofrece la escala entera y el número puede estar en una fecha o un identificador: comprueba que la tabla de votos no existe hasta revelar, que ninguna fila ni elemento que nombra a quien votó lleva su valor, y que el mensaje que confirma el voto no lleva ningún número (revisión de Maximiliano Eula) | Nadie ve un voto antes de revelar / Un voto rechazado no muestra el valor elegido | RN-4, RN-6 | hecha |
 | 18 | Revelar: con votos faltantes, el mensaje arriba; con todos, cada voto con su integrante | No se puede revelar con votos faltantes / Una ronda de Planning Poker sin ver los votos hasta revelar | RN-2, RN-8 | hecha |
@@ -594,8 +595,8 @@ lo comparten le suman sus filas. Un test que pase sin código nuevo va a Desvío
 | 20 | El reporte del proyecto y el de un sprint, con la fecha de hoy y las líneas del dominio sin reformatear | Ver el reporte | RN-1, RN-12, RN-14 | espera la #18 |
 | 21 | Descargar el PDF con su nombre como archivo para guardar; si no se puede generar, el aviso y ningún archivo | Descargar el reporte en PDF | RN-15, RN-19 | espera la #19 |
 | 22 | El resumen de la #5 en la página del proyecto | El proyecto muestra su resumen | RN-20 | hecha |
-| 23 | Con el archivo real: sprints, esfuerzo, defectos y rondas siguen al reabrir, y el sprint nuevo recibe el número siguiente | Los datos nuevos siguen al cerrar y volver a abrir | RN-2 | en parte: sprints, esfuerzo y rondas; faltan defectos y el sprint siguiente (#10) |
-| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | en parte: los formularios hechos; faltan los de defectos, cierre y reporte |
+| 23 | Con el archivo real: sprints, esfuerzo, defectos y rondas siguen al reabrir, y el sprint nuevo recibe el número siguiente | Los datos nuevos siguen al cerrar y volver a abrir | RN-2 | en parte: sprints, esfuerzo, rondas y defectos; falta el sprint siguiente (#10) |
+| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | en parte: los formularios hechos, también los de defectos; faltan los de cierre y reporte |
 
 **Verificación manual**, como en la #77: el contraste, el modo celular a 360 de ancho, los
 formularios nuevos recorridos con el teclado, una ronda votada desde dos pestañas y el PDF
@@ -682,6 +683,12 @@ implementación en el siguiente.
 | 23. Los datos siguen al reabrir (en parte) | `97ef3a2` | — (pasa sin código nuevo) |
 | 24. Teclado y celular en los formularios nuevos (en parte) | `499e7a2` | — (pasa sin código nuevo) |
 | RN-18 en cada dirección nueva | `7c8ec8b` | — (pasa sin código nuevo) |
+| 12. Cargar un defecto y pasarlo a en curso; la barra suma Defectos | `3b14453` | `9611795` |
+| 13. Resolver con confirmación; el resuelto no ofrece cambios | `92d4364` | `bf4b303` |
+| 14. Filtrar por un estado o por una severidad | `9090625` | `7066111` |
+| 15. Rechazos de los defectos junto a su campo y defecto 99 | `8847aa0` | `153b2a6` |
+| 23 y 24. Defectos al reabrir y sus formularios con el teclado | `e04ef0b` | — (sin RED: pasa sin código nuevo) |
+| Rechazos que quedaban sin probar (cobertura) | `b7523ca` | — (sin RED: prueba código existente) |
 
 ### Desvíos
 
@@ -739,6 +746,28 @@ implementación en el siguiente.
     «\n» y la sangría (revisión de Agustín): ahora quitan los espacios entre etiquetas
     (`joinTags`). El RED se reprodujo con una copia del repo con las plantillas en CRLF.
 
+- **Defectos (parte 2)**:
+  - **Un filtro que no es de la lista**, escrito a mano en la dirección (`?estado=Cerrado`),
+    lo rechaza el núcleo (`ParseDefectState`, `ParseSeverity`): la lista se ve completa,
+    con el mensaje arriba. **Si llegan los dos filtros se usa el estado**: la página no
+    los puede mandar juntos (son dos formularios), y combinarlos sería una regla en la
+    web (punto 4). Ninguno de los dos casos está en los Ejemplos.
+  - **El cambio de estado ofrece Abierto y En curso**, como dice Entradas: a Resuelto se
+    llega resolviendo, con el sprint. El filtro sí ofrece los tres estados.
+  - **Resolver**: elegir el sprint lleva a la confirmación (D9); si no se eligió ninguno,
+    o si el núcleo rechaza el sprint, se vuelve a la página del defecto con el error junto
+    al sprint, como pide el ejemplo «resolver en un sprint anterior».
+  - **Filas que no están en los Ejemplos**: la severidad y el estado sin elegir (los
+    rechaza el núcleo, RN-2), el sprint sin elegir (forma) y resolver sin sprint.
+  - **Pasaron sin código nuevo**, con «sin RED» en el asunto: el defecto sin elegir el
+    sprint y las filas de «Pedir algo que no existe» (tarea 15, anotadas en su commit), y
+    las tareas 23 y 24 con los defectos (se le sacó la etiqueta a la severidad y el test
+    falló, para saber que sirve).
+  - **Cobertura**: review-merge observó al mergear el #149 que `internal/web` había bajado
+    de 93,8% a 92,5%. Había tres caminos de rechazo sin ningún test (abrir una ronda de
+    una historia que no existe, quitar del sprint una historia no asignada y el filtro que
+    no existe); con sus tests queda en 93,7%.
+
 ### Verificación manual de la parte 1
 
 El 26/10, con el script de Playwright de la #77 (fuera del repo) ampliado con las
@@ -758,11 +787,22 @@ espera el 8080 ocupado por Docker: ese día Docker no estaba corriendo y el puer
 estaba libre, así que no es un error del programa. Queda para el final: la ronda votada
 desde dos pestañas, el contraste de lo nuevo y el PDF.
 
+### Verificación manual de la parte 2
+
+El 26/10, con el mismo script ampliado con los defectos, en Chromium 151, Firefox 153 y
+WebKit 26.5: con el teclado solo, cargar un defecto, filtrar por una severidad sin
+defectos y volver a verlos todos, pasarlo a En curso, pedir resolverlo y cancelar, y
+resolverlo confirmando; el resuelto ya no tiene formularios. A 360 de ancho ninguna de
+las 26 páginas se desplaza de costado, y el defecto sigue después de reiniciar.
+Resultado: 114 controles bien; falló solo el del 8080 ocupado, por lo mismo que en la
+parte 1 (Docker no estaba corriendo).
+
 ### Lo que falta
 
-- **Defectos (tareas 12 a 15)**: el punto 8 se resolvió (el dominio exporta `ParseDefectState`, PR #153); esperan que entre a dev.
-- **Cerrar un sprint y lo completado (tareas 6 y 7)**: esperan la #10 y la #11.
-- **Diferencias, otra ronda y acuerdo (tarea 19)**: espera la #73.
+- **Cerrar un sprint y lo completado (tareas 6 y 7)**: la #10 ya está en dev (`CloseSprint`,
+  `CompletedStories`); va en la parte siguiente.
+- **Diferencias, otra ronda y acuerdo (tarea 19)**: la #73 ya está en dev (`Differences`,
+  `Agree`); va en la parte siguiente.
 - **Reporte y PDF (tareas 20 y 21)**: esperan la #18 y la #19.
 - **La verificación manual** de las pantallas que faltan, la ronda desde dos pestañas, el contraste de lo nuevo y el PDF.
 
