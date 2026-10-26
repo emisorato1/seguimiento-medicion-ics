@@ -126,3 +126,103 @@ func TestGuardarYCargarUnRegistro(t *testing.T) {
 		})
 	}
 }
+
+// dia arma una fecha sin hora, como las que guarda el sistema.
+func dia(y int, m time.Month, d int) time.Time {
+	return time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
+}
+
+// sinError corta el test si una operacion del dominio para preparar los datos fallo.
+func sinError(t *testing.T, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("no se pudo preparar el registro de prueba: %v", err)
+	}
+}
+
+// unRegistroCompleto arma, con las operaciones del dominio, un registro que usa todas las
+// entidades y todos sus datos: dos proyectos; integrantes en un orden que no es el
+// alfabetico; historias estimadas, sin estimar y con horas estimadas; un sprint cerrado con
+// lo completado y uno abierto; esfuerzo; un defecto resuelto y uno abierto; una ronda
+// revelada y acordada y otra abierta con un voto.
+func unRegistroCompleto(t *testing.T) *domain.ProjectRegistry {
+	t.Helper()
+	registry := domain.NewProjectRegistry()
+	p, err := registry.Create(domain.ProjectData{Name: "Sistema de métricas", Description: "El integrador", Start: dia(2026, 10, 1)})
+	sinError(t, err)
+	_, err = p.AddMember("Zoe Ríos", domain.RoleAgileEnabler)
+	sinError(t, err)
+	_, err = p.AddMember("Ana Pérez", domain.RoleProductBuilder)
+	sinError(t, err)
+	for _, h := range []domain.StoryData{
+		{Title: "Registrar esfuerzo", Description: "Cargar horas", Priority: domain.PriorityHigh, AcceptanceCriteria: []string{"Se cargan las horas", "Se ve el total"}},
+		{Title: "Cargar defectos", Description: "Registrar errores", Priority: domain.PriorityMedium, AcceptanceCriteria: []string{"Se carga un defecto"}},
+		{Title: "Ver el tablero", Description: "Mirar cómo venimos", Priority: domain.PriorityLow, AcceptanceCriteria: []string{"Se ven los gráficos"}},
+	} {
+		_, err = p.AddStory(h)
+		sinError(t, err)
+	}
+	sinError(t, p.EstimateStory(1, 3))
+	sinError(t, p.EstimateHours(1, 6.5))
+
+	_, err = p.AddSprint(domain.SprintData{Goal: "Tener el MVP", Start: dia(2026, 10, 12), End: dia(2026, 10, 23)})
+	sinError(t, err)
+	sinError(t, p.AssignStory(1))
+	sinError(t, p.CloseSprint([]int{1}, dia(2026, 10, 23)))
+	_, err = p.AddSprint(domain.SprintData{Goal: "Cerrar la interfaz", Start: dia(2026, 10, 26), End: dia(2026, 11, 6)})
+	sinError(t, err)
+
+	hoy := dia(2026, 10, 31)
+	_, err = p.LogEffort(domain.EffortData{StoryID: 1, MemberName: "Ana Pérez", Activity: "Escribir tests", Hours: 2.5, Day: dia(2026, 10, 20)}, hoy)
+	sinError(t, err)
+	_, err = p.LogEffort(domain.EffortData{StoryID: 1, MemberName: "Zoe Ríos", Activity: "Revisar el PR", Hours: 1, Day: dia(2026, 10, 21)}, hoy)
+	sinError(t, err)
+
+	_, err = p.AddDefect(domain.DefectData{Title: "Suma mal", Description: "No suma el último", Severity: domain.SeverityMajor, StoryID: 1, DetectedIn: 1})
+	sinError(t, err)
+	sinError(t, p.ResolveDefect(1, 2))
+	_, err = p.AddDefect(domain.DefectData{Title: "Se pierde la severidad", Description: "Al recargar", Severity: domain.SeverityMinor, StoryID: 2, DetectedIn: 2})
+	sinError(t, err)
+
+	ronda, err := p.OpenVotingRound(2)
+	sinError(t, err)
+	sinError(t, ronda.Vote("Zoe Ríos", 3))
+	sinError(t, ronda.Vote("Ana Pérez", 8))
+	sinError(t, ronda.Reveal())
+	sinError(t, ronda.Agree(5))
+	otra, err := p.OpenVotingRound(2)
+	sinError(t, err)
+	sinError(t, otra.Vote("Zoe Ríos", 5))
+	sinError(t, p.AssignStory(2))
+
+	_, err = registry.Create(domain.ProjectData{Name: "Otro proyecto", Start: dia(2026, 9, 1), End: dia(2026, 12, 1)})
+	sinError(t, err)
+	return registry
+}
+
+// Escenario: Los datos siguen al cerrar y volver a abrir
+// Cubre: #177 RN-3
+func TestUnRegistroCompletoVuelveIgual(t *testing.T) {
+	registry := unRegistroCompleto(t)
+
+	cargado := guardarYReabrir(t, filepath.Join(t.TempDir(), "datos-ics.db"), registry)
+
+	// Se compara lo que da la conversion del dominio: si un dato, su orden o un contador no
+	// volvio igual, el texto es distinto.
+	if got, want := comoTexto(t, cargado), comoTexto(t, registry); !bytes.Equal(got, want) {
+		t.Errorf("lo cargado no es lo que se guardo.\nGuardado:\n%s\nCargado:\n%s", want, got)
+	}
+
+	// La numeracion sigue donde habia quedado.
+	p, err := cargado.Get(1)
+	sinError(t, err)
+	historia, err := p.AddStory(domain.StoryData{Title: "Otra", Description: "Una más", Priority: domain.PriorityLow, AcceptanceCriteria: []string{"Algo"}})
+	sinError(t, err)
+	defecto, err := p.AddDefect(domain.DefectData{Title: "Otro", Description: "Uno más", Severity: domain.SeverityMinor, StoryID: 1, DetectedIn: 2})
+	sinError(t, err)
+	proyecto, err := cargado.Create(domain.ProjectData{Name: "Tercero", Start: dia(2026, 10, 1)})
+	sinError(t, err)
+	if historia.ID() != 4 || defecto.ID() != 3 || proyecto.ID() != 3 {
+		t.Errorf("se esperaban la historia 4, el defecto 3 y el proyecto 3, salieron %d, %d y %d", historia.ID(), defecto.ID(), proyecto.ID())
+	}
+}
