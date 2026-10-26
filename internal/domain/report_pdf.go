@@ -41,6 +41,8 @@ const (
 	pdfPageHeight = 841.89
 	pdfMargin     = 56.69
 	pdfLineWidth  = 481.9
+	// pdfRowsPerPage: todos los renglones miden 18 pt, y en el alto util entran 39 mas el pie.
+	pdfRowsPerPage = 39
 )
 
 // fontSize es el tamano de cada letra: el cuerpo en 10 pt, los encabezados en 12 pt y el
@@ -210,7 +212,15 @@ func layoutReport(doc pdfDoc) []pdfPage {
 			add(line, styleBody)
 		}
 	}
-	pages := []pdfPage{{rows: rows}}
+	pages := []pdfPage{{}}
+	for _, row := range rows {
+		last := &pages[len(pages)-1]
+		if len(last.rows) == pdfRowsPerPage {
+			pages = append(pages, pdfPage{})
+			last = &pages[len(pages)-1]
+		}
+		last.rows = append(last.rows, row)
+	}
 	for i := range pages {
 		pages[i].footer = fmt.Sprintf("Página %d de %d", i+1, len(pages))
 	}
