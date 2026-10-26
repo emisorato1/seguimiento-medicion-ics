@@ -135,8 +135,10 @@ git log --no-color --format='@@%H' --name-only HEAD | awk '
 # que ya habia, y no hay GREEN. Las dos frases dicen lo mismo; la segunda es la que usan la #8
 # y la #9. git busca linea por linea, y en algunos mensajes "en" queda al final de la linea
 # anterior: por eso se busca "verde al escribir". Las busquedas no ignoran mayusculas:
-# "sin red" tambien esta en "sin redondear".
-git log --no-color --format='%H' --grep='sin RED' --grep='verde al escribir' HEAD > "$TMP/sin-red.txt"
+# "sin red" tambien esta en "sin redondear". "(pasa) sin codigo nuevo" es la tercera forma de
+# decir lo mismo, con o sin tilde.
+git log --no-color --format='%H' --grep='sin RED' --grep='verde al escribir' \
+  --grep='sin codigo nuevo' --grep='sin código nuevo' HEAD > "$TMP/sin-red.txt"
 
 # Commits "test:": si tocan codigo, es lo minimo para que el test compile (una constante, una
 # firma), y la implementacion viene en el commit siguiente
