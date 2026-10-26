@@ -2,6 +2,7 @@ package store
 
 import (
 	"bytes"
+	"errors"
 	"path/filepath"
 	"slices"
 	"testing"
@@ -224,5 +225,92 @@ func TestUnRegistroCompletoVuelveIgual(t *testing.T) {
 	sinError(t, err)
 	if historia.ID() != 4 || defecto.ID() != 3 || proyecto.ID() != 3 {
 		t.Errorf("se esperaban la historia 4, el defecto 3 y el proyecto 3, salieron %d, %d y %d", historia.ID(), defecto.ID(), proyecto.ID())
+	}
+}
+
+// unProyecto arma un registro con un proyecto y le aplica cambios con las operaciones del
+// dominio.
+func unProyecto(t *testing.T, cambios func(p *domain.Project)) *domain.ProjectRegistry {
+	t.Helper()
+	registry := domain.NewProjectRegistry()
+	p, err := registry.Create(domain.ProjectData{Name: "Sistema de métricas", Start: dia(2026, 10, 1)})
+	sinError(t, err)
+	cambios(p)
+	return registry
+}
+
+// Esquema del escenario: Los datos difíciles vuelven iguales
+// Cubre: #177 RN-3, RN-6
+func TestLosDatosDificilesVuelvenIguales(t *testing.T) {
+	hoy := dia(2026, 10, 31)
+	conHistoria := func(p *domain.Project, criterios ...string) {
+		_, err := p.AddStory(domain.StoryData{Title: "Registrar esfuerzo", Description: "Cargar horas",
+			Priority: domain.PriorityHigh, AcceptanceCriteria: criterios})
+		sinError(t, err)
+	}
+	casos := []struct {
+		nombre string
+		armar  func(p *domain.Project)
+		// despues mira lo que no se ve en la conversion, si hace falta
+		despues func(t *testing.T, cargado *domain.ProjectRegistry)
+	}{
+		{nombre: "un criterio con signos y en dos renglones", armar: func(p *domain.Project) {
+			conHistoria(p, "Se ve <b>el total</b> y \"las horas\"\nen dos renglones", "Ñandú, acción & 'comillas'")
+		}},
+		{nombre: "horas con decimales", armar: func(p *domain.Project) {
+			conHistoria(p, "Se cargan")
+			_, err := p.AddMember("Ana Pérez", domain.RoleProductBuilder)
+			sinError(t, err)
+			for _, horas := range []float64{2.5, 0.1} {
+				_, err := p.LogEffort(domain.EffortData{StoryID: 1, MemberName: "Ana Pérez", Activity: "Tests", Hours: horas, Day: dia(2026, 10, 27)}, hoy)
+				sinError(t, err)
+			}
+		}},
+		{nombre: "una ronda sin revelar con un voto", armar: func(p *domain.Project) {
+			conHistoria(p, "Se vota")
+			for _, nombre := range []string{"Ana Pérez", "Luis Gómez"} {
+				_, err := p.AddMember(nombre, domain.RoleProductBuilder)
+				sinError(t, err)
+			}
+			ronda, err := p.OpenVotingRound(1)
+			sinError(t, err)
+			sinError(t, ronda.Vote("Ana Pérez", 13))
+		}, despues: func(t *testing.T, cargado *domain.ProjectRegistry) {
+			p, err := cargado.Get(1)
+			sinError(t, err)
+			ronda, _, err := p.CurrentVotingRound(1)
+			sinError(t, err)
+			if _, err := ronda.Votes(); !errors.Is(err, domain.ErrVotesHidden) {
+				t.Errorf("los votos de una ronda sin revelar tenian que seguir ocultos, salio: %v", err)
+			}
+		}},
+		{nombre: "un integrante quitado con horas cargadas", armar: func(p *domain.Project) {
+			conHistoria(p, "Se cargan")
+			_, err := p.AddMember("Ana Pérez", domain.RoleProductBuilder)
+			sinError(t, err)
+			_, err = p.LogEffort(domain.EffortData{StoryID: 1, MemberName: "Ana Pérez", Activity: "Tests", Hours: 2, Day: dia(2026, 10, 27)}, hoy)
+			sinError(t, err)
+			sinError(t, p.RemoveMember("Ana Pérez"))
+		}},
+		{nombre: "un proyecto al que se le quito el unico integrante", armar: func(p *domain.Project) {
+			_, err := p.AddMember("Ana Pérez", domain.RoleProductBuilder)
+			sinError(t, err)
+			sinError(t, p.RemoveMember("Ana Pérez"))
+		}},
+		{nombre: "un proyecto sin nada", armar: func(p *domain.Project) {}},
+	}
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			registry := unProyecto(t, caso.armar)
+
+			cargado := guardarYReabrir(t, filepath.Join(t.TempDir(), "datos-ics.db"), registry)
+
+			if got, want := comoTexto(t, cargado), comoTexto(t, registry); !bytes.Equal(got, want) {
+				t.Errorf("lo cargado no es lo que se guardo.\nGuardado:\n%s\nCargado:\n%s", want, got)
+			}
+			if caso.despues != nil {
+				caso.despues(t, cargado)
+			}
+		})
 	}
 }
