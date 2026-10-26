@@ -2,12 +2,15 @@
 
 > **Borrador, 26/10.** Ya tiene cargados el Sprint 0, el 1 y el 2, la cobertura al 26/10, la
 > evidencia de TDD y la trazabilidad de la #10. Es la estructura del informe en PDF que se entrega el
-> 1/11. Lo arma Emiliano Sorato (Agile Enabler) con las métricas del repo, y Emiliano lo
-> revisa antes de exportarlo. Cada sección dice de dónde salen sus datos. Lo que está entre
-> corchetes, **[pendiente]**, se completa al cierre del producto (30/10) y del Sprint 4.
+> 1/11. Lo arma y lo revisa Emiliano Sorato (Agile Enabler), con las métricas del repo, antes de
+> exportarlo. Cada sección dice de dónde salen sus datos. Lo que está entre corchetes,
+> **[pendiente]**, se completa al cierre del producto (30/10) y del Sprint 4.
 >
 > El PDF se arma como `.docx` con los estilos de Word (Título 1, 2 y 3) y se exporta desde
-> Word. La presentación final la arma Juliana Bustos y no va acá.
+> Word. **Antes de exportar:** la portada va sin símbolos ni logos (solo universidad, facultad,
+> materia, título, integrantes con legajo y año), y se limpian los metadatos del Word y del PDF
+> (autor y programa que lo generó), como pide el `CLAUDE.md` de la materia. La presentación
+> final la arma Juliana Bustos y no va acá.
 
 ## Portada
 
@@ -22,7 +25,9 @@ Maximiliano Eula (legajo 8665).
 - Qué requerimientos mínimos de la consigna cubre, en una tabla: requerimiento, historia,
   estado. Fuente: el Product Backlog del tablero y `docs/specs/README.md`.
 - Cómo se usa: consola y web. Fuente: `docs/manual-de-usuario.md`.
-- Arquitectura en un diagrama: dominio en Go, guardado en archivo, consola y web. Fuente:
+- Arquitectura en un diagrama: dominio en Go, consola y web, y el guardado de los datos en una
+  base de datos SQLite (#177), con el archivo JSON para importar y exportar. [pendiente: la #177
+  está en implementación; se confirma cuando se mergee a `dev`.] Fuente:
   `docs/documentacion-tecnica.md` y `docs/diseno-dominio.md`.
 
 ## 2. Cómo trabajamos
@@ -39,19 +44,20 @@ Maximiliano Eula (legajo 8665).
 ## 3. Métricas por sprint
 
 Los números de un sprint cerrado salen de su acta de review, que se escribe el día del cierre
-y no cambia. El [informe de métricas](informe-de-metricas.md) explica cómo se calcula cada
+y no cambia. Si después se estima una historia que se terminó en ese sprint, el recálculo va en
+el acta aparte y con fecha, como pasó con la #77 en el Sprint 2. El [informe de métricas](informe-de-metricas.md) explica cómo se calcula cada
 uno y por qué el tablero solo no alcanza para un sprint cerrado.
 
 | Métrica | Sprint 0 | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|---|
 | Fechas | 07/09 → 28/09 | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
-| SP planificados | — | 16 | 31 | 28 | [pendiente] |
-| SP completados (velocidad) | — | **6** | **39** (31 + 8 adelantados) | [pendiente] | [pendiente] |
-| Historias completadas | 2 ítems de preparación | 2 de 5 (40%) | 9 de 9 (100%) | [pendiente] | [pendiente] |
-| Horas estimadas | — | 48 | 56,7 | 75,6 | [pendiente] |
+| SP planificados | — | 16 | 31 (44 con la #77) | 41 | [pendiente] |
+| SP completados (velocidad) | — | **6** | **52** (44 + 8 adelantados) | [pendiente] | [pendiente] |
+| Historias completadas | 2 ítems de preparación | 2 de 5 (40%) | 10 de 10 (100%) | [pendiente] | [pendiente] |
+| Horas estimadas | — | 48 | 56,7 | 110,7 | [pendiente] |
 | Horas reales trabajadas | no se registraron | 38,25 | 31 | [pendiente] | [pendiente] |
 | Desviación de las historias terminadas | — | −11% | −52% (−36% sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
-| Horas por story point completado | — | 2,7 | 1,3 (1,8 sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
+| Horas por story point completado | — | 2,7 | 1,0 (1,8 sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
 | Defectos detectados / resueltos | 0 / 0 | 2 / 1 | 1 / 2 | [pendiente] | [pendiente] |
 
 **Sprint 0 — preparación** ([acta](actas/sprint-0-cierre.md)). No tuvo story points: era
@@ -72,19 +78,34 @@ estimar los sprints siguientes.
 **Sprint 2 — interfaz usable** ([planning](actas/sprint-2-planning.md),
 [review](actas/sprint-2-review.md), [retro](actas/sprint-2-retrospectiva.md)). Se
 terminaron las 9 historias comprometidas (31 SP) y además la #13, adelantada desde el Sprint 3
-(8 SP), así que la velocidad fue de 39. Las horas trabajadas en el sprint fueron 31: Agustín
+(8 SP): al cierre, la velocidad fue de 39. La #77, la base de la web, también se terminó en el
+sprint, pero sin story points. El 26/10 el equipo la estimó en 13 y sumó al sprint, que quedó
+con 44 SP terminados y velocidad 52. Las horas trabajadas en el sprint fueron 31: Agustín
 Salinas 20, Maximiliano Eula 8, Emiliano Sorato 3 y Juliana Bustos 0, según el tablero.
 Juliana Bustos anotó además 14 horas propias que no están en el tablero (la spec de la #17,
 revisiones y gestión). La #5, la #14 y la #15 se implementaron con asistencia de IA. Sus horas
 reales son el tiempo de dirección y revisión de Emiliano Sorato, y por eso la desviación da
-tan negativa; por eso se muestra también la cuenta sin esas tres.
+tan negativa; por eso se muestra también la cuenta sin esas tres. La #77 tampoco entra en la
+desviación, porque no tiene horas estimadas: se estimó cuando ya estaba terminada.
 
-**Sprint 3 y Sprint 4:** [pendiente: se completan con sus reviews, el 30/10 y el 1/11].
+**Sprint 3 y Sprint 4:** [pendiente: se completan con sus reviews, el 30/10 y el 1/11]. Del
+Sprint 3, la tabla ya tiene lo planificado: 41 SP y 110,7 horas estimadas.
 
-**Historias adelantadas y sin estimar.** Desde el 21/10, quien termina lo suyo adelanta su
-próxima historia (decisión 11 del [plan](plan-final-al-2-de-noviembre.md)). Una adelantada no
-suma a lo comprometido; si se termina, suma a la velocidad, aparte. La #77 y la #78 entraron
-sin story points: sus horas cuentan como trabajadas, pero no entran en la desviación.
+**Historias adelantadas, agregadas y estimadas después.**
+
+- **Adelantadas.** Desde el 21/10, quien termina lo suyo adelanta su próxima historia (decisión
+  11 del [plan](plan-final-al-2-de-noviembre.md)). Una adelantada no suma a lo comprometido; si
+  se termina, suma a la velocidad, aparte. Fueron la #13 en el Sprint 2 y la #73 en el 3.
+- **Agregadas durante el sprint.** La #177 (guardar los datos en una base de datos) entró al
+  Sprint 3 el 26/10, ya empezado. Se cuenta igual que una adelantada: no suma a lo comprometido
+  y, si se termina, suma a la velocidad. Sus story points están [pendientes] del Planning Poker.
+- **Estimadas después.** La #77 y la #78, las de la web, entraron sin story points. El equipo
+  las estimó el 26/10, en la ronda 2 del Planning Poker de la planning del Sprint 3: 13 y 13,
+  con los cuatro de acuerdo. La #77 ya estaba terminada y suma al Sprint 2, donde se terminó.
+  La #78 entra en el compromiso del Sprint 3, que queda en 41 SP, porque se estimó en esa
+  planning y estuvo en el sprint desde el primer día, como decidió Emiliano Sorato. Sus 35,1 h
+  estimadas salen de los 13 SP a 2,7 h por punto. La #77 no tiene horas estimadas, así que no
+  entra en la desviación.
 
 ## 4. Gráficos
 
@@ -131,6 +152,12 @@ le pone a cada test una marca. Al 26/10, sobre `4f7644b`:
 El único desvío es `0d22bc7`, de la #6, en el Sprint 1. Los "sin RED" son casos que una tarea
 anterior ya resolvía. Desde el 20/10 se dejan dichos en el asunto del commit, para que no
 parezca que el test se escribió después.
+
+Los 13 "sin GREEN" no son tests escritos después del código. Son 13 tests del Sprint 1, del 9
+y el 13/10: 5 de la #4 y 8 de la #6. Uno por uno, cada test pasa en su propio commit con código
+que ya había escrito un par RED → GREEN anterior de la misma historia (por ejemplo, el "no se
+encontró" o la copia de la lista). Son "sin RED" que no quedaron marcados, porque esa costumbre
+empezó el 20/10.
 
 **Un par de ejemplo**, de la #10 (PR #150, 26/10):
 
