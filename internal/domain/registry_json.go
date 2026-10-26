@@ -100,6 +100,11 @@ type sprintJSON struct {
 	State  string `json:"state"`
 	// El Sprint Backlog es de la #9: los identificadores de las historias, en orden.
 	Stories []int `json:"stories,omitempty"`
+	// Los datos del cierre son de la #10. Van con omitempty: un sprint abierto no los tiene.
+	// Los puntos van por historia, con el número de la historia como clave.
+	ClosedOn         string      `json:"closed_on,omitempty"`
+	CompletedStories []int       `json:"completed_stories,omitempty"`
+	PointsAtClose    map[int]int `json:"points_at_close,omitempty"`
 }
 
 type memberJSON struct {
@@ -162,14 +167,21 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 		}
 		project.LastSprintNumber = p.lastSprintNumber
 		for _, s := range p.sprints {
-			project.Sprints = append(project.Sprints, sprintJSON{
+			sj := sprintJSON{
 				Number:  s.number,
 				Goal:    s.goal,
 				Start:   s.start.Format(dayLayout),
 				End:     s.end.Format(dayLayout),
 				State:   s.state.String(),
 				Stories: s.Stories(),
-			})
+				// el cierre, de la #10
+				CompletedStories: s.CompletedStories(),
+				PointsAtClose:    s.PointsAtClose(),
+			}
+			if !s.closedOn.IsZero() {
+				sj.ClosedOn = s.closedOn.Format(dayLayout)
+			}
+			project.Sprints = append(project.Sprints, sj)
 		}
 		project.LastDefectID = p.lastDefectID
 		for _, d := range p.defects {
@@ -505,7 +517,13 @@ func sprintFromJSON(project *Project, sj sprintJSON) (*Sprint, error) {
 		seen[id] = true
 		stories = append(stories, id)
 	}
-	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories}, nil
+	// los datos del cierre (historia #10)
+	closedOn, err := parseDay(sj.ClosedOn)
+	if err != nil {
+		return nil, err
+	}
+	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories,
+		closedOn: closedOn, completedStories: sj.CompletedStories, pointsAtClose: sj.PointsAtClose}, nil
 }
 
 // storyFromJSON reconstruye una historia con su numero, su estado y su estimacion.
