@@ -706,9 +706,11 @@ implementación en el siguiente.
 - **El mensaje del rechazo se busca sin el cierre del elemento** en el esquema «Mostrar el
   rechazo sin perder lo escrito»: el núcleo le suma al sprint ya abierto su número («…: el
   sprint 1»), y el test toma el mensaje del propio error, sin escribirlo a mano.
-- **Tests que pasaron sin código nuevo**, como pide la Fase 3:
+- **Tests que pasaron sin código nuevo**, como pide la Fase 3. Sus commits no dicen «sin
+  RED» en el asunto, como sí hacen los de la #10; para no reescribir la historia del PR, la
+  marca queda acá con el hash de cada uno:
   - el segundo sprint abierto va arriba del formulario: lo hace la tabla de errores de la
-    #77, que manda arriba lo que no es de ningún campo (tarea 3);
+    #77, que manda arriba lo que no es de ningún campo (tarea 3, `4aad7ae`);
   - asignar sin elegir la historia y unas horas que no son número (`dos`): los controla la
     forma que ya traían las tareas 4 y 9 (tareas 5 y 10);
   - **«Nadie ve un voto antes de revelar»** (tarea 17): el secreto lo garantiza el núcleo
@@ -716,10 +718,10 @@ implementación en el siguiente.
     hizo que la plantilla mostrara el voto y el test falló en las dos lecturas de la ronda;
     después se volvió atrás;
   - los datos nuevos siguen al reabrir (tarea 23): lo que se guarda lo suma cada historia de
-    dominio y la web guarda el registro entero (Fase 2, Dependencias);
+    dominio y la web guarda el registro entero (Fase 2, Dependencias; `97ef3a2`);
   - los formularios nuevos con etiqueta, error enlazado y foco, y las tablas en su recuadro
-    (tarea 24): las plantillas usan las partes comunes de la #77;
-  - las filas nuevas de «Pedir algo que no existe».
+    (tarea 24, `499e7a2`): las plantillas usan las partes comunes de la #77;
+  - las filas nuevas de «Pedir algo que no existe» (`7c8ec8b`).
 - **El test de la tarea 9 falló por compilación**: cambió la forma de armar el servidor
   (`NewServer` con la fecha de hoy), y ese error de compilación es su RED.
 
@@ -729,6 +731,13 @@ implementación en el siguiente.
   respecto de la página y la ensanchaba. Se arregló con `position: relative` en `.tabla`,
   que cubre también la tabla de integrantes de la #77. Un test de Go no mide el ancho
   dibujado; el RED y el GREEN son las dos corridas del script de Playwright de abajo.
+
+- **Dos arreglos de tests después de traer dev el 26/10**, que no cambian código Go:
+  - con la #10, la carga pide la fecha de cierre de un sprint Cerrado, y el resumen del
+    proyecto se armaba con uno sin ella: se le sumó `closed_on`;
+  - en Windows las plantillas pueden bajar con CRLF, y cuatro tests buscaban filas con
+    «\n» y la sangría (revisión de Agustín): ahora quitan los espacios entre etiquetas
+    (`joinTags`). El RED se reprodujo con una copia del repo con las plantillas en CRLF.
 
 ### Verificación manual de la parte 1
 
