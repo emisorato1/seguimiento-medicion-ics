@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 )
@@ -153,5 +154,24 @@ func TestLaMismaHistoriaIndicadaDosVecesCuentaUnaSolaVez(t *testing.T) {
 	}
 	if got := estadoDe(t, project, 1); got != StoryDone {
 		t.Fatalf("se esperaba la historia 1 Terminada, quedo en %v", got)
+	}
+}
+
+// Escenario: Rechazar el cierre si una historia completada no esta en el sprint
+// Cubre: RN-7, RN-13
+func TestRechazarElCierreSiUnaHistoriaCompletadaNoEstaEnElSprint(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3)
+	historiasEstimadas(t, project, 5)
+
+	err := project.CloseSprint([]int{1, 2}, unDia(2026, 10, 25))
+
+	if !errors.Is(err, ErrStoryNotInSprint) {
+		t.Fatalf("se esperaba ErrStoryNotInSprint, salio: %v", err)
+	}
+	if sprint.State() != SprintOpen || len(sprint.CompletedStories()) != 0 {
+		t.Fatalf("se esperaba el sprint Abierto y sin completadas, quedo %v con %v", sprint.State(), sprint.CompletedStories())
+	}
+	if got := estadoDe(t, project, 1); got != StoryInProgress {
+		t.Fatalf("se esperaba la historia 1 En curso, quedo en %v", got)
 	}
 }
