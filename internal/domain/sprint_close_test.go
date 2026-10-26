@@ -88,3 +88,53 @@ func TestElSprintCerradoConservaLoQueSeLeHabiaComprometido(t *testing.T) {
 		t.Fatalf("se esperaba que el sprint siguiera con las historias [1 2 3], salieron %s", got)
 	}
 }
+
+// Esquema del escenario: Cerrar con distinta cantidad de historias completadas
+// Cubre: RN-3, RN-4, RN-9
+func TestCerrarConDistintaCantidadDeHistoriasCompletadas(t *testing.T) {
+	cases := []struct {
+		completed              []int
+		terminadas, pendientes int
+	}{
+		{nil, 0, 3},
+		{[]int{2}, 1, 2},
+		{[]int{1, 2, 3}, 3, 0},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("%d completadas", len(tc.completed)), func(t *testing.T) {
+			project, sprint := unSprintParaCerrar(t, 3, 5, 2)
+
+			if err := project.CloseSprint(tc.completed, unDia(2026, 10, 25)); err != nil {
+				t.Fatalf("se esperaba cerrar el sprint sin error, salio: %v", err)
+			}
+
+			terminadas, pendientes := 0, 0
+			for _, id := range []int{1, 2, 3} {
+				switch estadoDe(t, project, id) {
+				case StoryDone:
+					terminadas++
+				case StoryPending:
+					pendientes++
+				}
+			}
+			if terminadas != tc.terminadas || pendientes != tc.pendientes || sprint.State() != SprintClosed {
+				t.Fatalf("se esperaban %d Terminadas, %d Pendientes y el sprint Cerrado, salieron %d, %d y %v",
+					tc.terminadas, tc.pendientes, terminadas, pendientes, sprint.State())
+			}
+		})
+	}
+}
+
+// Escenario: Cerrar un sprint sin ninguna historia asignada
+// Cubre: RN-9
+func TestCerrarUnSprintSinNingunaHistoriaAsignada(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t)
+
+	if err := project.CloseSprint(nil, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("se esperaba cerrar el sprint sin error, salio: %v", err)
+	}
+
+	if sprint.State() != SprintClosed || len(sprint.CompletedStories()) != 0 {
+		t.Fatalf("se esperaba el sprint Cerrado y sin completadas, quedo %v con %v", sprint.State(), sprint.CompletedStories())
+	}
+}
