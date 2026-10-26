@@ -90,9 +90,12 @@ otra, para cargar los datos de demo y para traer lo guardado con la versión ant
 14. **[RN-14]** Cuando el sistema abre con la base vacía y encuentra en la carpeta el archivo
     de datos de la versión anterior (`datos-ics.json`), debe importarlo solo, con las mismas
     reglas que al importar a pedido (RN-8 y RN-9), y avisar que lo importó y desde qué
-    archivo. El archivo de la versión anterior no se borra ni se cambia. **Decidido por
-    Emiliano Sorato el 26/10.** Qué cuenta como "vacía", en el punto 1 de "Para decidir en la
-    puerta".
+    archivo. **Decidido por Emiliano Sorato el 26/10.**
+15. **[RN-15]** Cuando el archivo de la versión anterior se importa bien, el sistema debe
+    renombrarlo a `datos-ics.json.importado` y avisar que lo renombró, para que no se vuelva a
+    importar: aunque después se borre todo, al volver a abrir no reaparecen los datos viejos.
+    Si la importación falla, el archivo no se toca, la base queda vacía y el sistema avisa
+    qué pasó y no abre (RN-9). **Decidido el 26/10**, como lo transmitió la manager.
 
 ### Casos límite
 
@@ -112,9 +115,14 @@ otra, para cargar los datos de demo y para traer lo guardado con la versión ant
 - La numeración: después de reabrir, la historia, el sprint y el defecto siguientes reciben el
   número que sigue, aunque se hayan quitado elementos.
 - El archivo de datos de la versión anterior (`datos-ics.json`) en la carpeta y la base
-  vacía: se importa solo y se avisa (RN-14). Con la base ya con datos, se lo ignora.
+  vacía: se importa solo, se renombra a `datos-ics.json.importado` y se avisa (RN-14, RN-15).
+  Con la base ya con datos, se lo ignora.
+- Después de importarlo, se borra todo y se vuelve a abrir: no se vuelve a importar, porque
+  el archivo ya está renombrado (RN-15).
 - El archivo de la versión anterior con un dato que no cumple las reglas: se avisa qué dato
-  está mal y el sistema no abre, sin cambiar la base ni el archivo (RN-9).
+  está mal y el sistema no abre; la base queda vacía y el archivo, sin tocar (RN-15).
+- Ya existe un `datos-ics.json.importado` de una importación anterior: el renombre no puede
+  pisarlo, así que se avisa y no se abre, sin cambiar nada (ver "Condiciones de error").
 
 ### Condiciones de error
 
@@ -126,7 +134,8 @@ otra, para cargar los datos de demo y para traer lo guardado con la versión ant
 | Un cambio no se puede guardar (por ejemplo, la carpeta no permite escribir) | avisa "No quedó guardado", la base queda como antes y el cambio se guarda con la próxima operación que funcione |
 | El archivo para importar no existe, no se puede leer o no cumple las reglas | avisa qué pasó y no cambia nada |
 | Se pide importar y la base ya tiene datos | avisa que no importa sobre datos existentes y no cambia nada |
-| El archivo de la versión anterior, importado solo al abrir, no cumple las reglas | avisa qué dato está mal y no abre, sin cambiar la base ni el archivo |
+| El archivo de la versión anterior, importado solo al abrir, no cumple las reglas | avisa qué dato está mal y no abre; la base queda vacía y el archivo, sin tocar |
+| El archivo de la versión anterior se importó, pero no se puede renombrar (por ejemplo, ya existe un `datos-ics.json.importado`) | avisa en castellano y no abre, y la base queda vacía, para que al resolverlo se importe una sola vez |
 | El archivo para exportar no se puede escribir | avisa en castellano y termina sin escribir nada a medias |
 
 ### Criterios de aceptación
@@ -212,10 +221,24 @@ Escenario: Lo guardado con la versión anterior se importa solo
   Y la base vacía
   Cuando abro el sistema
   Entonces veo el aviso de que se importaron los datos de "datos-ics.json"
+  Y que el archivo se renombró a "datos-ics.json.importado"
   Y veo el proyecto "Sistema de metricas"
-  Y el archivo "datos-ics.json" queda como estaba
   Cuando cierro el sistema y lo vuelvo a abrir
   Entonces no se vuelve a importar, y veo el proyecto "Sistema de metricas" una sola vez
+
+Escenario: Lo de la versión anterior no vuelve aunque se borre todo
+  Dado que el sistema ya importó "datos-ics.json" y lo renombró a "datos-ics.json.importado"
+  Cuando quito todos los datos, cierro el sistema y lo vuelvo a abrir
+  Entonces no se importa nada y veo la lista de proyectos vacía
+
+Escenario: Si lo de la versión anterior no se puede importar, no se toca
+  Dado el archivo "datos-ics.json" con una historia de 4 story points
+  Y la base vacía
+  Cuando abro el sistema
+  Entonces veo un aviso que dice qué dato está mal
+  Y el sistema no abre
+  Y el archivo "datos-ics.json" queda como estaba, sin renombrar
+  Y la base sigue vacía
 
 Escenario: Abrir por primera vez
   Dado que no hay ninguna base de datos
@@ -232,20 +255,16 @@ Escenario: Una base de una versión más nueva no se abre
 
 ### Decidido antes de la puerta
 
-Emiliano Sorato decidió el 26/10 los dos puntos que el borrador dejaba abiertos:
+Se decidieron el 26/10 los puntos que el borrador dejaba abiertos:
 
 1. **Importar sobre una base con datos se rechaza** (RN-10): importar reemplazaría todo lo
    que hay, y un error de tipeo en el comando borraría el proyecto.
 2. **El archivo de la versión anterior se importa solo** si la base está vacía, y se avisa
    (RN-14). El borrador proponía solo avisar.
-
-### Para decidir en la puerta
-
-1. **Qué cuenta como "base vacía" para importar solo el archivo de la versión anterior**
-   (RN-14). Si es "sin ningún proyecto", alguien que borró todo y vuelve a abrir el sistema
-   recibiría otra vez los datos viejos del archivo, sin pedirlo. Se propone que cuente como
-   vacía **la base que se crea en ese momento**, la primera vez que se abre: así se importa
-   una sola vez. La alternativa es la lectura literal, "sin ningún proyecto".
+3. **Se importa una sola vez** (RN-15): después de importarlo bien se renombra a
+   `datos-ics.json.importado`. Así, alguien que borra todo y vuelve a abrir no recibe otra
+   vez los datos viejos. Si la importación falla, el archivo no se toca. Lo transmitió la
+   manager el 26/10.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
@@ -297,8 +316,9 @@ escribir ese archivo con lo que ya existe.
 | **D5** Si la conversión trae un dato que la base no tiene dónde guardar, **el guardado falla** con "No quedó guardado" | ignorar el dato | es lo que hoy obliga a cada historia a sumar su dato a la conversión (AGENTS.md): ahora también a una tabla, con una migración nueva. Fallar en voz alta evita perder datos en silencio, y el test de ida y vuelta lo detecta antes del merge |
 | **D6** El esquema se crea con **migraciones numeradas**, embebidas en el binario; la base guarda en qué número está, y al abrir se aplican las que faltan, en una transacción | crear las tablas "si no existen" | permite cambiar el esquema después sin perder datos. Una base con un número mayor que el que conoce el sistema no se abre (RN-13) |
 | **D7** Una sola conexión abierta, y el guardado sigue usando el candado de la web | varias conexiones | todos los cambios ya pasan de a uno por el candado (#77); con una conexión no hay bloqueos entre conexiones del propio sistema |
-| **D8** La base por defecto es `datos-ics.db` en la carpeta desde donde se abre, y la opción para elegir otra es la de hoy (`-datos`). Importar y exportar son dos opciones nuevas del arranque. El archivo de la versión anterior se busca con su nombre de siempre, `datos-ics.json`, en la misma carpeta que la base (RN-14) | elegir el formato según la extensión del archivo | el JSON queda solo para importar y exportar (decisión de Emiliano); una sola forma de guardar es más simple de probar y de explicar. Buscarlo junto a la base es donde lo dejaba la versión anterior |
+| **D8** La base por defecto es `datos-ics.db` en la carpeta desde donde se abre, y la opción para elegir otra es la de hoy (`-datos`). Importar y exportar son dos opciones nuevas del arranque. El archivo de la versión anterior se busca con su nombre de siempre, `datos-ics.json`, en la misma carpeta que la base, y se renombra en esa carpeta (RN-14, RN-15) | elegir el formato según la extensión del archivo | el JSON queda solo para importar y exportar (decisión de Emiliano); una sola forma de guardar es más simple de probar y de explicar. Buscarlo junto a la base es donde lo dejaba la versión anterior |
 | **D9** Para probar que la transacción no deja datos a medias, el test hace fallar la base a mitad del guardado con una regla de la propia base (un disparador que rechaza una inserción) | agregarle al código un punto para inyectar fallas | no agrega código que solo usan los tests, y prueba la transacción real |
+| **D10** El orden al importar solo el archivo viejo es: importar y guardar en la base, después renombrar el archivo. Si el renombre falla, se vacía la base otra vez antes de avisar | renombrar primero y después importar | renombrando primero, una importación que falla dejaría el archivo renombrado y no se volvería a intentar (RN-15). Vaciar la base si el renombre falla mantiene la promesa de importar una sola vez |
 
 ### Dependencias y restricciones
 
@@ -332,7 +352,7 @@ implementación en el siguiente.
 | 9 | El arranque usa la base por defecto | Abrir por primera vez | RN-5 | pendiente |
 | 10 | Exportar escribe el archivo y termina; importar en una base nueva; exportar e importar dan lo mismo | Exportar e importar da los mismos datos / Traer los datos de la versión anterior | RN-7, RN-8, RN-11 | pendiente |
 | 11 | Importar algo que no se puede: archivo que no existe, con un dato inválido, o sobre una base con datos | Importar algo que no se puede no cambia nada | RN-9, RN-10 | pendiente |
-| 12 | El archivo de la versión anterior se importa solo con la base vacía, se avisa, no se toca, no se vuelve a importar, y uno inválido no abre | Lo guardado con la versión anterior se importa solo | RN-14, RN-9 | pendiente |
+| 12 | El archivo de la versión anterior se importa solo con la base vacía, se renombra y se avisa; no vuelve aunque se borre todo; uno inválido no se toca y no abre; un renombre que no se puede hacer no abre | Lo guardado con la versión anterior se importa solo / Lo de la versión anterior no vuelve aunque se borre todo / Si lo de la versión anterior no se puede importar, no se toca | RN-14, RN-15, RN-9 | pendiente |
 | 13 | La web guarda en la base: el escenario de la #77 y la #78 de cerrar y volver a abrir, con la base | Los datos siguen al cerrar y volver a abrir | RN-1, RN-3 | pendiente |
 | 14 | El manual de usuario y la documentación técnica | — | — | pendiente |
 
