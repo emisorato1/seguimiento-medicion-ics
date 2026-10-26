@@ -1,7 +1,9 @@
 package domain
 
 import (
+	"math"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -69,5 +71,93 @@ func TestUnReporteSinSeccionesTieneUnaPagina(t *testing.T) {
 
 	if len(pages) != 1 || len(pages[0].rows) != 2 || pages[0].footer != "Página 1 de 1" {
 		t.Errorf("se esperaba una pagina con dos renglones y su pie, salio %v", pages)
+	}
+}
+
+// Sin escenario: la tabla de anchos de la Fase 2
+// Cubre: RN-4
+//
+// Los anchos son los de los AFM de Adobe, en milesimas del tamano de la letra. Se prueban
+// algunos valores conocidos, y que todos los caracteres ASCII imprimibles esten en las dos
+// tablas, para que ninguno se mida con el ancho de un caracter desconocido.
+func TestAnchosDeHelvetica(t *testing.T) {
+	cases := []struct {
+		text  string
+		style pdfStyle
+		want  float64
+	}{
+		{text: "i", style: styleBody, want: 2.22},
+		{text: "W", style: styleBody, want: 9.44},
+		{text: " ", style: styleBody, want: 2.78},
+		{text: "W", style: styleTitle, want: 15.104},
+		{text: "i", style: styleHeading, want: 3.336},
+		{text: "ñ", style: styleBody, want: 5.56},
+	}
+	for _, c := range cases {
+		if got := textWidth(c.text, c.style); math.Abs(got-c.want) > 1e-9 {
+			t.Errorf("ancho de %q con la letra %d: se esperaba %v, salio %v", c.text, c.style, c.want, got)
+		}
+	}
+	for r := rune(32); r <= 126; r++ {
+		if _, ok := helveticaWidths[r]; !ok {
+			t.Errorf("falta %q en la tabla de Helvetica", r)
+		}
+		if _, ok := helveticaBoldWidths[r]; !ok {
+			t.Errorf("falta %q en la tabla de Helvetica-Bold", r)
+		}
+	}
+}
+
+// Escenario: Una linea larga sigue en el renglon siguiente
+// Cubre: RN-4, RN-6
+func TestUnaLineaLargaSigueEnElRenglonSiguiente(t *testing.T) {
+	line := strings.TrimSpace(strings.Repeat("palabra ", 120))
+
+	rows := wrapText(line, styleBody)
+
+	if len(rows) < 2 {
+		t.Fatalf("se esperaba que la linea siguiera en otro renglon, salio %d renglon", len(rows))
+	}
+	for _, row := range rows {
+		if textWidth(row, styleBody) > pdfLineWidth {
+			t.Errorf("el renglon %q pasa el margen: mide %v pt", row, textWidth(row, styleBody))
+		}
+		if strings.HasPrefix(row, " ") || strings.HasSuffix(row, " ") {
+			t.Errorf("el renglon %q empieza o termina con un espacio: no se corto entre palabras", row)
+		}
+	}
+	if strings.Join(rows, " ") != line {
+		t.Errorf("al unir los renglones no vuelve la linea original")
+	}
+
+	// Casos del foco de la revision: los espacios de una linea corta no se tocan.
+	for _, short := range []string{"a  b", "   "} {
+		if got := wrapText(short, styleBody); !reflect.DeepEqual(got, []string{short}) {
+			t.Errorf("se esperaba %q en un solo renglon, salio %q", short, got)
+		}
+	}
+}
+
+// Escenario: Un titulo largo sigue en varios renglones con su letra
+// Cubre: RN-4, RN-5, RN-6
+func TestUnTituloLargoSigueEnVariosRenglonesConSuLetra(t *testing.T) {
+	doc := pdfDoc{title: strings.TrimSpace(strings.Repeat("REPORTE DEL PROYECTO ", 4)), generatedOn: unDia(2026, 10, 25)}
+
+	rows := layoutReport(doc)[0].rows
+
+	titleRows := 0
+	for _, row := range rows {
+		if row.style == styleTitle {
+			titleRows++
+			if textWidth(row.text, styleTitle) > pdfLineWidth {
+				t.Errorf("el renglon del titulo %q pasa el margen", row.text)
+			}
+		}
+	}
+	if titleRows < 2 {
+		t.Errorf("se esperaba el titulo en varios renglones con su letra, salieron %d", titleRows)
+	}
+	if rows[titleRows].text != "Generado el 25/10/2026" {
+		t.Errorf("se esperaba \"Generado el\" despues del titulo, salio %q", rows[titleRows].text)
 	}
 }
