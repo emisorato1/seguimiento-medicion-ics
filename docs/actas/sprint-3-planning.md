@@ -4,7 +4,9 @@
 - **Cómo se hizo:** por escrito, en la [issue #147](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147), con un comentario de cada uno
 - **Participantes:** Emiliano Sorato, Maximiliano Eula, Juliana Bustos y Agustín Salinas
 - **Facilita:** Emiliano Sorato (Agile Enabler)
-- **Duración del sprint:** del lunes 26 al viernes 30/10
+- **Duración del sprint:** del lunes 26 al miércoles 28/10. Al principio iba hasta el viernes 30/10;
+  el 26/10 se acortó a pedido del equipo, para terminar todo el 29/10 (ver el
+  [plan](../plan-final-al-2-de-noviembre.md#calendario))
 
 ## Lo que traemos del Sprint 2
 

@@ -37,8 +37,8 @@ command -v jq >/dev/null || { echo "Falta jq. Instalar: brew install jq"; exit 1
 case "$SPRINT" in
   "Sprint 1") DESDE="2026-09-28"; HASTA="2026-10-16" ;;
   "Sprint 2") DESDE="2026-10-17"; HASTA="2026-10-25" ;;
-  "Sprint 3") DESDE="2026-10-26"; HASTA="2026-10-30" ;;
-  "Sprint 4") DESDE="2026-10-31"; HASTA="2026-11-01" ;;
+  "Sprint 3") DESDE="2026-10-26"; HASTA="2026-10-28" ;;
+  "Sprint 4") DESDE="2026-10-29"; HASTA="2026-10-29" ;;
   *)          DESDE="0000-00-00"; HASTA="9999-99-99" ;;
 esac
 
