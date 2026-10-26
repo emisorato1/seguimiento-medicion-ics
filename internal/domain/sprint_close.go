@@ -36,8 +36,12 @@ func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
 		}
 		done[id] = true
 	}
+	// se registran los puntos que tiene en este momento cada historia asignada, 0 si está sin
+	// estimar, así reestimarla después no cambia el sprint (RN-16)
+	points := map[int]int{}
 	for _, id := range sprint.stories {
 		story, _ := p.Story(id)
+		points[id] = story.storyPoints
 		if done[id] {
 			story.state = StoryDone
 		} else {
@@ -45,6 +49,7 @@ func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
 		}
 	}
 	sprint.completedStories = unique
+	sprint.pointsAtClose = points
 	sprint.state = SprintClosed
 	sprint.closedOn = toDay(closedOn)
 	return nil
@@ -63,4 +68,15 @@ func (s *Sprint) CompletedStories() []int {
 // abierto.
 func (s *Sprint) ClosedOn() time.Time {
 	return s.closedOn
+}
+
+// PointsAtClose devuelve una copia de los story points que tenía cada historia asignada al
+// cerrar el sprint, por su número; vacía mientras está abierto. Cambiar lo que se recibe no
+// cambia el sprint.
+func (s *Sprint) PointsAtClose() map[int]int {
+	points := make(map[int]int, len(s.pointsAtClose))
+	for id, value := range s.pointsAtClose {
+		points[id] = value
+	}
+	return points
 }
