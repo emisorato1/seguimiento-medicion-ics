@@ -3,7 +3,7 @@
 - **Historia:** #11
 - **Sprint:** 3
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
@@ -293,18 +293,18 @@ el nombre del escenario.
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Un proyecto sin sprints cerrados devuelve un listado vacío, con y sin sprint abierto | Un proyecto sin sprints cerrados devuelve un listado vacio | RN-3 | pendiente |
-| 2 | Listar los sprints cerrados con su goal, sus fechas, su fecha de cierre y sus historias, ordenados por número | Listar los sprints cerrados de un proyecto | RN-1, RN-4 | pendiente |
-| 3 | El sprint abierto no aparece en el listado | El sprint abierto no aparece en el listado | RN-2 | pendiente |
-| 4 | Pedir el detalle de un sprint por su número | Pedir el detalle de un sprint por su numero | RN-5 | pendiente |
-| 5 | El detalle muestra qué historias se asignaron y cuáles se completaron | Ver que historias se completaron en un sprint cerrado | RN-4 | pendiente |
-| 6 | Un sprint cerrado sin historias se consulta igual, con las listas vacías | Un sprint cerrado sin historias se consulta igual | RN-4 | pendiente |
-| 7 | Pedir un número que no existe informa que no se encontró el sprint | Pedir un sprint que no existe | RN-6 | pendiente |
-| 8 | El detalle del sprint abierto se entrega con la fecha de cierre vacía | Pedir el detalle del sprint abierto | RN-7 | pendiente |
-| 9 | Modificar las listas de historias que devuelve la consulta no cambia el sprint | Consultar un sprint no lo modifica | RN-8 | pendiente |
-| 10 | El listado de un proyecto no trae los sprints de otro | Cada proyecto lista solamente sus sprints | RN-9 | pendiente |
-| 11 | Cerrar un sprint nuevo no cambia lo registrado en los anteriores | Cerrar un sprint nuevo no cambia los anteriores | RN-11 | pendiente |
-| 12 | Consultar en un proyecto que no existe informa que no se encontró el proyecto | Consultar los sprints de un proyecto que no existe | RN-10 | pendiente |
+| 1 | Un proyecto sin sprints cerrados devuelve un listado vacío, con y sin sprint abierto | Un proyecto sin sprints cerrados devuelve un listado vacio | RN-3 | hecha |
+| 2 | Listar los sprints cerrados con su goal, sus fechas, su fecha de cierre y sus historias, ordenados por número | Listar los sprints cerrados de un proyecto | RN-1, RN-4 | hecha |
+| 3 | El sprint abierto no aparece en el listado | El sprint abierto no aparece en el listado | RN-2 | hecha |
+| 4 | Pedir el detalle de un sprint por su número | Pedir el detalle de un sprint por su numero | RN-5 | hecha |
+| 5 | El detalle muestra qué historias se asignaron y cuáles se completaron | Ver que historias se completaron en un sprint cerrado | RN-4 | hecha |
+| 6 | Un sprint cerrado sin historias se consulta igual, con las listas vacías | Un sprint cerrado sin historias se consulta igual | RN-4 | hecha |
+| 7 | Pedir un número que no existe informa que no se encontró el sprint | Pedir un sprint que no existe | RN-6 | hecha |
+| 8 | El detalle del sprint abierto se entrega con la fecha de cierre vacía | Pedir el detalle del sprint abierto | RN-7 | hecha |
+| 9 | Modificar las listas de historias que devuelve la consulta no cambia el sprint | Consultar un sprint no lo modifica | RN-8 | hecha |
+| 10 | El listado de un proyecto no trae los sprints de otro | Cada proyecto lista solamente sus sprints | RN-9 | hecha |
+| 11 | Cerrar un sprint nuevo no cambia lo registrado en los anteriores | Cerrar un sprint nuevo no cambia los anteriores | RN-11 | hecha |
+| 12 | Consultar en un proyecto que no existe informa que no se encontró el proyecto | Consultar los sprints de un proyecto que no existe | RN-10 | hecha |
 
 ### Por qué este orden
 
@@ -362,7 +362,43 @@ Los doce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.** La #10
+entró a `dev` el 26/10, antes de empezar, así que las tareas siguieron el orden original de
+la Fase 3 y no el alternativo que preveía esperarla.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `b913e5c` | `0ca7b01` |
+| 2 | `252e761` | `ae68d7f` |
+| 3 | `9bdc11e` | — (sin RED, ver abajo) |
+| 4 | `af315e0` | — (sin RED) |
+| 5 | `957e198` | — (sin RED) |
+| 6 | `a2de059` | — (sin RED) |
+| 7 | `9d28eba` | — (sin RED) |
+| 8 | `0c1ea94` | — (sin RED) |
+| 9 | `932af91` | — (sin RED) |
+| 10 | `37400f3` | — (sin RED) |
+| 11 | `1cdc45c` | — (sin RED) |
+| 12 | `f20e276` | — (sin RED) |
+
+### Desvíos respecto de la spec
+
+- **Más tareas sin RED que las previstas.** La Fase 3 preveía la 4, la 7, la 10 y la 12, y
+  dejaba abierta la 9. Pasaron en verde al escribirlas también:
+  - **la 3**, porque la fila "con un sprint abierto" de la tarea 1 ya obligó a filtrar los
+    cerrados en la tarea 2;
+  - **la 5, la 6, la 8, la 9 y la 11**, porque la #10 entró a `dev` con la lectura de la
+    fecha de cierre y de las completadas, las dos listas copiadas y vacías cuando no hay
+    nada (ajuste 1 de la Puerta de la #10).
+
+  Cada commit lleva "sin RED" en el asunto y explica por qué. **En la 3, la 9 y la 11 se
+  comprobó que el test sirve**: se rompió el código a propósito un momento (sin el filtro,
+  sin copiar las completadas, con el cierre escribiendo en todos los sprints), el test falló
+  y se volvió atrás.
+- **Los tests cierran los sprints con la operación de la #10** y no fijando el estado Cerrado
+  desde dentro del paquete, como preveía la Fase 2 mientras la #10 no estuviera en `dev`.
+- **La única operación nueva es `ClosedSprints()`**, en `sprint_query.go`, como dice la
+  Fase 2. El detalle es `p.Sprint(number)` de la #8, sin cambios.
 
 ## Trazabilidad
 
@@ -372,5 +408,5 @@ _Se completa durante la implementación._
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/domain/sprint_query_test.go` |
+| Tests | `internal/domain/sprint_query_test.go` (un test por escenario, 12) |
 | Código Go | `internal/domain/sprint_query.go`; el detalle es `p.Sprint(number)` de `internal/domain/sprint.go` (#8) |
