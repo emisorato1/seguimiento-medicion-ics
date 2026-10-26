@@ -516,6 +516,114 @@
           }
         }
       ],
+      "voting_rounds": [
+        {
+          "story_id": 77,
+          "number": 1,
+          "participants": [
+            "Emiliano Sorato",
+            "Agustín Salinas",
+            "Juliana Bustos",
+            "Maximiliano Eula"
+          ],
+          "votes": [
+            {
+              "member_name": "Emiliano Sorato",
+              "points": 13
+            },
+            {
+              "member_name": "Agustín Salinas",
+              "points": 5
+            },
+            {
+              "member_name": "Juliana Bustos",
+              "points": 5
+            },
+            {
+              "member_name": "Maximiliano Eula",
+              "points": 13
+            }
+          ],
+          "revealed": true
+        },
+        {
+          "story_id": 77,
+          "number": 2,
+          "participants": [
+            "Emiliano Sorato",
+            "Agustín Salinas",
+            "Juliana Bustos",
+            "Maximiliano Eula"
+          ],
+          "votes": [
+            {
+              "member_name": "Emiliano Sorato",
+              "points": 13
+            },
+            {
+              "member_name": "Agustín Salinas",
+              "points": 13
+            },
+            {
+              "member_name": "Maximiliano Eula",
+              "points": 13
+            }
+          ]
+        },
+        {
+          "story_id": 78,
+          "number": 1,
+          "participants": [
+            "Emiliano Sorato",
+            "Agustín Salinas",
+            "Juliana Bustos",
+            "Maximiliano Eula"
+          ],
+          "votes": [
+            {
+              "member_name": "Emiliano Sorato",
+              "points": 13
+            },
+            {
+              "member_name": "Agustín Salinas",
+              "points": 13
+            },
+            {
+              "member_name": "Juliana Bustos",
+              "points": 8
+            },
+            {
+              "member_name": "Maximiliano Eula",
+              "points": 13
+            }
+          ],
+          "revealed": true
+        },
+        {
+          "story_id": 78,
+          "number": 2,
+          "participants": [
+            "Emiliano Sorato",
+            "Agustín Salinas",
+            "Juliana Bustos",
+            "Maximiliano Eula"
+          ],
+          "votes": [
+            {
+              "member_name": "Emiliano Sorato",
+              "points": 13
+            },
+            {
+              "member_name": "Agustín Salinas",
+              "points": 13
+            },
+            {
+              "member_name": "Maximiliano Eula",
+              "points": 13
+            }
+          ]
+        }
+      ],
       "last_defect_id": 108,
       "defects": [
         {
