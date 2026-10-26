@@ -301,3 +301,81 @@ func revealedRound(t *testing.T, project *domain.Project) *domain.VotingRound {
 	}
 	return round
 }
+
+// Sin escenario propio: la verificacion de la Fase 3 de una ronda votada desde dos pestañas
+// (pedida por la manager el 26/10). Ana Perez y Juan Gomez votan cada uno desde su pestaña;
+// ninguna ve un voto hasta revelar, una pestaña con la pagina vieja no puede votar otra vez
+// por quien ya voto, y al revelar las dos ven la diferencia.
+// Cubre: RN-4, RN-5, RN-7, RN-8; RN-20 de la #77
+func TestUnaRondaVotadaDesdeDosPestanas(t *testing.T) {
+	registry, project := pokerRegistry(t)
+	if _, err := project.OpenVotingRound(1); err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	server := newTestServer(t, registry)
+	pestanaDeAna, pestanaDeJuan := newBrowser(t, server), newBrowser(t, server)
+	ronda := "/proyectos/1/historias/1/rondas/1"
+
+	// Las dos abren la ronda y ofrecen votar a los dos.
+	for _, pestana := range []*browser{pestanaDeAna, pestanaDeJuan} {
+		if got := options(pestana.get(ronda).Body.String(), "integrante"); !slices.Equal(got, []string{"Ana Perez", "Juan Gomez"}) {
+			t.Fatalf("se esperaba ofrecer votar a Ana Perez y Juan Gomez, salio %v", got)
+		}
+	}
+
+	// Cada uno vota desde su pestaña.
+	for _, voto := range []struct {
+		pestana *browser
+		nombre  string
+		puntos  string
+	}{{pestanaDeAna, "Ana Perez", "3"}, {pestanaDeJuan, "Juan Gomez", "8"}} {
+		if res := voto.pestana.post(ronda+"/votar", url.Values{"integrante": {voto.nombre}, "puntos": {voto.puntos}}); res.Code != http.StatusSeeOther {
+			t.Fatalf("se esperaba aceptar el voto de %s con el estado %d, salio %d:\n%s", voto.nombre, http.StatusSeeOther, res.Code, res.Body.String())
+		}
+	}
+
+	// Cada pestaña ve el mensaje de su voto, no el de la otra, y ninguna ve un voto.
+	for _, caso := range []struct {
+		pestana *browser
+		suyo    string
+		otro    string
+	}{{pestanaDeAna, "Ana Perez", "Juan Gomez"}, {pestanaDeJuan, "Juan Gomez", "Ana Perez"}} {
+		html := between(caso.pestana.get(ronda).Body.String(), "<main", "</main>")
+		mensaje := between(html, `role="status">`, "</p>")
+		if !strings.Contains(mensaje, "Se registró el voto de "+caso.suyo) || strings.Contains(mensaje, caso.otro) {
+			t.Errorf("en la pestaña de %s se esperaba solo el mensaje de su voto, salio %q", caso.suyo, mensaje)
+		}
+		if !strings.Contains(html, "Votaron 2 de 2") || strings.Contains(html, `id="votos"`) {
+			t.Errorf("en la pestaña de %s se esperaba que votaron los dos, sin ningun voto a la vista:\n%s", caso.suyo, html)
+		}
+		for _, elemento := range elements(html, "tr", "li", "p", "dd", "td", "span", "h1", "h2") {
+			if (strings.Contains(elemento, "Ana Perez") && strings.Contains(elemento, "3")) || (strings.Contains(elemento, "Juan Gomez") && strings.Contains(elemento, "8")) {
+				t.Errorf("en la pestaña de %s un voto aparece junto a su integrante: %s", caso.suyo, elemento)
+			}
+		}
+	}
+
+	// La pestaña de Juan, con la pagina vieja, intenta votar otra vez por Ana Perez: el
+	// nucleo lo rechaza con su mensaje, sin mostrar el valor, y el voto de Ana no cambia
+	// (lo muestra la tabla al revelar).
+	res := pestanaDeJuan.post(ronda+"/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"21"}})
+	rechazo := between(res.Body.String(), "<main", "</main>")
+	if res.Code != http.StatusUnprocessableEntity || !strings.Contains(rechazo, `id="error-formulario">`+domain.ErrAlreadyVoted.Error()) || strings.Contains(rechazo, "21") {
+		t.Errorf("se esperaba rechazar el segundo voto de Ana Perez con el mensaje del nucleo y sin el valor, salio %d:\n%s", res.Code, rechazo)
+	}
+
+	// Ana revela desde su pestaña, y la de Juan ve los votos y la diferencia.
+	if res := pestanaDeAna.post(ronda+"/revelar", nil); res.Code != http.StatusSeeOther {
+		t.Fatalf("se esperaba revelar con el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
+	}
+	html := pestanaDeJuan.get(ronda).Body.String()
+	votos := joinTags(between(html, `<table id="votos">`, "</table>"))
+	for _, fila := range []string{"<td>Ana Perez</td><td>3</td>", "<td>Juan Gomez</td><td>8</td>"} {
+		if !strings.Contains(votos, fila) {
+			t.Errorf("en la pestaña de Juan se esperaba el voto %q, y no esta en:\n%s", fila, votos)
+		}
+	}
+	if diferencias := between(html, `<section id="diferencias"`, "</section>"); !strings.Contains(diferencias, "Hay diferencias: el más bajo es 3, de Ana Perez, y el más alto es 8, de Juan Gomez.") {
+		t.Errorf("en la pestaña de Juan se esperaba la diferencia, y no esta en:\n%s", html)
+	}
+}
