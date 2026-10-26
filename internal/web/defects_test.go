@@ -32,6 +32,18 @@ func defectRegistry(t *testing.T) (*domain.ProjectRegistry, *domain.Project) {
 	return registry, project
 }
 
+// addDefect carga en el proyecto el defecto "Suma mal las horas", de severidad Mayor, sobre la
+// historia 1 y detectado en ese sprint.
+func addDefect(t *testing.T, project *domain.Project, detectedIn int) *domain.Defect {
+	t.Helper()
+	defect, err := project.AddDefect(domain.DefectData{Title: "Suma mal las horas", Description: "No suma el ultimo",
+		Severity: domain.SeverityMajor, StoryID: 1, DetectedIn: detectedIn})
+	if err != nil {
+		t.Fatalf("no se pudo preparar el defecto: %v", err)
+	}
+	return defect
+}
+
 // Escenario: Cargar un defecto, pasarlo a en curso y resolverlo
 // Cubre: RN-1, RN-2, RN-16
 func TestCargarUnDefectoPasarloAEnCursoYResolverlo(t *testing.T) {
@@ -225,5 +237,24 @@ func TestFiltrarLosDefectos(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// Sin escenario: pedir resolver sin elegir el sprint no lleva a confirmar nada: vuelve a la
+// pagina del defecto con el error junto al sprint (RN-2).
+// Cubre: RN-2, RN-9
+func TestResolverSinElegirElSprint(t *testing.T) {
+	registry, project := defectRegistry(t)
+	addDefect(t, project, 1)
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/defectos/1/resolver?sprint=")
+
+	if res.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+	}
+	html := res.Body.String()
+	if !strings.Contains(html, `id="sprint-error">`+errInvalidSprint.Error()) || strings.Contains(html, "¿Resolver") {
+		t.Errorf("se esperaba el error junto al sprint y ninguna pregunta para confirmar:\n%s", html)
 	}
 }

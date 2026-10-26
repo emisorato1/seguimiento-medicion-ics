@@ -718,6 +718,57 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			campo:      "horas",
 			err:        domain.ErrEstimatedHoursInvalid,
 		},
+		{
+			nombre:     "defecto con el titulo vacio (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
+			formulario: "/proyectos/1/defectos/nuevo",
+			datos:      url.Values{"titulo": {"  "}, "descripcion": {"No suma el ultimo"}, "severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"}},
+			campo:      "titulo",
+			err:        domain.ErrDefectTitleRequired,
+		},
+		{
+			// No esta en los Ejemplos: la severidad sin elegir la rechaza el nucleo (RN-2).
+			nombre:     "defecto sin elegir la severidad (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
+			formulario: "/proyectos/1/defectos/nuevo",
+			datos:      url.Values{"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo"}, "severidad": {""}, "historia": {"1"}, "sprint": {"1"}},
+			campo:      "severidad",
+			err:        domain.ErrDefectSeverityInvalid,
+		},
+		{
+			// No esta en los Ejemplos: el sprint sin elegir es un dato sin forma (RN-2).
+			nombre:     "defecto sin elegir el sprint (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
+			formulario: "/proyectos/1/defectos/nuevo",
+			datos:      url.Values{"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo"}, "severidad": {"Mayor"}, "historia": {"1"}, "sprint": {""}},
+			campo:      "sprint",
+			err:        errInvalidSprint,
+		},
+		{
+			// No esta en los Ejemplos: el estado sin elegir lo rechaza el nucleo (RN-2).
+			nombre: "cambiar el estado sin elegirlo (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := defectRegistry(t)
+				addDefect(t, project, 1)
+				return registry
+			},
+			formulario: "/proyectos/1/defectos/1/estado",
+			datos:      url.Values{"estado": {""}},
+			campo:      "estado",
+			err:        domain.ErrDefectStateUnknown,
+		},
+		{
+			nombre: "resolver en un sprint anterior al de deteccion (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := defectRegistry(t)
+				addDefect(t, project, 2)
+				return registry
+			},
+			formulario: "/proyectos/1/defectos/1/resolver",
+			datos:      url.Values{"sprint": {"1"}},
+			campo:      "sprint",
+			err:        domain.ErrDefectResolvedBeforeDetected,
+		},
 	}
 
 	for _, caso := range casos {
@@ -957,6 +1008,10 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/99/planning-poker", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/1/historias/99/rondas/1", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/historias/1/rondas/1", err: errRoundNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/defectos/99", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/defectos", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/defectos/nuevo", err: domain.ErrProjectNotFound},
 	}
 
 	for _, caso := range casos {
