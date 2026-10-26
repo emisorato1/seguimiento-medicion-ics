@@ -3,7 +3,7 @@
 - **Historia:** #11
 - **Sprint:** 3
 - **Responsable:** Agustín Salinas
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
@@ -217,7 +217,7 @@ Escenario: Consultar los sprints de un proyecto que no existe
    historia suma al detalle es lo del cierre, que trae la #10.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Juliana Bustos — Fecha: 2026-10-23 — Comentarios: aprobada en el PR #143 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/143#pullrequestreview-5635182401), las tres puertas juntas, con los ajustes 1, 2 y 4 de su revisión. Se aplicaron el 25/10 en 354d150: la RN-11 sin "mientras el programa esté corriendo", la tarea 9 prueba también la lista de completadas, y el punto 1 dice que el criterio 2 de la issue se cumple con la #16. El ajuste 3 era de la descripción del PR.
 
 ## Fase 2 — Diseño
 
@@ -280,7 +280,7 @@ que quien las recibe no pueda cambiar el registro del sprint sin querer (RN-8).
 - **No se calcula ninguna métrica**: son de la #16, que consume estas consultas.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Juliana Bustos — Fecha: 2026-10-23 — Comentarios: aprobada en el PR #143 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/143#pullrequestreview-5635182401), las tres puertas juntas, con los ajustes 1, 2 y 4 de su revisión. Se aplicaron el 25/10 en 354d150: la RN-11 sin "mientras el programa esté corriendo", la tarea 9 prueba también la lista de completadas, y el punto 1 dice que el criterio 2 de la issue se cumple con la #16. El ajuste 3 era de la descripción del PR.
 
 ## Fase 3 — Tareas
 
@@ -358,7 +358,7 @@ Los doce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
   seis se pueden hacer antes.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Juliana Bustos — Fecha: 2026-10-23 — Comentarios: aprobada en el PR #143 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/143#pullrequestreview-5635182401), las tres puertas juntas, con los ajustes 1, 2 y 4 de su revisión. Se aplicaron el 25/10 en 354d150: la RN-11 sin "mientras el programa esté corriendo", la tarea 9 prueba también la lista de completadas, y el punto 1 dice que el criterio 2 de la issue se cumple con la #16. El ajuste 3 era de la descripción del PR.
 
 ## Fase 4 — Implementación
 
