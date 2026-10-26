@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"math"
 	"reflect"
 	"strings"
@@ -191,6 +192,59 @@ func TestUnaPalabraMasLargaQueElRenglonSeCortaEnElMargen(t *testing.T) {
 			}
 			if strings.Join(rows, "") != c.word {
 				t.Errorf("al unir los renglones no vuelve la palabra original")
+			}
+		})
+	}
+}
+
+// unDocConLineas arma un reporte con una seccion por cada cantidad de lineas pedida. Las
+// lineas son cortas, asi que cada una ocupa un renglon.
+func unDocConLineas(counts ...int) pdfDoc {
+	doc := pdfDoc{title: "Reporte", generatedOn: unDia(2026, 10, 25)}
+	for s, count := range counts {
+		section := pdfSection{heading: fmt.Sprintf("Seccion %d", s+1)}
+		for i := 0; i < count; i++ {
+			section.lines = append(section.lines, fmt.Sprintf("Linea %d", i+1))
+		}
+		doc.sections = append(doc.sections, section)
+	}
+	return doc
+}
+
+// Escenario: Un reporte largo ocupa varias paginas numeradas
+// Cubre: RN-7, RN-8
+func TestUnReporteLargoOcupaVariasPaginasNumeradas(t *testing.T) {
+	cases := []struct {
+		paginas int
+		lineas  int
+		pie     string
+	}{
+		{paginas: 1, lineas: 10, pie: "Página 1 de 1"},
+		// Titulo, "Generado el", encabezado y 100 lineas: 103 renglones, en paginas de 39.
+		{paginas: 3, lineas: 100, pie: "Página 3 de 3"},
+	}
+	for _, c := range cases {
+		t.Run(c.pie, func(t *testing.T) {
+			pages := layoutReport(unDocConLineas(c.lineas))
+
+			if len(pages) != c.paginas {
+				t.Fatalf("se esperaban %d paginas, salieron %d", c.paginas, len(pages))
+			}
+			total := 0
+			for i, page := range pages {
+				if len(page.rows) > 39 {
+					t.Errorf("la pagina %d tiene %d renglones, mas de %d", i+1, len(page.rows), 39)
+				}
+				if want := fmt.Sprintf("Página %d de %d", i+1, c.paginas); page.footer != want {
+					t.Errorf("se esperaba el pie %q, salio %q", want, page.footer)
+				}
+				total += len(page.rows)
+			}
+			if total != 3+c.lineas {
+				t.Errorf("se esperaban %d renglones en total, salieron %d", 3+c.lineas, total)
+			}
+			if pages[len(pages)-1].footer != c.pie {
+				t.Errorf("se esperaba que la ultima dijera %q, dice %q", c.pie, pages[len(pages)-1].footer)
 			}
 		})
 	}
