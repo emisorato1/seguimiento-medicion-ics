@@ -6,8 +6,13 @@ consola** (historia #24), y en la web también los sprints, el esfuerzo, los def
 Planning Poker (historia #78). El reporte y su PDF se suman cuando estén terminados.
 
 Las dos interfaces hacen lo mismo con los proyectos, los integrantes y el backlog; lo demás
-se hace solo desde la web. **No comparten los datos**: la web los guarda en un archivo y los encuentra al volver a abrirla;
-la consola los pierde al cerrarse.
+se hace solo desde la web. **No comparten los datos**: la web los guarda en un archivo y los
+encuentra al volver a abrirla; la consola los pierde al cerrarse.
+
+**Antes de empezar:** para abrir cualquiera de las dos hace falta tener Go instalado. Los
+proyectos, las historias, los sprints y los defectos se reconocen por su **número**, que el
+sistema les da al crearlos y empieza en 1: la web lo muestra en la columna «Número» y la
+consola lo pide como «identificador». Es el mismo dato.
 
 ## Desde el navegador
 
@@ -177,6 +182,9 @@ voto más bajo y el más alto y quiénes los dieron. Desde ahí se puede:
 - **Acordar** la estimación, que queda como los story points de la historia.
 - **Abrir una ronda nueva**, para volver a votar después de conversar las diferencias.
 
+Una ronda ya acordada no ofrece abrir otra. Si querés volver a estimar esa historia, abrí la
+ronda nueva desde **Planning Poker**, eligiendo la historia otra vez.
+
 ![Una ronda revelada](manual/ronda-revelada.png)
 
 Con **Todas las rondas de la historia** se ven las rondas anteriores y lo que se acordó en
@@ -200,7 +208,7 @@ cada una.
 
 ### Cómo se abre
 
-Hace falta Go instalado. Desde la carpeta del proyecto:
+Desde la carpeta del proyecto, escribí:
 
 ```bash
 go run ./cmd/app
@@ -219,16 +227,16 @@ guarda nada en disco.
 
 ### Cómo se usa
 
-Se escribe el **nombre de la operación** y se aprieta Enter. Después el programa pide cada
-dato en su propia línea, con una etiqueta que dice qué espera. Cuando termina, vuelve a
-mostrar `>` para la operación siguiente.
+Escribí el **nombre de la operación** y apretá Enter. Después el programa te pide cada dato
+en su propia línea, con una etiqueta que dice qué espera. Cuando termina, vuelve a mostrar
+`>` para la operación siguiente.
 
-- Una línea vacía en lugar de una operación no hace nada.
-- Si la operación no existe, el programa lo dice y lista las disponibles.
+- Si dejás la línea vacía en lugar de una operación, no pasa nada.
+- Si escribís una operación que no existe, el programa te lo dice y lista las disponibles.
 - Los proyectos y las historias se indican por su **identificador**, el número que el
   programa muestra al crearlos. El primer proyecto es el 1, y la primera historia de cada
   proyecto también es la 1.
-- Las fechas se escriben **dd/mm/aaaa**, por ejemplo `01/10/2026`.
+- Escribí las fechas como **dd/mm/aaaa**, por ejemplo `01/10/2026`.
 
 ### Operaciones
 
@@ -242,13 +250,13 @@ mostrar `>` para la operación siguiente.
 | `estimar` | asigna story points a una historia | proyecto, historia y story points (1, 2, 3, 5, 8, 13 o 21) |
 | `salir` | cierra el programa | nada |
 
-Para los datos opcionales, se deja la línea vacía. Los **criterios de aceptación** se
-escriben uno por línea, y una línea vacía termina la lista. Los roles y las prioridades se
-pueden escribir con mayúsculas o minúsculas.
+Para los datos opcionales, dejá la línea vacía. Escribí los **criterios de aceptación** uno
+por línea; una línea vacía termina la lista. Los roles y las prioridades los podés escribir
+con mayúsculas o minúsculas.
 
 ### Un ejemplo completo
 
-Lo que escribe el usuario va después de cada etiqueta:
+Lo que escribís va después de cada etiqueta:
 
 ```
 > crear-proyecto
@@ -291,7 +299,7 @@ El programa nunca se cierra por un error: avisa y vuelve a pedir una operación.
 
 - **Un dato mal escrito** (una fecha que no es dd/mm/aaaa, letras donde va un número, o
   estimar sin indicar la historia): el programa dice qué dato está mal y **la operación no se
-  ejecuta**. Hay que volver a escribir la operación desde el principio.
+  ejecuta**. Volvé a escribir la operación desde el principio.
 - **Una regla del sistema que no se cumple** (un proyecto sin nombre, un rol o una prioridad
   que no existen, un integrante repetido, un valor que no está en la escala de story points,
   un proyecto o una historia que no existen, estimar una historia terminada): el programa
