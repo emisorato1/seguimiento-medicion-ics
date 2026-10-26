@@ -126,3 +126,22 @@ func TestPedirElDetalleDeUnSprintPorSuNumero(t *testing.T) {
 		t.Errorf("se esperaban las fechas 20/10/2026 y 25/10/2026 y el cierre el 24/10/2026, salio %v, %v y %v", sprint.Start(), sprint.End(), sprint.ClosedOn())
 	}
 }
+
+// Escenario: Ver que historias se completaron en un sprint cerrado
+// Cubre: RN-4
+func TestVerQueHistoriasSeCompletaronEnUnSprintCerrado(t *testing.T) {
+	project := unProyecto(t)
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), []int{1}, 3, 5, 2)
+
+	sprint, err := project.Sprint(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba encontrar el sprint 1, salio: %v", err)
+	}
+	if !slices.Equal(sprint.Stories(), []int{1, 2, 3}) {
+		t.Errorf("se esperaban asignadas las historias [1 2 3], salieron %v", sprint.Stories())
+	}
+	if !slices.Equal(sprint.CompletedStories(), []int{1}) {
+		t.Errorf("se esperaba completada la historia [1], salieron %v", sprint.CompletedStories())
+	}
+}
