@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 12:58. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 16:30. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -21,6 +21,7 @@ _No hay historias en este estado._
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Lista para implementar
 
@@ -34,7 +35,6 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
-| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Sprint Backlog
 
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+4f7644b 2026-10-26 Merge pull request #168 from emisorato1/manual-78-textos
+2679db7 2026-10-26 docs: los mensajes del manual tal como salen en pantalla
+5ec2ef2 2026-10-26 Merge pull request #167 from emisorato1/manual-78
+04fb015 2026-10-26 Merge pull request #166 from emisorato1/chore-trazabilidad-78-parte-3
+f5d7d9a 2026-10-26 docs: la revisión de accesibilidad de las pantallas de la #78 en su spec
+d34d60a 2026-10-26 docs: el manual de usuario con las pantallas de la #78 (sprints, esfuerzo, defectos y Planning Poker)
+55451e9 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con la parte 3 de la historia 78
 24bf6b1 2026-10-26 Merge pull request #165 from emisorato1/historia-78-cierre-acuerdo
-f7516c3 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-78-cierre-acuerdo
-3ab5e95 2026-10-26 docs: la #78 con el cierre del sprint y el acuerdo hechos (tareas 6, 7 y 19), sus desvíos y la verificación de la parte 3
-09d23fa 2026-10-26 test: las fechas y casillas mal formadas al cerrar, y el cierre sin sprint abierto (historia 78, sin RED)
-44abfe2 2026-10-26 test: rechazos del cierre y del acuerdo, los datos al reabrir y los formularios nuevos (historia 78, tareas 23 y 24, sin RED)
-4ad7a5b 2026-10-26 feat: diferencias, ronda nueva y acuerdo en el Planning Poker (historia 78, tarea 19)
-43e3e5a 2026-10-26 test: diferencias, ronda nueva y acuerdo en el Planning Poker (historia 78, tarea 19)
-d7b0785 2026-10-26 feat: consultar un sprint anterior con lo que se completó (historia 78, tarea 7)
 ```
