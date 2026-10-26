@@ -139,6 +139,7 @@ var fieldErrors = []struct {
 	{domain.ErrDefectStateUnknown, "estado"},
 	{domain.ErrDefectStateInvalid, "estado"},
 	{domain.ErrDefectResolvedBeforeDetected, "sprint"},
+	{domain.ErrSprintCloseDateRequired, "cierre"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje

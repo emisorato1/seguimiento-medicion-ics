@@ -209,3 +209,95 @@ func TestUnVotoRechazadoNoMuestraElValorElegido(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Diferencias, nueva ronda y acuerdo
+// Cubre: RN-1, RN-8
+func TestDiferenciasNuevaRondaYAcuerdo(t *testing.T) {
+	// Dado la ronda 1 de la historia 1 revelada con 3 de Ana Perez y 8 de Juan Gomez.
+	registry, project := pokerRegistry(t)
+	round, err := project.OpenVotingRound(1)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	for nombre, puntos := range map[string]int{"Ana Perez": 3, "Juan Gomez": 8} {
+		if err := round.Vote(nombre, puntos); err != nil {
+			t.Fatalf("no se pudo votar: %v", err)
+		}
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar: %v", err)
+	}
+	navegador := newBrowser(t, newTestServer(t, registry))
+
+	// Las diferencias, tal como las informa el nucleo.
+	html := navegador.get("/proyectos/1/historias/1/rondas/1").Body.String()
+	diferencias := between(html, `<section id="diferencias"`, "</section>")
+	if !strings.Contains(diferencias, "Hay diferencias: el más bajo es 3, de Ana Perez, y el más alto es 8, de Juan Gomez.") {
+		t.Errorf("se esperaban las diferencias con el mas bajo y el mas alto, y no estan en:\n%s", html)
+	}
+
+	// Una ronda nueva desde la ronda revelada; los dos votan 5 y se revela.
+	res := navegador.post("/proyectos/1/planning-poker", url.Values{"historia": {"1"}})
+	if res.Code != http.StatusSeeOther || res.Header().Get("Location") != "/proyectos/1/historias/1/rondas/2" {
+		t.Fatalf("se esperaba ir a la ronda 2 con el estado %d, salio %d hacia %q", http.StatusSeeOther, res.Code, res.Header().Get("Location"))
+	}
+	if !strings.Contains(html, `action="/proyectos/1/planning-poker"`) || !strings.Contains(html, `name="historia" value="1"`) {
+		t.Errorf("se esperaba en la ronda revelada el boton para abrir una ronda nueva:\n%s", html)
+	}
+	for _, nombre := range []string{"Ana Perez", "Juan Gomez"} {
+		navegador.post("/proyectos/1/historias/1/rondas/2/votar", url.Values{"integrante": {nombre}, "puntos": {"5"}})
+	}
+	navegador.post("/proyectos/1/historias/1/rondas/2/revelar", nil)
+	html = navegador.get("/proyectos/1/historias/1/rondas/2").Body.String()
+	if diferencias := between(html, `<section id="diferencias"`, "</section>"); !strings.Contains(diferencias, "No hay diferencias: todos votaron 5.") {
+		t.Errorf("se esperaba que no hay diferencias, y no esta en:\n%s", html)
+	}
+
+	// Acordar se elige de la escala, y deja la historia estimada.
+	if got := options(html, "puntos"); !slices.Contains(got, "5") || !slices.Contains(got, "8") {
+		t.Errorf("se esperaba acordar eligiendo de la escala, salio %v", got)
+	}
+	res = navegador.post("/proyectos/1/historias/1/rondas/2/acordar", url.Values{"puntos": {"5"}})
+	if res.Code != http.StatusSeeOther || res.Header().Get("Location") != "/proyectos/1/historias/1/rondas/2" {
+		t.Fatalf("se esperaba volver a la ronda 2 con el estado %d, salio %d hacia %q:\n%s", http.StatusSeeOther, res.Code, res.Header().Get("Location"), res.Body.String())
+	}
+	html = joinTags(between(navegador.get("/proyectos/1/historias/1/rondas/2").Body.String(), "<main", "</main>"))
+	if !strings.Contains(html, "Se acordó la historia 1 en 5 story points") || !strings.Contains(html, "<dt>Estimación acordada</dt><dd>5</dd>") {
+		t.Errorf("se esperaba el mensaje y la estimacion acordada, y no estan en:\n%s", html)
+	}
+	if strings.Contains(html, `/rondas/2/acordar"`) {
+		t.Errorf("una ronda acordada no deberia ofrecer acordar otra vez:\n%s", html)
+	}
+	if backlog := joinTags(navegador.get("/proyectos/1/backlog").Body.String()); !strings.Contains(backlog, "Registrar esfuerzo</a></td><td>Alta</td><td>Pendiente</td><td>5</td>") {
+		t.Errorf("se esperaba la historia 1 con 5 story points en el backlog:\n%s", backlog)
+	}
+
+	// La ronda 1 sigue en la lista de rondas, sin acordar, y ya no ofrece acordar.
+	lista := joinTags(between(navegador.get("/proyectos/1/historias/1/rondas").Body.String(), "<tbody>", "</tbody>"))
+	filas := strings.Split(lista, "<tr>")[1:]
+	if len(filas) != 2 || !strings.Contains(filas[0], "Ronda 1") || !strings.Contains(filas[0], "sin acordar") || !strings.Contains(filas[1], "<td>5</td>") {
+		t.Errorf("se esperaban la ronda 1 sin acordar y la 2 acordada en 5, y la lista es:\n%s", lista)
+	}
+	if html := navegador.get("/proyectos/1/historias/1/rondas/1").Body.String(); strings.Contains(html, `/rondas/1/acordar"`) {
+		t.Errorf("una ronda que no es la ultima no deberia ofrecer acordar:\n%s", html)
+	}
+}
+
+// revealedRound abre la ronda 1 de la historia 1, con 3 de Ana Perez y 8 de Juan Gomez, y la
+// revela.
+func revealedRound(t *testing.T, project *domain.Project) *domain.VotingRound {
+	t.Helper()
+	round, err := project.OpenVotingRound(1)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	for nombre, puntos := range map[string]int{"Ana Perez": 3, "Juan Gomez": 8} {
+		if err := round.Vote(nombre, puntos); err != nil {
+			t.Fatalf("no se pudo votar: %v", err)
+		}
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar: %v", err)
+	}
+	return round
+}

@@ -732,6 +732,61 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			fueraDeLista: []string{"historia"},
 		},
 		{
+			// No esta en los Ejemplos: la fecha de cierre la controla el nucleo (#10).
+			nombre:     "cerrar el sprint sin fecha de cierre (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {""}, "completadas": {"1"}},
+			campo:      "cierre",
+			err:        domain.ErrSprintCloseDateRequired,
+		},
+		{
+			// No esta en los Ejemplos: una fecha que no es fecha no llega al nucleo (RN-14 de la #77).
+			nombre:     "cerrar el sprint con una fecha que no es fecha (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {"el viernes"}, "completadas": {"1"}},
+			campo:      "cierre",
+			err:        errInvalidDate,
+		},
+		{
+			// No esta en los Ejemplos: algo que no viene de las casillas va arriba.
+			nombre:     "cerrar el sprint con una historia que no es un numero (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {"2026-10-30"}, "completadas": {"uno"}},
+			err:        errInvalidStory,
+			// las completadas viajan en un campo oculto de la confirmacion, no en el formulario
+			fueraDeLista: []string{"completadas"},
+		},
+		{
+			// No esta en los Ejemplos: acordar sin elegir es un dato sin forma (RN-2).
+			nombre: "acordar sin elegir los story points (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := pokerRegistry(t)
+				revealedRound(t, project)
+				return registry
+			},
+			formulario: "/proyectos/1/historias/1/rondas/1/acordar",
+			datos:      url.Values{"puntos": {""}},
+			campo:      "puntos",
+			err:        errInvalidPoints,
+		},
+		{
+			// No esta en los Ejemplos: acordar antes de revelar lo rechaza el nucleo (#73).
+			nombre: "acordar una ronda sin revelar (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := pokerRegistry(t)
+				if _, err := project.OpenVotingRound(1); err != nil {
+					t.Fatalf("no se pudo abrir la ronda: %v", err)
+				}
+				return registry
+			},
+			formulario: "/proyectos/1/historias/1/rondas/1/acordar",
+			datos:      url.Values{"puntos": {"5"}},
+			err:        domain.ErrRoundNotRevealed,
+		},
+		{
 			nombre:     "defecto con el titulo vacio (#78)",
 			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
 			formulario: "/proyectos/1/defectos/nuevo",
@@ -1021,6 +1076,10 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/99/planning-poker", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/1/historias/99/rondas/1", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/historias/1/rondas/1", err: errRoundNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/historias/99/rondas", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/sprints/cerrar", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/sprints/cerrar/confirmar?cierre=2026-10-30", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/historias/1/rondas", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/1/defectos/99", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/99/defectos", err: domain.ErrProjectNotFound},
@@ -1320,6 +1379,18 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		t.Fatalf("no se pudo preparar la ronda: %v", err)
 	}
 	addDefect(t, project, 1)
+	// Una ronda revelada en otra historia, para el formulario del acuerdo.
+	addStory(t, project, "Cargar defectos", domain.PriorityLow)
+	round, err := project.OpenVotingRound(2)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	if err := round.Vote("Ana Perez", 5); err != nil {
+		t.Fatalf("no se pudo votar: %v", err)
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar: %v", err)
+	}
 	navegador := newBrowser(t, newTestServer(t, registry))
 	defecto := url.Values{"titulo": {"Uno"}, "descripcion": {"Otro"}, "severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"}}
 
@@ -1379,6 +1450,10 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		"cambiar el estado y resolver": navegador.get("/proyectos/1/defectos/1"),
 		"estado sin elegir":            navegador.post("/proyectos/1/defectos/1/estado", url.Values{}),
 		"resolver sin sprint":          navegador.post("/proyectos/1/defectos/1/resolver", url.Values{}),
+		"cerrar el sprint":             navegador.get("/proyectos/1/sprints/cerrar"),
+		"cerrar sin fecha":             navegador.post("/proyectos/1/sprints/cerrar", url.Values{}),
+		"acordar":                      navegador.get("/proyectos/1/historias/2/rondas/1"),
+		"acordar sin elegir":           navegador.post("/proyectos/1/historias/2/rondas/1/acordar", url.Values{}),
 	}
 
 	for nombre, res := range paginas {
@@ -1447,7 +1522,7 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 
 	// Toda tabla esta dentro de su recuadro, que se desplaza de costado si no entra.
 	for _, pagina := range []string{"/proyectos", "/proyectos/1/integrantes", "/proyectos/1/backlog",
-		"/proyectos/1/sprints", "/proyectos/1/esfuerzo", "/proyectos/1/planning-poker", "/proyectos/1/defectos"} {
+		"/proyectos/1/sprints", "/proyectos/1/esfuerzo", "/proyectos/1/planning-poker", "/proyectos/1/defectos", "/proyectos/1/historias/2/rondas"} {
 		html := navegador.get(pagina).Body.String()
 		tablas := strings.Count(html, "<table")
 		if tablas == 0 || len(tableStart.FindAllString(html, -1)) != tablas {
@@ -1552,16 +1627,21 @@ func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 		"severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"},
 	})
 	operar(primera, "/proyectos/1/defectos/1/estado", url.Values{"estado": {"En curso"}})
+	operar(primera, "/proyectos/1/historias/1/rondas/1/acordar", url.Values{"puntos": {"5"}})
+	operar(primera, "/proyectos/1/sprints/cerrar", url.Values{"cierre": {"2026-10-27"}, "completadas": {"1"}})
+	operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Cerrar la interfaz"}, "inicio": {"2026-11-02"}, "fin": {"2026-11-13"}})
 
 	// Cuando cierro el sistema y lo vuelvo a abrir.
 	segunda := abrir()
 
 	esperado := map[string]string{
-		"/proyectos/1/sprints":              "Tener el MVP",
+		"/proyectos/1/sprints":              "Tener el MVP</a></td><td>26/10/2026</td><td>30/10/2026</td><td>Cerrado</td><td>27/10/2026</td>",
 		"/proyectos/1/sprints/1":            "Registrar esfuerzo",
 		"/proyectos/1/esfuerzo":             "Escribir tests",
 		"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td><td>5</td>",
 		"/proyectos/1/defectos":             "<td>Mayor</td><td>En curso</td>",
+		"/proyectos/1/sprints/2":            "Cerrar la interfaz",
+		"/proyectos/1/historias/1/rondas":   "<td>Revelada</td><td>5</td>",
 	}
 	for pagina, texto := range esperado {
 		if html := joinTags(segunda.get(pagina).Body.String()); !strings.Contains(html, texto) {

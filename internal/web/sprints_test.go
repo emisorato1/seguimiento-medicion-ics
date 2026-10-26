@@ -207,3 +207,176 @@ func TestQuitarDelSprintUnaHistoriaQueNoEstaAsignada(t *testing.T) {
 		t.Errorf("no se esperaba ningun cambio")
 	}
 }
+
+// closeRegistry arma el sprint 1 abierto con las historias 1 y 2 asignadas, estimadas en 3 y 5.
+func closeRegistry(t *testing.T) (*domain.ProjectRegistry, *domain.Project) {
+	t.Helper()
+	registry := domain.NewProjectRegistry()
+	project := addProject(t, registry, "Sistema de metricas")
+	for _, h := range []struct {
+		titulo string
+		puntos int
+	}{{"Registrar esfuerzo", 3}, {"Cargar defectos", 5}} {
+		story := addStory(t, project, h.titulo, domain.PriorityHigh)
+		if err := project.EstimateStory(story.ID(), h.puntos); err != nil {
+			t.Fatalf("no se pudo estimar la historia: %v", err)
+		}
+	}
+	addSprint(t, registry, 1)
+	for _, id := range []int{1, 2} {
+		if err := project.AssignStory(id); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d: %v", id, err)
+		}
+	}
+	return registry, project
+}
+
+// el30DeOctubre es la fecha de hoy del escenario del cierre.
+func el30DeOctubre() time.Time {
+	return time.Date(2026, 10, 30, 0, 0, 0, 0, time.UTC)
+}
+
+// Escenario: Cerrar el sprint marcando las completadas
+// Cubre: RN-1, RN-9, RN-10, RN-11
+func TestCerrarElSprintMarcandoLasCompletadas(t *testing.T) {
+	registry, project := closeRegistry(t)
+	navegador := newBrowser(t, NewServer(registry, &fakeSaver{}, el30DeOctubre))
+
+	// El sprint abierto ofrece cerrarlo.
+	if html := navegador.get("/proyectos/1/sprints/1").Body.String(); !strings.Contains(html, `href="/proyectos/1/sprints/cerrar"`) {
+		t.Fatalf("se esperaba en el sprint abierto el acceso para cerrarlo:\n%s", html)
+	}
+
+	// La fecha de cierre propuesta es hoy y ninguna historia esta marcada.
+	html := navegador.get("/proyectos/1/sprints/cerrar").Body.String()
+	if !strings.Contains(html, `id="cierre" name="cierre" value="2026-10-30"`) {
+		t.Errorf("se esperaba la fecha de cierre propuesta 2026-10-30, y no esta en:\n%s", html)
+	}
+	for _, id := range []string{"1", "2"} {
+		if !strings.Contains(html, `type="checkbox" id="completada-`+id+`" name="completada" value="`+id+`"`) {
+			t.Errorf("se esperaba la casilla de la historia %s, y no esta en:\n%s", id, html)
+		}
+	}
+	if strings.Contains(html, "checked") {
+		t.Errorf("ninguna historia tenia que estar marcada de entrada:\n%s", html)
+	}
+
+	// Marcar la 1 y enviar pide confirmar, con lo que queda completado y lo que vuelve.
+	html = navegador.get("/proyectos/1/sprints/cerrar/confirmar?cierre=2026-10-30&completada=1").Body.String()
+	for _, texto := range []string{"¿Cerrar el sprint 1 el 30/10/2026?", "Quedan completadas: 1 — Registrar esfuerzo.",
+		"Vuelven al Product Backlog: 2 — Cargar defectos.", `name="completadas" value="1"`} {
+		if !strings.Contains(html, texto) {
+			t.Errorf("se esperaba en la confirmacion %q, y no esta en:\n%s", texto, html)
+		}
+	}
+	if _, ok := project.OpenSprint(); !ok {
+		t.Fatal("pedir que se cierre no tenia que cerrar el sprint")
+	}
+
+	// Confirmar lo cierra.
+	res := navegador.post("/proyectos/1/sprints/cerrar", url.Values{"cierre": {"2026-10-30"}, "completadas": {"1"}})
+	if res.Code != http.StatusSeeOther || res.Header().Get("Location") != "/proyectos/1/sprints/1" {
+		t.Fatalf("se esperaba volver al sprint 1 con el estado %d, salio %d hacia %q:\n%s", http.StatusSeeOther, res.Code, res.Header().Get("Location"), res.Body.String())
+	}
+	html = joinTags(between(navegador.get("/proyectos/1/sprints/1").Body.String(), "<main", "</main>"))
+	if !strings.Contains(html, "Se cerró el sprint 1") || !strings.Contains(html, "<dt>Estado</dt><dd>Cerrado</dd>") {
+		t.Errorf("se esperaba el mensaje y el sprint Cerrado, y no estan en:\n%s", html)
+	}
+	if _, ok := project.OpenSprint(); ok {
+		t.Error("se esperaba que no quede sprint abierto")
+	}
+	if !slices.Equal(project.Sprints()[0].CompletedStories(), []int{1}) {
+		t.Errorf("se esperaba completada solo la historia 1, quedo %v", project.Sprints()[0].CompletedStories())
+	}
+}
+
+// Esquema del escenario: Confirmar o cancelar antes de lo que no se deshace (cerrar)
+// Cubre: RN-9
+func TestConfirmarOCancelarAntesDeCerrarElSprint(t *testing.T) {
+	for _, confirmo := range []bool{true, false} {
+		nombre := map[bool]string{true: "confirmo", false: "cancelo"}[confirmo]
+		t.Run(nombre, func(t *testing.T) {
+			registry, _ := closeRegistry(t)
+			saver := &fakeSaver{}
+			navegador := newBrowser(t, NewServer(registry, saver, el30DeOctubre))
+			antes := snapshot(registry)
+
+			confirmacion := between(navegador.get("/proyectos/1/sprints/cerrar/confirmar?cierre=2026-10-30").Body.String(), "<main", "</main>")
+			for _, texto := range []string{`action="/proyectos/1/sprints/cerrar"`, `href="/proyectos/1/sprints/1"`, "Quedan completadas: ninguna."} {
+				if !strings.Contains(confirmacion, texto) {
+					t.Errorf("se esperaba en la confirmacion %s, y no esta en:\n%s", texto, confirmacion)
+				}
+			}
+			if confirmo {
+				navegador.post("/proyectos/1/sprints/cerrar", url.Values{"cierre": {"2026-10-30"}, "completadas": {""}})
+			} else {
+				navegador.get("/proyectos/1/sprints/1")
+			}
+
+			quiero := map[bool]string{true: "<td>Cerrado</td>", false: "<td>Abierto</td>"}[confirmo]
+			if html := navegador.get("/proyectos/1/sprints").Body.String(); !strings.Contains(html, quiero) {
+				t.Errorf("se esperaba el sprint 1 con %s, y no esta en:\n%s", quiero, html)
+			}
+			if !confirmo && (snapshot(registry) != antes || saver.saves != 0) {
+				t.Error("cancelar no deberia cambiar nada")
+			}
+		})
+	}
+}
+
+// Escenario: Consultar un sprint anterior
+// Cubre: RN-1
+func TestConsultarUnSprintAnterior(t *testing.T) {
+	// Dado el sprint 1 cerrado el 30/10/2026 con las historias 1 y 2 y solo la 1 completada.
+	registry, project := closeRegistry(t)
+	if err := project.CloseSprint([]int{1}, el30DeOctubre()); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	html := joinTags(between(get(t, server, "/proyectos/1/sprints/1").Body.String(), "<main", "</main>"))
+	for _, texto := range []string{"Tener el MVP", "<dd>26/10/2026</dd>", "<dd>30/10/2026</dd>", "<dt>Estado</dt><dd>Cerrado</dd>", "<dt>Fecha de cierre</dt><dd>30/10/2026</dd>"} {
+		if !strings.Contains(html, texto) {
+			t.Errorf("se esperaba en el sprint anterior %q, y no esta en:\n%s", texto, html)
+		}
+	}
+	filas := between(html, "<tbody>", "</tbody>")
+	for _, fila := range []string{"Registrar esfuerzo</a></td><td>3</td><td>Terminada</td><td>Sí</td>", "Cargar defectos</a></td><td>5</td><td>Pendiente</td><td>No</td>"} {
+		if !strings.Contains(filas, fila) {
+			t.Errorf("se esperaba en las historias del sprint %q, y no esta en:\n%s", fila, filas)
+		}
+	}
+	// Un sprint cerrado no ofrece asignar, quitar ni cerrar.
+	for _, accion := range []string{"/sprints/asignar", "/sprints/quitar", "/sprints/cerrar"} {
+		if strings.Contains(html, accion) {
+			t.Errorf("un sprint cerrado no deberia ofrecer %s:\n%s", accion, html)
+		}
+	}
+
+	// La lista de sprints muestra su fecha de cierre.
+	lista := joinTags(between(get(t, server, "/proyectos/1/sprints").Body.String(), "<tbody>", "</tbody>"))
+	if !strings.Contains(lista, "<td>Cerrado</td><td>30/10/2026</td>") {
+		t.Errorf("se esperaba en la lista el sprint Cerrado con su fecha de cierre, y no esta en:\n%s", lista)
+	}
+}
+
+// Sin escenario: pedir cerrar con una fecha que no es fecha no lleva a confirmar nada: vuelve
+// al formulario con el error junto a la fecha y las casillas como estaban (RN-14 de la #77).
+// Cubre: RN-2, RN-9
+func TestCerrarConUnaFechaQueNoEsFecha(t *testing.T) {
+	registry, _ := closeRegistry(t)
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/sprints/cerrar/confirmar?cierre=el+viernes&completada=2")
+
+	if res.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+	}
+	html := res.Body.String()
+	if !strings.Contains(html, `id="cierre-error">`+errInvalidDate.Error()) || strings.Contains(html, "¿Cerrar") {
+		t.Errorf("se esperaba el error junto a la fecha y ninguna pregunta para confirmar:\n%s", html)
+	}
+	if !strings.Contains(html, `value="2" checked`) || strings.Contains(html, `value="1" checked`) {
+		t.Errorf("se esperaba marcada solo la historia 2, como se habia elegido:\n%s", html)
+	}
+}

@@ -96,6 +96,9 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.
 	s.mux.HandleFunc("POST /proyectos/{id}/sprints/asignar", s.assignStory)
 	s.mux.HandleFunc("GET /proyectos/{id}/sprints/quitar", s.confirmUnassign)
 	s.mux.HandleFunc("POST /proyectos/{id}/sprints/quitar", s.unassignStory)
+	s.mux.HandleFunc("GET /proyectos/{id}/sprints/cerrar", s.closeSprintForm)
+	s.mux.HandleFunc("GET /proyectos/{id}/sprints/cerrar/confirmar", s.confirmClose)
+	s.mux.HandleFunc("POST /proyectos/{id}/sprints/cerrar", s.closeSprint)
 	s.mux.HandleFunc("GET /proyectos/{id}/sprints/{n}", s.showSprint)
 	s.mux.HandleFunc("GET /proyectos/{id}/esfuerzo", s.listEfforts)
 	s.mux.HandleFunc("GET /proyectos/{id}/esfuerzo/nuevo", s.newEffort)
@@ -111,9 +114,11 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.
 	s.mux.HandleFunc("POST /proyectos/{id}/defectos/{n}/resolver", s.resolveDefect)
 	s.mux.HandleFunc("GET /proyectos/{id}/planning-poker", s.showPoker)
 	s.mux.HandleFunc("POST /proyectos/{id}/planning-poker", s.openRound)
+	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/rondas", s.listRounds)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/rondas/{r}", s.showRound)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/votar", s.vote)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/revelar", s.reveal)
+	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/acordar", s.agree)
 
 	// Sin usuarios ni contraseñas (D20), otra pagina abierta en el mismo navegador podria
 	// enviar un formulario a la web. La proteccion de la biblioteca estandar rechaza todo

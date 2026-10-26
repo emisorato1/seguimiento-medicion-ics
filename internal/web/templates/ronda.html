@@ -18,6 +18,37 @@
     </tbody>
   </table>
 </div>
+<section id="diferencias" aria-labelledby="titulo-diferencias">
+  <h2 id="titulo-diferencias">Diferencias</h2>
+  <p>{{.Differences}}</p>
+</section>
+{{if .Round.Agreed}}
+<dl class="datos">
+  <dt>Estimación acordada</dt><dd>{{.Round.Agreed}}</dd>
+</dl>
+{{else if .Last}}
+<h2>Acordar la estimación</h2>
+<form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/historias/{{.Story.ID}}/rondas/{{.Round.Number}}/acordar" novalidate>
+  {{with .Form.Field "puntos"}}
+  <div class="campo">
+    <label for="puntos">Story points acordados</label>
+    <select id="puntos" name="puntos"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí los story points" $.Data.Points .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Acordar</button>
+  </div>
+</form>
+<form method="post" action="/proyectos/{{.ProjectID}}/planning-poker">
+  <input type="hidden" name="historia" value="{{.Story.ID}}">
+  <div class="acciones">
+    <button type="submit" class="boton-secundario">Abrir una ronda nueva</button>
+  </div>
+</form>
+{{end}}
 {{else}}
 <p>Votaron {{len .Voted}} de {{.Participants}}.</p>
 <div class="columnas">
@@ -64,6 +95,7 @@
 </form>
 {{end}}
 <div class="acciones">
+  <a class="boton boton-secundario" href="/proyectos/{{.ProjectID}}/historias/{{.Story.ID}}/rondas">Todas las rondas de la historia</a>
   <a class="boton boton-secundario" href="/proyectos/{{.ProjectID}}/planning-poker">Volver al Planning Poker</a>
 </div>
 {{end}}
