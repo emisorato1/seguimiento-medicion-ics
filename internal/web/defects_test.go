@@ -169,3 +169,61 @@ func TestConfirmarOCancelarAntesDeResolverUnDefecto(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: Filtrar los defectos
+// Cubre: RN-13, D7
+func TestFiltrarLosDefectos(t *testing.T) {
+	// Dado el defecto 1 Abierto de severidad Critica y el defecto 2 En curso de severidad Menor.
+	registry, project := defectRegistry(t)
+	for _, d := range []domain.DefectData{
+		{Title: "Suma mal las horas", Description: "No suma el ultimo", Severity: domain.SeverityCritical, StoryID: 1, DetectedIn: 1},
+		{Title: "No guarda el voto", Description: "Se pierde al recargar", Severity: domain.SeverityMinor, StoryID: 1, DetectedIn: 1},
+	} {
+		if _, err := project.AddDefect(d); err != nil {
+			t.Fatalf("no se pudo preparar el defecto: %v", err)
+		}
+	}
+	if err := project.ChangeDefectState(2, domain.DefectInProgress); err != nil {
+		t.Fatalf("no se pudo pasar el defecto 2 a En curso: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	// Los filtros se eligen de una lista, con los nombres del sistema.
+	html := get(t, server, "/proyectos/1/defectos").Body.String()
+	if got := options(html, "estado"); !slices.Equal(got, []string{"Abierto", "En curso", "Resuelto"}) {
+		t.Errorf("se esperaba filtrar por los estados Abierto, En curso y Resuelto, salio %v", got)
+	}
+	if got := options(html, "severidad"); !slices.Equal(got, []string{"Crítica", "Mayor", "Menor"}) {
+		t.Errorf("se esperaba filtrar por las severidades Crítica, Mayor y Menor, salio %v", got)
+	}
+
+	casos := []struct {
+		filtro string
+		pagina string
+		veo    []string
+		noVeo  []string
+	}{
+		{"el estado Abierto", "/proyectos/1/defectos?estado=Abierto", []string{"Suma mal las horas"}, []string{"No guarda el voto"}},
+		{"la severidad Menor", "/proyectos/1/defectos?severidad=Menor", []string{"No guarda el voto"}, []string{"Suma mal las horas"}},
+		{"nada", "/proyectos/1/defectos", []string{"Suma mal las horas", "No guarda el voto"}, nil},
+	}
+	for _, caso := range casos {
+		t.Run(caso.filtro, func(t *testing.T) {
+			res := get(t, server, caso.pagina)
+			if res.Code != http.StatusOK {
+				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			filas := between(res.Body.String(), "<tbody>", "</tbody>")
+			for _, titulo := range caso.veo {
+				if !strings.Contains(filas, titulo) {
+					t.Errorf("se esperaba ver %q, y no esta en:\n%s", titulo, filas)
+				}
+			}
+			for _, titulo := range caso.noVeo {
+				if strings.Contains(filas, titulo) {
+					t.Errorf("no se esperaba ver %q, y esta en:\n%s", titulo, filas)
+				}
+			}
+		})
+	}
+}
