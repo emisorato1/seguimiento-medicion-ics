@@ -463,3 +463,12 @@ func findRound(project func(int) (*fileProject, error), id, position int) (*file
 	}
 	return &p.VotingRounds[position], nil
 }
+
+// IsEmpty dice si la base no tiene ningun proyecto, como una base nueva.
+func (d *Database) IsEmpty() (bool, error) {
+	var count int
+	if err := d.db.QueryRow("SELECT COUNT(*) FROM projects").Scan(&count); err != nil {
+		return false, fmt.Errorf("%w: no se pudo leer la base %s", domain.ErrSavedDataInvalid, d.path)
+	}
+	return count == 0, nil
+}
