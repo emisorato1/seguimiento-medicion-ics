@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 // unDocChico arma el reporte del escenario: el sprint 1, generado el 25/10/2026, con dos
@@ -159,5 +160,38 @@ func TestUnTituloLargoSigueEnVariosRenglonesConSuLetra(t *testing.T) {
 	}
 	if rows[titleRows].text != "Generado el 25/10/2026" {
 		t.Errorf("se esperaba \"Generado el\" despues del titulo, salio %q", rows[titleRows].text)
+	}
+}
+
+// Escenario: Una palabra mas larga que el renglon se corta en el margen
+// Cubre: RN-6
+func TestUnaPalabraMasLargaQueElRenglonSeCortaEnElMargen(t *testing.T) {
+	cases := []struct {
+		name string
+		word string
+	}{
+		{name: "200 letras sin espacios", word: strings.Repeat("x", 200)},
+		// Caso del foco de la revision: el corte va entre letras y no parte una ñ en dos.
+		{name: "200 eñes sin espacios", word: strings.Repeat("ñ", 200)},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			rows := wrapText(c.word, styleBody)
+
+			if len(rows) < 2 {
+				t.Fatalf("se esperaba la palabra en varios renglones, salio %d", len(rows))
+			}
+			for _, row := range rows {
+				if textWidth(row, styleBody) > pdfLineWidth {
+					t.Errorf("un renglon pasa el margen: mide %v pt", textWidth(row, styleBody))
+				}
+				if !utf8.ValidString(row) {
+					t.Errorf("el renglon %q tiene una letra partida", row)
+				}
+			}
+			if strings.Join(rows, "") != c.word {
+				t.Errorf("al unir los renglones no vuelve la palabra original")
+			}
+		})
 	}
 }
