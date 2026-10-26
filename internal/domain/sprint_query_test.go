@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"errors"
+	"fmt"
 	"slices"
 	"testing"
 	"time"
@@ -165,5 +167,25 @@ func TestUnSprintCerradoSinHistoriasSeConsultaIgual(t *testing.T) {
 	}
 	if completed := sprint.CompletedStories(); completed == nil || len(completed) != 0 {
 		t.Errorf("se esperaba la lista de completadas vacia y no nil, salio %#v", completed)
+	}
+}
+
+// Esquema del escenario: Pedir un sprint que no existe
+// Cubre: RN-6
+func TestPedirUnSprintQueNoExiste(t *testing.T) {
+	for _, number := range []int{0, 2, -1} {
+		t.Run(fmt.Sprintf("el sprint %d", number), func(t *testing.T) {
+			project := unProyecto(t)
+			unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), nil)
+
+			sprint, err := project.Sprint(number)
+
+			if !errors.Is(err, ErrSprintNotFound) {
+				t.Fatalf("se esperaba ErrSprintNotFound para el sprint %d, salio: %v", number, err)
+			}
+			if sprint != nil {
+				t.Fatalf("se esperaba no recibir ningun sprint, salio el %d", sprint.Number())
+			}
+		})
 	}
 }
