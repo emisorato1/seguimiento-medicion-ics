@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-23 12:38. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-25 23:09. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,13 +10,13 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 14
+- Terminadas: 15
 
 ## En review
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 
 ## En progreso
 
@@ -29,14 +29,13 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 
 ## Especificacion SDD
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
-| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
@@ -63,6 +62,7 @@ _No hay historias en este estado._
 | #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
@@ -71,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-ec458ee 2026-10-22 chore: regenerar ESTADO.md con la historia 13 en review
-7c7539c 2026-10-22 docs: registrar la implementación de la historia 13
-a86d0cd 2026-10-22 feat: las rondas entran en el archivo de datos, validadas como al votar (historia 13, tarea 14)
-dd3e2ac 2026-10-22 test: las rondas siguen al cerrar y volver a abrir (historia 13, tarea 14)
-ed97e3e 2026-10-22 feat: consultar la ronda actual de una historia (historia 13, tarea 13)
-baa7833 2026-10-22 test: consultar la ronda actual de una historia (historia 13, tarea 13)
-ad93071 2026-10-22 feat: la ronda se imprime sin valores en todas las formas de imprimir (historia 13, tarea 12)
-591adbc 2026-10-22 test: mostrar una ronda sin revelar no deja ver los votos (historia 13, tarea 12)
+bc7a08f 2026-10-25 docs: registrar las tres puertas de la historia 11, aprobadas por Juliana
+354d150 2026-10-25 docs: aplicar los ajustes de Juliana a la spec de la historia 11
+f63416b 2026-10-23 docs: corregir la spec de la historia 11 tras la revision propia
+10fe137 2026-10-23 docs: ajustar la spec de la historia 11 a lo que ya trae la 8 en dev
+b45cbe6 2026-10-23 Merge pull request #141 from emisorato1/historia-13-votar-en-secreto
+f7133d3 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-13-votar-en-secreto
+e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
+a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
 ```
