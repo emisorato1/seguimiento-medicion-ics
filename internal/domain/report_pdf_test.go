@@ -523,3 +523,46 @@ func TestUnPDFQueNoSePuedeEntregarSeInforma(t *testing.T) {
 		})
 	}
 }
+
+// unDocDeTreintaLineas arma un reporte con las cuatro secciones de la #18 y 30 lineas en
+// total, inventadas: el PDF no mira que dicen.
+func unDocDeTreintaLineas(title string) pdfDoc {
+	doc := pdfDoc{title: title, generatedOn: unDia(2026, 10, 25)}
+	for s, heading := range []string{"Resumen", "Historias", "Estimación y esfuerzo", "Defectos"} {
+		section := pdfSection{heading: heading}
+		for i := 0; i < []int{6, 12, 6, 6}[s]; i++ {
+			section.lines = append(section.lines, fmt.Sprintf("%s, linea %d", heading, i+1))
+		}
+		doc.sections = append(doc.sections, section)
+	}
+	return doc
+}
+
+// Escenario: El PDF no agrega ni quita nada del reporte
+// Cubre: RN-3, RN-13
+func TestElPDFNoAgregaNiQuitaNadaDelReporte(t *testing.T) {
+	for _, reporte := range []string{"Reporte del proyecto Seguimiento ICS", "Reporte del sprint 1 — Seguimiento ICS"} {
+		t.Run(reporte, func(t *testing.T) {
+			doc := unDocDeTreintaLineas(reporte)
+			var buf bytes.Buffer
+
+			if err := writePDF(&buf, doc); err != nil {
+				t.Fatalf("no se pudo exportar: %v", err)
+			}
+
+			want := []string{doc.title, "Generado el 25/10/2026"}
+			for _, section := range doc.sections {
+				want = append(want, section.heading)
+				want = append(want, section.lines...)
+			}
+			want = append(want, "Página 1 de 1")
+			var got []string
+			for _, texto := range extraerTextos(buf.Bytes()) {
+				got = append(got, texto.text)
+			}
+			if len(want) != 2+4+30+1 || !reflect.DeepEqual(got, want) {
+				t.Errorf("se esperaba exactamente el reporte, \"Generado el\" y el pie:\n %q\nsalio:\n %q", want, got)
+			}
+		})
+	}
+}
