@@ -135,6 +135,15 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 	if err := hidden.Vote("Ana Perez", 3); err != nil {
 		t.Fatalf("no se pudo votar en la ronda de prueba: %v", err)
 	}
+	// el acuerdo es de la #73, que lo suma a la conversion (tarea 7): la ronda revelada se
+	// acuerda en 5 y despues se abre la ronda 2 de la misma historia, asi queda una ronda
+	// acordada que ya no es la ultima, que es un estado valido
+	if err := revealed.Agree(5); err != nil {
+		t.Fatalf("no se pudo acordar la ronda de prueba: %v", err)
+	}
+	if _, err := first.OpenVotingRound(estimated.ID()); err != nil {
+		t.Fatalf("no se pudo abrir la ronda 2 de prueba: %v", err)
+	}
 	return registry
 }
 
@@ -267,7 +276,7 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 		}
 		for j, wr := range w.votingRounds {
 			gr := g.votingRounds[j]
-			if gr.storyID != wr.storyID || gr.number != wr.number || gr.revealed != wr.revealed ||
+			if gr.storyID != wr.storyID || gr.number != wr.number || gr.revealed != wr.revealed || gr.agreed != wr.agreed ||
 				!slices.Equal(gr.participants, wr.participants) || !slices.Equal(gr.votes, wr.votes) {
 				t.Fatalf("proyecto %d: se esperaba la ronda %d de la historia %d (revelada %v, %v, %v), salio la %d de la %d (revelada %v, %v, %v)",
 					w.ID(), wr.number, wr.storyID, wr.revealed, wr.participants, wr.votes,
@@ -308,6 +317,25 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	}
 	if story.ID() != 4 {
 		t.Fatalf("se esperaba que la historia nueva recibiera el numero 4, recibio el %d", story.ID())
+	}
+
+	// una ronda cargada se puede votar, revelar y acordar: recupera el proyecto que la abrio
+	// (historia #73, tarea 7)
+	round, _, err := first.CurrentVotingRound(2)
+	if err != nil || round == nil {
+		t.Fatalf("no se encontro la ronda cargada de la historia 2: %v", err)
+	}
+	if err := round.Vote("Juan Gomez", 3); err != nil {
+		t.Fatalf("no se pudo votar en la ronda cargada: %v", err)
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar la ronda cargada: %v", err)
+	}
+	if err := round.Agree(3); err != nil {
+		t.Fatalf("se esperaba acordar la ronda cargada sin error, salio: %v", err)
+	}
+	if acordada, _ := first.Story(2); acordada.StoryPoints() != 3 {
+		t.Fatalf("se esperaba la historia 2 estimada en 3 por el acuerdo, salio en %d", acordada.StoryPoints())
 	}
 }
 
@@ -457,6 +485,20 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 			d.Projects[0].VotingRounds = append(d.Projects[0].VotingRounds, votingRoundJSON{StoryID: 1, Number: 2, Participants: []string{"Ana Perez"}})
 		}, want: ErrVotingRoundInProgress},
 		{name: "ronda revelada a la que le faltan votos", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Revealed = true }, want: ErrVotesMissing},
+		// El acuerdo de la #73 (tarea 7): las mismas reglas que al acordar, y la numeracion de
+		// las rondas de cada historia.
+		{name: "ronda que no sigue la numeracion de su historia", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Number = 2 }, want: ErrSavedDataInvalid},
+		{name: "acuerdo sobre una ronda sin revelar", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Agreed = 5 }, want: ErrRoundNotRevealed},
+		{name: "acuerdo fuera de la escala", change: func(d *registryJSON) {
+			round := &d.Projects[0].VotingRounds[0]
+			round.Votes = append(round.Votes, voteJSON{MemberName: "Juan Gomez", Points: 8})
+			round.Revealed = true
+			round.Agreed = 4
+		}, want: ErrStoryPointsInvalid},
+		{name: "ronda sin revelar seguida de otra de la misma historia", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds = append(d.Projects[0].VotingRounds, votingRoundJSON{StoryID: 1, Number: 2,
+				Participants: []string{"Ana Perez"}, Votes: []voteJSON{{MemberName: "Ana Perez", Points: 3}}, Revealed: true})
+		}, want: ErrVotingRoundInProgress},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
