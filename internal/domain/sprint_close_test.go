@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+	"time"
 )
 
 // unSprintParaCerrar arma un proyecto con el sprint 1 abierto y una historia asignada por
@@ -170,6 +171,24 @@ func TestRechazarElCierreSiUnaHistoriaCompletadaNoEstaEnElSprint(t *testing.T) {
 	}
 	if sprint.State() != SprintOpen || len(sprint.CompletedStories()) != 0 {
 		t.Fatalf("se esperaba el sprint Abierto y sin completadas, quedo %v con %v", sprint.State(), sprint.CompletedStories())
+	}
+	if got := estadoDe(t, project, 1); got != StoryInProgress {
+		t.Fatalf("se esperaba la historia 1 En curso, quedo en %v", got)
+	}
+}
+
+// Escenario: Rechazar el cierre sin fecha de cierre
+// Cubre: RN-10, RN-13
+func TestRechazarElCierreSinFechaDeCierre(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3)
+
+	err := project.CloseSprint([]int{1}, time.Time{})
+
+	if !errors.Is(err, ErrSprintCloseDateRequired) {
+		t.Fatalf("se esperaba ErrSprintCloseDateRequired, salio: %v", err)
+	}
+	if sprint.State() != SprintOpen || !sprint.ClosedOn().IsZero() {
+		t.Fatalf("se esperaba el sprint Abierto y sin fecha de cierre, quedo %v con %v", sprint.State(), sprint.ClosedOn())
 	}
 	if got := estadoDe(t, project, 1); got != StoryInProgress {
 		t.Fatalf("se esperaba la historia 1 En curso, quedo en %v", got)
