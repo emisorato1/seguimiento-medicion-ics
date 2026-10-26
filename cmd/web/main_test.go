@@ -392,3 +392,33 @@ func TestExportarEImportarDesdeElComando(t *testing.T) {
 		}
 	})
 }
+
+// Esquema del escenario: Importar algo que no se puede no cambia nada (desde el comando)
+// Cubre: #177 RN-9, RN-10
+func TestImportarSobreUnaBaseConDatosSeRechaza(t *testing.T) {
+	dir := t.TempDir()
+	base := filepath.Join(dir, "datos-ics.db")
+	archivo := filepath.Join(dir, "otro.json")
+	registry := domain.NewProjectRegistry()
+	if _, err := registry.Create(domain.ProjectData{Name: "Sistema de métricas", Start: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)}); err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+	db, err := store.OpenDatabase(base)
+	if err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+	if err := db.Save(registry); err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+	db.Close()
+	if err := store.NewFile(archivo).Save(domain.NewProjectRegistry()); err != nil {
+		t.Fatalf("no se pudo preparar el archivo: %v", err)
+	}
+	var out, errOut bytes.Buffer
+
+	code := run([]string{"-datos", base, "-importar", archivo}, &out, &errOut, noServe(t))
+
+	if code != 1 || !strings.Contains(errOut.String(), store.ErrDatabaseNotEmpty.Error()) || !strings.Contains(errOut.String(), "La base "+base+" quedó como estaba.") {
+		t.Errorf("se esperaba el codigo 1 y el aviso de que no importa sobre datos, salio %d:\n%s", code, errOut.String())
+	}
+}
