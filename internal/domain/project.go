@@ -94,10 +94,36 @@ type Project struct {
 	start       time.Time
 	end         time.Time
 
+	// backlog y nextStoryID son el Product Backlog del proyecto (historia #6). Las
+	// historias viven dentro del proyecto: no existen sin el, y asi el identificador
+	// unico por proyecto (RN-16) sale solo, sin llevar un indice aparte.
+	backlog     []*Story
+	nextStoryID int
 	// members son los integrantes del proyecto (historia #4). Viven dentro del proyecto: no
 	// existen sin el, y asi el mismo nombre en otro proyecto nunca cuenta como duplicado
 	// (RN-6). Las operaciones sobre integrantes estan en member.go.
 	members []*Member
+	// sprints y lastSprintNumber son los sprints del proyecto (historia #8). Viven dentro
+	// del proyecto, asi el numero unico por proyecto (RN-1, RN-9) sale solo. El contador
+	// guarda el ultimo numero asignado y nunca retrocede: en cero, el proximo sprint es el 1,
+	// tambien en un proyecto cargado de un archivo que todavia no guardaba sprints. Las
+	// operaciones sobre sprints estan en sprint.go.
+	sprints          []*Sprint
+	lastSprintNumber int
+	// efforts son los registros de esfuerzo del proyecto, en el orden en que se cargaron
+	// (historia #14). Viven dentro del proyecto, así las horas de un proyecto no suman en
+	// otro (RN-16). Las operaciones están en effort.go.
+	efforts []*Effort
+	// defects y lastDefectID son los defectos del proyecto (historia #15). Viven dentro del
+	// proyecto, así el identificador único por proyecto (RN-1, RN-16) sale solo. El contador
+	// guarda el último identificador dado y nunca retrocede: en cero, el próximo es el 1. Las
+	// operaciones están en defect.go.
+	defects      []*Defect
+	lastDefectID int
+	// votingRounds son las rondas de Planning Poker del proyecto, en el orden en que se
+	// abrieron (historia #13). Cada ronda sabe de qué historia es, así no se toca story.go.
+	// Las operaciones están en voting_round.go.
+	votingRounds []*VotingRound
 }
 
 // ID devuelve el identificador del proyecto, que no cambia nunca.

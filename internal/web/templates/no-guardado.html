@@ -1,0 +1,13 @@
+{{define "content"}}
+{{with .Data}}
+<h1>No quedó guardado</h1>
+<div class="aviso aviso-error" role="alert">
+  <p><strong>{{.Operation}}, pero el cambio no se pudo guardar.</strong></p>
+  <p>{{.Reason}}</p>
+</div>
+<p>El cambio sigue cargado mientras el sistema esté abierto y se guarda junto con la próxima operación que funcione. Si se cierra antes, se pierde.</p>
+<div class="acciones">
+  <a class="boton" href="{{.Continue}}">Seguir</a>
+</div>
+{{end}}
+{{end}}

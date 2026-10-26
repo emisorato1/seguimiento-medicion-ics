@@ -1,5 +1,10 @@
 # Candidatas para el Sprint 2
 
+> **Documento histórico.** Sirvió para preparar la planning del Sprint 2 el 16/10. El alcance
+> que finalmente se decidió —entregar el proyecto completo para el 2 de noviembre— está en
+> [plan-final-al-2-de-noviembre.md](plan-final-al-2-de-noviembre.md), y el análisis de
+> dependencias de acá quedó incorporado ahí.
+
 Preparado por el Agile Enabler antes de la planning del 16/10, para que la reunión se use en
 decidir y no en reconstruir las dependencias. **No fija el alcance**: eso se decide en la
 planning, y recién cuando se sepa la velocidad real del Sprint 1.

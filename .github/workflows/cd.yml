@@ -22,11 +22,16 @@ jobs:
       - name: Tests
         run: go test ./...
 
+      # Cada comando de cmd/ (la consola, la web) se compila por separado y con su nombre:
+      # con mas de un main, "go build -o archivo ./cmd/..." falla.
       - name: Compilar
         run: |
           mkdir -p dist
-          GOOS=linux  GOARCH=amd64 go build -o dist/app-linux-amd64   ./cmd/...
-          GOOS=darwin GOARCH=arm64 go build -o dist/app-darwin-arm64  ./cmd/...
+          for carpeta in cmd/*/; do
+            nombre=$(basename "$carpeta")
+            GOOS=linux  GOARCH=amd64 go build -o "dist/$nombre-linux-amd64"  "./$carpeta"
+            GOOS=darwin GOARCH=arm64 go build -o "dist/$nombre-darwin-arm64" "./$carpeta"
+          done
 
       - uses: actions/upload-artifact@v4
         with:

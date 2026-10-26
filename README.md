@@ -30,6 +30,51 @@ Lo que va a permitir hacer:
 
 El núcleo de la solución y todas las reglas de negocio están desarrollados en **Go**.
 
+## Cómo correrlo
+
+Hace falta **Go 1.23 o posterior**. No hay dependencias externas: todo es biblioteca estándar.
+
+```bash
+git clone https://github.com/emisorato1/seguimiento-medicion-ics.git
+cd seguimiento-medicion-ics
+
+go test ./...                 # correr todos los tests
+go test ./... -cover          # con el porcentaje de cobertura
+go run ./cmd/app              # ejecutar la aplicación
+go run ./cmd/web              # abrir el sistema en el navegador
+```
+
+### La interfaz web
+
+`go run ./cmd/web` arranca el sistema y muestra la dirección para abrirlo en el navegador:
+**http://127.0.0.1:8080**. Funciona sin internet: las páginas y los estilos van adentro del
+programa.
+
+Los datos se guardan solos después de cada operación, en `datos-ics.json`, en la carpeta
+desde donde se corre el comando. Al volver a abrirlo está todo como quedó. Ese archivo no se
+versiona; borrarlo es empezar de cero.
+
+| Opción | Para qué |
+|---|---|
+| `-puerto 9090` | usar otro puerto si el 8080 está ocupado |
+| `-datos otro.json` | usar otro archivo de datos, por ejemplo uno para la demo |
+| `-red` | aceptar conexiones de otras computadoras de la red, para abrirlo desde un celular. No hay usuarios ni contraseñas: usarlo solo en una red de confianza |
+
+### Qué funciona hoy
+
+El **núcleo del dominio** está implementado y **cubierto al 100% por tests**: crear y
+modificar proyectos, registrar integrantes, administrar el Product Backlog y estimar con
+Story Points. Se puede ver funcionando corriendo los tests, que están escritos con el nombre
+de cada escenario de las especificaciones:
+
+```bash
+go test ./internal/domain/ -v
+```
+
+La **interfaz de consola** (historia #24) permite usar todo eso a mano: `go run ./cmd/app`
+abre el programa, que pide el nombre de cada operación y después sus datos, uno por línea.
+Cómo se usa, con un ejemplo completo, está en el [manual de usuario](docs/manual-de-usuario.md).
+
 ## Cómo trabajamos
 
 El proyecto se desarrolla con **Scrum** (sprints, planning, daily, review y retrospectiva) y
@@ -65,9 +110,16 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [AGENTS.md](AGENTS.md) — comandos, estructura, estilo, flujo de git y límites del proyecto.
 - [Índice de especificaciones](docs/specs/README.md) — **qué historia le toca a cada uno, en qué estado está y en qué orden**. Es por donde se empieza para trabajar.
 - [Plantilla de especificación SDD](docs/specs/PLANTILLA.md) — el flujo de cuatro fases con sus puertas de aprobación.
+- [Plan final al 2 de noviembre](docs/plan-final-al-2-de-noviembre.md) — **el plan vigente**: calendario de los sprints que quedan, reparto por persona y riesgos.
+- [Contrato del dominio](docs/diseno-dominio.md) — las entidades compartidas, acordadas antes de implementarlas, para que nadie espere a nadie.
+- [Manual de usuario](docs/manual-de-usuario.md) — cómo se usa el sistema, operación por operación.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
-- [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — lo que queda del backlog con sus dependencias.
+- [Informe de métricas y cobertura](docs/informe-de-metricas.md) — las métricas del propio proyecto, sprint por sprint, y la cobertura de los tests.
+- [Documentación técnica](docs/documentacion-tecnica.md) — cómo está construido el sistema: arquitectura, modelo de dominio, decisiones de diseño, manejo de errores, persistencia, pruebas y trazabilidad.
+- [Trazabilidad](docs/trazabilidad.md) — el recorrido historia → spec → criterios → escenario BDD → test → código de cada historia con tests, con los huecos marcados. Lo genera [scripts/trazabilidad.sh](scripts/trazabilidad.sh).
+- [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — el análisis de dependencias previo a la planning del Sprint 2.
+- [Replanificación al 2 de noviembre](docs/replan-al-2-de-noviembre.md) — el análisis de recorte que se descartó, conservado como registro de la decisión.
 
 ## Tablero
 

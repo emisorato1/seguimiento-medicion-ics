@@ -1,37 +1,43 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-15 10:56. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-24 16:09. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 20
-- Sin estimar: 2
+- Historias en el tablero: 23
+- Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 4
+- Terminadas: 15
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
+_No hay historias en este estado._
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
-| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
+| #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 
 ## Lista para implementar
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
 
 ## Especificacion SDD
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
+| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
+| #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
+| #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Sprint Backlog
 
@@ -39,21 +45,7 @@ _No hay historias en este estado._
 
 ## Product Backlog
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #5 | Consultar el estado de un proyecto | 3 | Media | - |
-| #7 | Priorizar el Product Backlog | 2 | Media | - |
-| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | - |
-| #9 | Asignar historias a un sprint | 5 | Alta | - |
-| #10 | Cerrar un sprint | 5 | Alta | - |
-| #11 | Consultar sprints anteriores | 2 | Media | - |
-| #13 | Estimar con Planning Poker | 13 | Alta | - |
-| #14 | Registrar el esfuerzo real | 3 | Alta | - |
-| #15 | Gestionar defectos | 5 | Media | - |
-| #16 | Calcular las metricas del proyecto | 8 | Alta | - |
-| #17 | Mostrar el dashboard | 8 | Media | - |
-| #18 | Generar el reporte de proyecto o sprint | 5 | Media | - |
-| #19 | Exportar el reporte a PDF | 5 | Baja | - |
+_No hay historias en este estado._
 
 ## Hecho
 
@@ -63,16 +55,27 @@ _No hay historias en este estado._
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
 | #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
 | #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
+| #5 | Consultar el estado de un proyecto | 3 | Media | Sprint 2 |
+| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 2 |
+| #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
+| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
+| #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
+| #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
+| #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
+| #15 | Gestionar defectos | 5 | Media | Sprint 2 |
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-4181fbf 2026-10-15 Merge pull request #63 from emisorato1/chore-script-de-metricas
-5659804 2026-10-15 chore: calcular las metricas del sprint desde el tablero
-4099066 2026-10-15 Merge pull request #62 from emisorato1/historia-4-codigo
-fa3fafc 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-4-codigo
-0237b1e 2026-10-15 Merge pull request #61 from emisorato1/defecto-59-fechas-por-dia
-a81f813 2026-10-13 chore: mover la historia 4 a en review
-bd4e171 2026-10-13 docs: registrar la tarea 15 y marcar la historia 4 como implementada
-3e3d580 2026-10-13 test: operar sobre integrantes de un proyecto que no existe (tarea 15, historia 4)
+cbef874 2026-10-24 Merge remote-tracking branch 'origin/dev' into historia-15-terminada
+b45cbe6 2026-10-23 Merge pull request #141 from emisorato1/historia-13-votar-en-secreto
+f7133d3 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-13-votar-en-secreto
+e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
+a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
+78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
+8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
+2c2abd1 2026-10-23 Merge pull request #136 from emisorato1/historia-17-spec-datos-al-dia
 ```
