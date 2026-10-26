@@ -113,8 +113,6 @@ func doneStoryRegistry(t *testing.T) *domain.ProjectRegistry {
 	return registry
 }
 
-// between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
-// la pagina, como la barra. Si no lo encuentra devuelve vacio.
 // joinTags quita los espacios y los saltos de linea entre una etiqueta y la siguiente, para
 // buscar una fila sin depender de la sangria ni del fin de linea: en Windows las plantillas
 // pueden bajar con CRLF (pedido de Agustin en la revision del #149).
@@ -124,6 +122,8 @@ func joinTags(html string) string {
 
 var betweenTags = regexp.MustCompile(`>\s+<`)
 
+// between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
+// la pagina, como la barra. Si no lo encuentra devuelve vacio.
 func between(html, start, end string) string {
 	i := strings.Index(html, start)
 	if i < 0 {
