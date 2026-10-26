@@ -2,7 +2,9 @@ package domain
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"io"
 	"math"
 	"reflect"
 	"regexp"
@@ -483,5 +485,41 @@ func TestLetrasDelCastellanoYCaracteresQueNoSePuedenRepresentar(t *testing.T) {
 	textos := extraerTextos(buildPDF(layoutReport(doc)))
 	if textos[0].text != doc.title || textos[len(textos)-1].text != "Página 1 de 1" {
 		t.Errorf("se esperaba leer el titulo con su raya y el pie con su tilde, salio %q y %q", textos[0].text, textos[len(textos)-1].text)
+	}
+}
+
+// writerQueFalla es un destino que devuelve un error al escribir, con un mensaje en ingles
+// como los de los archivos y las conexiones.
+type writerQueFalla struct{}
+
+func (writerQueFalla) Write([]byte) (int, error) { return 0, errors.New("broken pipe") }
+
+// writerCorto es un destino que escribe la mitad de lo que recibe y no avisa.
+type writerCorto struct{}
+
+func (writerCorto) Write(p []byte) (int, error) { return len(p) / 2, nil }
+
+// Escenario: Un PDF que no se puede entregar se informa
+// Cubre: RN-12
+func TestUnPDFQueNoSePuedeEntregarSeInforma(t *testing.T) {
+	cases := []struct {
+		name string
+		w    io.Writer
+	}{
+		{name: "el destino devuelve un error", w: writerQueFalla{}},
+		// Caso del foco de la revision: escribir de menos sin error tambien es una falla.
+		{name: "el destino escribe la mitad", w: writerCorto{}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := writePDF(c.w, unDocChico())
+
+			if !errors.Is(err, ErrPDFNotGenerated) {
+				t.Fatalf("se esperaba que se informara que no se pudo generar el PDF, salio: %v", err)
+			}
+			if strings.Contains(err.Error(), "broken pipe") {
+				t.Errorf("el mensaje es para el usuario y no lleva el error del destino: %q", err)
+			}
+		})
 	}
 }
