@@ -213,9 +213,9 @@ func layoutReport(doc pdfDoc) []pdfPage {
 		}
 	}
 	pages := []pdfPage{{}}
-	for _, row := range rows {
+	for i, row := range rows {
 		last := &pages[len(pages)-1]
-		if len(last.rows) == pdfRowsPerPage {
+		if len(last.rows) > 0 && len(last.rows)+1+headingRows(rows, i) > pdfRowsPerPage {
 			pages = append(pages, pdfPage{})
 			last = &pages[len(pages)-1]
 		}
@@ -225,4 +225,19 @@ func layoutReport(doc pdfDoc) []pdfPage {
 		pages[i].footer = fmt.Sprintf("Página %d de %d", i+1, len(pages))
 	}
 	return pages
+}
+
+// headingRows cuenta los renglones del encabezado que empieza en el renglon i (uno largo
+// ocupa varios), o da 0 si ahi no empieza un encabezado. Un encabezado necesita lugar para
+// el y para un renglon mas: si no lo tiene, pasa a la pagina siguiente y nunca queda como
+// ultimo renglon (RN-7).
+func headingRows(rows []pdfRow, i int) int {
+	if rows[i].style != styleHeading || (i > 0 && rows[i-1].style == styleHeading) {
+		return 0
+	}
+	count := 0
+	for i+count < len(rows) && rows[i+count].style == styleHeading {
+		count++
+	}
+	return count
 }
