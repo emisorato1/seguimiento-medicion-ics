@@ -489,6 +489,12 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		// las rondas de cada historia.
 		{name: "ronda que no sigue la numeracion de su historia", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Number = 2 }, want: ErrSavedDataInvalid},
 		{name: "acuerdo sobre una ronda sin revelar", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Agreed = 5 }, want: ErrRoundNotRevealed},
+		// Defecto #156: al abrir una ronda siempre hay integrantes, con nombre y sin repetir
+		// (RN-6 de la #13 y la #4). Solo un archivo puede traerlos mal.
+		{name: "ronda con un participante sin nombre", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Participants[1] = "  " }, want: ErrSavedDataInvalid},
+		{name: "ronda con un participante repetido", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds[0].Participants = []string{"Ana Perez", "Ana Perez"}
+		}, want: ErrSavedDataInvalid},
 		{name: "acuerdo fuera de la escala", change: func(d *registryJSON) {
 			round := &d.Projects[0].VotingRounds[0]
 			round.Votes = append(round.Votes, voteJSON{MemberName: "Juan Gomez", Points: 8})
@@ -608,5 +614,34 @@ func TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual(t *testing.T) {
 	}
 	if _, err := got.MemberHours("Juan Gomez"); !errors.Is(err, ErrMemberNotFound) {
 		t.Fatalf("se esperaba ErrMemberNotFound al consultar las horas de quien ya no es integrante, salio: %v", err)
+	}
+}
+
+// Sin escenario: defecto #156, encontrado por Juliana en la revisión del #148
+// Cubre: #77 RN-24, RN-6 de la #13
+//
+// Una ronda revelada sin participantes se cargaba sin error, porque a nadie le faltaba votar, y
+// después Differences() cortaba con un pánico al leer el primer voto. La carga la tiene que
+// rechazar: al abrir una ronda siempre hay integrantes.
+func TestUnaRondaReveladaSinParticipantesNoSeCarga(t *testing.T) {
+	saved := unosDatosGuardados()
+	saved.Projects[0].VotingRounds[0].Participants = []string{}
+	saved.Projects[0].VotingRounds[0].Votes = nil
+	saved.Projects[0].VotingRounds[0].Revealed = true
+	data, err := json.Marshal(saved)
+	if err != nil {
+		t.Fatalf("no se pudieron armar los datos de prueba: %v", err)
+	}
+
+	registry, err := RegistryFromJSON(data)
+	if err == nil {
+		// antes del arreglo la carga pasaba, y pedir las diferencias cortaba el programa
+		project, _ := registry.Get(1)
+		rounds, _ := project.VotingRounds(1)
+		rounds[0].Differences()
+	}
+
+	if !errors.Is(err, ErrSavedDataInvalid) {
+		t.Fatalf("se esperaba que la carga rechazara la ronda sin participantes, salio: %v", err)
 	}
 }

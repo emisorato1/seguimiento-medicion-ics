@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 	"time"
 )
 
@@ -401,6 +402,22 @@ func votingRoundsFromJSON(project *Project, in []votingRoundJSON) ([]*VotingRoun
 		}
 		if rj.Number != expected {
 			return nil, fmt.Errorf("la ronda de la historia %d tiene el número %d y tendría que ser la %d", rj.StoryID, rj.Number, expected)
+		}
+		// Al abrir una ronda siempre hay integrantes, con nombre y sin repetir (RN-6 de la #13 y
+		// la #4): solo un archivo puede traerlos mal. Sin este control, una ronda revelada sin
+		// participantes se cargaba y Differences() cortaba al leer el primer voto (defecto #156).
+		if len(rj.Participants) == 0 {
+			return nil, fmt.Errorf("la ronda %d de la historia %d no tiene participantes", rj.Number, rj.StoryID)
+		}
+		seen := map[string]bool{}
+		for _, name := range rj.Participants {
+			if strings.TrimSpace(name) == "" {
+				return nil, fmt.Errorf("la ronda %d de la historia %d tiene un participante sin nombre", rj.Number, rj.StoryID)
+			}
+			if seen[name] {
+				return nil, fmt.Errorf("la ronda %d de la historia %d tiene repetido a %s", rj.Number, rj.StoryID, name)
+			}
+			seen[name] = true
 		}
 		participants := make([]string, len(rj.Participants))
 		copy(participants, rj.Participants)
