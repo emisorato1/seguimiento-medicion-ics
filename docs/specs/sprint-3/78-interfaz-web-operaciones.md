@@ -454,8 +454,9 @@ Escenario: Los datos nuevos siguen al cerrar y volver a abrir
    copiaría una regla fuera del núcleo, que es lo que la #4 y la #15 evitaron con el rol y la
    severidad. Hay dos caminos: que la #15 sume la conversión del estado igual que la de la
    severidad (ya tiene una sin exportar, para la carga del archivo), o que la RN-2 diga cómo
-   se trata el estado. **Pendiente: lo acuerdan el responsable de la #15 (Juliana Bustos) y el
-   equipo antes de la tarea 12.**
+   se trata el estado. **Resuelto el 26/10 por el primer camino: el dominio exporta
+   `ParseDefectState`, que acepta «Abierto», «En curso» y «Resuelto» y rechaza el resto con
+   `ErrDefectStateUnknown` (PR #153, Refs #15). La tarea 12 arranca cuando entre a dev.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: en un comentario de la issue #78 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), desde su cuenta. Aprueba las tres puertas y acepta los puntos 1 a 7 de "Para decidir en la puerta". Pide dos cambios antes de las tareas que los usan: que el test de la tarea 17 no busque el número suelto (incorporado en el escenario y en la tarea) y resolver el estado de un defecto como texto (punto 8, pendiente). Nota: sumar a los casos límite al integrante que se quitó con la ronda abierta (incorporado).
@@ -722,13 +723,39 @@ implementación en el siguiente.
 - **El test de la tarea 9 falló por compilación**: cambió la forma de armar el servidor
   (`NewServer` con la fecha de hoy), y ese error de compilación es su RED.
 
+- **Un arreglo de CSS sin test de Go**: la verificación manual encontró que a 360 de ancho
+  el sprint con una historia asignada medía 526 px. El texto oculto «Quitar la historia 1»
+  es `position: absolute` y, como el recuadro `.tabla` no estaba posicionado, se ubicaba
+  respecto de la página y la ensanchaba. Se arregló con `position: relative` en `.tabla`,
+  que cubre también la tabla de integrantes de la #77. Un test de Go no mide el ancho
+  dibujado; el RED y el GREEN son las dos corridas del script de Playwright de abajo.
+
+### Verificación manual de la parte 1
+
+El 26/10, con el script de Playwright de la #77 (fuera del repo) ampliado con las
+pantallas de esta parte, en Chromium 151, Firefox 153 y WebKit 26.5 (el motor de Safari):
+
+- con el teclado solo: crear un sprint, asignar una historia, quitarla con confirmación y
+  cancelar; registrar 2,5 horas (el día viene con la fecha de hoy); cargar las horas
+  estimadas; abrir una ronda, votar sin que se vea el voto y revelarla;
+- el foco se ve en todo el recorrido y ningún pedido sale del programa;
+- a 360 de ancho, ninguna de las 21 páginas se desplaza de costado (después del arreglo
+  de arriba);
+- después de matar el proceso y volver a abrirlo siguen el sprint, las horas y la ronda
+  revelada.
+
+Resultado: 90 controles bien en los tres motores. Falló solo el control de la #77 que
+espera el 8080 ocupado por Docker: ese día Docker no estaba corriendo y el puerto
+estaba libre, así que no es un error del programa. Queda para el final: la ronda votada
+desde dos pestañas, el contraste de lo nuevo y el PDF.
+
 ### Lo que falta
 
-- **Defectos (tareas 12 a 15)**: esperan el punto 8 (el estado de un defecto como texto).
+- **Defectos (tareas 12 a 15)**: el punto 8 se resolvió (el dominio exporta `ParseDefectState`, PR #153); esperan que entre a dev.
 - **Cerrar un sprint y lo completado (tareas 6 y 7)**: esperan la #10 y la #11.
 - **Diferencias, otra ronda y acuerdo (tarea 19)**: espera la #73.
 - **Reporte y PDF (tareas 20 y 21)**: esperan la #18 y la #19.
-- **La verificación manual** en Chrome, Firefox y Safari, cuando estén todas las pantallas.
+- **La verificación manual** de las pantallas que faltan, la ronda desde dos pestañas, el contraste de lo nuevo y el PDF.
 
 ## Trazabilidad
 
