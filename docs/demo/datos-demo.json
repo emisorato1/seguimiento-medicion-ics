@@ -1,0 +1,521 @@
+{
+  "next_id": 2,
+  "projects": [
+    {
+      "id": 1,
+      "name": "Seguimiento y Medición ICS",
+      "description": "Proyecto integrador de Ingeniería y Calidad de Software, UTN FRSR 2026: una aplicación para estimar, seguir y medir proyectos de software.",
+      "start": "2026-09-07",
+      "end": "2026-11-02",
+      "next_story_id": 79,
+      "members": [
+        {
+          "name": "Emiliano Sorato",
+          "role": "Agile Enabler"
+        },
+        {
+          "name": "Agustín Salinas",
+          "role": "Product Builder"
+        },
+        {
+          "name": "Juliana Bustos",
+          "role": "Product Builder"
+        },
+        {
+          "name": "Maximiliano Eula",
+          "role": "Product Builder"
+        }
+      ],
+      "stories": [
+        {
+          "id": 3,
+          "title": "Crear y modificar proyectos",
+          "description": "Como integrante del equipo quiero poder crear un proyecto y editar sus datos para tener registrado en el sistema el proyecto sobre el que vamos a trabajar",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 3,
+          "acceptance_criteria": [
+            "Se puede crear un proyecto con nombre, descripcion, fecha de inicio y fecha de finalizacion.",
+            "No se puede guardar un proyecto sin nombre.",
+            "La fecha de finalizacion no puede ser anterior a la de inicio.",
+            "Se pueden modificar los datos de un proyecto ya creado."
+          ],
+          "estimated_hours": 9
+        },
+        {
+          "id": 4,
+          "title": "Registrar integrantes de un proyecto",
+          "description": "Como integrante del equipo quiero cargar los integrantes que participan del proyecto para poder despues asignarles historias y registrar el esfuerzo de cada uno",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 3,
+          "acceptance_criteria": [
+            "Se puede agregar un integrante indicando su nombre y su rol.",
+            "Se pueden listar los integrantes de un proyecto.",
+            "No se puede cargar dos veces el mismo integrante en un proyecto.",
+            "Se puede quitar un integrante del proyecto."
+          ],
+          "estimated_hours": 9
+        },
+        {
+          "id": 5,
+          "title": "Consultar el estado de un proyecto",
+          "description": "Como integrante del equipo quiero consultar en que estado esta un proyecto para saber como viene avanzando sin tener que revisar sprint por sprint",
+          "priority": "Media",
+          "state": "Terminada",
+          "story_points": 3,
+          "acceptance_criteria": [
+            "Muestra los datos del proyecto, sus integrantes y sus fechas.",
+            "Muestra la cantidad de historias totales, completadas y pendientes.",
+            "Muestra el sprint en curso si hay uno abierto."
+          ],
+          "estimated_hours": 8.1
+        },
+        {
+          "id": 6,
+          "title": "Administrar el Product Backlog",
+          "description": "Como integrante del equipo quiero cargar y editar las historias del Product Backlog para tener en un solo lugar todo lo que hay que construir",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 5,
+          "acceptance_criteria": [
+            "Cada historia tiene identificador, titulo, descripcion, prioridad, estado, story points y criterios de aceptacion.",
+            "El identificador se asigna solo y no se repite dentro del proyecto.",
+            "Se puede editar una historia mientras no este terminada.",
+            "No se puede guardar una historia sin titulo ni sin criterios de aceptacion."
+          ],
+          "estimated_hours": 15
+        },
+        {
+          "id": 7,
+          "title": "Priorizar el Product Backlog",
+          "description": "Como integrante del equipo quiero ordenar las historias por prioridad para tener claro que es lo mas importante para el proximo sprint",
+          "priority": "Media",
+          "state": "Terminada",
+          "story_points": 2,
+          "acceptance_criteria": [
+            "Se puede asignar prioridad alta, media o baja a cada historia.",
+            "El backlog se puede listar ordenado por prioridad.",
+            "Al cambiar la prioridad de una historia el orden se actualiza."
+          ],
+          "estimated_hours": 5.4
+        },
+        {
+          "id": 8,
+          "title": "Crear un sprint con su Sprint Goal",
+          "description": "Como integrante del equipo quiero crear un sprint definiendo su objetivo y sus fechas para organizar el trabajo en periodos cortos con una meta clara",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 3,
+          "acceptance_criteria": [
+            "Se puede crear un sprint con numero, Sprint Goal, fecha de inicio y fecha de fin.",
+            "No se puede crear un sprint sin Sprint Goal.",
+            "No puede haber dos sprints abiertos a la vez en el mismo proyecto."
+          ],
+          "estimated_hours": 8.1
+        },
+        {
+          "id": 9,
+          "title": "Asignar historias a un sprint",
+          "description": "Como integrante del equipo quiero asignar historias del Product Backlog a un sprint para armar el Sprint Backlog en la planificacion",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 5,
+          "acceptance_criteria": [
+            "Solo se pueden asignar historias que ya esten estimadas en story points.",
+            "Una historia no puede estar en dos sprints abiertos al mismo tiempo.",
+            "Se puede sacar una historia del sprint mientras el sprint no este cerrado.",
+            "Al asignarla, la historia pasa al estado correspondiente."
+          ],
+          "estimated_hours": 13.5
+        },
+        {
+          "id": 10,
+          "title": "Cerrar un sprint",
+          "description": "Como integrante del equipo quiero cerrar un sprint registrando que historias se completaron para poder medir la velocidad del equipo y planificar el siguiente sprint",
+          "priority": "Alta",
+          "state": "Pendiente",
+          "story_points": 5,
+          "acceptance_criteria": [
+            "Al cerrar el sprint se marcan las historias completadas y las que no.",
+            "Las historias no completadas vuelven al Product Backlog.",
+            "Un sprint cerrado no se puede modificar.",
+            "Al cerrarlo quedan calculados los story points completados."
+          ],
+          "estimated_hours": 13.5
+        },
+        {
+          "id": 11,
+          "title": "Consultar sprints anteriores",
+          "description": "Como integrante del equipo quiero consultar los sprints ya cerrados para comparar como venimos sprint a sprint",
+          "priority": "Media",
+          "state": "Pendiente",
+          "story_points": 2,
+          "acceptance_criteria": [
+            "Se listan los sprints cerrados con su goal, sus fechas y sus historias.",
+            "De cada sprint se ven los story points planificados y los completados.",
+            "Se puede ver el detalle de un sprint anterior sin poder editarlo."
+          ],
+          "estimated_hours": 5.4
+        },
+        {
+          "id": 12,
+          "title": "Estimar historias con Story Points",
+          "description": "Como integrante del equipo quiero asignarle story points a una historia para poder planificar cuanto entra en un sprint",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 2,
+          "acceptance_criteria": [
+            "Los story points solo pueden ser valores de la sucesion de Fibonacci (1, 2, 3, 5, 8, 13, 21).",
+            "Una historia puede quedar sin estimar.",
+            "Se puede reestimar una historia mientras no este en un sprint cerrado."
+          ],
+          "estimated_hours": 6
+        },
+        {
+          "id": 13,
+          "title": "Votar en secreto en una ronda de Planning Poker",
+          "description": "Como integrante del equipo quiero votar la estimacion de una historia sin ver lo que votaron los demas para que nadie se deje influir y la estimacion salga del criterio de cada uno",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 8,
+          "acceptance_criteria": [
+            "Se puede abrir una ronda de votacion sobre una historia que todavia no esta terminada.",
+            "Cada integrante del proyecto registra un voto, y uno solo, por ronda.",
+            "El voto tiene que ser un valor valido de la escala Fibonacci.",
+            "Mientras la ronda no este revelada, ningun voto se puede leer desde afuera, ni siquiera el propio. Solo se sabe quien voto y quien falta.",
+            "La ronda se revela recien cuando votaron todos los integrantes.",
+            "Al revelarse, se muestran todos los votos con el nombre de quien los dio.",
+            "No se puede votar en una ronda ya revelada."
+          ],
+          "estimated_hours": 21.6
+        },
+        {
+          "id": 14,
+          "title": "Registrar el esfuerzo real",
+          "description": "Como integrante del equipo quiero registrar las horas que trabaje en una historia para poder comparar despues el esfuerzo estimado con el real",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 3,
+          "acceptance_criteria": [
+            "Se registra integrante, fecha, actividad realizada y horas trabajadas.",
+            "Las horas tienen que ser mayores a cero.",
+            "No se pueden cargar horas con fecha posterior al dia de hoy.",
+            "Se puede consultar el total de horas de una historia y de un integrante."
+          ],
+          "estimated_hours": 8.1
+        },
+        {
+          "id": 15,
+          "title": "Gestionar defectos",
+          "description": "Como integrante del equipo quiero registrar los defectos que vamos encontrando para llevar el control de la calidad del producto",
+          "priority": "Media",
+          "state": "Terminada",
+          "story_points": 5,
+          "acceptance_criteria": [
+            "Se registra descripcion, severidad, estado, historia relacionada y sprint de deteccion.",
+            "Al resolverlo se registra el sprint de resolucion.",
+            "Un defecto no puede resolverse en un sprint anterior al de deteccion.",
+            "Se pueden listar los defectos por estado y por severidad."
+          ],
+          "estimated_hours": 13.5
+        },
+        {
+          "id": 16,
+          "title": "Calcular las metricas del proyecto",
+          "description": "Como integrante del equipo quiero que el sistema calcule las metricas del proyecto y de cada sprint para saber con datos como venimos y no a ojo",
+          "priority": "Alta",
+          "state": "Pendiente",
+          "story_points": 8,
+          "acceptance_criteria": [
+            "Calcula story points planificados y completados.",
+            "Calcula la velocidad del equipo por sprint.",
+            "Calcula horas estimadas, horas reales y la desviacion entre ambas.",
+            "Calcula el porcentaje de historias completadas.",
+            "Calcula la cantidad de defectos detectados y resueltos.",
+            "Si un sprint no tiene datos cargados las metricas devuelven cero y no error."
+          ],
+          "estimated_hours": 21.6
+        },
+        {
+          "id": 17,
+          "title": "Mostrar el dashboard",
+          "description": "Como integrante del equipo quiero ver un dashboard con el estado del proyecto para entender de un vistazo como viene el proyecto",
+          "priority": "Media",
+          "state": "Pendiente",
+          "story_points": 8,
+          "acceptance_criteria": [
+            "Muestra el estado general del proyecto y del sprint en curso.",
+            "Muestra graficos de por lo menos tres de las metricas calculadas.",
+            "Si el proyecto no tiene sprints todavia, el dashboard avisa que no hay datos."
+          ],
+          "estimated_hours": 21.6
+        },
+        {
+          "id": 18,
+          "title": "Generar el reporte de proyecto o sprint",
+          "description": "Como integrante del equipo quiero generar un reporte de un proyecto o de un sprint para tener la informacion junta para mostrarla en la review",
+          "priority": "Media",
+          "state": "Pendiente",
+          "story_points": 5,
+          "acceptance_criteria": [
+            "El reporte incluye historias planificadas y completadas.",
+            "Incluye las estimaciones y el esfuerzo registrado.",
+            "Incluye las metricas del periodo y los defectos.",
+            "Se puede generar para un proyecto completo o para un sprint puntual."
+          ],
+          "estimated_hours": 13.5
+        },
+        {
+          "id": 19,
+          "title": "Exportar el reporte a PDF",
+          "description": "Como integrante del equipo quiero exportar el reporte a PDF para poder entregarlo y presentarlo en la review final",
+          "priority": "Baja",
+          "state": "Pendiente",
+          "story_points": 5,
+          "acceptance_criteria": [
+            "El reporte se descarga como archivo PDF.",
+            "El PDF tiene el mismo contenido que el reporte en pantalla.",
+            "Esta previsto para el Sprint 4 segun el plan de la catedra."
+          ]
+        },
+        {
+          "id": 24,
+          "title": "Operar el sistema desde una interfaz de consola",
+          "description": "Como integrante del equipo quiero poder usar el sistema desde una interfaz de consola para poder probar y mostrar las funcionalidades sin tener que escribir un test",
+          "priority": "Media",
+          "state": "Terminada",
+          "story_points": 3,
+          "acceptance_criteria": [
+            "Se puede crear un proyecto y ver su identificador.",
+            "Se pueden agregar integrantes a un proyecto y listarlos.",
+            "Se pueden cargar historias en el Product Backlog de un proyecto y listarlas.",
+            "Se le pueden asignar story points a una historia.",
+            "Cuando una operacion se rechaza, la consola muestra el motivo en un mensaje claro.",
+            "La consola no tiene reglas de negocio propias: solo llama al nucleo en Go."
+          ],
+          "estimated_hours": 9
+        },
+        {
+          "id": 73,
+          "title": "Resolver diferencias y acordar la estimacion",
+          "description": "Como integrante del equipo quiero que, despues de revelar los votos, el sistema me muestre las diferencias y me deje abrir una ronda nueva para llegar a una estimacion acordada en vez de quedarme con el promedio",
+          "priority": "Alta",
+          "state": "Pendiente",
+          "story_points": 5,
+          "acceptance_criteria": [
+            "Con la ronda revelada, el sistema informa si hay diferencias entre los votos.",
+            "Muestra cual fue el voto mas bajo y cual el mas alto, y quien los dio.",
+            "Se puede abrir una ronda nueva sobre la misma historia; la anterior queda guardada.",
+            "Las rondas se numeran en orden, empezando en 1.",
+            "Se puede registrar la estimacion acordada y queda asociada a la historia.",
+            "La estimacion acordada tiene que ser un valor valido de la escala Fibonacci.",
+            "No se puede acordar una estimacion sobre una ronda que todavia no se revelo.",
+            "Al acordar, la historia queda estimada con ese valor."
+          ],
+          "estimated_hours": 13.5
+        },
+        {
+          "id": 77,
+          "title": "Usar el sistema desde el navegador: proyectos, integrantes y backlog",
+          "description": "Como integrante del equipo quiero usar el sistema desde una pagina web clara y prolija para cargar y consultar el proyecto sin tener que manejar una consola",
+          "priority": "Alta",
+          "state": "Terminada",
+          "story_points": 0,
+          "acceptance_criteria": [
+            "El sistema se abre en el navegador con un solo comando y funciona sin conexion a internet.",
+            "Desde la web se crean, modifican y consultan proyectos.",
+            "Desde la web se agregan y quitan integrantes, con su rol.",
+            "Desde la web se administra el Product Backlog: alta, modificacion, prioridad y estimacion en story points.",
+            "Los errores de validacion se muestran junto al campo que fallo, con el mensaje del sistema, sin perder lo que se habia escrito.",
+            "Las listas vacias muestran que no hay datos y que se puede hacer.",
+            "La pagina se puede usar en una pantalla de notebook y en un celular.",
+            "Los datos cargados no se pierden al cerrar y volver a abrir el sistema."
+          ]
+        },
+        {
+          "id": 78,
+          "title": "Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador",
+          "description": "Como integrante del equipo quiero hacer desde la web todo lo que el sistema permite sobre sprints, esfuerzo, defectos, estimacion y reportes para llevar el proyecto completo desde la misma interfaz",
+          "priority": "Alta",
+          "state": "Pendiente",
+          "story_points": 0,
+          "acceptance_criteria": [
+            "Desde la web se crea un sprint, se le asignan historias, se cierra y se consultan los anteriores.",
+            "Desde la web se registra el esfuerzo real y se ven las horas por historia y por integrante.",
+            "Desde la web se cargan defectos, se cambia su estado, se resuelven y se filtran por estado y severidad.",
+            "Desde la web se hace una ronda de Planning Poker: cada integrante vota sin ver los votos de los demas hasta que se revelan, y se acuerda la estimacion.",
+            "Desde la web se ve el reporte del proyecto o de un sprint, y se descarga en PDF.",
+            "Los errores se muestran igual que en el resto de la interfaz web."
+          ]
+        }
+      ],
+      "efforts": [
+        {
+          "story_id": 3,
+          "member_name": "Agustín Salinas",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #54)",
+          "hours": 8,
+          "day": "2026-10-09"
+        },
+        {
+          "story_id": 4,
+          "member_name": "Juliana Bustos",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #62)",
+          "hours": 8,
+          "day": "2026-10-15"
+        },
+        {
+          "story_id": 6,
+          "member_name": "Emiliano Sorato",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #56 y #58)",
+          "hours": 13,
+          "day": "2026-10-19"
+        },
+        {
+          "story_id": 12,
+          "member_name": "Maximiliano Eula",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #70)",
+          "hours": 4,
+          "day": "2026-10-20"
+        },
+        {
+          "story_id": 24,
+          "member_name": "Maximiliano Eula",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #106)",
+          "hours": 7.25,
+          "day": "2026-10-21"
+        },
+        {
+          "story_id": 7,
+          "member_name": "Agustín Salinas",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #105)",
+          "hours": 5,
+          "day": "2026-10-22"
+        },
+        {
+          "story_id": 8,
+          "member_name": "Agustín Salinas",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #104 y #138)",
+          "hours": 6,
+          "day": "2026-10-22"
+        },
+        {
+          "story_id": 9,
+          "member_name": "Agustín Salinas",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #138)",
+          "hours": 9,
+          "day": "2026-10-22"
+        },
+        {
+          "story_id": 5,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión de la implementación con asistencia de IA (PR #102)",
+          "hours": 0.5,
+          "day": "2026-10-22"
+        },
+        {
+          "story_id": 14,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión de la implementación con asistencia de IA (PR #100)",
+          "hours": 0.5,
+          "day": "2026-10-22"
+        },
+        {
+          "story_id": 15,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión de la implementación con asistencia de IA (PR #129)",
+          "hours": 0.5,
+          "day": "2026-10-22"
+        },
+        {
+          "story_id": 13,
+          "member_name": "Maximiliano Eula",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero, PR #141)",
+          "hours": 6,
+          "day": "2026-10-23"
+        },
+        {
+          "story_id": 77,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión de la implementación con asistencia de IA (PR #95)",
+          "hours": 1.5,
+          "day": "2026-10-22"
+        }
+      ],
+      "last_sprint_number": 2,
+      "sprints": [
+        {
+          "number": 1,
+          "goal": "Poder crear un proyecto con sus integrantes, cargarle el Product Backlog y estimar las historias en story points.",
+          "start": "2026-09-28",
+          "end": "2026-10-16",
+          "state": "Cerrado",
+          "stories": [
+            6,
+            3,
+            4,
+            12,
+            24
+          ],
+          "closed_on": "2026-10-16",
+          "completed_stories": [
+            3,
+            4
+          ],
+          "points_at_close": {
+            "6": 5,
+            "3": 3,
+            "4": 3,
+            "12": 2,
+            "24": 3
+          }
+        },
+        {
+          "number": 2,
+          "goal": "Que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda operar desde la consola.",
+          "start": "2026-10-20",
+          "end": "2026-10-25",
+          "state": "Cerrado",
+          "stories": [
+            6,
+            12,
+            24,
+            7,
+            8,
+            9,
+            5,
+            14,
+            15,
+            13
+          ],
+          "closed_on": "2026-10-25",
+          "completed_stories": [
+            6,
+            12,
+            24,
+            7,
+            8,
+            9,
+            5,
+            14,
+            15,
+            13
+          ],
+          "points_at_close": {
+            "6": 5,
+            "12": 2,
+            "24": 3,
+            "7": 2,
+            "8": 3,
+            "9": 5,
+            "5": 3,
+            "14": 3,
+            "15": 5,
+            "13": 8
+          }
+        }
+      ]
+    }
+  ]
+}
