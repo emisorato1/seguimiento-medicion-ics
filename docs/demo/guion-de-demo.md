@@ -59,9 +59,8 @@ se completan cuando esas historias entren a `dev`.
   ([07](capturas/07-ronda-con-votos-ocultos.png))
   - **Contar:** "Mientras la ronda está abierta nadie ve ningún voto, ni siquiera el propio:
     solo quién votó y quién falta."
-  - *Si sobra tiempo*, abrir en vivo una **ronda de práctica** sobre la #19 y votar dos
-    integrantes, para mostrar que la página no muestra los votos. Aclarar que es de práctica
-    y no revelarla.
+  - En vivo se muestra con una **ronda de práctica**, al final (paso 8), sobre una copia de
+    la base.
 
 ## 4. Un sprint y su cierre (2 minutos)
 
@@ -108,11 +107,27 @@ se completan cuando esas historias entren a `dev`.
 - **En la terminal**, apretar `Ctrl+C`: el sistema se cierra.
 - **Volver a abrirlo sin importar nada**: `go run ./cmd/web -datos demo.db`, y recargar la
   página.
-- **Mostrar** que está todo, también lo que se hizo en vivo: el Sprint 3 cerrado y, si se
-  hizo, la ronda de práctica.
+- **Mostrar** que está todo, también lo que se hizo en vivo: el Sprint 3 cerrado.
 - **Contar:** "Los datos se guardan en una base SQLite, con una tabla por cada cosa del
   sistema. Cada cambio se guarda entero o no se guarda: nunca queda a medias. Y con
   `-exportar` se pueden llevar todos los datos a un archivo."
+
+## 8. Una ronda de práctica, sobre una copia (1 minuto)
+
+Para mostrar el Planning Poker en vivo sin que los datos reales del proyecto queden con votos
+de práctica, la ronda se hace **sobre una copia de la base**.
+
+- **En la terminal**, `Ctrl+C`, y después:
+
+  ```bash
+  cp demo.db practica.db
+  go run ./cmd/web -datos practica.db
+  ```
+
+- **Abrir** *Planning Poker*, elegir la #19 y *Abrir una ronda*. Votar con dos integrantes.
+- **Mostrar** que la página dice quién votó y quién falta, pero ningún voto.
+- **Contar:** "Esta ronda es de práctica, sobre una copia: la base del proyecto no cambió."
+- Al terminar, `Ctrl+C`. `practica.db` se puede borrar.
 
 ## Cierre (30 segundos)
 
@@ -126,3 +141,4 @@ se completan cuando esas historias entren a `dev`.
 | «el puerto ya lo está usando otro programa» | abrir con `-puerto 8081` y usar esa dirección |
 | «la base ya tiene datos y no se importa sobre datos existentes» | ya estaba importada: abrir sin `-importar`, o borrar `demo.db` y volver a importar |
 | Algo de lo cargado en vivo salió mal | cerrar, borrar `demo.db` e importar de nuevo: tarda un segundo |
+| La ronda de práctica quedó en la base del proyecto | se hizo sin la copia: cerrar, borrar `demo.db`, importar de nuevo y repetir el Sprint 3 |
