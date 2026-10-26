@@ -87,11 +87,14 @@ Hubo diferencias, así que se explicaron los extremos:
 
 | | Agustín | Juliana | Maximiliano | Emiliano |
 |---|---|---|---|---|
-| #77 Web base | 13 | [pendiente] | [pendiente] | 13 |
-| #78 Operaciones web | 13 | [pendiente] | [pendiente] | 13 |
+| #77 Web base | 13 | [pendiente] | 13 | 13 |
+| #78 Operaciones web | 13 | [pendiente] | 13 | 13 |
 
-**Estimación acordada:** [pendiente: se cierra cuando estén los votos de Juliana y
-Maximiliano].
+Maximiliano Eula mandó su ronda 2 el 26/10, por WhatsApp a Emiliano. Mantiene los votos de
+la ronda 1: "La #77 armó desde cero el servidor, el guardado en archivo y la seguridad de los
+formularios, y la #78 suma cinco pantallas, con el Planning Poker completo, sobre esa base."
+
+**Estimación acordada:** [pendiente: se cierra cuando esté el voto de Juliana].
 
 **Si no votan a tiempo** (decisión de Emiliano Sorato, del 26/10): si Juliana y Maximiliano no
 mandan su ronda 2 antes del 28/10, se aplica la [guía de Planning Poker](../guia-planning-poker.md):
@@ -116,7 +119,6 @@ Los cuatro contestaron "ok".
 
 ## Pendientes
 
-- [ ] La ronda 2 del Planning Poker de Juliana y Maximiliano, y la estimación acordada de la #77
-  y la #78.
+- [ ] La ronda 2 del Planning Poker de Juliana, y la estimación acordada de la #77 y la #78.
 - [ ] Las horas estimadas de la #78, cuando tenga story points.
 - [ ] Las horas reales de la #73 (Maximiliano Eula).
