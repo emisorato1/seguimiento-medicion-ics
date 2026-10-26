@@ -5,6 +5,7 @@ import (
 	"errors"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -312,5 +313,45 @@ func TestLosDatosDificilesVuelvenIguales(t *testing.T) {
 				caso.despues(t, cargado)
 			}
 		})
+	}
+}
+
+// Escenario: Un cambio que no se pudo guardar no deja nada a medias
+// Cubre: #177 RN-2, D4, D9
+func TestUnGuardadoQueFallaNoDejaNadaAMedias(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "datos-ics.db")
+	antes := unProyecto(t, func(p *domain.Project) {})
+	despues := unRegistroCompleto(t)
+	db := abrirBase(t, path)
+	sinError(t, db.Save(antes))
+
+	// La base rechaza los votos, que se insertan al final: el guardado se corta despues de
+	// haber vaciado las tablas y escrito casi todo.
+	if _, err := db.db.Exec("CREATE TRIGGER falla BEFORE INSERT ON votes BEGIN SELECT RAISE(ABORT, 'falla'); END"); err != nil {
+		t.Fatalf("no se pudo preparar la falla: %v", err)
+	}
+	err := db.Save(despues)
+
+	if !errors.Is(err, ErrNotSaved) {
+		t.Fatalf("se esperaba ErrNotSaved, salio: %v", err)
+	}
+	if !strings.Contains(err.Error(), path) {
+		t.Errorf("el mensaje tenia que nombrar la base, salio: %v", err)
+	}
+	cargado, err := db.Load()
+	sinError(t, err)
+	if got, want := comoTexto(t, cargado), comoTexto(t, antes); !bytes.Equal(got, want) {
+		t.Errorf("la base tenia que quedar como antes del guardado que fallo, y tiene:\n%s", got)
+	}
+
+	// El siguiente guardado que funciona guarda todo.
+	if _, err := db.db.Exec("DROP TRIGGER falla"); err != nil {
+		t.Fatalf("no se pudo sacar la falla: %v", err)
+	}
+	sinError(t, db.Save(despues))
+	cargado, err = db.Load()
+	sinError(t, err)
+	if got, want := comoTexto(t, cargado), comoTexto(t, despues); !bytes.Equal(got, want) {
+		t.Errorf("el guardado siguiente tenia que guardar todo, y la base tiene:\n%s", got)
 	}
 }
