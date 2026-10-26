@@ -566,3 +566,25 @@ func TestElPDFNoAgregaNiQuitaNadaDelReporte(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Exportar dos veces el mismo reporte da el mismo archivo
+// Cubre: RN-3
+func TestExportarDosVecesElMismoReporteDaElMismoArchivo(t *testing.T) {
+	var first, second bytes.Buffer
+
+	if err := writePDF(&first, unDocChico()); err != nil {
+		t.Fatalf("no se pudo exportar la primera vez: %v", err)
+	}
+	if err := writePDF(&second, unDocChico()); err != nil {
+		t.Fatalf("no se pudo exportar la segunda vez: %v", err)
+	}
+
+	if !bytes.Equal(first.Bytes(), second.Bytes()) {
+		t.Errorf("los dos archivos no son iguales byte por byte")
+	}
+	for _, from := range []string{"/CreationDate", "/ModDate", "/ID"} {
+		if bytes.Contains(first.Bytes(), []byte(from)) {
+			t.Errorf("el archivo tiene %s, que cambia en cada exportacion", from)
+		}
+	}
+}
