@@ -206,3 +206,22 @@ func TestRechazarElCierreSiNoHaySprintAbierto(t *testing.T) {
 		t.Fatalf("se esperaba ErrNoOpenSprint, salio: %v", err)
 	}
 }
+
+// Escenario: No se puede cerrar dos veces el mismo sprint
+// Cubre: RN-12, RN-13
+func TestNoSePuedeCerrarDosVecesElMismoSprint(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3, 5)
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+	}
+
+	err := project.CloseSprint([]int{2}, unDia(2026, 10, 28))
+
+	if !errors.Is(err, ErrNoOpenSprint) {
+		t.Fatalf("se esperaba ErrNoOpenSprint, salio: %v", err)
+	}
+	if !sprint.ClosedOn().Equal(unDia(2026, 10, 25)) || fmt.Sprint(sprint.CompletedStories()) != "[1]" {
+		t.Fatalf("se esperaba que el sprint conservara el cierre del 25/10 con la historia 1, quedo %v con %v",
+			sprint.ClosedOn(), sprint.CompletedStories())
+	}
+}
