@@ -74,3 +74,17 @@ func TestCerrarElSprintRegistrandoQueSeCompletoYQueNo(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: El sprint cerrado conserva lo que se le habia comprometido
+// Cubre: RN-5
+func TestElSprintCerradoConservaLoQueSeLeHabiaComprometido(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3, 5, 2)
+
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("se esperaba cerrar el sprint sin error, salio: %v", err)
+	}
+
+	if got := fmt.Sprint(sprint.Stories()); got != "[1 2 3]" {
+		t.Fatalf("se esperaba que el sprint siguiera con las historias [1 2 3], salieron %s", got)
+	}
+}
