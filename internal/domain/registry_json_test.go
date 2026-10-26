@@ -390,7 +390,14 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "sprint sin Sprint Goal", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Goal = "   " }, want: ErrSprintGoalRequired},
 		{name: "sprint sin fecha de inicio", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Start = "" }, want: ErrSprintStartRequired},
 		{name: "sprint con las fechas al reves", change: func(d *registryJSON) { d.Projects[0].Sprints[0].End = "2026-09-30" }, want: ErrSprintDatesInconsistent},
-		{name: "dos sprints abiertos", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Abierto" }, want: ErrSprintAlreadyOpen},
+		{name: "dos sprints abiertos", change: func(d *registryJSON) {
+			// desde la #10 el sprint 1 trae los datos del cierre: se le sacan, para que el
+			// motivo siga siendo los dos abiertos
+			d.Projects[0].Sprints[0].State = "Abierto"
+			d.Projects[0].Sprints[0].ClosedOn = ""
+			d.Projects[0].Sprints[0].CompletedStories = nil
+			d.Projects[0].Sprints[0].PointsAtClose = nil
+		}, want: ErrSprintAlreadyOpen},
 		{name: "numero de sprint repetido", change: func(d *registryJSON) { d.Projects[0].Sprints[1].Number = 1 }, want: ErrSavedDataInvalid},
 		{name: "contador de sprints que no llega a los numeros usados", change: func(d *registryJSON) { d.Projects[0].LastSprintNumber = 1 }, want: ErrSavedDataInvalid},
 		{name: "estado de sprint inexistente", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Planificado" }, want: ErrSavedDataInvalid},
