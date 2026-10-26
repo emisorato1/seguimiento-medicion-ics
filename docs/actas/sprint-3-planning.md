@@ -97,9 +97,10 @@ formularios, y la #78 suma cinco pantallas, con el Planning Poker completo, sobr
 **Estimación acordada:** [pendiente: se cierra cuando esté el voto de Juliana].
 
 **Si no votan a tiempo** (decisión de Emiliano Sorato, del 26/10): si Juliana y Maximiliano no
-mandan su ronda 2 antes del 28/10, se aplica la [guía de Planning Poker](../guia-planning-poker.md):
-después de las rondas, queda el valor más alto. Con los votos que hay, eso daría 13 para la #77
-y 13 para la #78. Todavía no es la estimación acordada.
+mandan su ronda 2 antes del 28/10, queda el valor más alto. La
+[guía de Planning Poker](../guia-planning-poker.md) dice que eso se hace "después de 3 rondas".
+Aplicarlo después de la ronda 2 es una decisión de Emiliano Sorato. Con los votos que hay, eso daría 13 para la #77 y 13 para la #78.
+Todavía no es la estimación acordada.
 
 ## Puertas y revisiones
 
