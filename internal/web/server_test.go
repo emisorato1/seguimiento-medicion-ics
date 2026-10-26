@@ -369,6 +369,25 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			mensaje: "Este proyecto todavía no tiene integrantes",
 			acceso:  `href="/proyectos/1/integrantes/nuevo"`,
 		},
+		{
+			nombre: "un proyecto sin defectos (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/defectos",
+			mensaje: "Todavía no hay defectos",
+			acceso:  `href="/proyectos/1/defectos/nuevo"`,
+		},
+		{
+			nombre: "un proyecto sin sprints al cargar un defecto (#78, RN-17)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			pagina:  "/proyectos/1/defectos/nuevo",
+			mensaje: "Este proyecto todavía no tiene sprints",
+			acceso:  `href="/proyectos/1/sprints/nuevo"`,
+		},
 	}
 
 	for _, caso := range casos {
