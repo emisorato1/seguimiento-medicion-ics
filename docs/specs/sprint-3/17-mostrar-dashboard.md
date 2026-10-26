@@ -453,7 +453,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 2 | El estado general trae cada métrica del proyecto con su rótulo y su valor, tal como llegó, incluida la velocidad promedio | El estado general muestra las metricas tal como se calcularon | RN-2, RN-4 | hecha |
 | 3 | Porcentajes y horas con un decimal, coma y unidad; enteros sin decimales; la desviación negativa, con su signo | Porcentajes, horas y enteros se muestran con su formato | RN-15 | hecha |
 | 4 | El sprint en curso trae el sprint abierto y lo que lleva registrado, sin completados ni velocidad; sin sprint abierto, no trae nada | El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-5, RN-6 | hecha |
-| 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | pendiente |
+| 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | hecha |
 | 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso, y la velocidad del estado general escrita como «sin sprints cerrados» | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-4, RN-8, RN-9 | pendiente |
 | 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | pendiente |
 | 8 | El dashboard se pide al proyecto y usa las métricas que calcula la #16 | — (conexión con la #16) | RN-2 | pendiente |
@@ -550,6 +550,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 2 | `5941e21` | `a3487f5` |
 | 3 | `92c6a8b` | `b66feed` |
 | 4 | `6330fb4` | `e84abc3` |
+| 5 | `ef5ab19` | `fc0c221` |
 
 ### Decisiones tomadas al implementar
 
@@ -565,6 +566,14 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
 - **El armado recibe las métricas de cada sprint por su número** (tarea 4): las del sprint
   abierto para el sprint en curso, y las mismas le van a servir a la tarea 6 para la
   velocidad de cada sprint cerrado.
+- **Los gráficos usan las métricas del proyecto entero** (tarea 5), las mismas del estado
+  general: un número no se lee distinto en dos partes de la página (RN-2).
+- **Cada gráfico lleva un título corto y cada barra un rótulo corto** (tarea 5): «Story
+  points» con «Planificados» y «Completados», «Horas» con «Estimadas» y «Reales», y
+  «Defectos» con «Detectados» y «Resueltos». El título dice qué se compara y el rótulo, cuál
+  es cada barra.
+- **El test de la tarea 5 mira solo los tres primeros gráficos**: el de velocidad, cuarto, lo
+  agrega la tarea 6 con su propio test, sin reescribir este.
 
 ### Desvíos respecto de la spec
 
