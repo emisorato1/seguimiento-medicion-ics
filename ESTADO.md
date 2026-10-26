@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 12:41. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 12:49. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-fbace28 2026-10-26 Merge pull request #161 from emisorato1/gitattributes-plantillas
-80b0d55 2026-10-26 Merge pull request #160 from emisorato1/historia-16-terminada
-be97185 2026-10-26 docs: la historia 73 terminada en su spec, el indice y ESTADO.md
-530f4fb 2026-10-26 chore: las plantillas y el CSS de la web bajan siempre con LF
-444a133 2026-10-26 Merge pull request #149 from emisorato1/historia-78-web
-f6889fe 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con la historia 16 terminada y el defecto 156 resuelto
-057baeb 2026-10-26 docs: la historia 16 terminada en su spec y el indice
-28f418c 2026-10-26 Merge pull request #157 from emisorato1/defecto-ronda-sin-participantes
+69be6c9 2026-10-26 Merge pull request #163 from emisorato1/historia-78-defectos
+0398771 2026-10-26 docs: la #78 con los defectos hechos (tareas 12 a 15), sus desvíos y la verificación de la parte 2
+8397692 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-78-defectos
+b7523ca 2026-10-26 test: los rechazos que quedaban sin probar en las pantallas de la #78 (sin RED)
+e04ef0b 2026-10-26 test: los defectos siguen al reabrir y sus formularios se usan con el teclado (historia 78, tareas 23 y 24, sin RED)
+99cf3d9 2026-10-26 Merge pull request #162 from emisorato1/chore-trazabilidad-78-parte-1
+153b2a6 2026-10-26 feat: los rechazos de los defectos junto a su campo (historia 78, tarea 15)
+8847aa0 2026-10-26 test: los rechazos de los defectos junto a su campo, y el defecto 99 (historia 78, tarea 15)
 ```
