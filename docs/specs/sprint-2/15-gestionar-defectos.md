@@ -445,6 +445,7 @@ solo.
 | La severidad deja libre su valor "ninguna" y el estado no | que las dos arranquen igual | la severidad se indica al registrar, y una no indicada tiene que rechazarse (RN-6), como el rol de la #4; el estado no se indica nunca, el defecto siempre nace Abierto (RN-3), como la historia en la #6 |
 | Resolver es una operación propia, separada del cambio de estado | una sola operación de cambio de estado que, cuando el destino es Resuelto, además recibe el sprint | un dato que a veces se usa y a veces no termina en una operación que nadie entiende; además la RN-13 solo aplica al resolver |
 | El texto de la severidad se convierte a severidad en el dominio | que la interfaz lo traduzca y rechace lo inválido | si la consola rechaza un texto inválido por su cuenta, la RN-6 queda duplicada fuera del dominio y sin tests, como ya se decidió en la #4 con los roles |
+| **El texto del estado también se convierte en el dominio** (`ParseDefectState`), igual que el de la severidad: sin distinguir mayúsculas ni los espacios de los costados, y rechazando cualquier otro texto. Agregado el 26/10 a pedido de la #78 (punto 8 de Maxi al aprobar sus puertas) | que la web traduzca el texto del estado por su cuenta | el mismo motivo que la severidad: si la interfaz rechaza un texto inválido por su cuenta, la regla queda fuera del dominio y sin tests. La carga de los datos guardados usa la misma conversión |
 | La conversión acepta "critica" sin tilde, además de ignorar mayúsculas y espacios | aceptar solo "crítica" con tilde, o quitar las tildes de todo el texto | en un teclado sin tildes es la forma más probable de escribirla, y los escenarios Gherkin la escriben sin tilde. Se acepta esa forma puntual y no se normalizan las tildes en general: eso exigiría una librería de normalización, que AGENTS.md no permite (el mismo criterio de la #4 con los nombres). Mayor y Menor no llevan tilde (revisión de Maxi en el PR #101) |
 | Las consultas filtradas recorren la lista en el momento | guardar los defectos agrupados por estado y por severidad | con el cambio de estado habría que mantener los grupos sincronizados, y el volumen no lo justifica |
 | Un error propio por cada rechazo | un único error de "defecto inválido" | la Fase 1 da siete mensajes distintos y los tests necesitan distinguir cuál salió |
@@ -499,6 +500,7 @@ RN-18.
 | 14 | Los defectos de un proyecto no aparecen en otro, y cada proyecto numera desde 1 | Los defectos de un proyecto no aparecen en otro | RN-16 | hecha |
 | 15 | Operar sobre un defecto o un proyecto que no existe informa que no se encontró y no cambia nada | Operar sobre algo que no existe | RN-19 | hecha |
 | 16 | Los defectos entran en la conversión del registro: uno Abierto, uno En curso y uno Resuelto, con sus severidades y sus sprints, se reconstruyen iguales, con su número y el contador; uno inválido en el archivo (sin título, severidad desconocida, historia o sprint que no existen, Resuelto sin sprint de resolución) rechaza la carga | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | hecha |
+| 17 | Convertir el texto en un estado de defecto, sin distinguir mayúsculas ni espacios de los costados, y rechazar cualquier otro texto (agregado pedido por la #78) | — (sin escenario: lo usa la web para cambiar el estado) | RN-9, RN-10 | hecha |
 
 ### Por qué este orden
 
@@ -603,6 +605,7 @@ de test lleva en su mensaje la salida del test fallando, después de la línea `
 | 15 | `b45a9fc` | `69ddd84` |
 | 16 (ida y vuelta) | `77ad695` | `cdff242` |
 | 16 (datos dañados) | `db591a3` | `6695d51` |
+| 17 (agregado pedido por la #78) | `d92cfbd` | `809a617` |
 
 Los RED de las tareas 1, 3, 4, 7, 8, 9, 11, 12, 13 y 15 fueron por compilación: la operación
 o el error todavía no existían. Los de las tareas 5, 6, 10 y 16, por comportamiento. En dos
@@ -651,6 +654,11 @@ Ninguno de comportamiento. Los de proceso y de detalle:
     `TestOperarSobreAlgoQueNoExisteConDefectos`, porque la #9 tiene uno con el mismo nombre.
   - El armado de sprints de los tests cierra el abierto antes de crear el siguiente, porque la
     #8 deja uno solo abierto. Cerrar es de la #10, que todavía no está en `dev`.
+- **La tarea 17 es un agregado posterior, pedido por la #78** (punto 8 de Maxi al aprobar sus
+  puertas): sus pantallas de defectos reciben el estado como texto. Se hizo el 26/10 en un PR
+  propio (`Refs #15`), con RED por compilación. La carga de los datos guardados pasó a usar la
+  misma conversión: ahora acepta también mayúsculas distintas y espacios, como ya hacía con la
+  severidad, y un estado que no existe se sigue rechazando.
 - **El PR #129 se abrió como borrador el 21/10, con las tareas 1 a 15.** La 16 esperaba que
   los sprints entraran en la conversión del registro (#8, PR #138): sin eso, los defectos no
   podían validar sus sprints al cargar.
