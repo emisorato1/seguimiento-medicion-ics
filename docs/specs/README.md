@@ -77,7 +77,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
+| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 🟢 Puerta 3 aprobada — lista para implementar (espera la #18) |
 | [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | 🔍 Implementada — en review (adelantada al Sprint 3) |
 
 ### Qué es un "borrador completo"
