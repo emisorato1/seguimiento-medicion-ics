@@ -10,6 +10,10 @@ import (
 // cerrado el sprint, el proyecto queda sin sprint abierto y puede crear el siguiente (RN-14).
 func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
 	sprint, _ := p.OpenSprint()
+	// la fecha de cierre es obligatoria, y no se compara con ninguna otra (RN-10, RN-11)
+	if closedOn.IsZero() {
+		return ErrSprintCloseDateRequired
+	}
 	// las completadas quedan registradas aparte de las asignadas (RN-2); las asignadas quedan
 	// Terminadas si se completaron y vuelven al Product Backlog como Pendientes si no (RN-3,
 	// RN-4)
