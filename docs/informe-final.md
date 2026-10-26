@@ -13,8 +13,8 @@
 
 Universidad Tecnológica Nacional, Facultad Regional San Rafael. Ingeniería y Calidad de
 Software, 2026. Título: *Seguimiento y medición de proyectos de software*. Integrantes:
-Agustín Salinas [pendiente: legajo], Emiliano Sorato (legajo 43486067), Juliana Bustos
-[pendiente: legajo] y Maximiliano Eula [pendiente: legajo].
+Agustín Salinas (legajo 9105), Emiliano Sorato (legajo 8378), Juliana Bustos (legajo 9975) y
+Maximiliano Eula (legajo 8665).
 
 ## 1. El producto
 
