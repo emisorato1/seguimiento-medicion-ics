@@ -3,6 +3,7 @@ package store
 import (
 	"bytes"
 	"errors"
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -353,5 +354,61 @@ func TestUnGuardadoQueFallaNoDejaNadaAMedias(t *testing.T) {
 	sinError(t, err)
 	if got, want := comoTexto(t, cargado), comoTexto(t, despues); !bytes.Equal(got, want) {
 		t.Errorf("el guardado siguiente tenia que guardar todo, y la base tiene:\n%s", got)
+	}
+}
+
+// Escenarios: Un dato guardado que no cumple las reglas no se carga / Una base de una
+// versión más nueva no se abre
+// Cubre: #177 RN-4, RN-13
+func TestLoQueNoSePuedeAbrirSeAvisaYNoSeToca(t *testing.T) {
+	casos := []struct {
+		nombre  string
+		armar   func(t *testing.T, path string)
+		mensaje string
+	}{
+		{nombre: "un archivo que no es una base", armar: func(t *testing.T, path string) {
+			if err := os.WriteFile(path, []byte("no soy una base"), 0o644); err != nil {
+				t.Fatalf("no se pudo preparar el archivo: %v", err)
+			}
+		}, mensaje: "no se pudo abrir la base"},
+		{nombre: "una historia con 4 story points", armar: func(t *testing.T, path string) {
+			db, err := OpenDatabase(path)
+			sinError(t, err)
+			sinError(t, db.Save(unRegistroCompleto(t)))
+			_, err = db.db.Exec("UPDATE stories SET story_points = 4 WHERE id = 1")
+			sinError(t, err)
+			db.Close()
+		}, mensaje: domain.ErrStoryPointsInvalid.Error()},
+		{nombre: "una base de una version mas nueva", armar: func(t *testing.T, path string) {
+			db, err := OpenDatabase(path)
+			sinError(t, err)
+			_, err = db.db.Exec("PRAGMA user_version = 99")
+			sinError(t, err)
+			db.Close()
+		}, mensaje: "versión más nueva"},
+	}
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			path := filepath.Join(t.TempDir(), "datos-ics.db")
+			caso.armar(t, path)
+			antes, err := os.ReadFile(path)
+			sinError(t, err)
+
+			db, err := OpenDatabase(path)
+			if err == nil {
+				_, err = db.Load()
+				db.Close()
+			}
+
+			if !errors.Is(err, domain.ErrSavedDataInvalid) {
+				t.Fatalf("se esperaba ErrSavedDataInvalid, salio: %v", err)
+			}
+			if !strings.Contains(err.Error(), caso.mensaje) || !strings.Contains(err.Error(), path) {
+				t.Errorf("el mensaje tenia que decir %q y nombrar la base, salio: %v", caso.mensaje, err)
+			}
+			if despues, _ := os.ReadFile(path); !bytes.Equal(despues, antes) {
+				t.Error("la base tenia que quedar como estaba")
+			}
+		})
 	}
 }
