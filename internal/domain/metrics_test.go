@@ -314,10 +314,9 @@ func TestDefectosDetectadosYResueltosDeCadaSprint(t *testing.T) {
 }
 
 // Escenario: Metricas del proyecto entero
-// Cubre: RN-9, RN-11, RN-12, RN-13
+// Cubre: RN-9, RN-10, RN-11, RN-12, RN-13
 //
-// El escenario se completa en varias tareas (Fase 3): la velocidad la suma la tarea 14. El
-// sprint 1 se cierra con el cierre de la #10, que registra las completadas.
+// El sprint 1 se cierra con el cierre de la #10, que registra las completadas.
 func TestMetricasDelProyectoEntero(t *testing.T) {
 	project := unProyecto(t)
 	conIntegrante(t, project)
@@ -363,6 +362,9 @@ func TestMetricasDelProyectoEntero(t *testing.T) {
 	if got.CompletedPoints != 8 || got.StoriesCompleted != 2 || !mismasHoras(got.CompletionRate, 40) {
 		t.Fatalf("se esperaban 8 puntos completados, 2 historias completadas y un porcentaje de 40, salieron %d, %d y %v",
 			got.CompletedPoints, got.StoriesCompleted, got.CompletionRate)
+	}
+	if got.Velocity != 8 {
+		t.Fatalf("se esperaba velocidad 8, salio %d", got.Velocity)
 	}
 	if !mismasHoras(got.EstimatedHours, 30) || !mismasHoras(got.ActualHours, 33) || !mismasHoras(got.HoursDeviation, 10) {
 		t.Fatalf("se esperaban 30 horas estimadas, 33 reales y una desviacion de 10, salieron %v, %v y %v",
@@ -512,6 +514,57 @@ func TestCalcularElPorcentajeDeHistoriasCompletas(t *testing.T) {
 			}
 			if !mismasHoras(got.CompletionRate, tc.rate) {
 				t.Fatalf("se esperaba un porcentaje de %v, salio %v", tc.rate, got.CompletionRate)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Velocidad del proyecto
+// Cubre: RN-10
+//
+// Cada sprint cerrado completa historias que suman su velocidad, con puntos de la escala: el 6
+// son dos historias de 3. La fila "ninguna" tiene un sprint abierto, que no cuenta.
+func TestVelocidadDelProyecto(t *testing.T) {
+	cases := []struct {
+		name     string
+		sprints  [][]int
+		velocity int
+	}{
+		{"8, 5 y 6", [][]int{{8}, {5}, {3, 3}}, 6},
+		{"10 y 13", [][]int{{5, 5}, {13}}, 12},
+		{"ninguna", nil, 0},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyecto(t)
+			next := 1
+			for _, points := range tc.sprints {
+				historiasEstimadas(t, project, points...)
+				unSprint(t, project)
+				completed := []int{}
+				for range points {
+					if err := project.AssignStory(next); err != nil {
+						t.Fatalf("no se pudo asignar la historia %d: %v", next, err)
+					}
+					completed = append(completed, next)
+					next++
+				}
+				if err := project.CloseSprint(completed, unDia(2026, 10, 30)); err != nil {
+					t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+				}
+			}
+			if tc.sprints == nil {
+				historiasEstimadas(t, project, 5)
+				unSprint(t, project)
+				if err := project.AssignStory(1); err != nil {
+					t.Fatalf("no se pudo asignar la historia al sprint abierto: %v", err)
+				}
+			}
+
+			got := project.ProjectMetrics()
+
+			if got.Velocity != tc.velocity {
+				t.Fatalf("se esperaba velocidad %d, salio %d", tc.velocity, got.Velocity)
 			}
 		})
 	}
