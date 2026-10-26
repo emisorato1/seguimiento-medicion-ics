@@ -1618,8 +1618,7 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 // Escenario: Los datos nuevos siguen al cerrar y volver a abrir
 // Cubre: RN-2 de la #78 (RN-21 a RN-25 de la #77); #177 RN-1, RN-3 (en la base)
 //
-// Por ahora con sprints, esfuerzo y rondas: los defectos se suman con la tarea 12, y que el
-// sprint siguiente reciba el numero 2 necesita cerrar el sprint (#10).
+// Con sprints (uno cerrado y el siguiente, el 2), esfuerzo, defectos y rondas acordadas.
 func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	for _, almacen := range almacenes {
 		t.Run(almacen.nombre, func(t *testing.T) {
