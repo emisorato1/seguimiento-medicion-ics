@@ -2,10 +2,11 @@
 
 Guía breve para usar el sistema de seguimiento y medición de proyectos. Crece a medida que
 se terminan las historias: hoy cubre la **interfaz web** (historia #77) y la **interfaz de
-consola** (historia #24). Las pantallas de la #78 se suman cuando estén en `dev`.
+consola** (historia #24), y en la web también los sprints, el esfuerzo, los defectos y el
+Planning Poker (historia #78). El reporte y su PDF se suman cuando estén terminados.
 
-Las dos interfaces hacen lo mismo con los proyectos, los integrantes y el backlog, pero **no
-comparten los datos**: la web los guarda en un archivo y los encuentra al volver a abrirla;
+Las dos interfaces hacen lo mismo con los proyectos, los integrantes y el backlog; lo demás
+se hace solo desde la web. **No comparten los datos**: la web los guarda en un archivo y los encuentra al volver a abrirla;
 la consola los pierde al cerrarse.
 
 ## Desde el navegador
@@ -35,12 +36,16 @@ navegador. No hace falta internet. Para cerrarlo, volvé a la terminal y apretá
 ### Cómo se usa
 
 - **La barra de arriba** lleva siempre a la lista de proyectos. Dentro de un proyecto,
-  muestra su nombre y sus tres partes: **Datos**, **Integrantes** y **Backlog**.
+  muestra su nombre y sus partes: **Datos**, **Integrantes**, **Backlog**, **Sprints**,
+  **Esfuerzo**, **Defectos** y **Planning Poker**.
 - **Cada cambio se confirma** con un mensaje en verde arriba de la página. Recargar la página
   no repite el cambio.
 - **Si algo está mal**, el formulario vuelve con lo que escribiste y el motivo en rojo,
   debajo del campo que hay que corregir. Corregilo y volvé a enviar.
-- **Antes de quitar algo**, el sistema pregunta. Con «Cancelar» no cambia nada.
+- **Antes de lo que no se deshace** (quitar algo, cerrar un sprint o resolver un defecto),
+  el sistema pregunta. Con «Cancelar» no cambia nada.
+- **Lo que se elige de una lista** (un integrante, una historia, un sprint, la severidad)
+  empieza sin nada elegido: hay que elegirlo a propósito.
 - Todo se puede hacer **con el teclado**: Tab para pasar de un campo a otro y Enter para
   enviar. En Safari, para pasar también por los enlaces, se usa Option+Tab.
 
@@ -57,8 +62,10 @@ lo marca en el campo:
 
 ![Un proyecto sin nombre](manual/proyecto-con-error.png)
 
-Al hacer clic en el nombre de un proyecto se ven sus datos. Con **Modificar proyecto** se
-cambian. Si borrás la descripción o la fecha de fin, el proyecto queda sin ellas.
+Al hacer clic en el nombre de un proyecto se ven sus datos y un resumen: cuántas historias
+tiene, cuántas están completadas y cuántas pendientes, y qué sprint está en curso. Con
+**Modificar proyecto** se cambian los datos. Si borrás la descripción o la fecha de fin, el
+proyecto queda sin ellas.
 
 ![Datos de un proyecto](manual/proyecto.png)
 
@@ -89,21 +96,94 @@ Al hacer clic en una historia se ven todos sus datos. Desde ahí:
 - **Estimar** (o **Reestimar**) le asigna story points, elegidos de la escala 1, 2, 3, 5, 8,
   13 y 21.
 - **Quitar estimación** la deja sin estimar, después de confirmarlo.
+- **Cargar horas estimadas** le pone las horas que se calcula que va a llevar. Se pueden
+  escribir con coma o con punto, por ejemplo `6,5`.
 
 ![Una historia](manual/historia.png)
+
+### Sprints
+
+En **Sprints** están todos los sprints del proyecto, con su Sprint Goal, sus fechas, su
+estado y, si ya se cerró, la fecha de cierre. Con **Nuevo sprint** se crea uno: el Sprint
+Goal y las fechas de inicio y de fin. Hay un solo sprint abierto por vez.
+
+Al hacer clic en el sprint abierto se ve su Sprint Backlog. Desde ahí:
+
+- **Asignar al sprint** suma una historia del backlog, elegida de la lista. Solo se pueden
+  asignar historias estimadas: si no, el sistema lo avisa junto a la lista.
+- **Quitar** saca una historia del sprint, después de confirmarlo. La historia vuelve a
+  quedar Pendiente.
+
+![Un sprint abierto](manual/sprint.png)
+
+**Cerrar el sprint** pide la fecha de cierre (propone la de hoy) y que marques las historias
+que se completaron. Antes de cerrarlo, el sistema muestra cuáles quedan completadas y
+cuáles vuelven al Product Backlog, y pide confirmarlo: un sprint cerrado no se vuelve a
+abrir.
+
+![Cerrar un sprint](manual/cerrar-sprint.png)
+
+Un sprint cerrado se sigue pudiendo consultar: muestra su fecha de cierre y, por cada
+historia, los story points que tenía al cerrarse y si se completó.
+
+### Esfuerzo
+
+En **Esfuerzo** se ven las horas trabajadas: el total por historia, el total por integrante
+y todos los registros. Con **Registrar horas** se carga uno: quién trabajó, en qué historia,
+qué día (propone el de hoy), cuántas horas y qué hizo. Las horas aceptan decimales (`2,5`).
+No se pueden cargar horas de un día que todavía no pasó. Si el proyecto no tiene
+integrantes, el formulario lo dice y ofrece agregar el primero.
+
+![Horas trabajadas](manual/esfuerzo.png)
+
+### Defectos
+
+En **Defectos** están los errores encontrados, con su severidad, su estado, la historia
+donde apareció y en qué sprint se detectó y se resolvió. Con **Nuevo defecto** se carga uno:
+título, descripción, severidad (Crítica, Mayor o Menor), la historia y el sprint en que se
+detectó. Empieza Abierto. Si el proyecto no tiene sprints, el formulario lo dice y ofrece
+crear el primero.
+
+Arriba de la lista se puede **filtrar por estado** o **por severidad**, uno por vez. Con
+**Ver todos los defectos** se saca el filtro.
+
+![Defectos de un proyecto](manual/defectos.png)
+
+Al hacer clic en un defecto se ven sus datos. Desde ahí se lo pasa entre **Abierto** y **En
+curso**, o se lo **resuelve** eligiendo en qué sprint se resolvió, que no puede ser
+anterior al de detección. Resolverlo pide confirmación, y un defecto resuelto ya no cambia.
+
+### Planning Poker
+
+En **Planning Poker** se elige una historia y se abre una ronda para estimarla. Cada
+integrante elige su nombre de la lista de los que faltan y vota sus story points. **Nadie ve
+ningún voto hasta revelar la ronda**, ni siquiera quien lo dio: la página muestra solo
+quiénes votaron y quiénes faltan.
+
+![Una ronda antes de revelar](manual/ronda.png)
+
+Cuando votaron todos, **Revelar la ronda** muestra cada voto y si hay diferencias, con el
+voto más bajo y el más alto y quiénes los dieron. Desde ahí se puede:
+
+- **Acordar** la estimación, que queda como los story points de la historia.
+- **Abrir una ronda nueva**, para volver a votar después de conversar las diferencias.
+
+![Una ronda revelada](manual/ronda-revelada.png)
+
+Con **Todas las rondas de la historia** se ven las rondas anteriores y lo que se acordó en
+cada una.
 
 ### Si algo sale mal
 
 | Lo que ves | Qué hacer |
 |---|---|
 | Un mensaje en rojo debajo de un campo | corregir ese campo y volver a enviar |
-| «No se encontró el proyecto» o «la historia» | volver a la lista con el botón y elegirlo de ahí |
+| «No se encontró el proyecto», «la historia», «el sprint», «el defecto» o «la ronda» | volver con el botón y elegirlo de la lista |
+| «Ya hay un sprint abierto en el proyecto» al crear uno | cerrar primero el sprint abierto |
+| «Todavía faltan votos para revelar la ronda» | esperar a que voten todos los que figuran en «Faltan» |
 | «El cambio no quedó guardado» | el cambio sigue cargado y se guarda con el próximo que funcione; revisá que se pueda escribir en la carpeta de los datos |
 | Al abrir, «el puerto ya lo está usando otro programa» | abrirlo con `-puerto 8081` |
 | Al abrir, «los datos guardados no se pueden leer» | arreglar el archivo de datos o arrancar con otro usando `-datos` |
-
-Las pantallas de sprints, esfuerzo, defectos, Planning Poker y reportes se suman a este
-manual cuando estén terminadas (historia #78).
 
 ## Desde la consola
 
