@@ -192,8 +192,11 @@ a {
   margin: 0 0 1rem;
 }
 
-/* Una tabla que no entra se recorre dentro de su recuadro, sin mover la pagina (RN-18). */
+/* Una tabla que no entra se recorre dentro de su recuadro, sin mover la pagina (RN-18).
+   position: relative deja adentro del recuadro el texto .oculto de las celdas: sin eso, por
+   ser absoluto, se ubica respecto de la pagina y la ensancha. */
 .tabla {
+  position: relative;
   overflow-x: auto;
   background: var(--superficie);
   border: 1px solid var(--borde);

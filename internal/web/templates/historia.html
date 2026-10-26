@@ -14,6 +14,8 @@
   <dd>{{.State}}</dd>
   <dt>Story points</dt>
   <dd>{{if .IsEstimated}}{{.StoryPoints}}{{else}}<span class="sin-dato">sin estimar</span>{{end}}</dd>
+  <dt>Horas estimadas</dt>
+  <dd>{{if .EstimatedHours}}{{horas .EstimatedHours}}{{else}}<span class="sin-dato">sin horas estimadas</span>{{end}}</dd>
   <dt>Criterios de aceptación</dt>
   <dd>
     <ul class="criterios">
@@ -25,6 +27,7 @@
 <div class="acciones">
   <a class="boton" href="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}/editar">Modificar historia</a>
   <a class="boton" href="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}/estimar">{{if .Data.Story.IsEstimated}}Reestimar{{else}}Estimar{{end}}</a>
+  <a class="boton" href="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}/horas-estimadas">Cargar horas estimadas</a>
   {{if .Data.Story.IsEstimated}}<a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/historias/{{.Data.Story.ID}}/quitar-estimacion">Quitar estimación</a>{{end}}
   <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/backlog">Volver al backlog</a>
 </div>

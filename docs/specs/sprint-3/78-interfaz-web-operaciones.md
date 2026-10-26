@@ -3,7 +3,10 @@
 - **Historia:** #78
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** En implementación (PR #149): sprints sin el cierre, esfuerzo, horas
+  estimadas, Planning Poker hasta revelar y el resumen del proyecto. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
+  (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), con dos cambios que esta spec ya incorpora (la
+  tarea 17 y el punto 8 de "Para decidir en la puerta") y una nota sobre los casos límite
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna, de
   los criterios de aceptación de la issue y de las specs de las historias de dominio que
   muestra. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
@@ -11,7 +14,8 @@
   guardado) y, para cada pantalla, de su historia de dominio: #8 y #9 (crear un sprint y
   asignarle historias), #10 (cerrarlo), #11 (sprints anteriores), #14 (esfuerzo), #15
   (defectos), #13 y #73 (Planning Poker), #18 y #19 (reporte y PDF). Además, #5 (resumen del
-  proyecto) y #16 (horas estimadas). Ninguna de esas está en `dev` todavía
+  proyecto) y #16 (horas estimadas). Al 25/10 están en `dev` la #5, la #8, la #9, la #13, la
+  #14, la #15 y las horas estimadas de la #16; faltan la #10, la #11, la #73, la #18 y la #19
 - **La necesitan:** nadie todavía
 
 ## Fase 1 — Requisitos
@@ -165,6 +169,8 @@ operación aceptada:
 - Una ronda con un solo participante: se vota, se revela y no hay diferencias.
 - Recargar la página de una ronda sin revelar después de votar: sigue sin mostrar el valor.
 - Un integrante que se suma al proyecto con la ronda abierta no aparece para votar (#13).
+- Un integrante que se quitó del proyecto con la ronda abierta sigue apareciendo para votar,
+  porque la lista sale de los que faltan según el núcleo (#13, su punto 1). No es un error.
 - El reporte de un sprint abierto se muestra igual, con el aviso de números parciales que
   arma el núcleo (#18).
 
@@ -294,7 +300,9 @@ Escenario: Una ronda de Planning Poker sin ver los votos hasta revelar
 Escenario: Nadie ve un voto antes de revelar
   Dado una ronda de la historia 1 sin revelar en la que "Ana Perez" voto 13
   Cuando recorro todas las paginas del proyecto y recargo la de la ronda
-  Entonces el 13 de "Ana Perez" no aparece en ninguna pagina ni en ningun mensaje
+  Entonces ninguna pagina muestra la tabla de votos
+  Y en ninguna pagina aparece el 13 junto a "Ana Perez"
+  Y el mensaje que confirma su voto no lleva ningun numero
 
 Escenario: Un voto rechazado no muestra el valor elegido
   Dado una ronda de la historia 1 sin revelar en la que "Ana Perez" ya voto
@@ -439,9 +447,19 @@ Escenario: Los datos nuevos siguen al cerrar y volver a abrir
    se puede conectar a una operación que todavía no existe. Las tareas siguen el orden
    en que llegan las historias de dominio, y se pueden entregar por partes (D13).
    **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
+8. **El estado de un defecto llega como texto.** Lo señaló Maximiliano Eula al aprobar las
+   puertas. La RN-2 dice que, si se envía sin elegir, el estado lo rechaza el núcleo, pero la
+   #15 solo convierte desde texto la severidad (`ParseSeverity`): `ChangeDefectState` recibe
+   el estado como valor del dominio. Si la web tradujera «Abierto» y «En curso» por su cuenta,
+   copiaría una regla fuera del núcleo, que es lo que la #4 y la #15 evitaron con el rol y la
+   severidad. Hay dos caminos: que la #15 sume la conversión del estado igual que la de la
+   severidad (ya tiene una sin exportar, para la carga del archivo), o que la RN-2 diga cómo
+   se trata el estado. **Resuelto el 26/10 por el primer camino: el dominio exporta
+   `ParseDefectState`, que acepta «Abierto», «En curso» y «Resuelto» y rechaza el resto con
+   `ErrDefectStateUnknown` (PR #153, Refs #15). La tarea 12 arranca cuando entre a dev.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: en un comentario de la issue #78 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), desde su cuenta. Aprueba las tres puertas y acepta los puntos 1 a 7 de "Para decidir en la puerta". Pide dos cambios antes de las tareas que los usan: que el test de la tarea 17 no busque el número suelto (incorporado en el escenario y en la tarea) y resolver el estado de un defecto como texto (punto 8, pendiente). Nota: sumar a los casos límite al integrante que se quitó con la ronda abierta (incorporado).
 
 ## Fase 2 — Diseño
 
@@ -542,7 +560,7 @@ falta algo del núcleo, se pide en la historia de dominio que corresponde (ver D
   dashboard (#17).
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: en un comentario de la issue #78 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), desde su cuenta. Aprueba las tres puertas y acepta los puntos 1 a 7 de "Para decidir en la puerta". Pide dos cambios antes de las tareas que los usan: que el test de la tarea 17 no busque el número suelto (incorporado en el escenario y en la tarea) y resolver el estado de un defecto como texto (punto 8, pendiente). Nota: sumar a los casos límite al integrante que se quitó con la ronda abierta (incorporado).
 
 ## Fase 3 — Tareas
 
@@ -554,30 +572,30 @@ lo comparten le suman sus filas. Un test que pase sin código nuevo va a Desvío
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | La barra de un proyecto suma sprints, esfuerzo, defectos, Planning Poker y reporte; el servidor recibe la fecha de hoy | La barra de un proyecto lleva a todas sus secciones | RN-3, RN-12 | pendiente |
-| 2 | Sprints: lista vacía con su mensaje; crear un sprint redirige, queda «Abierto» con su número y recargar no crea otro | Crear un sprint desde la web / Las listas vacias dicen que hacer | RN-1, RN-2 | pendiente |
-| 3 | Goal vacío junto al campo y segundo sprint abierto arriba del formulario | Mostrar el rechazo sin perder lo escrito | RN-2 | pendiente |
-| 4 | Asignar desde la lista de todo el backlog y quitar con confirmación; el Sprint Backlog con su estado | Asignar y quitar historias del sprint abierto | RN-1, RN-16 | pendiente |
-| 5 | Asignar una historia sin estimar: el mensaje del dominio junto a la historia | Mostrar el rechazo sin perder lo escrito | RN-2, RN-16 | pendiente |
-| 6 | Cerrar el sprint: fecha de hoy propuesta, casillas sin marcar, confirmación con lo que queda completado y lo que vuelve; confirmar cierra, cancelar no | Cerrar el sprint marcando las completadas / Confirmar o cancelar antes de lo que no se deshace | RN-9, RN-10, RN-11 | pendiente |
-| 7 | Lista de sprints y detalle de uno anterior con los títulos de sus historias y cuáles se completaron | Consultar un sprint anterior | RN-1 | pendiente |
-| 8 | Sprint 99: el mensaje del dominio y el acceso al proyecto | Pedir algo que no existe | RN-18 | pendiente |
-| 9 | Esfuerzo: lista vacía, día propuesto hoy, registrar con integrante e historia de la lista, la tabla y los totales por historia y por integrante | Registrar esfuerzo y ver los totales / Las listas vacias dicen que hacer | RN-1, RN-11 | pendiente |
-| 10 | Día futuro y cero horas junto a su campo; unas horas que no son número se marcan sin llamar al dominio; sin integrantes, el aviso en lugar del formulario | Mostrar el rechazo sin perder lo escrito / Las listas vacias dicen que hacer | RN-2, RN-12, RN-17 | pendiente |
-| 11 | Cargar las horas estimadas de una historia | Cargar las horas estimadas de una historia | RN-1 | pendiente |
-| 12 | Defectos: lista vacía; cargar con severidad, historia y sprint de la lista; cambiar a «En curso» | Cargar un defecto, pasarlo a en curso y resolverlo / Las listas vacias dicen que hacer | RN-1, RN-16 | pendiente |
-| 13 | Resolver con confirmación; un resuelto no ofrece cambiar ni resolver | Cargar un defecto, pasarlo a en curso y resolverlo / Confirmar o cancelar antes de lo que no se deshace | RN-9 | pendiente |
-| 14 | Filtrar por un estado o por una severidad, y sin filtro todos | Filtrar los defectos | RN-13 | pendiente |
-| 15 | Título vacío, resolver en un sprint anterior y defecto 99 | Mostrar el rechazo sin perder lo escrito / Pedir algo que no existe | RN-2, RN-18 | pendiente |
-| 16 | Abrir una ronda; quién votó, quién falta y cuántos; votar eligiendo de los que faltan, con el mensaje sin el valor | Una ronda de Planning Poker sin ver los votos hasta revelar | RN-1, RN-5, RN-7 | pendiente |
-| 17 | Ningún valor antes de revelar en ninguna página, mensaje ni recarga; un voto rechazado vuelve sin el valor | Nadie ve un voto antes de revelar / Un voto rechazado no muestra el valor elegido | RN-4, RN-6 | pendiente |
-| 18 | Revelar: con votos faltantes, el mensaje arriba; con todos, cada voto con su integrante | No se puede revelar con votos faltantes / Una ronda de Planning Poker sin ver los votos hasta revelar | RN-2, RN-8 | pendiente |
-| 19 | Diferencias, ronda nueva, acuerdo y la lista de rondas de una historia; historia 99 | Diferencias, nueva ronda y acuerdo / Pedir algo que no existe | RN-1, RN-8, RN-18 | pendiente |
-| 20 | El reporte del proyecto y el de un sprint, con la fecha de hoy y las líneas del dominio sin reformatear | Ver el reporte | RN-1, RN-12, RN-14 | pendiente |
-| 21 | Descargar el PDF con su nombre como archivo para guardar; si no se puede generar, el aviso y ningún archivo | Descargar el reporte en PDF | RN-15, RN-19 | pendiente |
-| 22 | El resumen de la #5 en la página del proyecto | El proyecto muestra su resumen | RN-20 | pendiente |
-| 23 | Con el archivo real: sprints, esfuerzo, defectos y rondas siguen al reabrir, y el sprint nuevo recibe el número siguiente | Los datos nuevos siguen al cerrar y volver a abrir | RN-2 | pendiente |
-| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | pendiente |
+| 1 | La barra de un proyecto suma sprints, esfuerzo, defectos, Planning Poker y reporte; el servidor recibe la fecha de hoy | La barra de un proyecto lleva a todas sus secciones | RN-3, RN-12 | hecha |
+| 2 | Sprints: lista vacía con su mensaje; crear un sprint redirige, queda «Abierto» con su número y recargar no crea otro | Crear un sprint desde la web / Las listas vacias dicen que hacer | RN-1, RN-2 | hecha |
+| 3 | Goal vacío junto al campo y segundo sprint abierto arriba del formulario | Mostrar el rechazo sin perder lo escrito | RN-2 | hecha |
+| 4 | Asignar desde la lista de todo el backlog y quitar con confirmación; el Sprint Backlog con su estado | Asignar y quitar historias del sprint abierto | RN-1, RN-16 | hecha |
+| 5 | Asignar una historia sin estimar: el mensaje del dominio junto a la historia | Mostrar el rechazo sin perder lo escrito | RN-2, RN-16 | hecha |
+| 6 | Cerrar el sprint: fecha de hoy propuesta, casillas sin marcar, confirmación con lo que queda completado y lo que vuelve; confirmar cierra, cancelar no | Cerrar el sprint marcando las completadas / Confirmar o cancelar antes de lo que no se deshace | RN-9, RN-10, RN-11 | espera la #10 |
+| 7 | Lista de sprints y detalle de uno anterior con los títulos de sus historias y cuáles se completaron | Consultar un sprint anterior | RN-1 | en parte: la lista y el detalle están; lo completado espera la #10 y la #11 |
+| 8 | Sprint 99: el mensaje del dominio y el acceso al proyecto | Pedir algo que no existe | RN-18 | hecha |
+| 9 | Esfuerzo: lista vacía, día propuesto hoy, registrar con integrante e historia de la lista, la tabla y los totales por historia y por integrante | Registrar esfuerzo y ver los totales / Las listas vacias dicen que hacer | RN-1, RN-11 | hecha |
+| 10 | Día futuro y cero horas junto a su campo; unas horas que no son número se marcan sin llamar al dominio; sin integrantes, el aviso en lugar del formulario | Mostrar el rechazo sin perder lo escrito / Las listas vacias dicen que hacer | RN-2, RN-12, RN-17 | hecha |
+| 11 | Cargar las horas estimadas de una historia | Cargar las horas estimadas de una historia | RN-1 | hecha |
+| 12 | Defectos: lista vacía; cargar con severidad, historia y sprint de la lista; cambiar a «En curso». Espera el acuerdo del punto 8 | Cargar un defecto, pasarlo a en curso y resolverlo / Las listas vacias dicen que hacer | RN-1, RN-16 | espera el punto 8 |
+| 13 | Resolver con confirmación; un resuelto no ofrece cambiar ni resolver | Cargar un defecto, pasarlo a en curso y resolverlo / Confirmar o cancelar antes de lo que no se deshace | RN-9 | espera el punto 8 |
+| 14 | Filtrar por un estado o por una severidad, y sin filtro todos | Filtrar los defectos | RN-13 | espera el punto 8 |
+| 15 | Título vacío, resolver en un sprint anterior y defecto 99 | Mostrar el rechazo sin perder lo escrito / Pedir algo que no existe | RN-2, RN-18 | espera el punto 8 |
+| 16 | Abrir una ronda; quién votó, quién falta y cuántos; votar eligiendo de los que faltan, con el mensaje sin el valor | Una ronda de Planning Poker sin ver los votos hasta revelar | RN-1, RN-5, RN-7 | hecha |
+| 17 | Ningún valor antes de revelar en ninguna página, mensaje ni recarga; un voto rechazado vuelve sin el valor. El test no busca el número suelto, porque el formulario de votar ofrece la escala entera y el número puede estar en una fecha o un identificador: comprueba que la tabla de votos no existe hasta revelar, que ninguna fila ni elemento que nombra a quien votó lleva su valor, y que el mensaje que confirma el voto no lleva ningún número (revisión de Maximiliano Eula) | Nadie ve un voto antes de revelar / Un voto rechazado no muestra el valor elegido | RN-4, RN-6 | hecha |
+| 18 | Revelar: con votos faltantes, el mensaje arriba; con todos, cada voto con su integrante | No se puede revelar con votos faltantes / Una ronda de Planning Poker sin ver los votos hasta revelar | RN-2, RN-8 | hecha |
+| 19 | Diferencias, ronda nueva, acuerdo y la lista de rondas de una historia; historia 99 | Diferencias, nueva ronda y acuerdo / Pedir algo que no existe | RN-1, RN-8, RN-18 | espera la #73 |
+| 20 | El reporte del proyecto y el de un sprint, con la fecha de hoy y las líneas del dominio sin reformatear | Ver el reporte | RN-1, RN-12, RN-14 | espera la #18 |
+| 21 | Descargar el PDF con su nombre como archivo para guardar; si no se puede generar, el aviso y ningún archivo | Descargar el reporte en PDF | RN-15, RN-19 | espera la #19 |
+| 22 | El resumen de la #5 en la página del proyecto | El proyecto muestra su resumen | RN-20 | hecha |
+| 23 | Con el archivo real: sprints, esfuerzo, defectos y rondas siguen al reabrir, y el sprint nuevo recibe el número siguiente | Los datos nuevos siguen al cerrar y volver a abrir | RN-2 | en parte: sprints, esfuerzo y rondas; faltan defectos y el sprint siguiente (#10) |
+| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | en parte: los formularios hechos; faltan los de defectos, cierre y reporte |
 
 **Verificación manual**, como en la #77: el contraste, el modo celular a 360 de ancho, los
 formularios nuevos recorridos con el teclado, una ronda votada desde dos pestañas y el PDF
@@ -634,11 +652,119 @@ Los veintidós escenarios de la Fase 1 tienen su tarea en la columna "Escenario 
 - **La 23 necesita que cada historia de dominio haya sumado su entidad a la conversión.**
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: en un comentario de la issue #78 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), desde su cuenta. Aprueba las tres puertas y acepta los puntos 1 a 7 de "Para decidir en la puerta". Pide dos cambios antes de las tareas que los usan: que el test de la tarea 17 no busque el número suelto (incorporado en el escenario y en la tarea) y resolver el estado de un defecto como texto (punto 8, pendiente). Nota: sumar a los casos límite al integrante que se quitó con la ronda abierta (incorporado).
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Se implementa en la rama `historia-78-web`, PR #149, con `Refs #78`. Las tareas van en el
+orden en que su historia de dominio llegó a `dev` (punto 7, D13).
+
+### Commits por tarea
+
+Cada tarea tiene el test en un commit, con su salida en rojo después de `RED:`, y la
+implementación en el siguiente.
+
+| Tarea | Test (RED) | Implementación (GREEN) |
+|---|---|---|
+| 1. Barra: Sprints | `fb7c03e` | `56d1f95` |
+| 2. Crear un sprint y la lista vacía | `cc2b293` | `211237f` |
+| 3. Rechazos del sprint | `4aad7ae` | `485f145` |
+| 4. Asignar y quitar con confirmación | `f3a96de` | `5077131` |
+| 5. Asignar una historia sin estimar | `73f2f68` | `03ad1a0` |
+| 8. Sprint 99 y volver al proyecto | `93be502` | `1813b0d` |
+| 9. Esfuerzo, día de hoy y totales; la barra suma Esfuerzo | `587fd47` | `97bb41b` |
+| 10. Rechazos del esfuerzo y aviso sin integrantes | `7e8b4d6` | `bd1088b` |
+| 11. Horas estimadas | `e8124f5` | `cf1d745` |
+| 16. Abrir una ronda y votar; la barra suma Planning Poker | `8f37017` | `4297f72` |
+| 17. Ningún voto antes de revelar; voto rechazado sin su valor | `fff8bab` | `cba14ef` |
+| 18. Revelar | `5acab35` | `06a195a` |
+| 22. Resumen del proyecto (#5) | `e10078c` | `b951ba3` |
+| 23. Los datos siguen al reabrir (en parte) | `97ef3a2` | — (pasa sin código nuevo) |
+| 24. Teclado y celular en los formularios nuevos (en parte) | `499e7a2` | — (pasa sin código nuevo) |
+| RN-18 en cada dirección nueva | `7c8ec8b` | — (pasa sin código nuevo) |
+
+### Desvíos
+
+- **La barra suma cada sección junto con su pantalla**, y no todas en la tarea 1. Así `dev`
+  nunca tiene un enlace a una página que todavía no existe. El test de la barra es una tabla
+  y cada pantalla le suma su fila. Por la misma razón, **la fecha de hoy (D1) entró con la
+  tarea 9**, la primera que la usa, y no con la 1: `NewServer` recibe de dónde tomarla, el
+  comando le da `time.Now` y los tests una fija (27/10/2026).
+- **La página de Planning Poker del proyecto** (`/proyectos/{id}/planning-poker`) no estaba
+  entre las direcciones del Enfoque. La pide la barra (RN-3) y la entrada «abrir una ronda:
+  la historia», que se elige de una lista: muestra cada historia con su ronda actual y el
+  formulario para abrir una. La ronda queda en `/proyectos/{id}/historias/{n}/rondas/{r}`,
+  como dice el Enfoque.
+- **Asignar y quitar van a `/proyectos/{id}/sprints/asignar` y `/quitar`**, sin el número del
+  sprint: el núcleo asigna siempre al sprint abierto (#9), y un número en la dirección
+  podría no coincidir con él.
+- **Una ronda que la historia no tiene** se informa con un error de la web, «no se encontró
+  la ronda» (`errRoundNotFound`), como la página que no existe de la #77: el núcleo da la
+  ronda actual de una historia, y la web la compara con el número de la dirección.
+- **Mensajes con tilde**: la spec escribe los escenarios sin tildes («Se creo el sprint 1»)
+  y la web los muestra con tilde («Se creó el sprint 1»), igual que en la #77.
+- **El mensaje del rechazo se busca sin el cierre del elemento** en el esquema «Mostrar el
+  rechazo sin perder lo escrito»: el núcleo le suma al sprint ya abierto su número («…: el
+  sprint 1»), y el test toma el mensaje del propio error, sin escribirlo a mano.
+- **Tests que pasaron sin código nuevo**, como pide la Fase 3. Sus commits no dicen «sin
+  RED» en el asunto, como sí hacen los de la #10; para no reescribir la historia del PR, la
+  marca queda acá con el hash de cada uno:
+  - el segundo sprint abierto va arriba del formulario: lo hace la tabla de errores de la
+    #77, que manda arriba lo que no es de ningún campo (tarea 3, `4aad7ae`);
+  - asignar sin elegir la historia y unas horas que no son número (`dos`): los controla la
+    forma que ya traían las tareas 4 y 9 (tareas 5 y 10);
+  - **«Nadie ve un voto antes de revelar»** (tarea 17): el secreto lo garantiza el núcleo
+    (D2), porque `Votes` no entrega nada antes de revelar. Para saber que el test sirve, se
+    hizo que la plantilla mostrara el voto y el test falló en las dos lecturas de la ronda;
+    después se volvió atrás;
+  - los datos nuevos siguen al reabrir (tarea 23): lo que se guarda lo suma cada historia de
+    dominio y la web guarda el registro entero (Fase 2, Dependencias; `97ef3a2`);
+  - los formularios nuevos con etiqueta, error enlazado y foco, y las tablas en su recuadro
+    (tarea 24, `499e7a2`): las plantillas usan las partes comunes de la #77;
+  - las filas nuevas de «Pedir algo que no existe» (`7c8ec8b`).
+- **El test de la tarea 9 falló por compilación**: cambió la forma de armar el servidor
+  (`NewServer` con la fecha de hoy), y ese error de compilación es su RED.
+
+- **Un arreglo de CSS sin test de Go**: la verificación manual encontró que a 360 de ancho
+  el sprint con una historia asignada medía 526 px. El texto oculto «Quitar la historia 1»
+  es `position: absolute` y, como el recuadro `.tabla` no estaba posicionado, se ubicaba
+  respecto de la página y la ensanchaba. Se arregló con `position: relative` en `.tabla`,
+  que cubre también la tabla de integrantes de la #77. Un test de Go no mide el ancho
+  dibujado; el RED y el GREEN son las dos corridas del script de Playwright de abajo.
+
+- **Dos arreglos de tests después de traer dev el 26/10**, que no cambian código Go:
+  - con la #10, la carga pide la fecha de cierre de un sprint Cerrado, y el resumen del
+    proyecto se armaba con uno sin ella: se le sumó `closed_on`;
+  - en Windows las plantillas pueden bajar con CRLF, y cuatro tests buscaban filas con
+    «\n» y la sangría (revisión de Agustín): ahora quitan los espacios entre etiquetas
+    (`joinTags`). El RED se reprodujo con una copia del repo con las plantillas en CRLF.
+
+### Verificación manual de la parte 1
+
+El 26/10, con el script de Playwright de la #77 (fuera del repo) ampliado con las
+pantallas de esta parte, en Chromium 151, Firefox 153 y WebKit 26.5 (el motor de Safari):
+
+- con el teclado solo: crear un sprint, asignar una historia, quitarla con confirmación y
+  cancelar; registrar 2,5 horas (el día viene con la fecha de hoy); cargar las horas
+  estimadas; abrir una ronda, votar sin que se vea el voto y revelarla;
+- el foco se ve en todo el recorrido y ningún pedido sale del programa;
+- a 360 de ancho, ninguna de las 21 páginas se desplaza de costado (después del arreglo
+  de arriba);
+- después de matar el proceso y volver a abrirlo siguen el sprint, las horas y la ronda
+  revelada.
+
+Resultado: 90 controles bien en los tres motores. Falló solo el control de la #77 que
+espera el 8080 ocupado por Docker: ese día Docker no estaba corriendo y el puerto
+estaba libre, así que no es un error del programa. Queda para el final: la ronda votada
+desde dos pestañas, el contraste de lo nuevo y el PDF.
+
+### Lo que falta
+
+- **Defectos (tareas 12 a 15)**: el punto 8 se resolvió (el dominio exporta `ParseDefectState`, PR #153); esperan que entre a dev.
+- **Cerrar un sprint y lo completado (tareas 6 y 7)**: esperan la #10 y la #11.
+- **Diferencias, otra ronda y acuerdo (tarea 19)**: espera la #73.
+- **Reporte y PDF (tareas 20 y 21)**: esperan la #18 y la #19.
+- **La verificación manual** de las pantallas que faltan, la ronda desde dos pestañas, el contraste de lo nuevo y el PDF.
 
 ## Trazabilidad
 

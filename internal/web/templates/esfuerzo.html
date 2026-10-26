@@ -1,0 +1,58 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Esfuerzo</h1>
+{{if not .Efforts}}
+<div class="vacio">
+  <p>Todavía no hay horas registradas.</p>
+  <a class="boton" href="/proyectos/{{.ProjectID}}/esfuerzo/nuevo">Registrar las primeras horas</a>
+</div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/esfuerzo/nuevo">Registrar horas</a>
+</div>
+<h2>Totales por historia</h2>
+<div class="tabla">
+  <table id="por-historia">
+    <thead><tr><th scope="col">Historia</th><th scope="col">Horas</th></tr></thead>
+    <tbody>
+      {{range .ByStory}}<tr><td class="principal">{{.Name}}</td><td>{{horas .Hours}}</td></tr>{{end}}
+    </tbody>
+  </table>
+</div>
+<h2>Totales por integrante</h2>
+<div class="tabla">
+  <table id="por-integrante">
+    <thead><tr><th scope="col">Integrante</th><th scope="col">Horas</th></tr></thead>
+    <tbody>
+      {{range .ByMember}}<tr><td class="principal">{{.Name}}</td><td>{{horas .Hours}}</td></tr>{{end}}
+    </tbody>
+  </table>
+</div>
+<h2>Registros</h2>
+<div class="tabla">
+  <table id="registros">
+    <thead>
+      <tr>
+        <th scope="col">Día</th>
+        <th scope="col">Integrante</th>
+        <th scope="col">Historia</th>
+        <th scope="col">Actividad</th>
+        <th scope="col">Horas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Efforts}}
+      <tr>
+        <td>{{fecha .Day}}</td>
+        <td>{{.MemberName}}</td>
+        <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}">{{.StoryID}} — {{.StoryTitle}}</a></td>
+        <td>{{.Activity}}</td>
+        <td>{{horas .Hours}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
+{{end}}
