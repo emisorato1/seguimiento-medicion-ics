@@ -99,6 +99,8 @@ func TestAnchosDeHelvetica(t *testing.T) {
 		{text: "W", style: styleTitle, want: 15.104},
 		{text: "i", style: styleHeading, want: 3.336},
 		{text: "ñ", style: styleBody, want: 5.56},
+		// Un caracter que no esta en la tabla se mide con el ancho mas grande.
+		{text: "😀", style: styleBody, want: 10.15},
 	}
 	for _, c := range cases {
 		if got := textWidth(c.text, c.style); math.Abs(got-c.want) > 1e-9 {
