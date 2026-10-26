@@ -3,6 +3,7 @@ package domain
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -352,4 +353,15 @@ func escapePDFString(text []byte) []byte {
 		out = append(out, b)
 	}
 	return out
+}
+
+// writePDF es la entrega: arma el archivo entero en memoria y lo escribe de una vez donde lo
+// pide quien llama. Si el destino falla, o no recibe todos los bytes, informa que no se pudo
+// generar el PDF (RN-12).
+func writePDF(w io.Writer, doc pdfDoc) error {
+	pdf := buildPDF(layoutReport(doc))
+	if n, err := w.Write(pdf); err != nil || n != len(pdf) {
+		return ErrPDFNotGenerated
+	}
+	return nil
 }
