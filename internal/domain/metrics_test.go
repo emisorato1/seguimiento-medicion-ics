@@ -438,3 +438,24 @@ func TestUnaHistoriaQueVolvioAlBacklogCuentaComoCompletadaSoloDondeSeCompleto(t 
 		})
 	}
 }
+
+// Escenario: Los puntos de un sprint cerrado no cambian si se reestima una historia
+// Cubre: RN-3
+func TestLosPuntosDeUnSprintCerradoNoCambianSiSeReestimaUnaHistoria(t *testing.T) {
+	project, _ := unSprintParaCerrar(t, 3, 5)
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+	}
+
+	if err := project.EstimateStory(2, 8); err != nil {
+		t.Fatalf("no se pudo reestimar la historia 2: %v", err)
+	}
+	got, err := project.SprintMetrics(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+	if got.PlannedPoints != 8 || got.CompletedPoints != 3 {
+		t.Fatalf("se esperaban 8 story points planificados y 3 completados, salieron %d y %d", got.PlannedPoints, got.CompletedPoints)
+	}
+}
