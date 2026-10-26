@@ -249,3 +249,44 @@ func TestUnReporteLargoOcupaVariasPaginasNumeradas(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Un encabezado nunca queda solo al pie de una pagina
+// Cubre: RN-7
+func TestUnEncabezadoNuncaQuedaSoloAlPieDeUnaPagina(t *testing.T) {
+	// Titulo, "Generado el", encabezado y 35 lineas: 38 renglones. El encabezado de la seccion
+	// 2 caeria en el renglon 39, el ultimo de la pagina.
+	pages := layoutReport(unDocConLineas(35, 3))
+
+	if len(pages) != 2 {
+		t.Fatalf("se esperaban 2 paginas, salieron %d", len(pages))
+	}
+	first := pages[0].rows
+	if last := first[len(first)-1]; last.text != "Linea 35" {
+		t.Errorf("se esperaba que la pagina 1 terminara en \"Linea 35\", termina en %q", last.text)
+	}
+	second := pages[1].rows
+	if second[0] != (pdfRow{text: "Seccion 2", style: styleHeading}) || second[1].text != "Linea 1" {
+		t.Errorf("se esperaba que la pagina 2 empezara con el encabezado y su primera linea, empieza con %v", second[:2])
+	}
+}
+
+// Sin escenario: caso del foco de la revision del plan
+// Cubre: RN-7
+//
+// Un encabezado sin lineas tampoco queda como ultimo renglon, y pasarlo a la pagina siguiente
+// no deja ninguna pagina vacia.
+func TestUnEncabezadoSinLineasAlFinalNoAgregaPaginaVacia(t *testing.T) {
+	pages := layoutReport(unDocConLineas(35, 0))
+
+	if len(pages) != 2 {
+		t.Fatalf("se esperaban 2 paginas, salieron %d", len(pages))
+	}
+	if len(pages[1].rows) != 1 || pages[1].rows[0].text != "Seccion 2" {
+		t.Errorf("se esperaba la pagina 2 con solo el encabezado de la seccion 2, salio %v", pages[1].rows)
+	}
+	for i, page := range pages {
+		if len(page.rows) == 0 {
+			t.Errorf("la pagina %d quedo vacia", i+1)
+		}
+	}
+}
