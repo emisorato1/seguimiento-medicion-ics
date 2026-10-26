@@ -282,3 +282,22 @@ func TestCerrarUnSprintNuevoNoCambiaLosAnteriores(t *testing.T) {
 		t.Errorf("se esperaba el sprint 1 con la historia [1] y cerrado el 19/10/2026, tiene %v y cierre %v", first.Stories(), first.ClosedOn())
 	}
 }
+
+// Escenario: Consultar los sprints de un proyecto que no existe
+// Cubre: RN-10
+//
+// El listado y el detalle se le piden al proyecto, y el unico camino para llegar a un
+// proyecto es el registro de la #3: un proyecto que no existe se informa ahi, antes de
+// cualquiera de las dos consultas, como en la #8.
+func TestConsultarLosSprintsDeUnProyectoQueNoExiste(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	project, err := registry.Get(99)
+
+	if !errors.Is(err, ErrProjectNotFound) {
+		t.Fatalf("se esperaba ErrProjectNotFound para el proyecto 99, salio: %v", err)
+	}
+	if project != nil {
+		t.Fatalf("se esperaba no recibir ningun proyecto, salio el %d", project.ID())
+	}
+}
