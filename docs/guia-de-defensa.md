@@ -82,12 +82,19 @@ y queda registrado en la spec quién la aprobó y cuándo. Así nadie programa s
 que no revisó otro.
 
 **5. ¿Cómo usaron la IA y cómo la validaron?**
-La consigna la permite. Algunas historias las implementó Emiliano con asistencia de IA (las
-actas dicen cuáles; por ejemplo la #5, la #14, la #15, la #77, la #10 y la #16). Pasaron por el
-mismo camino que las demás: spec con sus puertas aprobadas por un compañero, el test primero,
-la revisión escrita de cada PR y el CI en verde. Respondemos por ese código igual que si lo
-hubiéramos escrito a mano. Sus horas reales son el tiempo de dirigir y revisar, y por eso el
-informe muestra la desviación con esas historias y sin ellas.
+La consigna la permite. Algunas historias las implementó Emiliano con asistencia de IA, que
+trabajó bajo su dirección y con su revisión: la #5, la #14, la #15, la #77, la #10, la #16, la
+#78, la #177 y la #19, y el arreglo del defecto #156 (PR #157). Todas siguieron el mismo camino
+que las demás:
+- **Puertas:** la spec tiene sus tres puertas aprobadas por otra persona, antes del código.
+- **TDD:** primero el test, que falla y deja la salida del RED en el commit, y después el
+  código, en el commit siguiente.
+- **Revisión:** cada PR tiene una revisión escrita y la firma de un compañero.
+- **CI:** los tests corren en Linux y en Windows en cada PR.
+
+Cada integrante responde por su parte, igual que si la hubiera escrito a mano. Las horas reales
+de esas historias son el tiempo de dirigir y revisar, y por eso el informe muestra la
+desviación con ellas y sin ellas.
 
 **6. ¿Cómo garantizan que los votos del Planning Poker son secretos?**
 Mientras la ronda no se revela, `Votes()` no devuelve ningún voto, ni siquiera el propio: da el
