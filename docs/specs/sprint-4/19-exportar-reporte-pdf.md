@@ -409,8 +409,12 @@ criterio de la issue (Sprint 4) no lleva tarea: es de planificación (punto 5 de
 ### Cambio de las dependencias (26/10)
 
 La Fase 3 dice que ninguna tarea empieza sin `Report`, `Section` y `Metrics` en `dev`. **Se
-cambió: decidido por Emiliano Sorato el 26/10 para no esperar el código de la #18; pendiente
-que lo acepte Maximiliano Eula, que aprobó las puertas.**
+cambió: decidido por Emiliano Sorato el 26/10 para no esperar el código de la #18. Lo aceptó
+Maximiliano Eula, que aprobó las puertas, el 26/10 en el PR #184
+(https://github.com/emisorato1/seguimiento-medicion-ics/pull/184#issuecomment-6429699262).**
+Pidió que en el segundo PR los tests de los escenarios se armen con un `Report` de la #18 y no
+con `pdfDoc`, para que la trazabilidad pase por el reporte real. Su aceptación es sobre el
+cambio de las dependencias: la revisión del código queda para quien revise el PR.
 
 - Las tareas 1 a 12 trabajan sobre un tipo privado, `pdfDoc`, con los mismos tres datos que
   el PDF lee del reporte: el título, el día de generación y las secciones con su encabezado y
