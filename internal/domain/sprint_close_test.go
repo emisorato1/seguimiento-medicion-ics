@@ -240,3 +240,21 @@ func TestUnaFechaDeCierreDistintaDeLaFechaDeFinSeAcepta(t *testing.T) {
 		t.Fatalf("se esperaba la fecha de cierre 23/10/2026, quedo %v", sprint.ClosedOn())
 	}
 }
+
+// Escenario: Cerrar el sprint de un proyecto que no existe
+// Cubre: RN-15
+//
+// Como lo va a hacer la interfaz: el proyecto se busca en el registro, y si no existe el
+// cierre no llega a pedirse.
+func TestCerrarElSprintDeUnProyectoQueNoExiste(t *testing.T) {
+	registry := NewProjectRegistry()
+
+	project, err := registry.Get(99)
+	if err == nil {
+		err = project.CloseSprint(nil, unDia(2026, 10, 25))
+	}
+
+	if !errors.Is(err, ErrProjectNotFound) {
+		t.Fatalf("se esperaba ErrProjectNotFound, salio: %v", err)
+	}
+}
