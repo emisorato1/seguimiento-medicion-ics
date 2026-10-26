@@ -261,7 +261,7 @@ func buildPDF(pages []pdfPage) []byte {
 		"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
 	)
 	for i := range pages {
-		content := ""
+		content := pageContent(pages[i])
 		objects = append(objects,
 			fmt.Sprintf("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 %.2f %.2f] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents %d 0 R >>",
 				pdfPageWidth, pdfPageHeight, 6+2*i),
@@ -283,4 +283,44 @@ func buildPDF(pages []pdfPage) []byte {
 	}
 	fmt.Fprintf(&out, "trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n", len(objects)+1, xref)
 	return out.Bytes()
+}
+
+// pdfTop es la altura del margen de arriba: el renglon i se escribe en pdfTop - 18*(i+1), y
+// el pie, en el lugar del renglon 40.
+const (
+	pdfTop       = pdfPageHeight - pdfMargin
+	pdfRowHeight = 18
+)
+
+// pageContent escribe el contenido de una pagina: cada renglon con su letra y su tamano, y el
+// pie. Un renglon en blanco no se escribe, pero ocupa su lugar.
+func pageContent(page pdfPage) string {
+	var out strings.Builder
+	write := func(text string, style pdfStyle, row int) {
+		font := "F2"
+		if style == styleBody {
+			font = "F1"
+		}
+		y := pdfTop - pdfRowHeight*float64(row+1)
+		fmt.Fprintf(&out, "BT /%s %d Tf %.2f %.2f Td (%s) Tj ET\n", font, int(style.fontSize()), pdfMargin, y, encodeWinAnsi(text))
+	}
+	for i, row := range page.rows {
+		if row.text != "" {
+			write(row.text, row.style, i)
+		}
+	}
+	write(page.footer, styleBody, pdfRowsPerPage)
+	return out.String()
+}
+
+// encodeWinAnsi pasa el texto a la codificacion de las letras: un byte por caracter.
+func encodeWinAnsi(text string) []byte {
+	var out []byte
+	for _, r := range text {
+		if r > 0xFF {
+			r = '?'
+		}
+		out = append(out, byte(r))
+	}
+	return out
 }
