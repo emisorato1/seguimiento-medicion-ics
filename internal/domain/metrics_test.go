@@ -115,11 +115,10 @@ func conHorasEstimadas(t *testing.T, project *Project, id int, hours float64) {
 }
 
 // Escenario: Metricas de un sprint cerrado
-// Cubre: RN-3, RN-4, RN-5, RN-7, RN-8, RN-12, RN-16
+// Cubre: RN-3, RN-4, RN-5, RN-7, RN-8, RN-12, RN-13, RN-16
 //
-// El escenario se completa en varias tareas (Fase 3): por ahora verifica todo menos el
-// porcentaje, que suma la tarea 11. Desde la tarea 7 el sprint se cierra con el cierre de la
-// #10, que registra las completadas y los puntos de cada historia.
+// Desde la tarea 7 el sprint se cierra con el cierre de la #10, que registra las completadas y
+// los puntos de cada historia.
 func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	project, _ := unSprintParaCerrar(t, 3, 5, 2, 3)
 	conIntegrante(t, project)
@@ -152,6 +151,9 @@ func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	if got.CompletedPoints != 10 || got.Velocity != 10 || got.StoriesCompleted != 3 {
 		t.Fatalf("se esperaban 10 puntos completados, velocidad 10 y 3 historias completadas, salieron %d, %d y %d",
 			got.CompletedPoints, got.Velocity, got.StoriesCompleted)
+	}
+	if !mismasHoras(got.CompletionRate, 75) {
+		t.Fatalf("se esperaba un porcentaje de historias completas de 75, salio %v", got.CompletionRate)
 	}
 	if !mismasHoras(got.EstimatedHours, 16) || !mismasHoras(got.ActualHours, 20) {
 		t.Fatalf("se esperaban 16 horas estimadas y 20 reales, salieron %v y %v", got.EstimatedHours, got.ActualHours)
@@ -459,5 +461,44 @@ func TestLosPuntosDeUnSprintCerradoNoCambianSiSeReestimaUnaHistoria(t *testing.T
 	}
 	if got.PlannedPoints != 8 || got.CompletedPoints != 3 {
 		t.Fatalf("se esperaban 8 story points planificados y 3 completados, salieron %d y %d", got.PlannedPoints, got.CompletedPoints)
+	}
+}
+
+// Esquema del escenario: Calcular el porcentaje de historias completas
+// Cubre: RN-13, RN-14, RN-16
+func TestCalcularElPorcentajeDeHistoriasCompletas(t *testing.T) {
+	cases := []struct {
+		planned, completed int
+		rate               float64
+	}{
+		{4, 3, 75},
+		{8, 1, 12.5},
+		{3, 3, 100},
+		{0, 0, 0},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("%d planificadas y %d completadas", tc.planned, tc.completed), func(t *testing.T) {
+			points := make([]int, tc.planned)
+			completed := []int{}
+			for i := range points {
+				points[i] = 3
+				if i < tc.completed {
+					completed = append(completed, i+1)
+				}
+			}
+			project, _ := unSprintParaCerrar(t, points...)
+			if err := project.CloseSprint(completed, unDia(2026, 10, 30)); err != nil {
+				t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+			}
+
+			got, err := project.SprintMetrics(1)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if !mismasHoras(got.CompletionRate, tc.rate) {
+				t.Fatalf("se esperaba un porcentaje de %v, salio %v", tc.rate, got.CompletionRate)
+			}
+		})
 	}
 }
