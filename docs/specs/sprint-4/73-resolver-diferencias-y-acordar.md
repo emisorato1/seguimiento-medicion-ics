@@ -470,6 +470,24 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
 - **El número de la ronda nueva sale de la última ronda de la historia**, con la misma
   búsqueda que usa `Agree` para saber si una ronda es la última.
 
+### Defecto encontrado después del merge: #156
+
+En la revisión del PR #148 (25/10), Juliana Bustos pidió un cambio antes de mergear. El #148
+se mergeó por error con ese pedido sin responder, así que se registró como el defecto #156 y
+se arregló en un PR aparte, a pedido de Emiliano Sorato.
+
+- **Qué pasaba:** la carga aceptaba una ronda revelada **sin participantes**, porque a nadie le
+  faltaba votar, y después `Differences()` cortaba con un pánico (`index out of range [0]`) al
+  leer el primer voto. En la web (#78), una página rota. También aceptaba un participante con
+  **nombre vacío** o **repetido**, y con el repetido `Differences()` nombraba dos veces a la
+  misma persona.
+- **El arreglo:** la carga rechaza los tres casos, con `ErrSavedDataInvalid`, como propuso
+  Juliana. Al abrir una ronda ninguno puede pasar (RN-6 de la #13 y los integrantes de la #4),
+  así que solo un archivo puede traerlos. Con eso el primer voto queda garantizado y
+  `Differences()` no se tocó.
+- **TDD:** `684fcb2` es el test, con su RED: el pánico, y las dos filas nuevas de datos
+  dañados. `87264b3` es el arreglo.
+
 ## Trazabilidad
 
 | Eslabón | Dónde está |
