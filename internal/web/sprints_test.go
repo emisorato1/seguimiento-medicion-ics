@@ -323,3 +323,39 @@ func TestConfirmarOCancelarAntesDeCerrarElSprint(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Consultar un sprint anterior
+// Cubre: RN-1
+func TestConsultarUnSprintAnterior(t *testing.T) {
+	// Dado el sprint 1 cerrado el 30/10/2026 con las historias 1 y 2 y solo la 1 completada.
+	registry, project := closeRegistry(t)
+	if err := project.CloseSprint([]int{1}, el30DeOctubre()); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	html := joinTags(between(get(t, server, "/proyectos/1/sprints/1").Body.String(), "<main", "</main>"))
+	for _, texto := range []string{"Tener el MVP", "<dd>26/10/2026</dd>", "<dd>30/10/2026</dd>", "<dt>Estado</dt><dd>Cerrado</dd>", "<dt>Fecha de cierre</dt><dd>30/10/2026</dd>"} {
+		if !strings.Contains(html, texto) {
+			t.Errorf("se esperaba en el sprint anterior %q, y no esta en:\n%s", texto, html)
+		}
+	}
+	filas := between(html, "<tbody>", "</tbody>")
+	for _, fila := range []string{"Registrar esfuerzo</a></td><td>3</td><td>Terminada</td><td>Sí</td>", "Cargar defectos</a></td><td>5</td><td>Pendiente</td><td>No</td>"} {
+		if !strings.Contains(filas, fila) {
+			t.Errorf("se esperaba en las historias del sprint %q, y no esta en:\n%s", fila, filas)
+		}
+	}
+	// Un sprint cerrado no ofrece asignar, quitar ni cerrar.
+	for _, accion := range []string{"/sprints/asignar", "/sprints/quitar", "/sprints/cerrar"} {
+		if strings.Contains(html, accion) {
+			t.Errorf("un sprint cerrado no deberia ofrecer %s:\n%s", accion, html)
+		}
+	}
+
+	// La lista de sprints muestra su fecha de cierre.
+	lista := joinTags(between(get(t, server, "/proyectos/1/sprints").Body.String(), "<tbody>", "</tbody>"))
+	if !strings.Contains(lista, "<td>Cerrado</td><td>30/10/2026</td>") {
+		t.Errorf("se esperaba en la lista el sprint Cerrado con su fecha de cierre, y no esta en:\n%s", lista)
+	}
+}
