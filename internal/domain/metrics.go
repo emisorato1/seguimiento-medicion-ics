@@ -78,6 +78,10 @@ func (sc metricsScope) metrics() Metrics {
 	for _, points := range sc.completedPoints {
 		m.CompletedPoints += points
 	}
+	// sin historias planificadas el porcentaje queda en cero, y no es un error (RN-13, RN-14)
+	if m.StoriesPlanned > 0 {
+		m.CompletionRate = float64(m.StoriesCompleted) / float64(m.StoriesPlanned) * 100
+	}
 	return m
 }
 
