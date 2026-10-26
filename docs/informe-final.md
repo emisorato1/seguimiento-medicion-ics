@@ -1,7 +1,7 @@
 # Informe final del proyecto — esqueleto
 
 > **Borrador, 26/10.** Ya tiene cargados el Sprint 0, el 1 y el 2, la cobertura al 26/10, la
-> evidencia de TDD y la trazabilidad de la #10. Es la estructura del informe en PDF que se entrega el
+> evidencia de TDD y la trazabilidad de la #13. Es la estructura del informe en PDF que se entrega el
 > 1/11. Lo arma y lo revisa Emiliano Sorato (Agile Enabler), con las métricas del repo, antes de
 > exportarlo. Cada sección dice de dónde salen sus datos. Lo que está entre corchetes,
 > **[pendiente]**, se completa al cierre del producto (30/10) y del Sprint 4.
@@ -159,58 +159,63 @@ que ya había escrito un par RED → GREEN anterior de la misma historia (por ej
 encontró" o la copia de la lista). Son "sin RED" que no quedaron marcados, porque esa costumbre
 empezó el 20/10.
 
-**Un par de ejemplo**, de la #10 (PR #150, 26/10):
+**Un par de ejemplo**, de la #13 (PR #141), el mismo de la sección 7:
 
-- RED: `e2e1137` — *test: cerrar el sprint registrando que se completo y que no (historia 10,
-  tarea 2)*. Agrega el test a `internal/domain/sprint_close_test.go` y trae en el mensaje la
-  salida del compilador: `sprint.CompletedStories undefined`.
-- GREEN: `bf2ac19` — *feat: cerrar registra las completadas y devuelve las demas al backlog
-  (historia 10, tarea 2)*. Toca solo `internal/domain/sprint_close.go`.
+- RED: `ba90caa` — *test: votar registra quién votó sin dejar ver los votos (historia 13, tarea
+  5)*. Agrega el test a `internal/domain/voting_round_test.go` y trae en el mensaje la salida
+  del compilador: `round.Vote undefined` y `undefined: ErrVotesHidden`.
+- GREEN: `6a78fd1` — *feat: votar sin que se pueda leer ningún voto antes de revelar (historia
+  13, tarea 5)*.
 
 [pendiente: actualizar los números al cierre del Sprint 3 y del Sprint 4.]
 
-## 7. Trazabilidad de punta a punta: la #10 *Cerrar un sprint*
+## 7. Trazabilidad de punta a punta: la #13 *Votar en secreto en una ronda de Planning Poker*
 
-[pendiente: confirmar con la presentación que la historia que se muestra en la defensa sea
-esta.] El recorrido de todas las historias está en [docs/trazabilidad.md](trazabilidad.md).
+Es el Planning Poker con votos ocultos que pide la consigna, y la hizo Maximiliano Eula. De sus
+16 escenarios, los 16 tienen el ciclo RED → GREEN completo, y sus 13 commits de test traen en el
+mensaje la salida del RED. El recorrido de todas las historias está en
+[docs/trazabilidad.md](trazabilidad.md).
 
-1. **Historia de usuario** — [issue #10](https://github.com/emisorato1/seguimiento-medicion-ics/issues/10):
-   *Como integrante del equipo quiero cerrar un sprint registrando qué historias se
-   completaron, para poder medir la velocidad del equipo y planificar el siguiente sprint.*
-   Tiene 5 SP, es de Emiliano Sorato y se implementó con asistencia de IA.
-2. **Especificación SDD** — [docs/specs/sprint-3/10-cerrar-sprint.md](specs/sprint-3/10-cerrar-sprint.md):
-   objetivo, entradas, salidas, reglas de negocio (RN-1 a RN-7 y siguientes), casos límite y
-   condiciones de error. Agustín Salinas aprobó sus tres puertas el 25/10, en un
-   [comentario de la issue](https://github.com/emisorato1/seguimiento-medicion-ics/issues/10#issuecomment-6406625442),
-   con dos ajustes que se aplicaron antes de empezar el código (commit `98a4400`).
-3. **Criterio de aceptación** — de los 14 de la spec: *"Se puede cerrar el sprint abierto
-   indicando qué historias se completaron, y queda en estado Cerrado con su fecha de
-   cierre"*, junto con *"Las historias indicadas como completadas quedan Terminadas"* y *"Las
-   historias del sprint que no se indicaron quedan Pendientes, de vuelta en el Product
-   Backlog"*.
-4. **Escenario BDD** — en la [misma spec](specs/sprint-3/10-cerrar-sprint.md?plain=1#L156):
+1. **Historia de usuario** — [issue #13](https://github.com/emisorato1/seguimiento-medicion-ics/issues/13):
+   *Como integrante del equipo quiero votar la estimación de una historia sin ver lo que votaron
+   los demás, para que nadie se deje influir y la estimación salga del criterio de cada uno.*
+   Tiene 8 SP. Se adelantó desde el Sprint 3 y se terminó en el Sprint 2 (PR #141, 23/10), con
+   la revisión de Juliana Bustos.
+2. **Especificación SDD** — [docs/specs/sprint-3/13-votar-en-secreto.md](specs/sprint-3/13-votar-en-secreto.md):
+   objetivo, entradas, salidas, reglas de negocio (desde la RN-1), casos límite y condiciones de
+   error. Agustín Salinas aprobó sus tres puertas el 21/10, en el
+   [PR #115](https://github.com/emisorato1/seguimiento-medicion-ics/pull/115#issuecomment-6328013297).
+3. **Criterio de aceptación** — de la issue y de la spec: *"Mientras la ronda no esté revelada,
+   ningún voto se puede leer desde afuera, ni siquiera el propio. Solo se sabe quién votó y
+   quién falta."*
+4. **Escenario BDD** — en la [misma spec](specs/sprint-3/13-votar-en-secreto.md?plain=1#L188):
 
    ```gherkin
-   Escenario: Cerrar el sprint registrando que se completo y que no
-     Dado un proyecto con el sprint 1 abierto y las historias 1, 2 y 3 asignadas
-     Cuando cierro el sprint el 25/10/2026 indicando que se completaron las historias 1 y 2
-     Entonces el sprint 1 queda en estado "Cerrado"
-     Y el sprint 1 queda con fecha de cierre 25/10/2026
-     Y el sprint 1 registra como completadas las historias 1 y 2
-     Y las historias 1 y 2 quedan en estado "Terminada"
-     Y la historia 3 queda en estado "Pendiente"
+   Escenario: Votar registra quien voto sin dejar ver los votos, ni siquiera el propio
+     Dado una ronda sin revelar con "Agustin Salinas", "Juliana Bustos" y "Maximiliano Eula"
+     Y "Agustin Salinas" voto 3 y "Juliana Bustos" voto 8
+     Cuando "Juliana Bustos" pide ver los votos de la ronda
+     Entonces se informa que los votos estan ocultos hasta que se revele la ronda
+     Y solo se sabe que votaron "Agustin Salinas" y "Juliana Bustos" y que falta "Maximiliano Eula"
    ```
 
-5. **Test en Go** — `TestCerrarElSprintRegistrandoQueSeCompletoYQueNo`, en
-   [internal/domain/sprint_close_test.go:59](../internal/domain/sprint_close_test.go#L59). Arriba
-   lleva los comentarios `// Escenario:` con el título del escenario y `// Cubre: RN-1, RN-2,
-   RN-3, RN-4`. Entró en el commit RED `e2e1137`.
-6. **Código Go** — `(*Project).CloseSprint`, en
-   [internal/domain/sprint_close.go:11](../internal/domain/sprint_close.go#L11). Entró en el
-   commit GREEN `bf2ac19` y llegó a `dev` con el PR #150.
+5. **Test en Go** — `TestVotarRegistraQuienVotoSinDejarVerLosVotosNiSiquieraElPropio`, en
+   [internal/domain/voting_round_test.go:161](../internal/domain/voting_round_test.go#L161). Arriba
+   lleva los comentarios `// Escenario:` con el título del escenario y `// Cubre: RN-8, RN-12,
+   RN-13`. Entró en el commit RED `ba90caa` (22/10), que trae en el mensaje la salida del
+   compilador: `round.Vote undefined`, `round.Votes undefined` y `undefined: ErrVotesHidden`.
+6. **Código Go** — `(*VotingRound).Vote`, en
+   [internal/domain/voting_round.go:101](../internal/domain/voting_round.go#L101), y
+   `(*VotingRound).Votes`, en [voting_round.go:135](../internal/domain/voting_round.go#L135), que
+   devuelve `ErrVotesHidden` mientras la ronda no se revela. Entraron en el commit GREEN
+   `6a78fd1` (22/10) y llegaron a `dev` con el PR #141.
 
-La #10 tiene 14 escenarios y los 14 tienen su test. En 8 está el ciclo RED → GREEN completo, y
-en 6 el test pasó con el código que ya estaba y el commit lo dice.
+**Un detalle para contar en la defensa.** Además de `Votes()`, la ronda tiene
+`(VotingRound).Format`, en [voting_round.go:56](../internal/domain/voting_round.go#L56). Sin eso,
+imprimir la ronda con `%#v`, la forma de depuración de Go, mostraba los votos ocultos.
+Maximiliano Eula lo nombra en la [retro del Sprint 2](actas/sprint-2-retrospectiva.md) entre los
+problemas que aparecieron en las revisiones antes de llegar a `dev`. Tiene su propio par RED →
+GREEN (tarea 12, commit GREEN `ad93071`).
 
 ## 8. Retrospectivas
 
