@@ -2,6 +2,7 @@ package domain
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -32,6 +33,135 @@ type pdfDoc struct {
 	sections    []pdfSection
 }
 
+// Medidas de la pagina, en puntos (1/72 de pulgada): A4 vertical con margenes de 2 cm. Un
+// renglon entra si no pasa el ancho del A4 menos los dos margenes (Fase 2 de la spec).
+const (
+	pdfPageWidth  = 595.28
+	pdfPageHeight = 841.89
+	pdfMargin     = 56.69
+	pdfLineWidth  = 481.9
+)
+
+// fontSize es el tamano de cada letra: el cuerpo en 10 pt, los encabezados en 12 pt y el
+// titulo en 16 pt, los dos ultimos en negrita (RN-5).
+func (s pdfStyle) fontSize() float64 {
+	switch s {
+	case styleTitle:
+		return 16
+	case styleHeading:
+		return 12
+	}
+	return 10
+}
+
+// Los anchos de Helvetica y Helvetica-Bold, en milesimas del tamano de la letra, copiados de
+// los AFM estandar de Adobe (Helvetica.afm y Helvetica-Bold.afm). Se escriben agrupando las
+// letras que miden lo mismo; las letras con tilde, la ñ y la ü miden como su letra sin marca,
+// salvo la i con tilde, que mide como la t. Un caracter que no esta en la tabla se mide con
+// unknownWidth, el mas ancho, para que ningun renglon pase el margen.
+var helveticaWidths = widthTable(map[int]string{
+	191:  "'",
+	222:  "ijl",
+	260:  "|",
+	278:  " !,./:;I[\\]ftíìîïÍÌÎÏ·",
+	333:  "()-`r¡",
+	334:  "{}",
+	355:  "\"",
+	365:  "º",
+	370:  "ª",
+	389:  "*",
+	400:  "°",
+	469:  "^",
+	500:  "Jcksvxyzç",
+	556:  "#$0123456789?L_abdeghnopquáàâäãåéèêëñóòôöõúùûü–€«»",
+	584:  "+<=>~",
+	611:  "FTZ¿",
+	667:  "&ABEKPSVXYÁÀÂÄÃÉÈÊË",
+	722:  "CDHNRUwÑÚÙÛÜÇ",
+	778:  "GOQÓÒÔÖÕ",
+	833:  "Mm",
+	889:  "%",
+	944:  "W",
+	1000: "—…",
+	1015: "@",
+})
+
+var helveticaBoldWidths = widthTable(map[int]string{
+	238:  "'",
+	278:  " ,./I\\ijlíìîïÍÌÎÏ·",
+	280:  "|",
+	333:  "!()-:;[]`ft¡",
+	365:  "º",
+	370:  "ª",
+	389:  "*{}r",
+	400:  "°",
+	474:  "\"",
+	500:  "z",
+	556:  "#$0123456789Jaceksvxy_áàâäãåéèêëç–€«»",
+	584:  "+<=>^~",
+	611:  "?FLTZbdghnopquñóòôöõúùûü¿",
+	667:  "EPSVXYÉÈÊË",
+	722:  "&ABCDHKNRUÁÀÂÄÃÑÚÙÛÜÇ",
+	778:  "GOQwÓÒÔÖÕ",
+	833:  "M",
+	889:  "%m",
+	944:  "W",
+	975:  "@",
+	1000: "—…",
+})
+
+const unknownWidth = 1015
+
+// widthTable pasa la tabla agrupada por ancho a una tabla por caracter.
+func widthTable(groups map[int]string) map[rune]int {
+	table := map[rune]int{}
+	for width, chars := range groups {
+		for _, r := range chars {
+			table[r] = width
+		}
+	}
+	return table
+}
+
+// textWidth mide un texto en puntos, con la letra y el tamano de su estilo.
+func textWidth(text string, style pdfStyle) float64 {
+	table := helveticaWidths
+	if style != styleBody {
+		table = helveticaBoldWidths
+	}
+	total := 0
+	for _, r := range text {
+		width, ok := table[r]
+		if !ok {
+			width = unknownWidth
+		}
+		total += width
+	}
+	return float64(total) * style.fontSize() / 1000
+}
+
+// wrapText corta un texto en renglones que entran en el ancho de la pagina, entre palabras
+// (RN-6). Un texto que entra queda como esta, con todos sus espacios.
+func wrapText(text string, style pdfStyle) []string {
+	if textWidth(text, style) <= pdfLineWidth {
+		return []string{text}
+	}
+	var rows []string
+	current := ""
+	for i, word := range strings.Split(text, " ") {
+		candidate := word
+		if i > 0 {
+			candidate = current + " " + word
+		}
+		if i > 0 && textWidth(candidate, style) > pdfLineWidth {
+			rows = append(rows, current)
+			candidate = word
+		}
+		current = candidate
+	}
+	return append(rows, current)
+}
+
 // pdfRow es un renglon de una pagina. Un texto vacio es un renglon en blanco.
 type pdfRow struct {
 	text  string
@@ -47,14 +177,18 @@ type pdfPage struct {
 // layoutReport convierte el reporte en paginas: el titulo, "Generado el" con la fecha, y cada
 // encabezado con sus lineas, en el orden del reporte (RN-2, RN-3).
 func layoutReport(doc pdfDoc) []pdfPage {
-	rows := []pdfRow{
-		{text: doc.title, style: styleTitle},
-		{text: "Generado el " + doc.generatedOn.Format("02/01/2006"), style: styleBody},
+	var rows []pdfRow
+	add := func(text string, style pdfStyle) {
+		for _, row := range wrapText(text, style) {
+			rows = append(rows, pdfRow{text: row, style: style})
+		}
 	}
+	add(doc.title, styleTitle)
+	add("Generado el "+doc.generatedOn.Format("02/01/2006"), styleBody)
 	for _, section := range doc.sections {
-		rows = append(rows, pdfRow{text: section.heading, style: styleHeading})
+		add(section.heading, styleHeading)
 		for _, line := range section.lines {
-			rows = append(rows, pdfRow{text: line, style: styleBody})
+			add(line, styleBody)
 		}
 	}
 	pages := []pdfPage{{rows: rows}}
