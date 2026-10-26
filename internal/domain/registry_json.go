@@ -100,6 +100,11 @@ type sprintJSON struct {
 	State  string `json:"state"`
 	// El Sprint Backlog es de la #9: los identificadores de las historias, en orden.
 	Stories []int `json:"stories,omitempty"`
+	// Los datos del cierre son de la #10. Van con omitempty: un sprint abierto no los tiene.
+	// Los puntos van por historia, con el número de la historia como clave.
+	ClosedOn         string      `json:"closed_on,omitempty"`
+	CompletedStories []int       `json:"completed_stories,omitempty"`
+	PointsAtClose    map[int]int `json:"points_at_close,omitempty"`
 }
 
 type memberJSON struct {
@@ -162,14 +167,21 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 		}
 		project.LastSprintNumber = p.lastSprintNumber
 		for _, s := range p.sprints {
-			project.Sprints = append(project.Sprints, sprintJSON{
+			sj := sprintJSON{
 				Number:  s.number,
 				Goal:    s.goal,
 				Start:   s.start.Format(dayLayout),
 				End:     s.end.Format(dayLayout),
 				State:   s.state.String(),
 				Stories: s.Stories(),
-			})
+				// el cierre, de la #10
+				CompletedStories: s.CompletedStories(),
+				PointsAtClose:    s.PointsAtClose(),
+			}
+			if !s.closedOn.IsZero() {
+				sj.ClosedOn = s.closedOn.Format(dayLayout)
+			}
+			project.Sprints = append(project.Sprints, sj)
 		}
 		project.LastDefectID = p.lastDefectID
 		for _, d := range p.defects {
@@ -505,7 +517,59 @@ func sprintFromJSON(project *Project, sj sprintJSON) (*Sprint, error) {
 		seen[id] = true
 		stories = append(stories, id)
 	}
-	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories}, nil
+	// los datos del cierre (historia #10)
+	closedOn, err := parseDay(sj.ClosedOn)
+	if err != nil {
+		return nil, err
+	}
+	if err := checkClose(state, stories, closedOn, sj.CompletedStories, sj.PointsAtClose); err != nil {
+		return nil, err
+	}
+	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories,
+		closedOn: closedOn, completedStories: sj.CompletedStories, pointsAtClose: sj.PointsAtClose}, nil
+}
+
+// checkClose controla que los datos del cierre de un sprint guardado sean coherentes (historia
+// #10, tarea 15), como pide la D15 de la #77: un sprint abierto no tiene ningún dato del
+// cierre, y uno cerrado tiene su fecha, completadas sin repetir y todas entre las asignadas,
+// y una entrada de puntos por cada historia asignada, con un valor de la escala o 0.
+func checkClose(state SprintState, stories []int, closedOn time.Time, completed []int, points map[int]int) error {
+	if state == SprintOpen {
+		if !closedOn.IsZero() || len(completed) > 0 || len(points) > 0 {
+			return fmt.Errorf("un sprint abierto no tiene datos de cierre")
+		}
+		return nil
+	}
+	if closedOn.IsZero() {
+		return ErrSprintCloseDateRequired
+	}
+	inSprint := map[int]bool{}
+	for _, id := range stories {
+		inSprint[id] = true
+	}
+	seen := map[int]bool{}
+	for _, id := range completed {
+		if !inSprint[id] {
+			return fmt.Errorf("%w: la historia %d", ErrStoryNotInSprint, id)
+		}
+		if seen[id] {
+			return fmt.Errorf("la historia completada %d está repetida", id)
+		}
+		seen[id] = true
+	}
+	for id, value := range points {
+		if !inSprint[id] {
+			return fmt.Errorf("hay puntos al cerrar de la historia %d, que no estaba en el sprint", id)
+		}
+		// cero es una historia que estaba sin estimar al cerrar (RN-16)
+		if value != 0 && !inScale(value) {
+			return ErrStoryPointsInvalid
+		}
+	}
+	if len(points) != len(stories) {
+		return fmt.Errorf("faltan los puntos al cerrar de alguna historia del sprint")
+	}
+	return nil
 }
 
 // storyFromJSON reconstruye una historia con su numero, su estado y su estimacion.

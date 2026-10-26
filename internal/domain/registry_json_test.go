@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"slices"
 	"strings"
 	"testing"
@@ -71,8 +72,12 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
 	}
 	closed.state = SprintClosed
-	// el sprint 1 tuvo la historia Terminada en su Sprint Backlog (#9); cerrarlo es de la #10
+	// el sprint 1 tuvo la historia Terminada en su Sprint Backlog (#9), y la completo al
+	// cerrar: los datos del cierre son de la #10, que los suma a la conversion
 	closed.stories = []int{done.ID()}
+	closed.closedOn = unDia(2026, 10, 14)
+	closed.completedStories = []int{done.ID()}
+	closed.pointsAtClose = map[int]int{done.ID(): 3}
 	if _, err := first.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 10, 15), End: unDia(2026, 10, 28)}); err != nil {
 		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
 	}
@@ -210,6 +215,16 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 				}
 			}
 		}
+		for j, ws := range wantSprints {
+			gs := gotSprints[j]
+			// los datos del cierre de la #10
+			if !gs.ClosedOn().Equal(ws.ClosedOn()) || fmt.Sprint(gs.CompletedStories()) != fmt.Sprint(ws.CompletedStories()) ||
+				fmt.Sprint(gs.PointsAtClose()) != fmt.Sprint(ws.PointsAtClose()) {
+				t.Fatalf("sprint %d: se esperaba el cierre del %v con %v y los puntos %v, salio %v con %v y %v",
+					ws.Number(), ws.ClosedOn(), ws.CompletedStories(), ws.PointsAtClose(),
+					gs.ClosedOn(), gs.CompletedStories(), gs.PointsAtClose())
+			}
+		}
 		if g.lastSprintNumber != w.lastSprintNumber {
 			t.Fatalf("proyecto %d: se esperaba el contador de sprints en %d, salio en %d", w.ID(), w.lastSprintNumber, g.lastSprintNumber)
 		}
@@ -315,7 +330,8 @@ func unosDatosGuardados() registryJSON {
 				},
 				LastSprintNumber: 2,
 				Sprints: []sprintJSON{
-					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado", Stories: []int{2}},
+					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado", Stories: []int{2},
+						ClosedOn: "2026-10-14", CompletedStories: []int{2}, PointsAtClose: map[int]int{2: 3}},
 					{Number: 2, Goal: "Medir la velocidad", Start: "2026-10-15", End: "2026-10-28", State: "Abierto"},
 				},
 				LastDefectID: 2,
@@ -374,7 +390,14 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "sprint sin Sprint Goal", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Goal = "   " }, want: ErrSprintGoalRequired},
 		{name: "sprint sin fecha de inicio", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Start = "" }, want: ErrSprintStartRequired},
 		{name: "sprint con las fechas al reves", change: func(d *registryJSON) { d.Projects[0].Sprints[0].End = "2026-09-30" }, want: ErrSprintDatesInconsistent},
-		{name: "dos sprints abiertos", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Abierto" }, want: ErrSprintAlreadyOpen},
+		{name: "dos sprints abiertos", change: func(d *registryJSON) {
+			// desde la #10 el sprint 1 trae los datos del cierre: se le sacan, para que el
+			// motivo siga siendo los dos abiertos
+			d.Projects[0].Sprints[0].State = "Abierto"
+			d.Projects[0].Sprints[0].ClosedOn = ""
+			d.Projects[0].Sprints[0].CompletedStories = nil
+			d.Projects[0].Sprints[0].PointsAtClose = nil
+		}, want: ErrSprintAlreadyOpen},
 		{name: "numero de sprint repetido", change: func(d *registryJSON) { d.Projects[0].Sprints[1].Number = 1 }, want: ErrSavedDataInvalid},
 		{name: "contador de sprints que no llega a los numeros usados", change: func(d *registryJSON) { d.Projects[0].LastSprintNumber = 1 }, want: ErrSavedDataInvalid},
 		{name: "estado de sprint inexistente", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Planificado" }, want: ErrSavedDataInvalid},
@@ -383,6 +406,17 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		// El Sprint Backlog de la #9 (tarea 14): solo historias que existen en el proyecto.
 		{name: "sprint con una historia que no existe", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Stories = []int{99} }, want: ErrStoryNotFound},
 		{name: "historia repetida en un Sprint Backlog", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Stories = []int{2, 2} }, want: ErrStoryAlreadyInSprint},
+		// Los datos del cierre de la #10 (tarea 15): tienen que ser coherentes con el estado y
+		// con el Sprint Backlog.
+		{name: "sprint cerrado sin fecha de cierre", change: func(d *registryJSON) { d.Projects[0].Sprints[0].ClosedOn = "" }, want: ErrSprintCloseDateRequired},
+		{name: "fecha de cierre que no es fecha", change: func(d *registryJSON) { d.Projects[0].Sprints[0].ClosedOn = "14/10/2026" }, want: ErrSavedDataInvalid},
+		{name: "sprint abierto con fecha de cierre", change: func(d *registryJSON) { d.Projects[0].Sprints[1].ClosedOn = "2026-10-28" }, want: ErrSavedDataInvalid},
+		{name: "sprint abierto con puntos al cerrar", change: func(d *registryJSON) { d.Projects[0].Sprints[1].PointsAtClose = map[int]int{1: 5} }, want: ErrSavedDataInvalid},
+		{name: "historia completada repetida", change: func(d *registryJSON) { d.Projects[0].Sprints[0].CompletedStories = []int{2, 2} }, want: ErrSavedDataInvalid},
+		{name: "historia completada que no estaba en el sprint", change: func(d *registryJSON) { d.Projects[0].Sprints[0].CompletedStories = []int{1} }, want: ErrStoryNotInSprint},
+		{name: "faltan los puntos al cerrar de una historia del sprint", change: func(d *registryJSON) { d.Projects[0].Sprints[0].PointsAtClose = nil }, want: ErrSavedDataInvalid},
+		{name: "puntos al cerrar de una historia que no estaba en el sprint", change: func(d *registryJSON) { d.Projects[0].Sprints[0].PointsAtClose = map[int]int{2: 3, 1: 5} }, want: ErrSavedDataInvalid},
+		{name: "puntos al cerrar fuera de la escala", change: func(d *registryJSON) { d.Projects[0].Sprints[0].PointsAtClose = map[int]int{2: 4} }, want: ErrStoryPointsInvalid},
 		{name: "horas estimadas negativas", change: func(d *registryJSON) { d.Projects[0].Stories[0].EstimatedHours = -2 }, want: ErrEstimatedHoursInvalid},
 		{name: "esfuerzo con horas en cero", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Hours = 0 }, want: ErrEffortHoursInvalid},
 		{name: "esfuerzo sin actividad", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Activity = "  " }, want: ErrEffortActivityRequired},
