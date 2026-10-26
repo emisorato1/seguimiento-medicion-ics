@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 12:58. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 19:49. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,19 +14,20 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -34,7 +35,6 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
-| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
 
 ## Sprint Backlog
 
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-24bf6b1 2026-10-26 Merge pull request #165 from emisorato1/historia-78-cierre-acuerdo
-f7516c3 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-78-cierre-acuerdo
-3ab5e95 2026-10-26 docs: la #78 con el cierre del sprint y el acuerdo hechos (tareas 6, 7 y 19), sus desvíos y la verificación de la parte 3
-09d23fa 2026-10-26 test: las fechas y casillas mal formadas al cerrar, y el cierre sin sprint abierto (historia 78, sin RED)
-44abfe2 2026-10-26 test: rechazos del cierre y del acuerdo, los datos al reabrir y los formularios nuevos (historia 78, tareas 23 y 24, sin RED)
-4ad7a5b 2026-10-26 feat: diferencias, ronda nueva y acuerdo en el Planning Poker (historia 78, tarea 19)
-43e3e5a 2026-10-26 test: diferencias, ronda nueva y acuerdo en el Planning Poker (historia 78, tarea 19)
-d7b0785 2026-10-26 feat: consultar un sprint anterior con lo que se completó (historia 78, tarea 7)
+3f5979e 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-11-consultar-sprints-anteriores
+d0a6f83 2026-10-26 docs: registrar la implementacion de la historia 11
+3eccdbb 2026-10-26 Merge pull request #176 from emisorato1/trazabilidad-173
+73a2672 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con el #173
+9b84b3e 2026-10-26 Merge pull request #175 from emisorato1/actas-maxi-goal-73
+4c89c44 2026-10-26 Merge pull request #173 from emisorato1/defecto-172-ronda-nombres
+5282fa8 2026-10-26 docs: sprint goal del sprint 2 y horas de la 73 segun Maximiliano
+ae2380a 2026-10-26 Merge pull request #174 from emisorato1/trazabilidad-170
 ```

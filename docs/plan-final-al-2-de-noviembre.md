@@ -54,6 +54,11 @@ ritmo. Si alguien no puede, se dice ahora y se recorta con tiempo, no el 31 a la
 
 Cada sprint cierra con review y retrospectiva **el último día**, no al día siguiente.
 
+**Fecha de cierre del producto** (decisión de Emiliano Sorato, del 26/10): todo el producto
+queda terminado el **viernes 30/10**. El 31/10 y el 1/11 quedan para el informe PDF, la
+presentación y el ensayo. Por eso la #19 (exportar el reporte a PDF), que era del Sprint 4,
+tiene que estar terminada antes del 30/10.
+
 ## Quién hace qué
 
 Reparto total, pensado para que nadie espere a nadie:
