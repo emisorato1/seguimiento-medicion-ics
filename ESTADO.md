@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-24 16:09. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-24 22:15. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -14,7 +14,9 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 
 ## En progreso
 
@@ -25,9 +27,7 @@ _No hay historias en este estado._
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-cbef874 2026-10-24 Merge remote-tracking branch 'origin/dev' into historia-15-terminada
-b45cbe6 2026-10-23 Merge pull request #141 from emisorato1/historia-13-votar-en-secreto
-f7133d3 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-13-votar-en-secreto
-e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
-a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
-78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
-8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
-2c2abd1 2026-10-23 Merge pull request #136 from emisorato1/historia-17-spec-datos-al-dia
+843ac07 2026-10-24 docs: registrar la implementación de la historia 73
+3fbd33a 2026-10-24 feat: el acuerdo entra en el archivo y cada ronda cargada recupera su proyecto (historia 73, tarea 7)
+03e2280 2026-10-24 test: el acuerdo sigue al cerrar y volver a abrir (historia 73, tarea 7)
+c1ce166 2026-10-24 feat: acordar solo sobre la última ronda de la historia (historia 73, tarea 6)
+b1c418c 2026-10-24 test: solo se acuerda sobre la última ronda de la historia (historia 73, tarea 6)
+ed24b67 2026-10-24 refactor: la ronda actual usa la misma búsqueda que la apertura (historia 73)
+185bce2 2026-10-24 feat: rondas nuevas numeradas por historia y la consulta de sus rondas (historia 73, tarea 5)
+a6a5a5a 2026-10-24 test: abrir una ronda nueva cuando la última está revelada (historia 73, tarea 5)
 ```
