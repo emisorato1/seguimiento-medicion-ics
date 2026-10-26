@@ -35,8 +35,10 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#14 Registrar el esfuerzo real](#14-registrar-el-esfuerzo-real) | 19 | 19 | 0 | 2 |
 | [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 2 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 7 |
+| [#10 Cerrar un sprint](#10-cerrar-un-sprint) | 14 | 14 | 0 | 0 |
 | [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
 | [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 12 | 4 | 2 |
+| [#73 Resolver diferencias y acordar la estimación](#73-resolver-diferencias-y-acordar-la-estimación) | 13 | 13 | 0 | 0 |
 
 ## Qué dice el historial de TDD
 
@@ -45,9 +47,9 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 207 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 228 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 32 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 38 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
@@ -532,8 +534,8 @@ cinco casos posibles:
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:486](../internal/domain/registry_json_test.go#L486) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
-| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:512](../internal/domain/registry_json_test.go#L512) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
+| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:562](../internal/domain/registry_json_test.go#L562) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
+| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:588](../internal/domain/registry_json_test.go#L588) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
 
 ## #15 Gestionar defectos
 
@@ -628,11 +630,11 @@ cinco casos posibles:
 | [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | `TestUnTextoConSignosSeMuestraTalCual` [projects_test.go:104](../internal/web/projects_test.go#L104) | el que ya estaba | `413660d` (sin RED: ya pasaba) |
 | [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [main_test.go:22](../cmd/web/main_test.go#L22) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
 | ″ | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [server_test.go:206](../internal/web/server_test.go#L206) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
-| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:267](../internal/domain/registry_json_test.go#L267) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
+| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:291](../internal/domain/registry_json_test.go#L291) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:69](../internal/store/file_test.go#L69) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
 | ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1147](../internal/web/server_test.go#L1147) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
-| [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:158](../cmd/web/main_test.go#L158) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
-| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:342](../internal/domain/registry_json_test.go#L342) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
+| [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:251](../cmd/web/main_test.go#L251) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
+| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:386](../internal/domain/registry_json_test.go#L386) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
 | ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:160](../internal/store/file_test.go#L160) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:202](../internal/store/file_test.go#L202) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | ″ | `TestUnCambioQueNoSePudoGuardarSeAvisa` [server_test.go:949](../internal/web/server_test.go#L949) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
@@ -645,11 +647,53 @@ cinco casos posibles:
 |---|---|---|---|
 | `TestListarLosProyectosDeUnRegistroVacio` [project_registry_test.go:7](../internal/domain/project_registry_test.go#L7) | dependencia de la #77, RN-7 y RN-23 (la lista vacía no es un error) | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
-| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:460](../internal/domain/registry_json_test.go#L460) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:536](../internal/domain/registry_json_test.go#L536) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
 | `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1202](../internal/web/server_test.go#L1202) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
+
+## #10 Cerrar un sprint
+
+- **Historia:** issue #10
+- **Spec:** [docs/specs/sprint-3/10-cerrar-sprint.md](specs/sprint-3/10-cerrar-sprint.md)
+- **Código según la spec:** `internal/domain/sprint_close.go`, `internal/domain/registry_json.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (14)</summary>
+
+- Se puede cerrar el sprint abierto indicando qué historias se completaron, y queda en estado Cerrado con su fecha de cierre.
+- Las historias indicadas como completadas quedan Terminadas.
+- Las historias del sprint que no se indicaron quedan Pendientes, de vuelta en el Product Backlog.
+- El sprint cerrado conserva la lista de las historias que se le habían asignado, incluidas las que volvieron al Product Backlog.
+- El sprint cerrado deja registrado cuáles de sus historias se completaron.
+- Se puede cerrar un sprint sin ninguna historia completada.
+- Se puede cerrar un sprint que no tiene ninguna historia asignada.
+- Indicar dos veces la misma historia no es un error y no la cuenta dos veces.
+- Indicar como completada una historia que no está en el sprint rechaza el cierre y no cambia ninguna historia.
+- No se puede cerrar sin fecha de cierre.
+- No se puede cerrar dos veces el mismo sprint.
+- Después de cerrar, el proyecto no tiene sprint abierto y se puede crear el siguiente.
+- Cerrar el sprint de un proyecto que no existe informa que no se encontró el proyecto.
+- Los story points que el sprint registró al cerrar no cambian si después se reestima una de sus historias.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Cerrar el sprint registrando que se completo y que no](specs/sprint-3/10-cerrar-sprint.md?plain=1#L156) | `TestCerrarElSprintRegistrandoQueSeCompletoYQueNo` [sprint_close_test.go:59](../internal/domain/sprint_close_test.go#L59) | [sprint_close.go](../internal/domain/sprint_close.go) | `e2e1137` → `bf2ac19` |
+| [El sprint cerrado conserva lo que se le habia comprometido](specs/sprint-3/10-cerrar-sprint.md?plain=1#L165) | `TestElSprintCerradoConservaLoQueSeLeHabiaComprometido` [sprint_close_test.go:82](../internal/domain/sprint_close_test.go#L82) | el que ya estaba | `aea7f11` (sin RED: ya pasaba) |
+| [Cerrar con distinta cantidad de historias completadas](specs/sprint-3/10-cerrar-sprint.md?plain=1#L170) | `TestCerrarConDistintaCantidadDeHistoriasCompletadas` [sprint_close_test.go:96](../internal/domain/sprint_close_test.go#L96) | el que ya estaba | `e1a1b77` (sin RED: ya pasaba) |
+| [Cerrar un sprint sin ninguna historia asignada](specs/sprint-3/10-cerrar-sprint.md?plain=1#L183) | `TestCerrarUnSprintSinNingunaHistoriaAsignada` [sprint_close_test.go:132](../internal/domain/sprint_close_test.go#L132) | el que ya estaba | `e1a1b77` (sin RED: ya pasaba) |
+| [La misma historia indicada dos veces cuenta una sola vez](specs/sprint-3/10-cerrar-sprint.md?plain=1#L189) | `TestLaMismaHistoriaIndicadaDosVecesCuentaUnaSolaVez` [sprint_close_test.go:146](../internal/domain/sprint_close_test.go#L146) | [sprint_close.go](../internal/domain/sprint_close.go) | `e44c2af` → `e32d3e5` |
+| [Rechazar el cierre si una historia completada no esta en el sprint](specs/sprint-3/10-cerrar-sprint.md?plain=1#L195) | `TestRechazarElCierreSiUnaHistoriaCompletadaNoEstaEnElSprint` [sprint_close_test.go:163](../internal/domain/sprint_close_test.go#L163) | [sprint_close.go](../internal/domain/sprint_close.go) | `ee65d1d` → `c5463df` |
+| [Rechazar el cierre sin fecha de cierre](specs/sprint-3/10-cerrar-sprint.md?plain=1#L203) | `TestRechazarElCierreSinFechaDeCierre` [sprint_close_test.go:182](../internal/domain/sprint_close_test.go#L182) | [errors.go](../internal/domain/errors.go), [sprint_close.go](../internal/domain/sprint_close.go) | `ec1e59c` → `ceee9ed` |
+| [Rechazar el cierre si no hay sprint abierto](specs/sprint-3/10-cerrar-sprint.md?plain=1#L210) | `TestRechazarElCierreSiNoHaySprintAbierto` [sprint_close_test.go:200](../internal/domain/sprint_close_test.go#L200) | [sprint_close.go](../internal/domain/sprint_close.go) | `0670e00` → `fe38044` |
+| [No se puede cerrar dos veces el mismo sprint](specs/sprint-3/10-cerrar-sprint.md?plain=1#L216) | `TestNoSePuedeCerrarDosVecesElMismoSprint` [sprint_close_test.go:212](../internal/domain/sprint_close_test.go#L212) | el que ya estaba | `33fbd2c` (sin RED: ya pasaba) |
+| [Despues de cerrar se puede crear el sprint siguiente](specs/sprint-3/10-cerrar-sprint.md?plain=1#L223) | `TestDespuesDeCerrarSePuedeCrearElSprintSiguiente` [sprint_close_test.go:27](../internal/domain/sprint_close_test.go#L27) | [sprint_close.go](../internal/domain/sprint_close.go) | `e3f37ce` → `2ebe154` |
+| [Una fecha de cierre distinta de la fecha de fin se acepta](specs/sprint-3/10-cerrar-sprint.md?plain=1#L229) | `TestUnaFechaDeCierreDistintaDeLaFechaDeFinSeAcepta` [sprint_close_test.go:231](../internal/domain/sprint_close_test.go#L231) | el que ya estaba | `8b85cc2` (sin RED: ya pasaba) |
+| [Los puntos registrados al cerrar no cambian si se reestima la historia](specs/sprint-3/10-cerrar-sprint.md?plain=1#L234) | `TestLosPuntosRegistradosAlCerrarNoCambianSiSeReestimaLaHistoria` [sprint_close_test.go:264](../internal/domain/sprint_close_test.go#L264) | [sprint_close.go](../internal/domain/sprint_close.go) | `f0ec86f` → `627b2b9` |
+| [Cerrar el sprint de un proyecto que no existe](specs/sprint-3/10-cerrar-sprint.md?plain=1#L240) | `TestCerrarElSprintDeUnProyectoQueNoExiste` [sprint_close_test.go:249](../internal/domain/sprint_close_test.go#L249) | el que ya estaba | `2aa23a1` (sin RED: ya pasaba) |
+| [Una historia sin estimar al cerrar registra cero puntos](specs/sprint-3/10-cerrar-sprint.md?plain=1#L245) | `TestUnaHistoriaSinEstimarAlCerrarRegistraCeroPuntos` [sprint_close_test.go:284](../internal/domain/sprint_close_test.go#L284) | [sprint_close.go](../internal/domain/sprint_close.go) | `f0ec86f` → `627b2b9` |
 
 ## #13 Votar en secreto en una ronda de Planning Poker
 
@@ -745,4 +789,42 @@ cinco casos posibles:
 |---|---|---|---|
 | `TestRechazarHorasEstimadasQueNoSonUnNumero` [story_hours_test.go:105](../internal/domain/story_hours_test.go#L105) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `4708708` → `9dd7309` |
 | `TestRechazarHorasEstimadasInfinitas` [story_hours_test.go:132](../internal/domain/story_hours_test.go#L132) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `f0ee9fb` → `1a60943` |
+
+## #73 Resolver diferencias y acordar la estimación
+
+- **Historia:** issue #73
+- **Spec:** [docs/specs/sprint-4/73-resolver-diferencias-y-acordar.md](specs/sprint-4/73-resolver-diferencias-y-acordar.md)
+- **Código según la spec:** `internal/domain/voting_round_agreement.go`, `internal/domain/voting_round.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (11)</summary>
+
+- Con la ronda revelada, el sistema informa si hay diferencias entre los votos.
+- Informa el voto más bajo y el más alto, con el nombre de todos los que dieron cada uno.
+- Si todos votaron lo mismo, informa que no hay diferencias.
+- Con la ronda sin revelar no informa nada de los votos, ni siquiera si hay diferencias.
+- Se puede abrir una ronda nueva sobre la misma historia cuando la última está revelada, y las anteriores quedan guardadas como estaban.
+- Las rondas de cada historia se numeran en orden, empezando en 1, y se consultan en ese orden.
+- Se puede registrar la estimación acordada, y la historia queda estimada con ese valor.
+- La estimación acordada tiene que ser un valor de la escala, aunque nadie lo haya votado.
+- No se puede acordar sobre una ronda sin revelar, ya acordada o que no es la última de su historia.
+- No se puede acordar sobre una historia Terminada.
+- Un acuerdo rechazado no cambia ni la ronda ni la historia.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Informar las diferencias de una ronda revelada](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L138) | `TestInformarLasDiferenciasDeUnaRondaRevelada` [voting_round_agreement_test.go:47](../internal/domain/voting_round_agreement_test.go#L47) | [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `2ab9574` → `84e068b` |
+| [Sin diferencias cuando todos votaron lo mismo](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L150) | `TestSinDiferenciasCuandoTodosVotaronLoMismo` [voting_round_agreement_test.go:83](../internal/domain/voting_round_agreement_test.go#L83) | [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `2ab9574` → `84e068b` |
+| [No se informan diferencias de una ronda sin revelar](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L161) | `TestNoSeInformanDiferenciasDeUnaRondaSinRevelar` [voting_round_agreement_test.go:118](../internal/domain/voting_round_agreement_test.go#L118) | [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `2ab9574` → `84e068b` |
+| [Acordar la estimacion de una ronda revelada](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L167) | `TestAcordarLaEstimacionDeUnaRondaRevelada` [voting_round_agreement_test.go:142](../internal/domain/voting_round_agreement_test.go#L142) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `34f60c4` → `de58f0d` |
+| [Una ronda revelada sin acuerdo figura como sin estimacion acordada](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L179) | `TestUnaRondaReveladaSinAcuerdoFiguraComoSinEstimacionAcordada` [voting_round_agreement_test.go:175](../internal/domain/voting_round_agreement_test.go#L175) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `34f60c4` → `de58f0d` |
+| [Rechazar un acuerdo que la estimacion no permite](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L185) | `TestRechazarUnAcuerdoQueLaEstimacionNoPermite` [voting_round_agreement_test.go:185](../internal/domain/voting_round_agreement_test.go#L185) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `34f60c4` → `de58f0d` |
+| [Rechazar un acuerdo sobre una ronda sin revelar](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L199) | `TestRechazarUnAcuerdoSobreUnaRondaSinRevelar` [voting_round_agreement_test.go:225](../internal/domain/voting_round_agreement_test.go#L225) | [errors.go](../internal/domain/errors.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `5808f95` → `b13c00e` |
+| [Rechazar un segundo acuerdo sobre la misma ronda](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L206) | `TestRechazarUnSegundoAcuerdoSobreLaMismaRonda` [voting_round_agreement_test.go:248](../internal/domain/voting_round_agreement_test.go#L248) | [errors.go](../internal/domain/errors.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `5120a6d` → `01e8f5d` |
+| [Estimar una historia en dos rondas](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L213) | `TestEstimarUnaHistoriaEnDosRondas` [voting_round_agreement_test.go:291](../internal/domain/voting_round_agreement_test.go#L291) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Cada historia numera sus rondas desde 1](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L222) | `TestCadaHistoriaNumeraSusRondasDesde1` [voting_round_agreement_test.go:321](../internal/domain/voting_round_agreement_test.go#L321) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Abrir una ronda nueva despues de acordar](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L227) | `TestAbrirUnaRondaNuevaDespuesDeAcordar` [voting_round_agreement_test.go:343](../internal/domain/voting_round_agreement_test.go#L343) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Consultar las rondas de una historia](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L234) | `TestConsultarLasRondasDeUnaHistoria` [voting_round_agreement_test.go:367](../internal/domain/voting_round_agreement_test.go#L367) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Solo se acuerda sobre la ultima ronda de la historia](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L244) | `TestSoloSeAcuerdaSobreLaUltimaRondaDeLaHistoria` [voting_round_agreement_test.go:391](../internal/domain/voting_round_agreement_test.go#L391) | [errors.go](../internal/domain/errors.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `b1c418c` → `c1ce166` |
 

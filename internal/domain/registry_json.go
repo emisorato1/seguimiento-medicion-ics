@@ -61,6 +61,8 @@ type votingRoundJSON struct {
 	Participants []string   `json:"participants"`
 	Votes        []voteJSON `json:"votes,omitempty"`
 	Revealed     bool       `json:"revealed,omitempty"`
+	// Agreed es la estimación acordada de la #73; 0 es "sin acordar".
+	Agreed int `json:"agreed,omitempty"`
 }
 
 type voteJSON struct {
@@ -197,7 +199,7 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 			})
 		}
 		for _, r := range p.votingRounds {
-			round := votingRoundJSON{StoryID: r.storyID, Number: r.number, Participants: r.participants, Revealed: r.revealed}
+			round := votingRoundJSON{StoryID: r.storyID, Number: r.number, Participants: r.participants, Revealed: r.revealed, Agreed: r.agreed}
 			for _, v := range r.votes {
 				round.Votes = append(round.Votes, voteJSON{MemberName: v.MemberName, Points: v.Points})
 			}
@@ -376,21 +378,34 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 // tarea 14). Cada voto entra con la misma operación que al votar, que controla que sea de un
 // participante, que no vote dos veces y que el valor esté en la escala; una ronda guardada
 // como revelada se revela igual, que controla que no le falten votos. Además se controla lo
-// que solo un archivo puede traer mal: una historia que no existe, un número de ronda que no
-// es válido y dos rondas sin revelar sobre la misma historia.
+// que solo un archivo puede traer mal: una historia que no existe, números de ronda que no van
+// seguidos desde 1 en su historia y una ronda sin revelar seguida de otra. Desde la #73 (tarea
+// 7) cada ronda recupera su proyecto y su acuerdo, que se controla como al acordar.
 func votingRoundsFromJSON(project *Project, in []votingRoundJSON) ([]*VotingRound, error) {
 	rounds := make([]*VotingRound, 0, len(in))
-	inProgress := map[int]bool{}
+	last := map[int]*VotingRound{}
 	for _, rj := range in {
 		if _, err := project.Story(rj.StoryID); err != nil {
 			return nil, err
 		}
-		if rj.Number < 1 {
-			return nil, fmt.Errorf("la ronda de la historia %d tiene el número %d y tiene que ser al menos 1", rj.StoryID, rj.Number)
+		// Las rondas de cada historia van seguidas desde 1 (#73, RN-6), y nunca hay una ronda
+		// después de otra sin revelar de la misma historia (RN-7 de la #13): no se puede abrir.
+		previous := last[rj.StoryID]
+		expected := 1
+		if previous != nil {
+			if !previous.revealed {
+				return nil, fmt.Errorf("%w: la ronda %d de la historia %d está sin revelar y le sigue otra",
+					ErrVotingRoundInProgress, previous.number, rj.StoryID)
+			}
+			expected = previous.number + 1
+		}
+		if rj.Number != expected {
+			return nil, fmt.Errorf("la ronda de la historia %d tiene el número %d y tendría que ser la %d", rj.StoryID, rj.Number, expected)
 		}
 		participants := make([]string, len(rj.Participants))
 		copy(participants, rj.Participants)
-		round := &VotingRound{storyID: rj.StoryID, number: rj.Number, participants: participants}
+		// la ronda recupera el proyecto que la abrió, así se puede acordar después de cargarla
+		round := &VotingRound{storyID: rj.StoryID, number: rj.Number, participants: participants, project: project}
 		for _, vj := range rj.Votes {
 			if err := round.Vote(vj.MemberName, vj.Points); err != nil {
 				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, err)
@@ -400,12 +415,20 @@ func votingRoundsFromJSON(project *Project, in []votingRoundJSON) ([]*VotingRoun
 			if err := round.Reveal(); err != nil {
 				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, err)
 			}
-		} else {
-			if inProgress[rj.StoryID] {
-				return nil, fmt.Errorf("%w: la historia %d tiene dos rondas sin revelar", ErrVotingRoundInProgress, rj.StoryID)
-			}
-			inProgress[rj.StoryID] = true
 		}
+		// El acuerdo (#73) se controla como al acordar: solo sobre una ronda revelada y con un
+		// valor de la escala. No se vuelve a estimar la historia, que ya trae sus puntos, y una
+		// ronda acordada puede no ser la última: después de acordar se puede abrir otra.
+		if rj.Agreed != 0 {
+			if !round.revealed {
+				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, ErrRoundNotRevealed)
+			}
+			if !inScale(rj.Agreed) {
+				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, ErrStoryPointsInvalid)
+			}
+			round.agreed = rj.Agreed
+		}
+		last[rj.StoryID] = round
 		rounds = append(rounds, round)
 	}
 	return rounds, nil
@@ -430,7 +453,7 @@ func defectFromJSON(project *Project, dj defectJSON) (*Defect, error) {
 	if err != nil {
 		return nil, err
 	}
-	state, err := parseDefectState(dj.State)
+	state, err := ParseDefectState(dj.State)
 	if err != nil {
 		return nil, err
 	}

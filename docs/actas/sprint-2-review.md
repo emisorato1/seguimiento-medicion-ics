@@ -83,8 +83,8 @@ cada hora una sola vez, en el sprint donde se trabajó.
 
 - **Horas estimadas de las historias nuevas:** 56,7 (a 2,7 h por story point). La #6, la #12
   y la #24 traen sus 30 h estimadas del Sprint 1, donde ya se contaron.
-- **Horas trabajadas en el Sprint 2:** 28. Es lo que da el script contando
-  las adelantadas (50,25) menos las 22,25 h que la #6, la #12 y la #24 ya tenían cargadas al
+- **Horas trabajadas en el Sprint 2:** 31. Es lo que da el script contando
+  las adelantadas (53,25) menos las 22,25 h que la #6, la #12 y la #24 ya tenían cargadas al
   cierre del Sprint 1.
 
 | Integrante | Horas reales en el Sprint 2 |
@@ -112,26 +112,28 @@ donde se terminaron:
 | #5 | 8,1 | 0,5 | −7,6 h |
 | #14 | 8,1 | 0,5 | −7,6 h |
 | #15 | 13,5 | 0,5 | −13 h |
-| #13 (adelantada) | 21,6 | 3 | −18,6 h |
-| **Total** | **108,3** | **48,75** | **−59,55 h (−55%)** |
+| #13 (adelantada) | 21,6 | 6 | −15,6 h |
+| **Total** | **108,3** | **51,75** | **−56,55 h (−52%)** |
 
 La #7 tiene ahora 5 h reales en el tablero; el 21/10 tenía 4. Las horas de la #8 y la #9 son
 de Agustín Salinas.
 
 **La #5, la #14 y la #15 se implementaron con asistencia de IA**, que la consigna permite. Sus
 horas reales son el tiempo humano de dirección y revisión (0,5 h cada una, de Emiliano Sorato),
-y por eso la desviación da muy negativa. Sin esas tres, las otras siete dan −40% (78,6 h
-estimadas contra 47,25 reales).
+y por eso la desviación da muy negativa. Sin esas tres, las otras siete dan −36% (78,6 h
+estimadas contra 50,25 reales).
 
-La #13 tiene 3 h reales contra 21,6 estimadas (−86%). Por qué: [pendiente, lo explica
-Maximiliano Eula en la review].
+La #13 tiene 6 h reales contra 21,6 estimadas (−72%). Maximiliano Eula lo explicó el 24/10 en
+la [issue #147](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147#issuecomment-6391163190): "faltó cargar horas, ya las corregí (eran 3); aun así se
+avanzó más rápido por el tiempo que se acortó para la entrega del proyecto". Las 21,6 salen
+de la conversión de 2,7 h por punto.
 
 La #77 también se hizo con asistencia de IA (1,5 h de Emiliano Sorato), pero no entra en esta
 tabla porque no tiene horas estimadas con qué compararla. Sus horas sí cuentan en las
 trabajadas del sprint.
 
-- **Horas por story point completado:** 1,3 (48,75 h ÷ 39 SP). Sin la #5, la #14 y la #15 da
-  1,7 (47,25 h ÷ 28 SP).
+- **Horas por story point completado:** 1,3 (51,75 h ÷ 39 SP). Sin la #5, la #14 y la #15 da
+  1,8 (50,25 h ÷ 28 SP).
 
 ## Defectos
 
@@ -201,7 +203,7 @@ Sprint 2 que cerró 26 puntos o más. No se recorta nada.
 ## Pendientes
 
 - [x] Cargar las horas reales de la #15: 0,5 h, el 24/10.
-- [ ] Avisar al grupo la decisión del punto de control.
+- [x] Avisar al grupo la decisión del punto de control: está en la [issue #147](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147).
 - [ ] Revisar los números con `scripts/metricas.sh "Sprint 2"` el 25/10, antes de cerrar.
 - [x] Devolver al Product Backlog las historias no terminadas: no quedó ninguna.
 - [ ] Abrir el pull request de `dev` a `main` con el incremento y etiquetarlo `v0.2.0-sprint2`.
