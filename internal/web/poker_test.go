@@ -74,8 +74,8 @@ func TestUnaRondaDePlanningPokerSinVerLosVotosHastaRevelar(t *testing.T) {
 		t.Fatalf("se esperaba volver a la ronda con el estado %d, salio %d:\n%s", http.StatusSeeOther, res.Code, res.Body.String())
 	}
 	html = between(navegador.get(ronda).Body.String(), "<main", "</main>")
-	votos := between(html, `<table id="votos">`, "</table>")
-	for _, fila := range []string{"<td>Ana Perez</td>\n        <td>5</td>", "<td>Juan Gomez</td>\n        <td>8</td>"} {
+	votos := joinTags(between(html, `<table id="votos">`, "</table>"))
+	for _, fila := range []string{"<td>Ana Perez</td><td>5</td>", "<td>Juan Gomez</td><td>8</td>"} {
 		if !strings.Contains(votos, fila) {
 			t.Errorf("se esperaba en los votos revelados %q, y no esta en:\n%s", fila, votos)
 		}

@@ -146,9 +146,9 @@ func TestElProyectoMuestraSuResumen(t *testing.T) {
 		t.Fatalf("no se pudo preparar el proyecto: %v", err)
 	}
 
-	html := between(get(t, newTestServer(t, registry), "/proyectos/1").Body.String(), `<section id="resumen"`, "</section>")
+	html := joinTags(between(get(t, newTestServer(t, registry), "/proyectos/1").Body.String(), `<section id="resumen"`, "</section>"))
 
-	for _, texto := range []string{"<dt>Historias</dt>\n    <dd>3</dd>", "<dt>Completadas</dt>\n    <dd>1</dd>", "<dt>Pendientes</dt>\n    <dd>2</dd>", "Sprint 2", "Cerrar la interfaz"} {
+	for _, texto := range []string{"<dt>Historias</dt><dd>3</dd>", "<dt>Completadas</dt><dd>1</dd>", "<dt>Pendientes</dt><dd>2</dd>", "Sprint 2", "Cerrar la interfaz"} {
 		if !strings.Contains(html, texto) {
 			t.Errorf("se esperaba en el resumen %q, y no esta en:\n%s", texto, html)
 		}

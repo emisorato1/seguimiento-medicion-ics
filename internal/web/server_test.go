@@ -115,6 +115,15 @@ func doneStoryRegistry(t *testing.T) *domain.ProjectRegistry {
 
 // between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
 // la pagina, como la barra. Si no lo encuentra devuelve vacio.
+// joinTags quita los espacios y los saltos de linea entre una etiqueta y la siguiente, para
+// buscar una fila sin depender de la sangria ni del fin de linea: en Windows las plantillas
+// pueden bajar con CRLF (pedido de Agustin en la revision del #149).
+func joinTags(html string) string {
+	return betweenTags.ReplaceAllString(html, "><")
+}
+
+var betweenTags = regexp.MustCompile(`>\s+<`)
+
 func between(html, start, end string) string {
 	i := strings.Index(html, start)
 	if i < 0 {
@@ -1447,10 +1456,10 @@ func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 		"/proyectos/1/sprints":              "Tener el MVP",
 		"/proyectos/1/sprints/1":            "Registrar esfuerzo",
 		"/proyectos/1/esfuerzo":             "Escribir tests",
-		"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td>\n        <td>5</td>",
+		"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td><td>5</td>",
 	}
 	for pagina, texto := range esperado {
-		if html := segunda.get(pagina).Body.String(); !strings.Contains(html, texto) {
+		if html := joinTags(segunda.get(pagina).Body.String()); !strings.Contains(html, texto) {
 			t.Errorf("al volver a abrir se esperaba en %s %q, y no esta en:\n%s", pagina, texto, html)
 		}
 	}

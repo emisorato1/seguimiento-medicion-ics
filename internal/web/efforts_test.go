@@ -86,7 +86,7 @@ func TestCargarLasHorasEstimadasDeUnaHistoria(t *testing.T) {
 	if !strings.Contains(html, "Se cargaron las horas estimadas de la historia 1") {
 		t.Errorf("se esperaba el mensaje, y no esta en:\n%s", html)
 	}
-	if !strings.Contains(html, "<dt>Horas estimadas</dt>\n  <dd>6,5</dd>") {
+	if !strings.Contains(joinTags(html), "<dt>Horas estimadas</dt><dd>6,5</dd>") {
 		t.Errorf("se esperaba la historia con 6,5 horas estimadas, y no esta en:\n%s", html)
 	}
 	if story, _ := project.Story(1); story.EstimatedHours() != 6.5 {
