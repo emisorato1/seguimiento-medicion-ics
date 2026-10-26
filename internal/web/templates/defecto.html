@@ -40,12 +40,15 @@
 </form>
 <h2>Resolver</h2>
 <form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/defectos/{{.Defect.ID}}/resolver">
+  {{with .Form.Field "sprint"}}
   <div class="campo">
     <label for="sprint">Resuelto en el sprint</label>
-    <select id="sprint" name="sprint">
-      {{template "opciones-con-texto" (labeled "Elegí un sprint" .Sprints "")}}
+    <select id="sprint" name="sprint"{{template "invalido" .}}>
+      {{template "opciones-con-texto" (labeled "Elegí un sprint" $.Data.Sprints .Value)}}
     </select>
+    {{template "error" .}}
   </div>
+  {{end}}
   <div class="acciones">
     <button type="submit">Resolver</button>
   </div>

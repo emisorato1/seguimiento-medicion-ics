@@ -257,33 +257,37 @@ func (s *Server) confirmResolve(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r, project, err)
 		return
 	}
+	f := readForm(r, "sprint")
+	if f.number("sprint", errInvalidSprint); f.hasErrors() {
+		s.renderDefect(w, r, http.StatusUnprocessableEntity, project, defect, f)
+		return
+	}
 	s.render(w, r, http.StatusOK, "confirmar.html", page{
 		Title:   "Resolver defecto",
 		Project: project,
 		Section: "defectos",
-		Data:    resolveConfirmation(project, defect, r.FormValue("sprint")),
+		Data:    resolveConfirmation(project, defect, f.Values["sprint"]),
 	})
 }
 
 // resolveDefect resuelve el defecto en el sprint elegido, despues de que se confirmo, y
-// vuelve a su pagina con 303. Si el dominio lo rechaza, vuelve a pedir confirmar con su
-// mensaje.
+// vuelve a su pagina con 303. Si el dominio lo rechaza, vuelve a mostrar la pagina del
+// defecto con el mensaje junto al sprint (RN-2).
 func (s *Server) resolveDefect(w http.ResponseWriter, r *http.Request) {
 	project, defect, err := s.findDefect(r)
 	if err != nil {
 		s.notFound(w, r, project, err)
 		return
 	}
-	sprint, _ := strconv.Atoi(r.FormValue("sprint"))
+	f := readForm(r, "sprint")
+	sprint := f.number("sprint", errInvalidSprint)
+	if f.hasErrors() {
+		s.renderDefect(w, r, http.StatusUnprocessableEntity, project, defect, f)
+		return
+	}
 	if err := project.ResolveDefect(defect.ID(), sprint); err != nil {
-		data := resolveConfirmation(project, defect, r.FormValue("sprint"))
-		data.Error = err.Error()
-		s.render(w, r, http.StatusUnprocessableEntity, "confirmar.html", page{
-			Title:   "Resolver defecto",
-			Project: project,
-			Section: "defectos",
-			Data:    data,
-		})
+		f.reject(err)
+		s.renderDefect(w, r, http.StatusUnprocessableEntity, project, defect, f)
 		return
 	}
 	s.done(w, r, fmt.Sprintf("Se resolvió el defecto %d en el sprint %d", defect.ID(), sprint), fmt.Sprintf("/proyectos/%d/defectos/%d", project.ID(), defect.ID()))

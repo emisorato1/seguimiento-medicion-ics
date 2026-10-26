@@ -132,6 +132,13 @@ var fieldErrors = []struct {
 	{domain.ErrEffortHoursInvalid, "horas"},
 	{domain.ErrEffortActivityRequired, "actividad"},
 	{domain.ErrEstimatedHoursInvalid, "horas"},
+	{domain.ErrDefectTitleRequired, "titulo"},
+	{domain.ErrDefectDescriptionRequired, "descripcion"},
+	{domain.ErrDefectSeverityInvalid, "severidad"},
+	{domain.ErrSprintNotFound, "sprint"},
+	{domain.ErrDefectStateUnknown, "estado"},
+	{domain.ErrDefectStateInvalid, "estado"},
+	{domain.ErrDefectResolvedBeforeDetected, "sprint"},
 }
 
 // reject anota el rechazo del dominio junto al campo que lo causo, con el mismo mensaje
