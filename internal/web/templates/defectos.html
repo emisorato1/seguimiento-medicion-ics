@@ -1,0 +1,76 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Defectos</h1>
+{{if and (not .Defects) (not .State) (not .Severity)}}
+<div class="vacio">
+  <p>Todavía no hay defectos.</p>
+  <a class="boton" href="/proyectos/{{.ProjectID}}/defectos/nuevo">Cargar el primer defecto</a>
+</div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/defectos/nuevo">Nuevo defecto</a>
+</div>
+<h2>Filtrar</h2>
+{{template "error-formulario" .Error}}
+<div>
+  <form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/defectos">
+    <div class="campo">
+      <label for="estado">Por estado</label>
+      <select id="estado" name="estado">
+        {{template "opciones" (choices "Elegí un estado" .States .State)}}
+      </select>
+    </div>
+    <div class="acciones">
+      <button type="submit">Filtrar por estado</button>
+    </div>
+  </form>
+  <form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/defectos">
+    <div class="campo">
+      <label for="severidad">Por severidad</label>
+      <select id="severidad" name="severidad">
+        {{template "opciones" (choices "Elegí una severidad" .Severities .Severity)}}
+      </select>
+    </div>
+    <div class="acciones">
+      <button type="submit">Filtrar por severidad</button>
+    </div>
+  </form>
+</div>
+{{if or .State .Severity}}
+<p><a href="/proyectos/{{.ProjectID}}/defectos">Ver todos los defectos</a></p>
+{{end}}
+{{if not .Defects}}
+<p class="sin-dato">Ningún defecto cumple el filtro.</p>
+{{else}}
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Título</th>
+        <th scope="col">Severidad</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Historia</th>
+        <th scope="col">Detectado en</th>
+        <th scope="col">Resuelto en</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Defects}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/defectos/{{.ID}}">{{.Title}}</a></td>
+        <td>{{.Severity}}</td>
+        <td>{{.State}}</td>
+        <td><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}">{{.StoryID}}</a></td>
+        <td>Sprint {{.DetectedIn}}</td>
+        <td>{{if .ResolvedIn}}Sprint {{.ResolvedIn}}{{else}}<span class="sin-dato">sin resolver</span>{{end}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
+{{end}}
+{{end}}

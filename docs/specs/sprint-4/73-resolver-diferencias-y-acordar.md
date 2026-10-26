@@ -3,7 +3,7 @@
 - **Historia:** #73
 - **Sprint:** 4
 - **Responsable:** Maximiliano Eula
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Terminada en el Sprint 3 — **mergeada a `dev`** el 26/10 (PR #148, con el arreglo del defecto #156 en el #157). Adelantada al Sprint 3 con la regla del 21/10 de CLAUDE.md
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 22/10: decidió los
@@ -335,7 +335,7 @@ nunca es un acuerdo válido.
 | Las diferencias leen los votos por la consulta protegida de la #13 | leerlos directo, que dentro del paquete se puede | el secreto queda en un solo lugar; leyendo directo, la RN-4 habría que reprogramarla, y un olvido daría el más bajo y el más alto de una ronda sin revelar |
 | El número de la ronda nueva es el de la última de la historia más uno | un contador por historia guardado aparte, como el de las historias de la #6 | las rondas no se borran, así que contar no repite números; si algún día se pueden borrar, se revisa |
 | Lo nuevo va en `voting_round_agreement.go`; `voting_round.go` solo cambia en la apertura | agregarlo todo al archivo de la #13 | la trazabilidad queda directa por historia, como se aprobó en la #12 |
-| El acuerdo se guarda en el archivo con su ronda, y al cargar se controla igual que al acordar: valor de la escala, solo sobre una ronda revelada y solo en la última de su historia; además, los números de las rondas de cada historia van seguidos desde 1, y cada ronda recupera el proyecto que la abrió | no guardarlo; guardarlo sin controlar | `AGENTS.md` pide que todo dato nuevo entre en la conversión, y sin el proyecto una ronda cargada no se podría acordar. Controlar al cargar es lo que hace la #77 con las demás entidades: un archivo editado a mano no mete datos que el dominio rechazaría |
+| El acuerdo se guarda en el archivo con su ronda, y al cargar se controla igual que al acordar: valor de la escala y solo sobre una ronda revelada; además, los números de las rondas de cada historia van seguidos desde 1, ninguna ronda sin revelar tiene otra después, y cada ronda recupera el proyecto que la abrió. Una ronda acordada **sí puede no ser la última**: después de acordar se puede abrir otra (corregido al implementar, ver los desvíos) | no guardarlo; guardarlo sin controlar | `AGENTS.md` pide que todo dato nuevo entre en la conversión, y sin el proyecto una ronda cargada no se podría acordar. Controlar al cargar es lo que hace la #77 con las demás entidades: un archivo editado a mano no mete datos que el dominio rechazaría |
 
 ### Dependencias y restricciones
 
@@ -362,13 +362,13 @@ además que la ronda y la historia quedaron como estaban (RN-16).
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Las diferencias de una ronda revelada: si hay, y el más bajo y el más alto con todos los que los dieron; sin diferencias cuando todos coinciden; sin revelar se rechaza con el aviso de votos ocultos | Informar las diferencias de una ronda revelada / Sin diferencias cuando todos votaron lo mismo / No se informan diferencias de una ronda sin revelar | RN-1, RN-2, RN-3, RN-4 | pendiente |
-| 2 | Acordar sobre una ronda revelada registra el valor en la ronda y estima la historia con la #12; un valor fuera de la escala o una historia Terminada se rechazan con los errores de la #12 y la ronda queda sin acuerdo | Acordar la estimacion de una ronda revelada / Una ronda revelada sin acuerdo figura como sin estimacion acordada / Rechazar un acuerdo que la estimacion no permite | RN-9, RN-10, RN-11, RN-15, RN-16 | pendiente |
-| 3 | Rechazar el acuerdo sobre una ronda sin revelar, antes de estimar la historia | Rechazar un acuerdo sobre una ronda sin revelar | RN-12, RN-16 | pendiente |
-| 4 | Rechazar un segundo acuerdo sobre la misma ronda; quedan el primero en la ronda y en la historia | Rechazar un segundo acuerdo sobre la misma ronda | RN-13, RN-16 | pendiente |
-| 5 | Abrir una ronda nueva cuando la última está revelada: lleva el número siguiente de su historia, las anteriores quedan como estaban y se consultan en orden, y la ronda que abre el proyecto ya se puede acordar | Estimar una historia en dos rondas / Cada historia numera sus rondas desde 1 / Abrir una ronda nueva despues de acordar / Consultar las rondas de una historia | RN-5, RN-6, RN-7, RN-8 | pendiente |
-| 6 | Rechazar el acuerdo sobre una ronda que no es la última de su historia, antes de estimarla | Solo se acuerda sobre la ultima ronda de la historia | RN-14, RN-16 | pendiente |
-| 7 | El acuerdo entra en la conversión del registro: una ronda acordada y una sin acordar se reconstruyen iguales, y una ronda cargada se puede acordar. Rechaza la carga un acuerdo fuera de la escala, sobre una ronda sin revelar o en una ronda que no es la última, y números de ronda que no van seguidos desde 1 en su historia | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | pendiente |
+| 1 | Las diferencias de una ronda revelada: si hay, y el más bajo y el más alto con todos los que los dieron; sin diferencias cuando todos coinciden; sin revelar se rechaza con el aviso de votos ocultos | Informar las diferencias de una ronda revelada / Sin diferencias cuando todos votaron lo mismo / No se informan diferencias de una ronda sin revelar | RN-1, RN-2, RN-3, RN-4 | hecha |
+| 2 | Acordar sobre una ronda revelada registra el valor en la ronda y estima la historia con la #12; un valor fuera de la escala o una historia Terminada se rechazan con los errores de la #12 y la ronda queda sin acuerdo | Acordar la estimacion de una ronda revelada / Una ronda revelada sin acuerdo figura como sin estimacion acordada / Rechazar un acuerdo que la estimacion no permite | RN-9, RN-10, RN-11, RN-15, RN-16 | hecha |
+| 3 | Rechazar el acuerdo sobre una ronda sin revelar, antes de estimar la historia | Rechazar un acuerdo sobre una ronda sin revelar | RN-12, RN-16 | hecha |
+| 4 | Rechazar un segundo acuerdo sobre la misma ronda; quedan el primero en la ronda y en la historia | Rechazar un segundo acuerdo sobre la misma ronda | RN-13, RN-16 | hecha |
+| 5 | Abrir una ronda nueva cuando la última está revelada: lleva el número siguiente de su historia, las anteriores quedan como estaban y se consultan en orden, y la ronda que abre el proyecto ya se puede acordar | Estimar una historia en dos rondas / Cada historia numera sus rondas desde 1 / Abrir una ronda nueva despues de acordar / Consultar las rondas de una historia | RN-5, RN-6, RN-7, RN-8 | hecha |
+| 6 | Rechazar el acuerdo sobre una ronda que no es la última de su historia, antes de estimarla | Solo se acuerda sobre la ultima ronda de la historia | RN-14, RN-16 | hecha |
+| 7 | El acuerdo entra en la conversión del registro: una ronda acordada y una sin acordar se reconstruyen iguales, y una ronda cargada se puede acordar. Rechaza la carga un acuerdo fuera de la escala o sobre una ronda sin revelar, números de ronda que no van seguidos desde 1 en su historia y una ronda sin revelar seguida de otra. Una ronda acordada que ya no es la última se carga: es el estado del escenario "Abrir una ronda nueva despues de acordar" | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | — | hecha |
 
 ### Por qué este orden
 
@@ -424,7 +424,69 @@ volver a abrir.
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. El test en un commit, con la salida del test fallando después
+de `RED:` en el mensaje, y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `2ab9574` | `84e068b` |
+| 2 | `34f60c4` | `de58f0d` |
+| 3 | `5808f95` | `b13c00e` |
+| 4 | `5120a6d` | `01e8f5d` |
+| 5 | `a6a5a5a` | `185bce2` |
+| 6 | `b1c418c` | `c1ce166` |
+| 7 | `03e2280` | `3fbd33a` |
+| refactor | — | `ed24b67` |
+
+Las siete tareas tuvieron RED, y cada commit se verificó por separado: los de test fallan y
+los de implementación pasan. `internal/domain` queda en 100% de cobertura, y ningún test de la
+#13 se modificó.
+
+### Desvíos respecto de la spec
+
+- **Tarea 7: un control de la carga estaba mal escrito y se sacó.** Decía que la carga
+  rechazara "un acuerdo en una ronda que no es la última". Pero el escenario "Abrir una ronda
+  nueva despues de acordar" deja justamente ese estado —la ronda 1 acordada y la 2 abierta—,
+  que es válido: la RN-14 prohíbe *acordar* sobre una ronda que no es la última, no que una
+  ronda acordada quede antes de otra. Con ese control, la web no habría podido volver a abrir
+  su archivo después de reestimar una historia. En su lugar, la carga rechaza lo que de verdad
+  no puede pasar: una ronda sin revelar seguida de otra de la misma historia, que además
+  cubre el caso de "dos rondas sin revelar" de la #13. El test de ida y vuelta guarda una
+  ronda acordada que ya no es la última. Lo decidió el responsable el 24/10, al encontrarlo, y
+  se corrigió la tarea 7 y la decisión de la Fase 2.
+- **La historia se adelantó al Sprint 3** (`32e4d17`), con la regla del 21/10 de CLAUDE.md:
+  tenía las tres puertas aprobadas y la #13 ya estaba en `dev`.
+- **Refactor `ed24b67`:** `CurrentVotingRound` (#13) pasa a usar la misma búsqueda de la
+  última ronda que la apertura. No cambia comportamiento: los tests pasan sin tocarlos.
+
+### Decisiones tomadas al implementar
+
+Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
+
+- **Las diferencias son un dato `Differences`**, con `HasDifferences`, `Lowest` y `Highest`;
+  cada extremo es un `VoteExtreme` con el valor (`Points`) y todos los que lo dieron
+  (`Members`), en el orden de los participantes. Es lo que la #78 muestra.
+- **"Sin acordar" es 0** en `Agreed()`, como "sin estimar" en la #12.
+- **El número de la ronda nueva sale de la última ronda de la historia**, con la misma
+  búsqueda que usa `Agree` para saber si una ronda es la última.
+
+### Defecto encontrado después del merge: #156
+
+En la revisión del PR #148 (25/10), Juliana Bustos pidió un cambio antes de mergear. El #148
+se mergeó por error con ese pedido sin responder, así que se registró como el defecto #156 y
+se arregló en un PR aparte, a pedido de Emiliano Sorato.
+
+- **Qué pasaba:** la carga aceptaba una ronda revelada **sin participantes**, porque a nadie le
+  faltaba votar, y después `Differences()` cortaba con un pánico (`index out of range [0]`) al
+  leer el primer voto. En la web (#78), una página rota. También aceptaba un participante con
+  **nombre vacío** o **repetido**, y con el repetido `Differences()` nombraba dos veces a la
+  misma persona.
+- **El arreglo:** la carga rechaza los tres casos, con `ErrSavedDataInvalid`, como propuso
+  Juliana. Al abrir una ronda ninguno puede pasar (RN-6 de la #13 y los integrantes de la #4),
+  así que solo un archivo puede traerlos. Con eso el primer voto queda garantizado y
+  `Differences()` no se tocó.
+- **TDD:** `684fcb2` es el test, con su RED: el pánico, y las dos filas nuevas de datos
+  dañados. `87264b3` es el arreglo.
 
 ## Trazabilidad
 

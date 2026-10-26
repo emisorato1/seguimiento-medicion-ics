@@ -1,9 +1,6 @@
 package domain
 
-import (
-	"fmt"
-	"strings"
-)
+import "strings"
 
 // Severity es qué tan grave es un defecto (historia #15). Es un tipo propio para que no se
 // pueda guardar una severidad que no existe. El valor cero no es ninguna: significa "sin
@@ -84,18 +81,20 @@ func (s DefectState) String() string {
 	}
 }
 
-// parseDefectState lee un estado guardado por su nombre. Un nombre que no es un estado no se
-// acepta.
-func parseDefectState(text string) (DefectState, error) {
-	switch text {
-	case "Abierto":
+// ParseDefectState convierte el texto que escribe el usuario en un estado de defecto, igual
+// que ParseSeverity: sin distinguir mayúsculas ni los espacios de los costados. Cualquier otro
+// texto se rechaza. Lo pidió la #78 para sus pantallas de defectos, y lo usa también la carga
+// de los datos guardados.
+func ParseDefectState(text string) (DefectState, error) {
+	switch strings.ToLower(strings.TrimSpace(text)) {
+	case "abierto":
 		return DefectOpen, nil
-	case "En curso":
+	case "en curso":
 		return DefectInProgress, nil
-	case "Resuelto":
+	case "resuelto":
 		return DefectResolved, nil
 	}
-	return 0, fmt.Errorf("el estado de defecto %q no existe", text)
+	return 0, ErrDefectStateUnknown
 }
 
 // Defect es un defecto encontrado en el producto. Vive dentro del proyecto, como las

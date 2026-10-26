@@ -32,11 +32,17 @@ func (f *fakeSaver) Save(registry *domain.ProjectRegistry) error {
 	return f.err
 }
 
+// testToday es la fecha de hoy de los tests (D1 de la #78): fija, asi los escenarios con
+// "hoy es 27/10/2026" se prueban igual cualquier dia.
+func testToday() time.Time {
+	return time.Date(2026, 10, 27, 0, 0, 0, 0, time.UTC)
+}
+
 // newTestServer arma una web nueva sobre el registro que recibe, con un guardado falso.
 // Cada test arma el suyo y arranca de cero.
 func newTestServer(t *testing.T, registry *domain.ProjectRegistry) *Server {
 	t.Helper()
-	return NewServer(registry, &fakeSaver{})
+	return NewServer(registry, &fakeSaver{}, testToday)
 }
 
 // get pide una pagina a la web, como lo haria el navegador.
@@ -107,6 +113,15 @@ func doneStoryRegistry(t *testing.T) *domain.ProjectRegistry {
 	return registry
 }
 
+// joinTags quita los espacios y los saltos de linea entre una etiqueta y la siguiente, para
+// buscar una fila sin depender de la sangria ni del fin de linea: en Windows las plantillas
+// pueden bajar con CRLF (pedido de Agustin en la revision del #149).
+func joinTags(html string) string {
+	return betweenTags.ReplaceAllString(html, "><")
+}
+
+var betweenTags = regexp.MustCompile(`>\s+<`)
+
 // between devuelve el pedazo del HTML que va de start a end, para mirar solo una parte de
 // la pagina, como la barra. Si no lo encuentra devuelve vacio.
 func between(html, start, end string) string {
@@ -157,6 +172,13 @@ func snapshot(registry *domain.ProjectRegistry) string {
 				h.Priority(), h.State(), h.StoryPoints(), h.AcceptanceCriteria())
 		}
 	}
+	// Lo que se guarda incluye lo que suman las historias de la #78 (sprints, esfuerzo,
+	// defectos y rondas), asi un cambio en cualquiera de ellos tambien se nota.
+	guardado, err := registry.ToJSON()
+	if err != nil {
+		return "no se pudo describir el registro: " + err.Error()
+	}
+	b.Write(guardado)
 	return b.String()
 }
 
@@ -318,6 +340,53 @@ func TestLasListasVaciasDicenQueHacer(t *testing.T) {
 			pagina:  "/proyectos/1/backlog",
 			mensaje: "El backlog está vacío",
 			acceso:  `href="/proyectos/1/historias/nueva"`,
+		},
+		{
+			nombre: "un proyecto sin sprints (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/sprints",
+			mensaje: "Todavía no hay sprints",
+			acceso:  `href="/proyectos/1/sprints/nuevo"`,
+		},
+		{
+			nombre: "un proyecto sin esfuerzo (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/esfuerzo",
+			mensaje: "Todavía no hay horas registradas",
+			acceso:  `href="/proyectos/1/esfuerzo/nuevo"`,
+		},
+		{
+			nombre: "un proyecto sin integrantes al registrar esfuerzo (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			pagina:  "/proyectos/1/esfuerzo/nuevo",
+			mensaje: "Este proyecto todavía no tiene integrantes",
+			acceso:  `href="/proyectos/1/integrantes/nuevo"`,
+		},
+		{
+			nombre: "un proyecto sin defectos (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			pagina:  "/proyectos/1/defectos",
+			mensaje: "Todavía no hay defectos",
+			acceso:  `href="/proyectos/1/defectos/nuevo"`,
+		},
+		{
+			nombre: "un proyecto sin sprints al cargar un defecto (#78, RN-17)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			pagina:  "/proyectos/1/defectos/nuevo",
+			mensaje: "Este proyecto todavía no tiene sprints",
+			acceso:  `href="/proyectos/1/sprints/nuevo"`,
 		},
 	}
 
@@ -533,6 +602,241 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			campo:      "",
 			err:        domain.ErrStoryEstimateDone,
 		},
+		{
+			nombre: "sprint con el goal vacio (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+			},
+			formulario: "/proyectos/1/sprints/nuevo",
+			datos:      url.Values{"goal": {"  "}, "inicio": {"2026-10-26"}, "fin": {"2026-10-30"}},
+			campo:      "goal",
+			err:        domain.ErrSprintGoalRequired,
+		},
+		{
+			nombre: "segundo sprint abierto (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				addProject(t, registry, "Sistema de metricas")
+				addSprint(t, registry, 1)
+			},
+			formulario: "/proyectos/1/sprints/nuevo",
+			datos:      url.Values{"goal": {"Cerrar el MVP"}, "inicio": {"2026-11-02"}, "fin": {"2026-11-06"}},
+			campo:      "",
+			err:        domain.ErrSprintAlreadyOpen,
+		},
+		{
+			nombre: "asignar una historia sin estimar (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Sin estimar", domain.PriorityLow)
+				addSprint(t, registry, 1)
+			},
+			formulario: "/proyectos/1/sprints/asignar",
+			datos:      url.Values{"historia": {"1"}},
+			campo:      "historia",
+			err:        domain.ErrStoryNotEstimated,
+		},
+		{
+			nombre: "asignar sin elegir la historia (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Sin estimar", domain.PriorityLow)
+				addSprint(t, registry, 1)
+			},
+			formulario: "/proyectos/1/sprints/asignar",
+			datos:      url.Values{"historia": {""}},
+			campo:      "historia",
+			err:        errInvalidStory,
+		},
+		{
+			nombre: "esfuerzo de un dia que todavia no paso (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-28"}, "horas": {"2"}, "actividad": {"Escribir tests"}},
+			campo:      "dia",
+			err:        domain.ErrEffortDayInFuture,
+		},
+		{
+			nombre: "esfuerzo de cero horas (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"0"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        domain.ErrEffortHoursInvalid,
+		},
+		{
+			nombre: "esfuerzo con horas que no son numero (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"dos"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        errInvalidHours,
+		},
+		{
+			nombre: "esfuerzo con NaN horas (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"NaN"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        errInvalidHours,
+		},
+		{
+			nombre: "esfuerzo con horas infinitas (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"Inf"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        errInvalidHours,
+		},
+		{
+			nombre: "horas estimadas en cero (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/historias/1/horas-estimadas",
+			datos:      url.Values{"horas": {"0"}},
+			campo:      "horas",
+			err:        domain.ErrEstimatedHoursInvalid,
+		},
+		{
+			// No esta en los Ejemplos: la historia que no existe la rechaza el nucleo (RN-2).
+			nombre: "abrir una ronda de una historia que no existe (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario:   "/proyectos/1/planning-poker",
+			datos:        url.Values{"historia": {"99"}},
+			campo:        "historia",
+			err:          domain.ErrStoryNotFound,
+			fueraDeLista: []string{"historia"},
+		},
+		{
+			// No esta en los Ejemplos: la fecha de cierre la controla el nucleo (#10).
+			nombre:     "cerrar el sprint sin fecha de cierre (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {""}, "completadas": {"1"}},
+			campo:      "cierre",
+			err:        domain.ErrSprintCloseDateRequired,
+		},
+		{
+			// No esta en los Ejemplos: una fecha que no es fecha no llega al nucleo (RN-14 de la #77).
+			nombre:     "cerrar el sprint con una fecha que no es fecha (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {"el viernes"}, "completadas": {"1"}},
+			campo:      "cierre",
+			err:        errInvalidDate,
+		},
+		{
+			// No esta en los Ejemplos: algo que no viene de las casillas va arriba.
+			nombre:     "cerrar el sprint con una historia que no es un numero (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {"2026-10-30"}, "completadas": {"uno"}},
+			err:        errInvalidStory,
+			// las completadas viajan en un campo oculto de la confirmacion, no en el formulario
+			fueraDeLista: []string{"completadas"},
+		},
+		{
+			// No esta en los Ejemplos: acordar sin elegir es un dato sin forma (RN-2).
+			nombre: "acordar sin elegir los story points (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := pokerRegistry(t)
+				revealedRound(t, project)
+				return registry
+			},
+			formulario: "/proyectos/1/historias/1/rondas/1/acordar",
+			datos:      url.Values{"puntos": {""}},
+			campo:      "puntos",
+			err:        errInvalidPoints,
+		},
+		{
+			// No esta en los Ejemplos: acordar antes de revelar lo rechaza el nucleo (#73).
+			nombre: "acordar una ronda sin revelar (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := pokerRegistry(t)
+				if _, err := project.OpenVotingRound(1); err != nil {
+					t.Fatalf("no se pudo abrir la ronda: %v", err)
+				}
+				return registry
+			},
+			formulario: "/proyectos/1/historias/1/rondas/1/acordar",
+			datos:      url.Values{"puntos": {"5"}},
+			err:        domain.ErrRoundNotRevealed,
+		},
+		{
+			nombre:     "defecto con el titulo vacio (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
+			formulario: "/proyectos/1/defectos/nuevo",
+			datos:      url.Values{"titulo": {"  "}, "descripcion": {"No suma el ultimo"}, "severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"}},
+			campo:      "titulo",
+			err:        domain.ErrDefectTitleRequired,
+		},
+		{
+			// No esta en los Ejemplos: la severidad sin elegir la rechaza el nucleo (RN-2).
+			nombre:     "defecto sin elegir la severidad (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
+			formulario: "/proyectos/1/defectos/nuevo",
+			datos:      url.Values{"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo"}, "severidad": {""}, "historia": {"1"}, "sprint": {"1"}},
+			campo:      "severidad",
+			err:        domain.ErrDefectSeverityInvalid,
+		},
+		{
+			// No esta en los Ejemplos: el sprint sin elegir es un dato sin forma (RN-2).
+			nombre:     "defecto sin elegir el sprint (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
+			formulario: "/proyectos/1/defectos/nuevo",
+			datos:      url.Values{"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo"}, "severidad": {"Mayor"}, "historia": {"1"}, "sprint": {""}},
+			campo:      "sprint",
+			err:        errInvalidSprint,
+		},
+		{
+			// No esta en los Ejemplos: el estado sin elegir lo rechaza el nucleo (RN-2).
+			nombre: "cambiar el estado sin elegirlo (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := defectRegistry(t)
+				addDefect(t, project, 1)
+				return registry
+			},
+			formulario: "/proyectos/1/defectos/1/estado",
+			datos:      url.Values{"estado": {""}},
+			campo:      "estado",
+			err:        domain.ErrDefectStateUnknown,
+		},
+		{
+			nombre: "resolver en un sprint anterior al de deteccion (#78)",
+			inicial: func(t *testing.T) *domain.ProjectRegistry {
+				registry, project := defectRegistry(t)
+				addDefect(t, project, 2)
+				return registry
+			},
+			formulario: "/proyectos/1/defectos/1/resolver",
+			datos:      url.Values{"sprint": {"1"}},
+			campo:      "sprint",
+			err:        domain.ErrDefectResolvedBeforeDetected,
+		},
 	}
 
 	for _, caso := range casos {
@@ -545,7 +849,7 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 				caso.preparar(t, registry)
 			}
 			saver := &fakeSaver{}
-			server := NewServer(registry, saver)
+			server := NewServer(registry, saver, testToday)
 			antes := snapshot(registry)
 
 			res := newBrowser(t, server).post(caso.formulario, caso.datos)
@@ -567,10 +871,12 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 
 			// El mensaje del dominio, junto a su campo o, si no es de ningun campo, arriba.
 			donde := "arriba del formulario"
-			junto := fmt.Sprintf(`id="error-formulario">%s<`, template.HTMLEscapeString(caso.err.Error()))
+			// Sin el cierre del elemento: el dominio puede sumarle un detalle al mensaje, como
+			// el numero del sprint que ya esta abierto (#8).
+			junto := fmt.Sprintf(`id="error-formulario">%s`, template.HTMLEscapeString(caso.err.Error()))
 			if caso.campo != "" {
 				donde = "junto al campo " + caso.campo
-				junto = fmt.Sprintf(`id="%s-error">%s<`, caso.campo, template.HTMLEscapeString(caso.err.Error()))
+				junto = fmt.Sprintf(`id="%s-error">%s`, caso.campo, template.HTMLEscapeString(caso.err.Error()))
 			}
 			if !strings.Contains(html, junto) {
 				t.Errorf("se esperaba %s el mensaje %q, y no esta en:\n%s", donde, caso.err, html)
@@ -740,6 +1046,7 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 	casos := []struct {
 		pedido string
 		err    error
+		volver string // el acceso al proyecto, si el pedido es de algo dentro de uno
 	}{
 		{pedido: "/proyectos/99", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/abc", err: domain.ErrProjectNotFound},
@@ -757,12 +1064,34 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/1/historias/99/estimar", err: domain.ErrStoryNotFound},
 		{pedido: "/proyectos/1/historias/99/quitar-estimacion", err: domain.ErrStoryNotFound},
 		{pedido: "/proyectos/1/integrantes/quitar?nombre=Nadie", err: domain.ErrMemberNotFound},
+		// La #78 (RN-18) pide ademas el acceso para volver al proyecto.
+		{pedido: "/proyectos/1/sprints/99", err: domain.ErrSprintNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/sprints", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/sprints/nuevo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/sprints/1", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/sprints/quitar?historia=1", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/esfuerzo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/esfuerzo/nuevo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/historias/99/horas-estimadas", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/planning-poker", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/historias/99/rondas/1", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/historias/1/rondas/1", err: errRoundNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/historias/99/rondas", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/sprints/cerrar", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/sprints/cerrar/confirmar?cierre=2026-10-30", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/historias/1/rondas", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/defectos/99", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/defectos", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/defectos/nuevo", err: domain.ErrProjectNotFound},
 	}
 
 	for _, caso := range casos {
 		t.Run(caso.pedido, func(t *testing.T) {
 			registry := domain.NewProjectRegistry()
-			addProject(t, registry, "Sistema de metricas")
+			project := addProject(t, registry, "Sistema de metricas")
+			// La historia 1 existe, sin rondas, para pedir una ronda que no tiene (#78).
+			addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
 			server := newTestServer(t, registry)
 
 			res := get(t, server, caso.pedido)
@@ -776,6 +1105,9 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 			}
 			if !strings.Contains(contenido, `href="/proyectos"`) {
 				t.Errorf("se esperaba el acceso para volver a la lista de proyectos, y no esta en:\n%s", contenido)
+			}
+			if caso.volver != "" && !strings.Contains(contenido, `href="`+caso.volver+`"`) {
+				t.Errorf("se esperaba el acceso para volver al proyecto (%s), y no esta en:\n%s", caso.volver, contenido)
 			}
 		})
 	}
@@ -903,7 +1235,7 @@ func TestConfirmarOCancelarAntesDeQuitar(t *testing.T) {
 				t.Fatalf("no se pudo preparar la estimacion: %v", err)
 			}
 			saver := &fakeSaver{}
-			navegador := newBrowser(t, NewServer(registry, saver))
+			navegador := newBrowser(t, NewServer(registry, saver, testToday))
 			antes := snapshot(registry)
 
 			// Pedir que se quite no quita nada: muestra la confirmacion.
@@ -949,7 +1281,7 @@ func TestConfirmarOCancelarAntesDeQuitar(t *testing.T) {
 func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 	registry := domain.NewProjectRegistry()
 	saver := &fakeSaver{err: errors.New("el cambio no quedó guardado: permiso denegado")}
-	navegador := newBrowser(t, NewServer(registry, saver))
+	navegador := newBrowser(t, NewServer(registry, saver, testToday))
 
 	res := navegador.post("/proyectos/nuevo", url.Values{
 		"nombre": {"Sistema de metricas"},
@@ -974,7 +1306,7 @@ func TestUnCambioQueNoSePudoGuardarSeAvisa(t *testing.T) {
 func TestDosPestanasALaVez(t *testing.T) {
 	registry := domain.NewProjectRegistry()
 	saver := &fakeSaver{}
-	server := NewServer(registry, saver)
+	server := NewServer(registry, saver, testToday)
 	const pestanas = 20
 
 	// Veinte pestañas crean un proyecto cada una, todas al mismo tiempo. Con go test -race,
@@ -1037,9 +1369,33 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 	project := addProject(t, registry, "Sistema de metricas")
 	addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
 	addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+	// Lo que usan los formularios de la #78: un sprint, un registro de esfuerzo y una ronda.
+	addSprint(t, registry, 1)
+	if _, err := project.LogEffort(domain.EffortData{StoryID: 1, MemberName: "Ana Perez", Activity: "Escribir tests",
+		Hours: 2, Day: testToday()}, testToday()); err != nil {
+		t.Fatalf("no se pudo preparar el esfuerzo: %v", err)
+	}
+	if _, err := project.OpenVotingRound(1); err != nil {
+		t.Fatalf("no se pudo preparar la ronda: %v", err)
+	}
+	addDefect(t, project, 1)
+	// Una ronda revelada en otra historia, para el formulario del acuerdo.
+	addStory(t, project, "Cargar defectos", domain.PriorityLow)
+	round, err := project.OpenVotingRound(2)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la ronda: %v", err)
+	}
+	if err := round.Vote("Ana Perez", 5); err != nil {
+		t.Fatalf("no se pudo votar: %v", err)
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar: %v", err)
+	}
 	navegador := newBrowser(t, newTestServer(t, registry))
+	defecto := url.Values{"titulo": {"Uno"}, "descripcion": {"Otro"}, "severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"}}
 
 	historia := url.Values{"titulo": {"Una"}, "descripcion": {"Otra"}, "prioridad": {"Alta"}, "criterios": {"Un criterio"}}
+	esfuerzo := url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"2"}, "actividad": {"Escribir tests"}}
 	sin := func(datos url.Values, campo string) url.Values {
 		copia := url.Values{}
 		for k, v := range datos {
@@ -1066,6 +1422,38 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		"historia sin prioridad":      navegador.post("/proyectos/1/historias/nueva", sin(historia, "prioridad")),
 		"historia sin criterios":      navegador.post("/proyectos/1/historias/nueva", sin(historia, "criterios")),
 		"estimacion sin story points": navegador.post("/proyectos/1/historias/1/estimar", url.Values{}),
+		// Los formularios de la #78 (tarea 24).
+		"sprint nuevo":                 navegador.get("/proyectos/1/sprints/nuevo"),
+		"sprint sin goal ni fechas":    navegador.post("/proyectos/1/sprints/nuevo", url.Values{"inicio": {"x"}, "fin": {"y"}}),
+		"asignar al sprint":            navegador.get("/proyectos/1/sprints/1"),
+		"asignar sin historia":         navegador.post("/proyectos/1/sprints/asignar", url.Values{}),
+		"esfuerzo nuevo":               navegador.get("/proyectos/1/esfuerzo/nuevo"),
+		"esfuerzo sin integrante":      navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "integrante")),
+		"esfuerzo sin historia":        navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "historia")),
+		"esfuerzo sin dia":             navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "dia")),
+		"esfuerzo sin horas":           navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "horas")),
+		"esfuerzo sin actividad":       navegador.post("/proyectos/1/esfuerzo/nuevo", sin(esfuerzo, "actividad")),
+		"horas estimadas":              navegador.get("/proyectos/1/historias/1/horas-estimadas"),
+		"horas estimadas que no son":   navegador.post("/proyectos/1/historias/1/horas-estimadas", url.Values{"horas": {"x"}}),
+		"abrir una ronda":              navegador.get("/proyectos/1/planning-poker"),
+		"abrir una ronda sin historia": navegador.post("/proyectos/1/planning-poker", url.Values{}),
+		"votar":                        navegador.get("/proyectos/1/historias/1/rondas/1"),
+		"votar sin elegir":             navegador.post("/proyectos/1/historias/1/rondas/1/votar", url.Values{}),
+		"votar sin elegir quien vota":  navegador.post("/proyectos/1/historias/1/rondas/1/votar", url.Values{"puntos": {"5"}}),
+		"defecto nuevo":                navegador.get("/proyectos/1/defectos/nuevo"),
+		"defecto sin titulo":           navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "titulo")),
+		"defecto sin descripcion":      navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "descripcion")),
+		"defecto sin severidad":        navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "severidad")),
+		"defecto sin historia":         navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "historia")),
+		"defecto sin sprint":           navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "sprint")),
+		"filtrar los defectos":         navegador.get("/proyectos/1/defectos"),
+		"cambiar el estado y resolver": navegador.get("/proyectos/1/defectos/1"),
+		"estado sin elegir":            navegador.post("/proyectos/1/defectos/1/estado", url.Values{}),
+		"resolver sin sprint":          navegador.post("/proyectos/1/defectos/1/resolver", url.Values{}),
+		"cerrar el sprint":             navegador.get("/proyectos/1/sprints/cerrar"),
+		"cerrar sin fecha":             navegador.post("/proyectos/1/sprints/cerrar", url.Values{}),
+		"acordar":                      navegador.get("/proyectos/1/historias/2/rondas/1"),
+		"acordar sin elegir":           navegador.post("/proyectos/1/historias/2/rondas/1/acordar", url.Values{}),
 	}
 
 	for nombre, res := range paginas {
@@ -1133,7 +1521,8 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 	}
 
 	// Toda tabla esta dentro de su recuadro, que se desplaza de costado si no entra.
-	for _, pagina := range []string{"/proyectos", "/proyectos/1/integrantes", "/proyectos/1/backlog"} {
+	for _, pagina := range []string{"/proyectos", "/proyectos/1/integrantes", "/proyectos/1/backlog",
+		"/proyectos/1/sprints", "/proyectos/1/esfuerzo", "/proyectos/1/planning-poker", "/proyectos/1/defectos", "/proyectos/1/historias/2/rondas"} {
 		html := navegador.get(pagina).Body.String()
 		tablas := strings.Count(html, "<table")
 		if tablas == 0 || len(tableStart.FindAllString(html, -1)) != tablas {
@@ -1153,7 +1542,7 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 		if err != nil {
 			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
 		}
-		return newBrowser(t, NewServer(registry, file))
+		return newBrowser(t, NewServer(registry, file, testToday))
 	}
 	operar := func(navegador *browser, path string, datos url.Values) *httptest.ResponseRecorder {
 		t.Helper()
@@ -1194,6 +1583,73 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	}
 }
 
+// Escenario: Los datos nuevos siguen al cerrar y volver a abrir
+// Cubre: RN-2 de la #78 (RN-21 a RN-25 de la #77)
+//
+// Por ahora con sprints, esfuerzo y rondas: los defectos se suman con la tarea 12, y que el
+// sprint siguiente reciba el numero 2 necesita cerrar el sprint (#10).
+func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "datos-ics.json")
+	abrir := func() *browser {
+		file := store.NewFile(path)
+		registry, err := file.Load()
+		if err != nil {
+			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
+		}
+		return newBrowser(t, NewServer(registry, file, testToday))
+	}
+	operar := func(navegador *browser, path string, datos url.Values) {
+		t.Helper()
+		if res := navegador.post(path, datos); res.Code != http.StatusSeeOther {
+			t.Fatalf("%s: se esperaba el estado %d, salio %d:\n%s", path, http.StatusSeeOther, res.Code, res.Body.String())
+		}
+	}
+
+	// Dado que cargue el sprint 1, un registro de esfuerzo y una ronda revelada.
+	primera := abrir()
+	operar(primera, "/proyectos/nuevo", url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-10-01"}})
+	operar(primera, "/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}})
+	operar(primera, "/proyectos/1/historias/nueva", url.Values{
+		"titulo": {"Registrar esfuerzo"}, "descripcion": {"Como integrante quiero registrar esfuerzo"},
+		"prioridad": {"Alta"}, "criterios": {"Se puede registrar esfuerzo"},
+	})
+	operar(primera, "/proyectos/1/historias/1/estimar", url.Values{"puntos": {"3"}})
+	operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Tener el MVP"}, "inicio": {"2026-10-26"}, "fin": {"2026-10-30"}})
+	operar(primera, "/proyectos/1/sprints/asignar", url.Values{"historia": {"1"}})
+	operar(primera, "/proyectos/1/esfuerzo/nuevo", url.Values{
+		"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"2,5"}, "actividad": {"Escribir tests"},
+	})
+	operar(primera, "/proyectos/1/planning-poker", url.Values{"historia": {"1"}})
+	operar(primera, "/proyectos/1/historias/1/rondas/1/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"5"}})
+	operar(primera, "/proyectos/1/historias/1/rondas/1/revelar", nil)
+	operar(primera, "/proyectos/1/defectos/nuevo", url.Values{
+		"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo registro"},
+		"severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"},
+	})
+	operar(primera, "/proyectos/1/defectos/1/estado", url.Values{"estado": {"En curso"}})
+	operar(primera, "/proyectos/1/historias/1/rondas/1/acordar", url.Values{"puntos": {"5"}})
+	operar(primera, "/proyectos/1/sprints/cerrar", url.Values{"cierre": {"2026-10-27"}, "completadas": {"1"}})
+	operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Cerrar la interfaz"}, "inicio": {"2026-11-02"}, "fin": {"2026-11-13"}})
+
+	// Cuando cierro el sistema y lo vuelvo a abrir.
+	segunda := abrir()
+
+	esperado := map[string]string{
+		"/proyectos/1/sprints":              "Tener el MVP</a></td><td>26/10/2026</td><td>30/10/2026</td><td>Cerrado</td><td>27/10/2026</td>",
+		"/proyectos/1/sprints/1":            "Registrar esfuerzo",
+		"/proyectos/1/esfuerzo":             "Escribir tests",
+		"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td><td>5</td>",
+		"/proyectos/1/defectos":             "<td>Mayor</td><td>En curso</td>",
+		"/proyectos/1/sprints/2":            "Cerrar la interfaz",
+		"/proyectos/1/historias/1/rondas":   "<td>Revelada</td><td>5</td>",
+	}
+	for pagina, texto := range esperado {
+		if html := joinTags(segunda.get(pagina).Body.String()); !strings.Contains(html, texto) {
+			t.Errorf("al volver a abrir se esperaba en %s %q, y no esta en:\n%s", pagina, texto, html)
+		}
+	}
+}
+
 // Sin escenario: hallazgo de la revisión de Maximiliano Eula (pedidos de otro sitio).
 // Cubre: #77, D20 (sin usuarios ni contraseñas)
 // Sin usuarios ni contraseñas, otra pagina abierta en el mismo navegador podria enviar un
@@ -1222,7 +1678,7 @@ func TestUnPedidoDeOtroSitioSeRechaza(t *testing.T) {
 			registry := domain.NewProjectRegistry()
 			saver := &fakeSaver{}
 
-			res := enviar(NewServer(registry, saver), encabezados)
+			res := enviar(NewServer(registry, saver, testToday), encabezados)
 
 			if res.Code != http.StatusForbidden {
 				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusForbidden, res.Code)
@@ -1239,7 +1695,7 @@ func TestUnPedidoDeOtroSitioSeRechaza(t *testing.T) {
 	t.Run("el mismo pedido desde la propia web se acepta", func(t *testing.T) {
 		registry := domain.NewProjectRegistry()
 
-		res := enviar(NewServer(registry, &fakeSaver{}), map[string]string{
+		res := enviar(NewServer(registry, &fakeSaver{}, testToday), map[string]string{
 			"Origin":         "http://127.0.0.1:8080",
 			"Sec-Fetch-Site": "same-origin",
 		})

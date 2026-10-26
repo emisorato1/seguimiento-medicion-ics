@@ -3,7 +3,7 @@
 - **Historia:** #19
 - **Sprint:** 4
 - **Responsable:** Emiliano Sorato
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar** (el código espera la #18)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #18 (el reporte ya armado), y por ella de la #16. El código espera que el
   reporte y sus secciones estén en `dev` (ver Dependencias de la Fase 2)
@@ -58,8 +58,9 @@ el archivo:
 1. **[RN-1]** Cuando se exporta un reporte, el sistema debe producir un archivo PDF que se
    pueda abrir con un lector común, sin instalar nada adicional.
 2. **[RN-2]** El sistema debe escribir en el archivo el título del reporte, su día de
-   generación y cada sección con su encabezado y todas sus líneas, con el mismo texto y en el
-   mismo orden que el reporte.
+   generación —con la fecha en dd/mm/aaaa, como en el resto del sistema y en la página del
+   reporte de la #78— y cada sección con su encabezado y todas sus líneas, con el mismo texto
+   y en el mismo orden que el reporte.
 3. **[RN-3]** El sistema no debe calcular, agregar, quitar ni reordenar nada del contenido
    del reporte. Lo único que agrega son las palabras "Generado el" delante de la fecha y la
    numeración de las páginas.
@@ -244,14 +245,15 @@ Escenario: Un PDF que no se puede entregar se informa
    escenario ni test. **Decidido por el responsable (Emiliano Sorato) el 21/10: se acepta como está.**
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: aprobó las tres puertas en un comentario de la issue #19 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/19#issuecomment-6348518911), desde su cuenta, con dos correcciones de texto que se aplicaron antes del código: `Section` la declara la #18 (el contrato la dejó del lado del reporte en el #98), y la RN-2 dice que la fecha de "Generado el" va en dd/mm/aaaa, como en la página del reporte de la #78. Estuvo de acuerdo con los puntos 1 a 5 de "Para decidir en la puerta".
 
 ## Fase 2 — Diseño
 
 Las decisiones transversales están en [AGENTS.md](../../../AGENTS.md) y no se repiten. Lo que
 se lee del reporte son los datos del [contrato del dominio](../../diseno-dominio.md):
 `Title`, `GeneratedOn` y `Sections`, cada una una `Section` con su `Heading` y sus `Lines`
-(la misma que usa el dashboard). **No se leen `Metrics` ni `Scope`**: los números ya están
+(la declara la #18: desde el #98 el contrato dice que `Section` es del reporte, y el
+dashboard tiene sus propios tipos). **No se leen `Metrics` ni `Scope`**: los números ya están
 escritos en las líneas por la #18.
 
 ### Enfoque
@@ -304,13 +306,13 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
 
 ### Dependencias y restricciones
 
-- **El código espera que el reporte esté en `dev`**: `Report` y `Section`, de la #18 (la
-  `Section` la declara la primera entre la #17 y la #18 que llegue, según el contrato), y por
+- **El código espera que el reporte esté en `dev`**: `Report` y `Section`, los dos de la #18
+  (desde el #98 el contrato pone `Section` del lado del reporte), y por
   ellos `Metrics`, de la #16, porque el reporte lo contiene. Sin esos tipos no compila: un
   test no puede armar un reporte con un tipo que todavía no existe. Cuando estén, los tests
   arman el reporte a mano, con secciones y líneas inventadas, sin depender de que la #18
   calcule nada. Se descartó que esta historia declare `Report` y `Section` por su cuenta: el
-  contrato los pone a cargo de la #18 y la #17, y hacerlo exige acordarlo antes con Agustín
+  contrato los pone a cargo de la #18, y hacerlo exige acordarlo antes con Agustín
   Salinas.
 - **No se lee nada fuera del reporte**: ni el proyecto, ni las métricas, ni los sprints. Es lo
   que garantiza la RN-3 por construcción.
@@ -319,7 +321,7 @@ leer PDF, y probar que el archivo es válido sin depender del maquetado.
   exporta (punto 4 de la puerta).
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: aprobó las tres puertas en un comentario de la issue #19 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/19#issuecomment-6348518911), desde su cuenta, con dos correcciones de texto que se aplicaron antes del código: `Section` la declara la #18 (el contrato la dejó del lado del reporte en el #98), y la RN-2 dice que la fecha de "Generado el" va en dd/mm/aaaa, como en la página del reporte de la #78. Estuvo de acuerdo con los puntos 1 a 5 de "Para decidir en la puerta".
 
 ## Fase 3 — Tareas
 
@@ -400,7 +402,7 @@ criterio de la issue (Sprint 4) no lleva tarea: es de planificación (punto 5 de
   a mano con el mismo formato de líneas.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Maximiliano Eula — Fecha: 2026-10-22 — Comentarios: aprobó las tres puertas en un comentario de la issue #19 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/19#issuecomment-6348518911), desde su cuenta, con dos correcciones de texto que se aplicaron antes del código: `Section` la declara la #18 (el contrato la dejó del lado del reporte en el #98), y la RN-2 dice que la fecha de "Generado el" va en dd/mm/aaaa, como en la página del reporte de la #78. Estuvo de acuerdo con los puntos 1 a 5 de "Para decidir en la puerta".
 
 ## Fase 4 — Implementación
 

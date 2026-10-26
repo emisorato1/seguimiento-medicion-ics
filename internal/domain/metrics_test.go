@@ -115,29 +115,26 @@ func conHorasEstimadas(t *testing.T, project *Project, id int, hours float64) {
 }
 
 // Escenario: Metricas de un sprint cerrado
-// Cubre: RN-3, RN-7, RN-8, RN-12, RN-16
+// Cubre: RN-3, RN-4, RN-5, RN-7, RN-8, RN-12, RN-13, RN-16
 //
-// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
-// las horas, la desviación y los defectos, y las tareas 6 y 11 le suman su número. Asignar historias es de la #9 y
-// cerrar el sprint de la #10, que todavía no están en dev: el test arma el sprint dentro del
-// paquete.
+// Desde la tarea 7 el sprint se cierra con el cierre de la #10, que registra las completadas y
+// los puntos de cada historia.
 func TestMetricasDeUnSprintCerrado(t *testing.T) {
-	project := unProyecto(t)
+	project, _ := unSprintParaCerrar(t, 3, 5, 2, 3)
 	conIntegrante(t, project)
-	historiasEstimadas(t, project, 3, 5, 2, 3)
 	for i, hours := range []float64{4, 6, 2, 4} {
 		conHorasEstimadas(t, project, i+1, hours)
 	}
 	for i, hours := range []float64{5, 8, 3, 4} {
 		cargar(t, project, i+1, "Juliana Bustos", hours)
 	}
-	sprint := unSprint(t, project)
-	sprint.stories = []int{1, 2, 3, 4}
-	sprint.state = SprintClosed
 	for i := 0; i < 2; i++ {
 		if _, err := project.AddDefect(unDefecto()); err != nil {
 			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
 		}
+	}
+	if err := project.CloseSprint([]int{1, 2, 3}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
 	}
 	if err := project.ResolveDefect(1, 1); err != nil {
 		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
@@ -150,6 +147,13 @@ func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	}
 	if got.PlannedPoints != 13 || got.StoriesPlanned != 4 {
 		t.Fatalf("se esperaban 13 story points y 4 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+	if got.CompletedPoints != 10 || got.Velocity != 10 || got.StoriesCompleted != 3 {
+		t.Fatalf("se esperaban 10 puntos completados, velocidad 10 y 3 historias completadas, salieron %d, %d y %d",
+			got.CompletedPoints, got.Velocity, got.StoriesCompleted)
+	}
+	if !mismasHoras(got.CompletionRate, 75) {
+		t.Fatalf("se esperaba un porcentaje de historias completas de 75, salio %v", got.CompletionRate)
 	}
 	if !mismasHoras(got.EstimatedHours, 16) || !mismasHoras(got.ActualHours, 20) {
 		t.Fatalf("se esperaban 16 horas estimadas y 20 reales, salieron %v y %v", got.EstimatedHours, got.ActualHours)
@@ -310,12 +314,9 @@ func TestDefectosDetectadosYResueltosDeCadaSprint(t *testing.T) {
 }
 
 // Escenario: Metricas del proyecto entero
-// Cubre: RN-9, RN-11, RN-12
+// Cubre: RN-9, RN-10, RN-11, RN-12, RN-13
 //
-// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
-// las horas, la desviación y los defectos. Los completados, el porcentaje y la velocidad salen
-// del registro del cierre de la #10 y los suman las tareas 6, 11 y 14. Asignar historias es de
-// la #9 y cerrar el sprint de la #10: el test arma los sprints dentro del paquete.
+// El sprint 1 se cierra con el cierre de la #10, que registra las completadas.
 func TestMetricasDelProyectoEntero(t *testing.T) {
 	project := unProyecto(t)
 	conIntegrante(t, project)
@@ -326,16 +327,28 @@ func TestMetricasDelProyectoEntero(t *testing.T) {
 	for i, hours := range []float64{5, 8, 3, 7, 10} {
 		cargar(t, project, i+1, "Juliana Bustos", hours)
 	}
-	first := unSprint(t, project)
-	first.stories = []int{1, 2, 3}
-	first.state = SprintClosed
-	unSprint(t, project).stories = []int{3}
-	for _, detectedIn := range []int{1, 1, 2} {
-		data := unDefecto()
-		data.DetectedIn = detectedIn
-		if _, err := project.AddDefect(data); err != nil {
+	unSprint(t, project)
+	for _, id := range []int{1, 2, 3} {
+		if err := project.AssignStory(id); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d al sprint 1: %v", id, err)
+		}
+	}
+	for i := 0; i < 2; i++ {
+		if _, err := project.AddDefect(unDefecto()); err != nil {
 			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
 		}
+	}
+	if err := project.CloseSprint([]int{1, 2}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1 de prueba: %v", err)
+	}
+	unSprint(t, project)
+	if err := project.AssignStory(3); err != nil {
+		t.Fatalf("no se pudo asignar la historia 3 al sprint 2: %v", err)
+	}
+	data := unDefecto()
+	data.DetectedIn = 2
+	if _, err := project.AddDefect(data); err != nil {
+		t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
 	}
 	if err := project.ResolveDefect(1, 2); err != nil {
 		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
@@ -345,6 +358,13 @@ func TestMetricasDelProyectoEntero(t *testing.T) {
 
 	if got.PlannedPoints != 21 || got.StoriesPlanned != 5 {
 		t.Fatalf("se esperaban 21 story points y 5 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+	if got.CompletedPoints != 8 || got.StoriesCompleted != 2 || !mismasHoras(got.CompletionRate, 40) {
+		t.Fatalf("se esperaban 8 puntos completados, 2 historias completadas y un porcentaje de 40, salieron %d, %d y %v",
+			got.CompletedPoints, got.StoriesCompleted, got.CompletionRate)
+	}
+	if got.Velocity != 8 {
+		t.Fatalf("se esperaba velocidad 8, salio %d", got.Velocity)
 	}
 	if !mismasHoras(got.EstimatedHours, 30) || !mismasHoras(got.ActualHours, 33) || !mismasHoras(got.HoursDeviation, 10) {
 		t.Fatalf("se esperaban 30 horas estimadas, 33 reales y una desviacion de 10, salieron %v, %v y %v",
@@ -397,5 +417,155 @@ func TestLasMetricasReflejanLosDatosCargadosDespues(t *testing.T) {
 	}
 	if string(after) != string(before) {
 		t.Fatalf("se esperaba que pedir las metricas no cambiara ningun dato, y el registro cambio")
+	}
+}
+
+// Escenario: Una historia que volvio al backlog cuenta como completada solo donde se completo
+// Cubre: RN-4, RN-5
+//
+// Los dos sprints se cierran con el cierre de la #10: la historia 2 no se completó en el 1,
+// volvió al backlog, se comprometió en el 2 y se completó ahí.
+func TestUnaHistoriaQueVolvioAlBacklogCuentaComoCompletadaSoloDondeSeCompleto(t *testing.T) {
+	project, _ := unSprintParaCerrar(t, 3, 5)
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1 de prueba: %v", err)
+	}
+	unSprint(t, project)
+	if err := project.AssignStory(2); err != nil {
+		t.Fatalf("no se pudo asignar la historia 2 al sprint 2: %v", err)
+	}
+	if err := project.CloseSprint([]int{2}, unDia(2026, 10, 31)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 2 de prueba: %v", err)
+	}
+
+	cases := []struct {
+		sprint, planned, completed int
+	}{
+		{1, 8, 3},
+		{2, 5, 5},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("sprint %d", tc.sprint), func(t *testing.T) {
+			got, err := project.SprintMetrics(tc.sprint)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if got.PlannedPoints != tc.planned || got.CompletedPoints != tc.completed || got.Velocity != tc.completed {
+				t.Fatalf("se esperaban %d puntos planificados, %d completados y velocidad %d, salieron %d, %d y %d",
+					tc.planned, tc.completed, tc.completed, got.PlannedPoints, got.CompletedPoints, got.Velocity)
+			}
+		})
+	}
+}
+
+// Escenario: Los puntos de un sprint cerrado no cambian si se reestima una historia
+// Cubre: RN-3
+func TestLosPuntosDeUnSprintCerradoNoCambianSiSeReestimaUnaHistoria(t *testing.T) {
+	project, _ := unSprintParaCerrar(t, 3, 5)
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+	}
+
+	if err := project.EstimateStory(2, 8); err != nil {
+		t.Fatalf("no se pudo reestimar la historia 2: %v", err)
+	}
+	got, err := project.SprintMetrics(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+	}
+	if got.PlannedPoints != 8 || got.CompletedPoints != 3 {
+		t.Fatalf("se esperaban 8 story points planificados y 3 completados, salieron %d y %d", got.PlannedPoints, got.CompletedPoints)
+	}
+}
+
+// Esquema del escenario: Calcular el porcentaje de historias completas
+// Cubre: RN-13, RN-14, RN-16
+func TestCalcularElPorcentajeDeHistoriasCompletas(t *testing.T) {
+	cases := []struct {
+		planned, completed int
+		rate               float64
+	}{
+		{4, 3, 75},
+		{8, 1, 12.5},
+		{3, 3, 100},
+		{0, 0, 0},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("%d planificadas y %d completadas", tc.planned, tc.completed), func(t *testing.T) {
+			points := make([]int, tc.planned)
+			completed := []int{}
+			for i := range points {
+				points[i] = 3
+				if i < tc.completed {
+					completed = append(completed, i+1)
+				}
+			}
+			project, _ := unSprintParaCerrar(t, points...)
+			if err := project.CloseSprint(completed, unDia(2026, 10, 30)); err != nil {
+				t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+			}
+
+			got, err := project.SprintMetrics(1)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if !mismasHoras(got.CompletionRate, tc.rate) {
+				t.Fatalf("se esperaba un porcentaje de %v, salio %v", tc.rate, got.CompletionRate)
+			}
+		})
+	}
+}
+
+// Esquema del escenario: Velocidad del proyecto
+// Cubre: RN-10
+//
+// Cada sprint cerrado completa historias que suman su velocidad, con puntos de la escala: el 6
+// son dos historias de 3. La fila "ninguna" tiene un sprint abierto, que no cuenta.
+func TestVelocidadDelProyecto(t *testing.T) {
+	cases := []struct {
+		name     string
+		sprints  [][]int
+		velocity int
+	}{
+		{"8, 5 y 6", [][]int{{8}, {5}, {3, 3}}, 6},
+		{"10 y 13", [][]int{{5, 5}, {13}}, 12},
+		{"ninguna", nil, 0},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			project := unProyecto(t)
+			next := 1
+			for _, points := range tc.sprints {
+				historiasEstimadas(t, project, points...)
+				unSprint(t, project)
+				completed := []int{}
+				for range points {
+					if err := project.AssignStory(next); err != nil {
+						t.Fatalf("no se pudo asignar la historia %d: %v", next, err)
+					}
+					completed = append(completed, next)
+					next++
+				}
+				if err := project.CloseSprint(completed, unDia(2026, 10, 30)); err != nil {
+					t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+				}
+			}
+			if tc.sprints == nil {
+				historiasEstimadas(t, project, 5)
+				unSprint(t, project)
+				if err := project.AssignStory(1); err != nil {
+					t.Fatalf("no se pudo asignar la historia al sprint abierto: %v", err)
+				}
+			}
+
+			got := project.ProjectMetrics()
+
+			if got.Velocity != tc.velocity {
+				t.Fatalf("se esperaba velocidad %d, salio %d", tc.velocity, got.Velocity)
+			}
+		})
 	}
 }

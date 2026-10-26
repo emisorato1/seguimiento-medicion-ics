@@ -1,0 +1,47 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Planning Poker</h1>
+{{if not .Choices}}
+<div class="vacio">
+  <p>El backlog está vacío: no hay historias para votar.</p>
+  <a class="boton" href="/proyectos/{{.ProjectID}}/historias/nueva">Cargar la primera historia</a>
+</div>
+{{else}}
+{{template "error-formulario" .Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/planning-poker" novalidate>
+  {{with .Form.Field "historia"}}
+  <div class="campo">
+    <label for="historia">Historia para votar</label>
+    <select id="historia" name="historia"{{template "invalido" .}}>
+      {{template "opciones-con-texto" (labeled "Elegí una historia" $.Data.Choices .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Abrir una ronda</button>
+  </div>
+</form>
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Historia</th>
+        <th scope="col">Story points</th>
+        <th scope="col">Ronda actual</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Stories}}
+      <tr>
+        <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.Story.ID}}">{{.Story.ID}} — {{.Story.Title}}</a></td>
+        <td>{{if .Story.IsEstimated}}{{.Story.StoryPoints}}{{else}}<span class="sin-dato">sin estimar</span>{{end}}</td>
+        <td>{{with .Round}}<a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}/rondas/{{.Number}}">Ronda {{.Number}}{{if .Revealed}}, revelada{{else}}, en curso{{end}}</a>{{else}}<span class="sin-dato">sin rondas</span>{{end}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
+{{end}}

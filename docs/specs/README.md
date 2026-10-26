@@ -54,7 +54,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Crear un sprint con su Sprint Goal](sprint-2/08-crear-sprint.md) | #8 | 3 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #138) |
 | [Asignar historias a un sprint](sprint-2/09-asignar-historias-a-sprint.md) | #9 | 5 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #138) |
 | [Registrar el esfuerzo real](sprint-2/14-registrar-esfuerzo-real.md) | #14 | 3 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #100) |
-| [Gestionar defectos](sprint-2/15-gestionar-defectos.md) | #15 | 5 | Juliana Bustos | 🔍 Implementada — en review (PR #129) |
+| [Gestionar defectos](sprint-2/15-gestionar-defectos.md) | #15 | 5 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #129) |
 | [Administrar el Product Backlog](sprint-1/06-administrar-product-backlog.md) | #6 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` el 19/10, entre el Sprint 1 y el 2 |
 | [Estimar con Story Points](sprint-1/12-estimar-story-points.md) | #12 | 2 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #70) |
 | [Interfaz de consola](sprint-1/24-interfaz-de-consola.md) | #24 | 3 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #106) |
@@ -65,11 +65,11 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 🟡 En implementación (tareas 1 a 5, 8 a 10, 12, 15 y 16 hechas; la 13 a medias) |
+| [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #150) |
+| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PRs #81, #140 y #151) |
 | [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | ✅ Lista para implementar — puertas aprobadas en el PR #136 |
-| [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | 🔍 Implementada — en review (adelantada al Sprint 2) |
-| [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | ✅ Lista para implementar — puertas aprobadas en el PR #143 (las tareas 2, 5, 6, 8, 9 y 11 esperan a la #10 en `dev`) |
+| [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #141), adelantada al Sprint 2 |
+| [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | ✅ Lista para implementar — puertas aprobadas en el PR #143 |
 | [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
 | [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | sin estimar | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
 
@@ -77,8 +77,8 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | ✅ Lista para implementar — puertas aprobadas en el PR #142 (el código espera a la #13 en `dev`) |
+| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 🟢 Puerta 3 aprobada — lista para implementar (espera la #18) |
+| [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #148), adelantada al Sprint 3 |
 
 ### Qué es un "borrador completo"
 
