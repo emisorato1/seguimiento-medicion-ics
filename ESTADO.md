@@ -1,22 +1,31 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-09-28 16:43. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-15 10:56. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 19
-- Sin estimar: 19
-- Story points cargados: 0
-- Terminadas: 2
+- Historias en el tablero: 20
+- Sin estimar: 2
+- Story points cargados: 83
+- Terminadas: 4
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #6 | Administrar el Product Backlog | 5 | Alta | Sprint 1 |
 
 ## En progreso
+
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #12 | Estimar historias con Story Points | 2 | Alta | Sprint 1 |
+| #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 1 |
+
+## Lista para implementar
 
 _No hay historias en este estado._
 
@@ -32,23 +41,19 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #3 | Crear y modificar proyectos | - | Alta | - |
-| #4 | Registrar integrantes de un proyecto | - | Alta | - |
-| #5 | Consultar el estado de un proyecto | - | Media | - |
-| #6 | Administrar el Product Backlog | - | Alta | - |
-| #7 | Priorizar el Product Backlog | - | Media | - |
-| #8 | Crear un sprint con su Sprint Goal | - | Alta | - |
-| #9 | Asignar historias a un sprint | - | Alta | - |
-| #10 | Cerrar un sprint | - | Alta | - |
-| #11 | Consultar sprints anteriores | - | Media | - |
-| #12 | Estimar historias con Story Points | - | Alta | - |
-| #13 | Estimar con Planning Poker | - | Alta | - |
-| #14 | Registrar el esfuerzo real | - | Alta | - |
-| #15 | Gestionar defectos | - | Media | - |
-| #16 | Calcular las metricas del proyecto | - | Alta | - |
-| #17 | Mostrar el dashboard | - | Media | - |
-| #18 | Generar el reporte de proyecto o sprint | - | Media | - |
-| #19 | Exportar el reporte a PDF | - | Baja | - |
+| #5 | Consultar el estado de un proyecto | 3 | Media | - |
+| #7 | Priorizar el Product Backlog | 2 | Media | - |
+| #8 | Crear un sprint con su Sprint Goal | 3 | Alta | - |
+| #9 | Asignar historias a un sprint | 5 | Alta | - |
+| #10 | Cerrar un sprint | 5 | Alta | - |
+| #11 | Consultar sprints anteriores | 2 | Media | - |
+| #13 | Estimar con Planning Poker | 13 | Alta | - |
+| #14 | Registrar el esfuerzo real | 3 | Alta | - |
+| #15 | Gestionar defectos | 5 | Media | - |
+| #16 | Calcular las metricas del proyecto | 8 | Alta | - |
+| #17 | Mostrar el dashboard | 8 | Media | - |
+| #18 | Generar el reporte de proyecto o sprint | 5 | Media | - |
+| #19 | Exportar el reporte a PDF | 5 | Baja | - |
 
 ## Hecho
 
@@ -56,14 +61,18 @@ _No hay historias en este estado._
 |---|---|---|---|---|
 | #1 | Configurar el repositorio y el tablero del proyecto | - | - | Sprint 0 |
 | #2 | Definir el Product Backlog inicial | - | - | Sprint 0 |
+| #3 | Crear y modificar proyectos | 3 | Alta | Sprint 1 |
+| #4 | Registrar integrantes de un proyecto | 3 | Alta | Sprint 1 |
 
 ## Ultimos commits
 
 ```
-5e23152 2026-09-28 docs: definir las reglas de trabajo del proyecto y automatizar el estado del tablero
-d0f90df 2026-09-28 docs: agregar plantilla de spec sdd, guia para agentes y acta de cierre del sprint 0
-43caf9c 2026-09-14 docs: agregar guia de planning poker y acta de la planning del sprint 1
-1d8ec0c 2026-09-14 docs: asignar roles de Scrum a los integrantes
-3417b65 2026-09-14 docs: agregar README con descripcion del proyecto e integrantes
-92b54f6 2026-09-07 Initial commit
+4181fbf 2026-10-15 Merge pull request #63 from emisorato1/chore-script-de-metricas
+5659804 2026-10-15 chore: calcular las metricas del sprint desde el tablero
+4099066 2026-10-15 Merge pull request #62 from emisorato1/historia-4-codigo
+fa3fafc 2026-10-15 Merge remote-tracking branch 'origin/dev' into historia-4-codigo
+0237b1e 2026-10-15 Merge pull request #61 from emisorato1/defecto-59-fechas-por-dia
+a81f813 2026-10-13 chore: mover la historia 4 a en review
+bd4e171 2026-10-13 docs: registrar la tarea 15 y marcar la historia 4 como implementada
+3e3d580 2026-10-13 test: operar sobre integrantes de un proyecto que no existe (tarea 15, historia 4)
 ```
