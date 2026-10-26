@@ -93,6 +93,11 @@ Hubo diferencias, así que se explicaron los extremos:
 **Estimación acordada:** [pendiente: se cierra cuando estén los votos de Juliana y
 Maximiliano].
 
+**Si no votan a tiempo** (decisión de Emiliano Sorato, del 26/10): si Juliana y Maximiliano no
+mandan su ronda 2 antes del 28/10, se aplica la [guía de Planning Poker](../guia-planning-poker.md):
+después de las rondas, queda el valor más alto. Con los votos que hay, eso daría 13 para la #77
+y 13 para la #78. Todavía no es la estimación acordada.
+
 ## Puertas y revisiones
 
 - **Agustín Salinas:** "aprobé las de la #10, con dos ajustes (en la issue #10)".

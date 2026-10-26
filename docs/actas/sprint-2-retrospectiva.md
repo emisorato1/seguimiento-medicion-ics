@@ -112,9 +112,17 @@ nada, queda así.
 
 **Lo que quedó:**
 
+Emiliano Sorato votó el 26/10 por tres propuestas. Los votos de los demás están [pendientes].
+
+| Propuesta | Emiliano | Maximiliano | Juliana | Agustín |
+|---|---|---|---|---|
+| Reservar una franja fija por día para revisar los PRs asignados | sí | [pendiente] | [pendiente] | [pendiente] |
+| Pedir revisor apenas se abre el PR | sí | [pendiente] | [pendiente] | [pendiente] |
+| Seguir adelantando la próxima historia apenas uno termina lo suyo | sí | [pendiente] | [pendiente] | [pendiente] |
+
 | Acuerdo | Responsable |
 |---|---|
-| [pendiente: el equipo elige cuáles de las propuestas quedan como acuerdo] | [pendiente] |
+| [pendiente: queda como acuerdo lo que elija el equipo] | [pendiente] |
 
 Dos propuestas coinciden entre varios. Emiliano y Maximiliano proponen seguir adelantando
 historias, y eso ya es la decisión 11 del plan desde el 21/10. Juliana y Agustín proponen el

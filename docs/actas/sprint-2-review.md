@@ -11,9 +11,12 @@
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 - **Sprint Goal:** que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda operar
   desde la consola.
-- **¿Se cumplió el Sprint Goal?** [pendiente: en la #147 nadie lo dijo]. Las 9 historias
-  comprometidas están terminadas. La parte de "operar desde la consola" la cuentan en la demo:
-  según Juliana y Agustín, sus historias todavía no tienen pantalla ni opción en la consola.
+- **¿Se cumplió el Sprint Goal?** Las 9 historias comprometidas están terminadas. La parte de
+  "operar desde la consola" la cuentan en la demo: según Juliana y Agustín, sus historias
+  todavía no tienen pantalla ni opción en la consola.
+  - **Emiliano Sorato (26/10): cumplido en parte.** El sistema maneja sprints, esfuerzo y
+    defectos, pero se opera desde la web (#78) y no desde la consola, por la decisión del 20/10.
+  - **Maximiliano Eula, Juliana Bustos y Agustín Salinas:** [pendiente: en la #147 no lo dijeron].
 
 ## Qué se completó
 
