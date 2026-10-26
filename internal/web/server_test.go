@@ -1531,122 +1531,154 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 	}
 }
 
-// Escenario: Los datos siguen al cerrar y volver a abrir
-// Cubre: RN-21, RN-22
-func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "datos-ics.json")
-	// abrir arma la web desde el archivo, como hace el comando al arrancar.
-	abrir := func() *browser {
-		file := store.NewFile(path)
+// almacenes son los dos lugares donde la web puede guardar: el archivo de la #77, que queda
+// para importar y exportar, y la base de la #177, que es donde guarda desde entonces. Los
+// escenarios de cerrar y volver a abrir corren con los dos.
+var almacenes = []struct {
+	nombre string
+	abrir  func(t *testing.T, dir string) (*domain.ProjectRegistry, Saver)
+}{
+	{"en el archivo", func(t *testing.T, dir string) (*domain.ProjectRegistry, Saver) {
+		t.Helper()
+		file := store.NewFile(filepath.Join(dir, "datos-ics.json"))
 		registry, err := file.Load()
 		if err != nil {
 			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
 		}
-		return newBrowser(t, NewServer(registry, file, testToday))
-	}
-	operar := func(navegador *browser, path string, datos url.Values) *httptest.ResponseRecorder {
+		return registry, file
+	}},
+	{"en la base", func(t *testing.T, dir string) (*domain.ProjectRegistry, Saver) {
 		t.Helper()
-		res := navegador.post(path, datos)
-		if res.Code != http.StatusSeeOther {
-			t.Fatalf("%s: se esperaba el estado %d, salio %d:\n%s", path, http.StatusSeeOther, res.Code, res.Body.String())
+		db, err := store.OpenDatabase(filepath.Join(dir, "datos-ics.db"))
+		if err != nil {
+			t.Fatalf("no se pudo abrir la base: %v", err)
 		}
-		return res
-	}
-
-	// Dado que cargue el proyecto 1 con el integrante "Ana Perez" y la historia 1 estimada en 3.
-	primera := abrir()
-	operar(primera, "/proyectos/nuevo", url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-11-01"}})
-	operar(primera, "/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}})
-	operar(primera, "/proyectos/1/historias/nueva", url.Values{
-		"titulo": {"Registrar esfuerzo"}, "descripcion": {"Como integrante quiero registrar esfuerzo"},
-		"prioridad": {"Alta"}, "criterios": {"Se puede registrar esfuerzo"},
-	})
-	operar(primera, "/proyectos/1/historias/1/estimar", url.Values{"puntos": {"3"}})
-
-	// Cuando cierro el sistema y lo vuelvo a abrir.
-	segunda := abrir()
-
-	esperado := map[string]string{
-		"/proyectos/1":             "<h1>Sistema de metricas</h1>",
-		"/proyectos/1/integrantes": "<td>Ana Perez</td>",
-		"/proyectos/1/backlog":     "<td>3</td>",
-	}
-	for pagina, texto := range esperado {
-		if html := segunda.get(pagina).Body.String(); !strings.Contains(html, texto) {
-			t.Errorf("al volver a abrir se esperaba en %s %s, y no esta en:\n%s", pagina, texto, html)
+		// en Windows una base abierta no se puede borrar, y t.TempDir la borra al final
+		t.Cleanup(func() { db.Close() })
+		registry, err := db.Load()
+		if err != nil {
+			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
 		}
-	}
+		return registry, db
+	}},
+}
 
-	res := operar(segunda, "/proyectos/nuevo", url.Values{"nombre": {"Metricas ICS"}, "inicio": {"2026-11-02"}})
-	if destino := res.Header().Get("Location"); destino != "/proyectos/2" {
-		t.Errorf("el siguiente proyecto deberia recibir el numero 2, y la web fue a %q", destino)
+// Escenario: Los datos siguen al cerrar y volver a abrir
+// Cubre: RN-21, RN-22; #177 RN-1, RN-3 (en la base)
+func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
+	for _, almacen := range almacenes {
+		t.Run(almacen.nombre, func(t *testing.T) {
+			dir := t.TempDir()
+			// abrir arma la web desde el archivo, como hace el comando al arrancar.
+			abrir := func() *browser {
+				registry, saver := almacen.abrir(t, dir)
+				return newBrowser(t, NewServer(registry, saver, testToday))
+			}
+			operar := func(navegador *browser, path string, datos url.Values) *httptest.ResponseRecorder {
+				t.Helper()
+				res := navegador.post(path, datos)
+				if res.Code != http.StatusSeeOther {
+					t.Fatalf("%s: se esperaba el estado %d, salio %d:\n%s", path, http.StatusSeeOther, res.Code, res.Body.String())
+				}
+				return res
+			}
+
+			// Dado que cargue el proyecto 1 con el integrante "Ana Perez" y la historia 1 estimada en 3.
+			primera := abrir()
+			operar(primera, "/proyectos/nuevo", url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-11-01"}})
+			operar(primera, "/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}})
+			operar(primera, "/proyectos/1/historias/nueva", url.Values{
+				"titulo": {"Registrar esfuerzo"}, "descripcion": {"Como integrante quiero registrar esfuerzo"},
+				"prioridad": {"Alta"}, "criterios": {"Se puede registrar esfuerzo"},
+			})
+			operar(primera, "/proyectos/1/historias/1/estimar", url.Values{"puntos": {"3"}})
+
+			// Cuando cierro el sistema y lo vuelvo a abrir.
+			segunda := abrir()
+
+			esperado := map[string]string{
+				"/proyectos/1":             "<h1>Sistema de metricas</h1>",
+				"/proyectos/1/integrantes": "<td>Ana Perez</td>",
+				"/proyectos/1/backlog":     "<td>3</td>",
+			}
+			for pagina, texto := range esperado {
+				if html := segunda.get(pagina).Body.String(); !strings.Contains(html, texto) {
+					t.Errorf("al volver a abrir se esperaba en %s %s, y no esta en:\n%s", pagina, texto, html)
+				}
+			}
+
+			res := operar(segunda, "/proyectos/nuevo", url.Values{"nombre": {"Metricas ICS"}, "inicio": {"2026-11-02"}})
+			if destino := res.Header().Get("Location"); destino != "/proyectos/2" {
+				t.Errorf("el siguiente proyecto deberia recibir el numero 2, y la web fue a %q", destino)
+			}
+		})
 	}
 }
 
 // Escenario: Los datos nuevos siguen al cerrar y volver a abrir
-// Cubre: RN-2 de la #78 (RN-21 a RN-25 de la #77)
+// Cubre: RN-2 de la #78 (RN-21 a RN-25 de la #77); #177 RN-1, RN-3 (en la base)
 //
 // Por ahora con sprints, esfuerzo y rondas: los defectos se suman con la tarea 12, y que el
 // sprint siguiente reciba el numero 2 necesita cerrar el sprint (#10).
 func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "datos-ics.json")
-	abrir := func() *browser {
-		file := store.NewFile(path)
-		registry, err := file.Load()
-		if err != nil {
-			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
-		}
-		return newBrowser(t, NewServer(registry, file, testToday))
-	}
-	operar := func(navegador *browser, path string, datos url.Values) {
-		t.Helper()
-		if res := navegador.post(path, datos); res.Code != http.StatusSeeOther {
-			t.Fatalf("%s: se esperaba el estado %d, salio %d:\n%s", path, http.StatusSeeOther, res.Code, res.Body.String())
-		}
-	}
+	for _, almacen := range almacenes {
+		t.Run(almacen.nombre, func(t *testing.T) {
+			dir := t.TempDir()
+			abrir := func() *browser {
+				registry, saver := almacen.abrir(t, dir)
+				return newBrowser(t, NewServer(registry, saver, testToday))
+			}
+			operar := func(navegador *browser, path string, datos url.Values) {
+				t.Helper()
+				if res := navegador.post(path, datos); res.Code != http.StatusSeeOther {
+					t.Fatalf("%s: se esperaba el estado %d, salio %d:\n%s", path, http.StatusSeeOther, res.Code, res.Body.String())
+				}
+			}
 
-	// Dado que cargue el sprint 1, un registro de esfuerzo y una ronda revelada.
-	primera := abrir()
-	operar(primera, "/proyectos/nuevo", url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-10-01"}})
-	operar(primera, "/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}})
-	operar(primera, "/proyectos/1/historias/nueva", url.Values{
-		"titulo": {"Registrar esfuerzo"}, "descripcion": {"Como integrante quiero registrar esfuerzo"},
-		"prioridad": {"Alta"}, "criterios": {"Se puede registrar esfuerzo"},
-	})
-	operar(primera, "/proyectos/1/historias/1/estimar", url.Values{"puntos": {"3"}})
-	operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Tener el MVP"}, "inicio": {"2026-10-26"}, "fin": {"2026-10-30"}})
-	operar(primera, "/proyectos/1/sprints/asignar", url.Values{"historia": {"1"}})
-	operar(primera, "/proyectos/1/esfuerzo/nuevo", url.Values{
-		"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"2,5"}, "actividad": {"Escribir tests"},
-	})
-	operar(primera, "/proyectos/1/planning-poker", url.Values{"historia": {"1"}})
-	operar(primera, "/proyectos/1/historias/1/rondas/1/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"5"}})
-	operar(primera, "/proyectos/1/historias/1/rondas/1/revelar", nil)
-	operar(primera, "/proyectos/1/defectos/nuevo", url.Values{
-		"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo registro"},
-		"severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"},
-	})
-	operar(primera, "/proyectos/1/defectos/1/estado", url.Values{"estado": {"En curso"}})
-	operar(primera, "/proyectos/1/historias/1/rondas/1/acordar", url.Values{"puntos": {"5"}})
-	operar(primera, "/proyectos/1/sprints/cerrar", url.Values{"cierre": {"2026-10-27"}, "completadas": {"1"}})
-	operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Cerrar la interfaz"}, "inicio": {"2026-11-02"}, "fin": {"2026-11-13"}})
+			// Dado que cargue el sprint 1, un registro de esfuerzo y una ronda revelada.
+			primera := abrir()
+			operar(primera, "/proyectos/nuevo", url.Values{"nombre": {"Sistema de metricas"}, "inicio": {"2026-10-01"}})
+			operar(primera, "/proyectos/1/integrantes/nuevo", url.Values{"nombre": {"Ana Perez"}, "rol": {"Product Builder"}})
+			operar(primera, "/proyectos/1/historias/nueva", url.Values{
+				"titulo": {"Registrar esfuerzo"}, "descripcion": {"Como integrante quiero registrar esfuerzo"},
+				"prioridad": {"Alta"}, "criterios": {"Se puede registrar esfuerzo"},
+			})
+			operar(primera, "/proyectos/1/historias/1/estimar", url.Values{"puntos": {"3"}})
+			operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Tener el MVP"}, "inicio": {"2026-10-26"}, "fin": {"2026-10-30"}})
+			operar(primera, "/proyectos/1/sprints/asignar", url.Values{"historia": {"1"}})
+			operar(primera, "/proyectos/1/esfuerzo/nuevo", url.Values{
+				"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"2,5"}, "actividad": {"Escribir tests"},
+			})
+			operar(primera, "/proyectos/1/planning-poker", url.Values{"historia": {"1"}})
+			operar(primera, "/proyectos/1/historias/1/rondas/1/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"5"}})
+			operar(primera, "/proyectos/1/historias/1/rondas/1/revelar", nil)
+			operar(primera, "/proyectos/1/defectos/nuevo", url.Values{
+				"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo registro"},
+				"severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"},
+			})
+			operar(primera, "/proyectos/1/defectos/1/estado", url.Values{"estado": {"En curso"}})
+			operar(primera, "/proyectos/1/historias/1/rondas/1/acordar", url.Values{"puntos": {"5"}})
+			operar(primera, "/proyectos/1/sprints/cerrar", url.Values{"cierre": {"2026-10-27"}, "completadas": {"1"}})
+			operar(primera, "/proyectos/1/sprints/nuevo", url.Values{"goal": {"Cerrar la interfaz"}, "inicio": {"2026-11-02"}, "fin": {"2026-11-13"}})
 
-	// Cuando cierro el sistema y lo vuelvo a abrir.
-	segunda := abrir()
+			// Cuando cierro el sistema y lo vuelvo a abrir.
+			segunda := abrir()
 
-	esperado := map[string]string{
-		"/proyectos/1/sprints":              "Tener el MVP</a></td><td>26/10/2026</td><td>30/10/2026</td><td>Cerrado</td><td>27/10/2026</td>",
-		"/proyectos/1/sprints/1":            "Registrar esfuerzo",
-		"/proyectos/1/esfuerzo":             "Escribir tests",
-		"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td><td>5</td>",
-		"/proyectos/1/defectos":             "<td>Mayor</td><td>En curso</td>",
-		"/proyectos/1/sprints/2":            "Cerrar la interfaz",
-		"/proyectos/1/historias/1/rondas":   "<td>Revelada</td><td>5</td>",
-	}
-	for pagina, texto := range esperado {
-		if html := joinTags(segunda.get(pagina).Body.String()); !strings.Contains(html, texto) {
-			t.Errorf("al volver a abrir se esperaba en %s %q, y no esta en:\n%s", pagina, texto, html)
-		}
+			esperado := map[string]string{
+				"/proyectos/1/sprints":              "Tener el MVP</a></td><td>26/10/2026</td><td>30/10/2026</td><td>Cerrado</td><td>27/10/2026</td>",
+				"/proyectos/1/sprints/1":            "Registrar esfuerzo",
+				"/proyectos/1/esfuerzo":             "Escribir tests",
+				"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td><td>5</td>",
+				"/proyectos/1/defectos":             "<td>Mayor</td><td>En curso</td>",
+				"/proyectos/1/sprints/2":            "Cerrar la interfaz",
+				"/proyectos/1/historias/1/rondas":   "<td>Revelada</td><td>5</td>",
+			}
+			for pagina, texto := range esperado {
+				if html := joinTags(segunda.get(pagina).Body.String()); !strings.Contains(html, texto) {
+					t.Errorf("al volver a abrir se esperaba en %s %q, y no esta en:\n%s", pagina, texto, html)
+				}
+			}
+		})
 	}
 }
 
