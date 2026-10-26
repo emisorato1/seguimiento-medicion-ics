@@ -145,3 +145,25 @@ func TestVerQueHistoriasSeCompletaronEnUnSprintCerrado(t *testing.T) {
 		t.Errorf("se esperaba completada la historia [1], salieron %v", sprint.CompletedStories())
 	}
 }
+
+// Escenario: Un sprint cerrado sin historias se consulta igual
+// Cubre: RN-4
+func TestUnSprintCerradoSinHistoriasSeConsultaIgual(t *testing.T) {
+	project := unProyecto(t)
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), nil)
+
+	sprint, err := project.Sprint(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba encontrar el sprint 1, salio: %v", err)
+	}
+	if sprint.Goal() != "Tener el MVP" || !sprint.Start().Equal(unDia(2026, 10, 12)) || !sprint.End().Equal(unDia(2026, 10, 19)) {
+		t.Errorf("se esperaba el sprint 1 con su goal y sus fechas, salio %q del %v al %v", sprint.Goal(), sprint.Start(), sprint.End())
+	}
+	if stories := sprint.Stories(); stories == nil || len(stories) != 0 {
+		t.Errorf("se esperaba la lista de asignadas vacia y no nil, salio %#v", stories)
+	}
+	if completed := sprint.CompletedStories(); completed == nil || len(completed) != 0 {
+		t.Errorf("se esperaba la lista de completadas vacia y no nil, salio %#v", completed)
+	}
+}
