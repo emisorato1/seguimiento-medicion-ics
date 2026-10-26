@@ -495,6 +495,15 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "ronda con un participante repetido", change: func(d *registryJSON) {
 			d.Projects[0].VotingRounds[0].Participants = []string{"Ana Perez", "Ana Perez"}
 		}, want: ErrSavedDataInvalid},
+		// Los participantes se comparan como los busca la ronda y la #4: sin distinguir
+		// mayusculas ni espacios de los extremos. Si no, la ronda queda trabada: uno de los dos
+		// nunca puede votar y no se revela nunca.
+		{name: "ronda con un participante repetido con otras mayusculas", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds[0].Participants = []string{"Ana Perez", "ana perez"}
+		}, want: ErrSavedDataInvalid},
+		{name: "ronda con un participante con espacios de mas", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds[0].Participants[1] = " Juan Gomez "
+		}, want: ErrSavedDataInvalid},
 		{name: "acuerdo fuera de la escala", change: func(d *registryJSON) {
 			round := &d.Projects[0].VotingRounds[0]
 			round.Votes = append(round.Votes, voteJSON{MemberName: "Juan Gomez", Points: 8})

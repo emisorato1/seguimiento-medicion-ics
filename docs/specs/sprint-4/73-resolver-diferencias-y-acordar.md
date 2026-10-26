@@ -488,6 +488,21 @@ se arregló en un PR aparte, a pedido de Emiliano Sorato.
 - **TDD:** `684fcb2` es el test, con su RED: el pánico, y las dos filas nuevas de datos
   dañados. `87264b3` es el arreglo.
 
+### Defecto encontrado en la revisión del #157: #172
+
+En la revisión posterior al merge del #157, Maximiliano Eula encontró que el arreglo del #156
+comparaba los participantes con el nombre exacto, mientras que la ronda los busca al votar
+como la #4: sin mayúsculas ni espacios de los extremos.
+
+- **Qué pasaba:** la carga aceptaba una ronda con `"Ana Perez"` y `"ana perez"`, o con
+  `" Juan Gomez "`. Uno de los participantes nunca podía votar ("ya votó" o "no participa"),
+  la ronda no se revelaba nunca y, por la RN-7 de la #13, la historia ya no se podía votar con
+  Planning Poker.
+- **El arreglo:** la carga compara los participantes como la búsqueda de la #4 y rechaza, con
+  `ErrSavedDataInvalid`, un repetido con otras mayúsculas y un nombre con espacios de más.
+- **TDD:** `67a0826` es el test, con su RED: las dos filas nuevas de datos dañados, que se
+  cargaban sin error. `0585017` es el arreglo.
+
 ## Trazabilidad
 
 | Eslabón | Dónde está |

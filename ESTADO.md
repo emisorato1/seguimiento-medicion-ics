@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 18:42. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 19:45. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -69,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-92bb94f 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-11-consultar-sprints-anteriores
-4f7644b 2026-10-26 Merge pull request #168 from emisorato1/manual-78-textos
-2679db7 2026-10-26 docs: los mensajes del manual tal como salen en pantalla
-5ec2ef2 2026-10-26 Merge pull request #167 from emisorato1/manual-78
-04fb015 2026-10-26 Merge pull request #166 from emisorato1/chore-trazabilidad-78-parte-3
-f5d7d9a 2026-10-26 docs: la revisión de accesibilidad de las pantallas de la #78 en su spec
-d34d60a 2026-10-26 docs: el manual de usuario con las pantallas de la #78 (sprints, esfuerzo, defectos y Planning Poker)
-55451e9 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con la parte 3 de la historia 78
+9b84b3e 2026-10-26 Merge pull request #175 from emisorato1/actas-maxi-goal-73
+4c89c44 2026-10-26 Merge pull request #173 from emisorato1/defecto-172-ronda-nombres
+5282fa8 2026-10-26 docs: sprint goal del sprint 2 y horas de la 73 segun Maximiliano
+ae2380a 2026-10-26 Merge pull request #174 from emisorato1/trazabilidad-170
+7202ee1 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con el #170, y aclarar la regla de la ronda 2
+bd522fe 2026-10-26 Merge pull request #171 from emisorato1/planning-s3-ronda2-maxi
+e0eee64 2026-10-26 docs: el defecto 172 en la fase 4 de la historia 73
+0585017 2026-10-26 fix: la carga compara los participantes de una ronda como la búsqueda de la #4 (defecto 172)
 ```
