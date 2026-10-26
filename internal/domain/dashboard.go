@@ -71,6 +71,27 @@ func buildDashboard(source dashboardSource) Dashboard {
 		HasSprints:    true,
 		Overview:      overview(source.projectMetrics),
 		CurrentSprint: currentSprint(source),
+		Charts:        charts(source.projectMetrics),
+	}
+}
+
+// charts arma los gráficos del proyecto entero en el orden de la RN-8: story points, horas
+// y defectos, con las mismas métricas del estado general. Cada barra lleva el valor tal como
+// llegó, para que la web la mida, y ya escrito (RN-10, RN-15).
+func charts(m Metrics) []Chart {
+	return []Chart{
+		{Title: "Story points", Bars: []Bar{
+			{Label: "Planificados", Value: float64(m.PlannedPoints), Text: formatCount(m.PlannedPoints)},
+			{Label: "Completados", Value: float64(m.CompletedPoints), Text: formatCount(m.CompletedPoints)},
+		}},
+		{Title: "Horas", Bars: []Bar{
+			{Label: "Estimadas", Value: m.EstimatedHours, Text: formatHours(m.EstimatedHours)},
+			{Label: "Reales", Value: m.ActualHours, Text: formatHours(m.ActualHours)},
+		}},
+		{Title: "Defectos", Bars: []Bar{
+			{Label: "Detectados", Value: float64(m.DefectsDetected), Text: formatCount(m.DefectsDetected)},
+			{Label: "Resueltos", Value: float64(m.DefectsResolved), Text: formatCount(m.DefectsResolved)},
+		}},
 	}
 }
 
