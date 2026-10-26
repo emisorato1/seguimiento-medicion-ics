@@ -65,8 +65,8 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | 🟡 En implementación (tareas 1 a 5, 8 a 10, 12, 15 y 16 hechas; la 13 a medias) |
+| [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #150) |
+| [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PRs #81, #140 y #151) |
 | [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | ✅ Lista para implementar — puertas aprobadas en el PR #136 |
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #141), adelantada al Sprint 2 |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | 📝 Borrador completo — pendiente de las tres puertas |
@@ -77,8 +77,8 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | ✅ Lista para implementar — puertas aprobadas en el PR #142 (el código espera a la #13 en `dev`) |
+| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 🟢 Puerta 3 aprobada — lista para implementar (espera la #18) |
+| [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #148), adelantada al Sprint 3 |
 
 ### Qué es un "borrador completo"
 

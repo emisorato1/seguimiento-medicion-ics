@@ -579,3 +579,39 @@ func TestOperarSobreAlgoQueNoExisteConDefectos(t *testing.T) {
 		})
 	}
 }
+
+// Sin escenario: agregado pedido por la #78 para sus pantallas de defectos (punto 8 de Maxi
+// al aprobar sus puertas)
+// Cubre: RN-9, RN-10
+//
+// La web recibe el estado como texto. El dominio lo convierte igual que la severidad: sin
+// distinguir mayúsculas ni los espacios de los costados, y cualquier otro texto se rechaza.
+func TestConvertirElTextoEnUnEstadoDeDefecto(t *testing.T) {
+	cases := []struct {
+		written string
+		want    DefectState
+	}{
+		{"Abierto", DefectOpen},
+		{"  abierto ", DefectOpen},
+		{"En curso", DefectInProgress},
+		{"EN CURSO", DefectInProgress},
+		{"Resuelto", DefectResolved},
+		{" resuelto", DefectResolved},
+	}
+	for _, tc := range cases {
+		t.Run(tc.written, func(t *testing.T) {
+			state, err := ParseDefectState(tc.written)
+
+			if err != nil || state != tc.want {
+				t.Fatalf("se esperaba %v sin error, salio %v (error: %v)", tc.want, state, err)
+			}
+		})
+	}
+	for _, written := range []string{"Cerrado", "", "Encurso"} {
+		t.Run("rechaza "+written, func(t *testing.T) {
+			if _, err := ParseDefectState(written); !errors.Is(err, ErrDefectStateUnknown) {
+				t.Fatalf("se esperaba ErrDefectStateUnknown para %q, salio: %v", written, err)
+			}
+		})
+	}
+}

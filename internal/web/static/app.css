@@ -192,8 +192,11 @@ a {
   margin: 0 0 1rem;
 }
 
-/* Una tabla que no entra se recorre dentro de su recuadro, sin mover la pagina (RN-18). */
+/* Una tabla que no entra se recorre dentro de su recuadro, sin mover la pagina (RN-18).
+   position: relative deja adentro del recuadro el texto .oculto de las celdas: sin eso, por
+   ser absoluto, se ubica respecto de la pagina y la ensancha. */
 .tabla {
+  position: relative;
   overflow-x: auto;
   background: var(--superficie);
   border: 1px solid var(--borde);
@@ -314,6 +317,37 @@ textarea {
 textarea {
   min-height: 6rem;
   resize: vertical;
+}
+
+/* Las casillas para marcar las historias completadas al cerrar un sprint (#78): la casilla
+   va a la izquierda de su texto, en la misma linea. */
+fieldset.campo {
+  padding: 0;
+  border: 0;
+}
+
+fieldset.campo legend {
+  margin: 0 0 0.25rem;
+  padding: 0;
+  font-weight: 600;
+}
+
+.casilla {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0 0 0.5rem;
+}
+
+.casilla input {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+.casilla label {
+  margin: 0;
+  font-weight: normal;
 }
 
 [aria-invalid="true"] {

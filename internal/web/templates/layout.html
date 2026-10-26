@@ -20,6 +20,10 @@
       <li><a href="/proyectos/{{.ID}}"{{if eq $.Section "datos"}} aria-current="page"{{end}}>Datos</a></li>
       <li><a href="/proyectos/{{.ID}}/integrantes"{{if eq $.Section "integrantes"}} aria-current="page"{{end}}>Integrantes</a></li>
       <li><a href="/proyectos/{{.ID}}/backlog"{{if eq $.Section "backlog"}} aria-current="page"{{end}}>Backlog</a></li>
+      <li><a href="/proyectos/{{.ID}}/sprints"{{if eq $.Section "sprints"}} aria-current="page"{{end}}>Sprints</a></li>
+      <li><a href="/proyectos/{{.ID}}/esfuerzo"{{if eq $.Section "esfuerzo"}} aria-current="page"{{end}}>Esfuerzo</a></li>
+      <li><a href="/proyectos/{{.ID}}/defectos"{{if eq $.Section "defectos"}} aria-current="page"{{end}}>Defectos</a></li>
+      <li><a href="/proyectos/{{.ID}}/planning-poker"{{if eq $.Section "planning-poker"}} aria-current="page"{{end}}>Planning Poker</a></li>
     </ul>
     {{end}}
   </nav>
@@ -40,3 +44,4 @@
 {{/* "opciones" arma las opciones de una lista para elegir, con una primera opcion vacia que
      pide elegir: sin ella el navegador elegiria la primera solo. */}}
 {{define "opciones"}}<option value="">{{.Prompt}}</option>{{range .Options}}<option value="{{.}}"{{if eq . $.Selected}} selected{{end}}>{{.}}</option>{{end}}{{end}}
+{{define "opciones-con-texto"}}<option value="">{{.Prompt}}</option>{{range .Options}}<option value="{{.Value}}"{{if eq .Value $.Selected}} selected{{end}}>{{.Label}}</option>{{end}}{{end}}

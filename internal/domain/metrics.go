@@ -44,6 +44,9 @@ type metricsScope struct {
 	// plannedPoints tiene los story points de cada historia planificada, uno por historia:
 	// la cantidad de historias es su largo. Una historia sin estimar aporta 0 (RN-16).
 	plannedPoints []int
+	// completedPoints tiene los story points de cada historia completada, uno por historia,
+	// igual que plannedPoints.
+	completedPoints []int
 	// estimatedHours y actualHours son las horas estimadas y las registradas de las historias
 	// cuyas horas cuentan en este ámbito.
 	estimatedHours float64
@@ -57,11 +60,12 @@ type metricsScope struct {
 // sprint y el proyecto.
 func (sc metricsScope) metrics() Metrics {
 	m := Metrics{
-		StoriesPlanned:  len(sc.plannedPoints),
-		EstimatedHours:  sc.estimatedHours,
-		ActualHours:     sc.actualHours,
-		DefectsDetected: sc.defectsDetected,
-		DefectsResolved: sc.defectsResolved,
+		StoriesPlanned:   len(sc.plannedPoints),
+		StoriesCompleted: len(sc.completedPoints),
+		EstimatedHours:   sc.estimatedHours,
+		ActualHours:      sc.actualHours,
+		DefectsDetected:  sc.defectsDetected,
+		DefectsResolved:  sc.defectsResolved,
 	}
 	// sin horas estimadas no hay contra qué comparar: la desviación queda en cero, y no es un
 	// error (RN-14)
@@ -70,6 +74,13 @@ func (sc metricsScope) metrics() Metrics {
 	}
 	for _, points := range sc.plannedPoints {
 		m.PlannedPoints += points
+	}
+	for _, points := range sc.completedPoints {
+		m.CompletedPoints += points
+	}
+	// sin historias planificadas el porcentaje queda en cero, y no es un error (RN-13, RN-14)
+	if m.StoriesPlanned > 0 {
+		m.CompletionRate = float64(m.StoriesCompleted) / float64(m.StoriesPlanned) * 100
 	}
 	return m
 }
@@ -91,11 +102,22 @@ func (p *Project) SprintMetrics(number int) (Metrics, error) {
 	actual := p.actualHoursByStory()
 	var scope metricsScope
 	for _, id := range sprint.stories {
-		scope.plannedPoints = append(scope.plannedPoints, points[id])
+		// un sprint cerrado usa los puntos que tenía cada historia al cerrar, así reestimar
+		// después una que volvió al backlog no cambia un sprint viejo (RN-3)
+		planned := points[id]
+		if sprint.state == SprintClosed {
+			planned = sprint.pointsAtClose[id]
+		}
+		scope.plannedPoints = append(scope.plannedPoints, planned)
 		if p.lastSprintOf(id) == sprint.number {
 			scope.estimatedHours += estimated[id]
 			scope.actualHours += actual[id]
 		}
+	}
+	// las completadas son las que quedaron registradas al cerrar, con los puntos que tenían
+	// en ese momento; un sprint abierto no tiene ninguna todavía (RN-4, RN-6)
+	for _, id := range sprint.completedStories {
+		scope.completedPoints = append(scope.completedPoints, sprint.pointsAtClose[id])
 	}
 	// un defecto cuenta como detectado en su sprint de detección y como resuelto en el de
 	// resolución; uno sin resolver tiene 0, que no es el número de ningún sprint (RN-8)
@@ -107,7 +129,10 @@ func (p *Project) SprintMetrics(number int) (Metrics, error) {
 			scope.defectsResolved++
 		}
 	}
-	return scope.metrics(), nil
+	m := scope.metrics()
+	// la velocidad de un sprint son sus puntos completados (RN-5)
+	m.Velocity = m.CompletedPoints
+	return m, nil
 }
 
 // lastSprintOf devuelve el número del último sprint, el de número más alto, en que la
@@ -168,11 +193,35 @@ func (p *Project) ProjectMetrics() Metrics {
 	for _, effort := range p.efforts {
 		scope.actualHours += effort.hours
 	}
+	// las completadas son las registradas como completadas en algún sprint cerrado, con los
+	// puntos que tenían al cerrarlo; una historia Terminada no vuelve a un sprint, así que
+	// cuenta una sola vez (RN-9)
+	for _, sprint := range p.sprints {
+		for _, id := range sprint.completedStories {
+			scope.completedPoints = append(scope.completedPoints, sprint.pointsAtClose[id])
+		}
+	}
 	for _, defect := range p.defects {
 		scope.defectsDetected++
 		if defect.state == DefectResolved {
 			scope.defectsResolved++
 		}
 	}
-	return scope.metrics()
+	m := scope.metrics()
+	// la velocidad del proyecto es el promedio de las velocidades de sus sprints cerrados,
+	// redondeado al entero más cercano con las mitades hacia arriba; sin ninguno cerrado, es
+	// cero (RN-10). Con enteros: (2*suma + n) / (2*n) redondea así sin pasar por decimales
+	closed, total := 0, 0
+	for _, sprint := range p.sprints {
+		if sprint.state == SprintClosed {
+			closed++
+			for _, id := range sprint.completedStories {
+				total += sprint.pointsAtClose[id]
+			}
+		}
+	}
+	if closed > 0 {
+		m.Velocity = (2*total + closed) / (2 * closed)
+	}
+	return m
 }

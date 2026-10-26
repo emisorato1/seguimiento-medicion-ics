@@ -33,10 +33,13 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 17 | 0 | 0 |
 | [#9 Asignar historias a un sprint](#9-asignar-historias-a-un-sprint) | 14 | 14 | 0 | 0 |
 | [#14 Registrar el esfuerzo real](#14-registrar-el-esfuerzo-real) | 19 | 19 | 0 | 2 |
-| [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 2 |
-| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 7 |
+| [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 3 |
+| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 11 |
+| [#10 Cerrar un sprint](#10-cerrar-un-sprint) | 14 | 14 | 0 | 0 |
 | [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
-| [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 12 | 4 | 2 |
+| [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 16 | 0 | 2 |
+| [#78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](#78-interfaz-web-sprints-esfuerzo-defectos-planning-poker-y-reportes) | 22 | 17 | 5 | 0 |
+| [#73 Resolver diferencias y acordar la estimación](#73-resolver-diferencias-y-acordar-la-estimación) | 13 | 13 | 0 | 0 |
 
 ## Qué dice el historial de TDD
 
@@ -45,10 +48,10 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 207 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 250 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 32 |
-| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 44 |
+| `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 13 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
 ## #3 Crear y modificar proyectos
@@ -291,10 +294,10 @@ cinco casos posibles:
 | [Listar un backlog vacio](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L121) | `TestListarUnBacklogVacio` [console_test.go:185](../cmd/app/console_test.go#L185) | [console.go](../cmd/app/console.go) | `11a3b48` → `01b3b07` |
 | [Cargar una historia y listar el backlog](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L126) | `TestCargarUnaHistoriaYListarElBacklog` [console_test.go:204](../cmd/app/console_test.go#L204) | [console.go](../cmd/app/console.go) | `3f578a2` → `fc3fa30` |
 | [Estimar una historia desde la consola](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L132) | `TestEstimarUnaHistoriaDesdeLaConsola` [console_test.go:243](../cmd/app/console_test.go#L243) | [console.go](../cmd/app/console.go) | `0d8941c` → `4d2fe0e` |
-| [El nucleo rechaza un valor fuera de la escala](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L137) | `TestElNucleoRechazaUnValorFueraDeLaEscala` [console_test.go:268](../cmd/app/console_test.go#L268) | ⚠️ ningún commit de código después del test | `383dcf7` → ⚠️ sin GREEN |
+| [El nucleo rechaza un valor fuera de la escala](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L137) | `TestElNucleoRechazaUnValorFueraDeLaEscala` [console_test.go:268](../cmd/app/console_test.go#L268) | el que ya estaba | `383dcf7` (sin RED: ya pasaba) |
 | [Operacion incompleta](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L143) | `TestOperacionIncompleta` [console_test.go:292](../cmd/app/console_test.go#L292) | [console.go](../cmd/app/console.go) | `bedd456` → `28b8aef` |
 | [Dato con forma invalida](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L149) | `TestDatoConFormaInvalida` [console_test.go:313](../cmd/app/console_test.go#L313) | [console.go](../cmd/app/console.go) | `7e64570` → `de946a6` |
-| [Operar sobre un identificador que no existe](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L155) | `TestOperarSobreUnIdentificadorQueNoExiste` [console_test.go:353](../cmd/app/console_test.go#L353) | [main.go](../cmd/app/main.go) | `fb5bad5` → `ac4a4d3` |
+| [Operar sobre un identificador que no existe](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L155) | `TestOperarSobreUnIdentificadorQueNoExiste` [console_test.go:353](../cmd/app/console_test.go#L353) | el que ya estaba | `fb5bad5` (sin RED: ya pasaba) |
 | [Operacion inexistente](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L161) | `TestOperacionInexistente` [console_test.go:54](../cmd/app/console_test.go#L54) | [console.go](../cmd/app/console.go) | `35173b0` → `69fbd58` (el test trae lo justo para compilar) |
 | [Entrada vacia](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L166) | `TestEntradaVacia` [console_test.go:38](../cmd/app/console_test.go#L38) | [console.go](../cmd/app/console.go) | `44eaaf7` → `d9e27a8` (el test trae lo justo para compilar) |
 | [Salir del programa](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L172) | `TestSalirDelPrograma` [console_test.go:16](../cmd/app/console_test.go#L16) | [console.go](../cmd/app/console.go) | `7d31b89` → `cd3c73b` |
@@ -532,8 +535,8 @@ cinco casos posibles:
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:486](../internal/domain/registry_json_test.go#L486) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
-| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:512](../internal/domain/registry_json_test.go#L512) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
+| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:568](../internal/domain/registry_json_test.go#L568) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
+| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:594](../internal/domain/registry_json_test.go#L594) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
 
 ## #15 Gestionar defectos
 
@@ -582,12 +585,13 @@ cinco casos posibles:
 | [Los defectos de un proyecto no aparecen en otro](specs/sprint-2/15-gestionar-defectos.md?plain=1#L330) | `TestLosDefectosDeUnProyectoNoAparecenEnOtro` [defect_test.go:488](../internal/domain/defect_test.go#L488) | el que ya estaba | `f686721` (sin RED: ya pasaba) |
 | [Operar sobre algo que no existe](specs/sprint-2/15-gestionar-defectos.md?plain=1#L336) | `TestOperarSobreAlgoQueNoExisteConDefectos` [defect_test.go:528](../internal/domain/defect_test.go#L528) | ⚠️ no se encontró el commit del test | — |
 
-**Tests que no citan un escenario de la Fase 1 (2).**
+**Tests que no citan un escenario de la Fase 1 (3).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
 | `TestUnaSeveridadQueNoExisteSeMuestraSinSeveridad` [defect_test.go:197](../internal/domain/defect_test.go#L197) | RN-6 | el que ya estaba | `9e53b08` (sin RED: ya pasaba) |
 | `TestRechazarUnEstadoQueNoExiste` [defect_test.go:328](../internal/domain/defect_test.go#L328) | RN-9, RN-18 | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `90b1696` → `e06e055` |
+| `TestConvertirElTextoEnUnEstadoDeDefecto` [defect_test.go:589](../internal/domain/defect_test.go#L589) | RN-9, RN-10 | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `d92cfbd` → `809a617` |
 
 ## #77 Interfaz web: proyectos, integrantes y backlog
 
@@ -616,40 +620,86 @@ cinco casos posibles:
 
 | Escenario BDD | Test | Código | RED → GREEN |
 |---|---|---|---|
-| [Crear un proyecto desde la web](specs/sprint-2/77-interfaz-web-base.md?plain=1#L156) | `TestCrearUnProyectoDesdeLaWeb` [projects_test.go:14](../internal/web/projects_test.go#L14) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [proyecto-nuevo.html](../internal/web/templates/proyecto-nuevo.html), [proyecto.html](../internal/web/templates/proyecto.html), [proyectos.html](../internal/web/templates/proyectos.html) | `8de188c` → `9723e86` |
-| [Cada operacion se confirma con un mensaje](specs/sprint-2/77-interfaz-web-base.md?plain=1#L163) | `TestCadaOperacionSeConfirmaConUnMensaje` [server_test.go:592](../internal/web/server_test.go#L592) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [proyecto-form.html](../internal/web/templates/proyecto-form.html), [proyecto.html](../internal/web/templates/proyecto.html) | `b13d561` → `6160b7d` |
-| [Consultar un proyecto](specs/sprint-2/77-interfaz-web-base.md?plain=1#L178) | `TestConsultarUnProyecto` [projects_test.go:68](../internal/web/projects_test.go#L68) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyecto.html](../internal/web/templates/proyecto.html), [proyectos.html](../internal/web/templates/proyectos.html) | `c7624af` → `1e8dbd2` |
-| [Las opciones para elegir son las del sistema](specs/sprint-2/77-interfaz-web-base.md?plain=1#L184) | `TestLasOpcionesParaElegirSonLasDelSistema` [server_test.go:786](../internal/web/server_test.go#L786) | [forms.go](../internal/web/forms.go), [members.go](../internal/web/members.go), [server.go](../internal/web/server.go), [integrante-form.html](../internal/web/templates/integrante-form.html), [integrantes.html](../internal/web/templates/integrantes.html), [layout.html](../internal/web/templates/layout.html) | `e9ded37` → `2a95134` |
-| [Confirmar o cancelar antes de quitar](specs/sprint-2/77-interfaz-web-base.md?plain=1#L194) | `TestConfirmarOCancelarAntesDeQuitar` [server_test.go:834](../internal/web/server_test.go#L834) | [members.go](../internal/web/members.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [confirmar.html](../internal/web/templates/confirmar.html), [integrantes.html](../internal/web/templates/integrantes.html) | `7907b18` → `e990442` |
-| [Mostrar el rechazo sin perder lo escrito](specs/sprint-2/77-interfaz-web-base.md?plain=1#L207) | `TestMostrarElRechazoSinPerderLoEscrito` [server_test.go:348](../internal/web/server_test.go#L348) | [forms.go](../internal/web/forms.go), [projects.go](../internal/web/projects.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyecto-nuevo.html](../internal/web/templates/proyecto-nuevo.html) | `99d8188` → `20180ce` |
+| [Crear un proyecto desde la web](specs/sprint-2/77-interfaz-web-base.md?plain=1#L156) | `TestCrearUnProyectoDesdeLaWeb` [projects_test.go:15](../internal/web/projects_test.go#L15) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [proyecto-nuevo.html](../internal/web/templates/proyecto-nuevo.html), [proyecto.html](../internal/web/templates/proyecto.html), [proyectos.html](../internal/web/templates/proyectos.html) | `8de188c` → `9723e86` |
+| [Cada operacion se confirma con un mensaje](specs/sprint-2/77-interfaz-web-base.md?plain=1#L163) | `TestCadaOperacionSeConfirmaConUnMensaje` [server_test.go:898](../internal/web/server_test.go#L898) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [proyecto-form.html](../internal/web/templates/proyecto-form.html), [proyecto.html](../internal/web/templates/proyecto.html) | `b13d561` → `6160b7d` |
+| [Consultar un proyecto](specs/sprint-2/77-interfaz-web-base.md?plain=1#L178) | `TestConsultarUnProyecto` [projects_test.go:69](../internal/web/projects_test.go#L69) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyecto.html](../internal/web/templates/proyecto.html), [proyectos.html](../internal/web/templates/proyectos.html) | `c7624af` → `1e8dbd2` |
+| [Las opciones para elegir son las del sistema](specs/sprint-2/77-interfaz-web-base.md?plain=1#L184) | `TestLasOpcionesParaElegirSonLasDelSistema` [server_test.go:1118](../internal/web/server_test.go#L1118) | [forms.go](../internal/web/forms.go), [members.go](../internal/web/members.go), [server.go](../internal/web/server.go), [integrante-form.html](../internal/web/templates/integrante-form.html), [integrantes.html](../internal/web/templates/integrantes.html), [layout.html](../internal/web/templates/layout.html) | `e9ded37` → `2a95134` |
+| [Confirmar o cancelar antes de quitar](specs/sprint-2/77-interfaz-web-base.md?plain=1#L194) | `TestConfirmarOCancelarAntesDeQuitar` [server_test.go:1166](../internal/web/server_test.go#L1166) | [members.go](../internal/web/members.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [confirmar.html](../internal/web/templates/confirmar.html), [integrantes.html](../internal/web/templates/integrantes.html) | `7907b18` → `e990442` |
+| [Mostrar el rechazo sin perder lo escrito](specs/sprint-2/77-interfaz-web-base.md?plain=1#L207) | `TestMostrarElRechazoSinPerderLoEscrito` [server_test.go:417](../internal/web/server_test.go#L417) | [forms.go](../internal/web/forms.go), [projects.go](../internal/web/projects.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyecto-nuevo.html](../internal/web/templates/proyecto-nuevo.html) | `99d8188` → `20180ce` |
 | [Las listas vacias dicen que hacer](specs/sprint-2/77-interfaz-web-base.md?plain=1#L225) | `TestSinDatosGuardadosSeArrancaSinProyectos` [file_test.go:54](../internal/store/file_test.go#L54) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
-| ″ | `TestLasListasVaciasDicenQueHacer` [server_test.go:289](../internal/web/server_test.go#L289) | [projects.go](../internal/web/projects.go), [proyectos.html](../internal/web/templates/proyectos.html) | `e9570b7` → `650752f` |
-| [Pedir algo que no existe](specs/sprint-2/77-interfaz-web-base.md?plain=1#L237) | `TestPedirAlgoQueNoExiste` [server_test.go:739](../internal/web/server_test.go#L739) | el que ya estaba | `15a8336` (sin RED: ya pasaba) |
-| [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | `TestUnTextoConSignosSeMuestraTalCual` [projects_test.go:104](../internal/web/projects_test.go#L104) | el que ya estaba | `413660d` (sin RED: ya pasaba) |
+| ″ | `TestLasListasVaciasDicenQueHacer` [server_test.go:311](../internal/web/server_test.go#L311) | [projects.go](../internal/web/projects.go), [proyectos.html](../internal/web/templates/proyectos.html) | `e9570b7` → `650752f` |
+| [Pedir algo que no existe](specs/sprint-2/77-interfaz-web-base.md?plain=1#L237) | `TestPedirAlgoQueNoExiste` [server_test.go:1045](../internal/web/server_test.go#L1045) | el que ya estaba | `15a8336` (sin RED: ya pasaba) |
+| [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | `TestUnTextoConSignosSeMuestraTalCual` [projects_test.go:105](../internal/web/projects_test.go#L105) | el que ya estaba | `413660d` (sin RED: ya pasaba) |
 | [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [main_test.go:22](../cmd/web/main_test.go#L22) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
-| ″ | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [server_test.go:206](../internal/web/server_test.go#L206) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
-| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:267](../internal/domain/registry_json_test.go#L267) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
+| ″ | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [server_test.go:228](../internal/web/server_test.go#L228) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
+| [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:291](../internal/domain/registry_json_test.go#L291) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:69](../internal/store/file_test.go#L69) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
-| ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1147](../internal/web/server_test.go#L1147) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
-| [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:158](../cmd/web/main_test.go#L158) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
-| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:342](../internal/domain/registry_json_test.go#L342) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
+| ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1536](../internal/web/server_test.go#L1536) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
+| [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:251](../cmd/web/main_test.go#L251) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
+| ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:386](../internal/domain/registry_json_test.go#L386) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
 | ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:160](../internal/store/file_test.go#L160) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:202](../internal/store/file_test.go#L202) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
-| ″ | `TestUnCambioQueNoSePudoGuardarSeAvisa` [server_test.go:949](../internal/web/server_test.go#L949) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
-| [Dos pestanas a la vez](specs/sprint-2/77-interfaz-web-base.md?plain=1#L276) | `TestDosPestanasALaVez` [server_test.go:974](../internal/web/server_test.go#L974) | [server.go](../internal/web/server.go) | `4c925e3` → `1e7a4b1` |
-| [Usar la pagina en un celular y con el teclado](specs/sprint-2/77-interfaz-web-base.md?plain=1#L281) | `TestUsarLaPaginaEnUnCelularYConElTeclado` [server_test.go:1035](../internal/web/server_test.go#L1035) | [historia-form.html](../internal/web/templates/historia-form.html) | `4ab0d49` → `add6a34` |
+| ″ | `TestUnCambioQueNoSePudoGuardarSeAvisa` [server_test.go:1281](../internal/web/server_test.go#L1281) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
+| [Dos pestanas a la vez](specs/sprint-2/77-interfaz-web-base.md?plain=1#L276) | `TestDosPestanasALaVez` [server_test.go:1306](../internal/web/server_test.go#L1306) | [server.go](../internal/web/server.go) | `4c925e3` → `1e7a4b1` |
+| [Usar la pagina en un celular y con el teclado](specs/sprint-2/77-interfaz-web-base.md?plain=1#L281) | `TestUsarLaPaginaEnUnCelularYConElTeclado` [server_test.go:1367](../internal/web/server_test.go#L1367) | [historia-form.html](../internal/web/templates/historia-form.html) | `4ab0d49` → `add6a34` |
 
-**Tests que no citan un escenario de la Fase 1 (7).**
+**Tests que no citan un escenario de la Fase 1 (11).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
 | `TestListarLosProyectosDeUnRegistroVacio` [project_registry_test.go:7](../internal/domain/project_registry_test.go#L7) | dependencia de la #77, RN-7 y RN-23 (la lista vacía no es un error) | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
-| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:460](../internal/domain/registry_json_test.go#L460) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:542](../internal/domain/registry_json_test.go#L542) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestUnaRondaReveladaSinParticipantesNoSeCarga` [registry_json_test.go:626](../internal/domain/registry_json_test.go#L626) | #77 RN-24, RN-6 de la #13 | [registry_json.go](../internal/domain/registry_json.go) | `684fcb2` → `87264b3` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
-| `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1202](../internal/web/server_test.go#L1202) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
+| `TestResolverSinElegirElSprint` [defects_test.go:254](../internal/web/defects_test.go#L254) | RN-2, RN-9 | el que ya estaba | `8847aa0` (sin RED: ya pasaba) |
+| `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1658](../internal/web/server_test.go#L1658) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
+| `TestQuitarDelSprintUnaHistoriaQueNoEstaAsignada` [sprints_test.go:188](../internal/web/sprints_test.go#L188) | RN-2 | el que ya estaba | `b7523ca` (sin RED: ya pasaba) |
+| `TestCerrarConUnaFechaQueNoEsFecha` [sprints_test.go:366](../internal/web/sprints_test.go#L366) | RN-2, RN-9 | el que ya estaba | `09d23fa` (sin RED: ya pasaba) |
+
+## #10 Cerrar un sprint
+
+- **Historia:** issue #10
+- **Spec:** [docs/specs/sprint-3/10-cerrar-sprint.md](specs/sprint-3/10-cerrar-sprint.md)
+- **Código según la spec:** `internal/domain/sprint_close.go`, `internal/domain/registry_json.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (14)</summary>
+
+- Se puede cerrar el sprint abierto indicando qué historias se completaron, y queda en estado Cerrado con su fecha de cierre.
+- Las historias indicadas como completadas quedan Terminadas.
+- Las historias del sprint que no se indicaron quedan Pendientes, de vuelta en el Product Backlog.
+- El sprint cerrado conserva la lista de las historias que se le habían asignado, incluidas las que volvieron al Product Backlog.
+- El sprint cerrado deja registrado cuáles de sus historias se completaron.
+- Se puede cerrar un sprint sin ninguna historia completada.
+- Se puede cerrar un sprint que no tiene ninguna historia asignada.
+- Indicar dos veces la misma historia no es un error y no la cuenta dos veces.
+- Indicar como completada una historia que no está en el sprint rechaza el cierre y no cambia ninguna historia.
+- No se puede cerrar sin fecha de cierre.
+- No se puede cerrar dos veces el mismo sprint.
+- Después de cerrar, el proyecto no tiene sprint abierto y se puede crear el siguiente.
+- Cerrar el sprint de un proyecto que no existe informa que no se encontró el proyecto.
+- Los story points que el sprint registró al cerrar no cambian si después se reestima una de sus historias.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Cerrar el sprint registrando que se completo y que no](specs/sprint-3/10-cerrar-sprint.md?plain=1#L156) | `TestCerrarElSprintRegistrandoQueSeCompletoYQueNo` [sprint_close_test.go:59](../internal/domain/sprint_close_test.go#L59) | [sprint_close.go](../internal/domain/sprint_close.go) | `e2e1137` → `bf2ac19` |
+| [El sprint cerrado conserva lo que se le habia comprometido](specs/sprint-3/10-cerrar-sprint.md?plain=1#L165) | `TestElSprintCerradoConservaLoQueSeLeHabiaComprometido` [sprint_close_test.go:82](../internal/domain/sprint_close_test.go#L82) | el que ya estaba | `aea7f11` (sin RED: ya pasaba) |
+| [Cerrar con distinta cantidad de historias completadas](specs/sprint-3/10-cerrar-sprint.md?plain=1#L170) | `TestCerrarConDistintaCantidadDeHistoriasCompletadas` [sprint_close_test.go:96](../internal/domain/sprint_close_test.go#L96) | el que ya estaba | `e1a1b77` (sin RED: ya pasaba) |
+| [Cerrar un sprint sin ninguna historia asignada](specs/sprint-3/10-cerrar-sprint.md?plain=1#L183) | `TestCerrarUnSprintSinNingunaHistoriaAsignada` [sprint_close_test.go:132](../internal/domain/sprint_close_test.go#L132) | el que ya estaba | `e1a1b77` (sin RED: ya pasaba) |
+| [La misma historia indicada dos veces cuenta una sola vez](specs/sprint-3/10-cerrar-sprint.md?plain=1#L189) | `TestLaMismaHistoriaIndicadaDosVecesCuentaUnaSolaVez` [sprint_close_test.go:146](../internal/domain/sprint_close_test.go#L146) | [sprint_close.go](../internal/domain/sprint_close.go) | `e44c2af` → `e32d3e5` |
+| [Rechazar el cierre si una historia completada no esta en el sprint](specs/sprint-3/10-cerrar-sprint.md?plain=1#L195) | `TestRechazarElCierreSiUnaHistoriaCompletadaNoEstaEnElSprint` [sprint_close_test.go:163](../internal/domain/sprint_close_test.go#L163) | [sprint_close.go](../internal/domain/sprint_close.go) | `ee65d1d` → `c5463df` |
+| [Rechazar el cierre sin fecha de cierre](specs/sprint-3/10-cerrar-sprint.md?plain=1#L203) | `TestRechazarElCierreSinFechaDeCierre` [sprint_close_test.go:182](../internal/domain/sprint_close_test.go#L182) | [errors.go](../internal/domain/errors.go), [sprint_close.go](../internal/domain/sprint_close.go) | `ec1e59c` → `ceee9ed` |
+| [Rechazar el cierre si no hay sprint abierto](specs/sprint-3/10-cerrar-sprint.md?plain=1#L210) | `TestRechazarElCierreSiNoHaySprintAbierto` [sprint_close_test.go:200](../internal/domain/sprint_close_test.go#L200) | [sprint_close.go](../internal/domain/sprint_close.go) | `0670e00` → `fe38044` |
+| [No se puede cerrar dos veces el mismo sprint](specs/sprint-3/10-cerrar-sprint.md?plain=1#L216) | `TestNoSePuedeCerrarDosVecesElMismoSprint` [sprint_close_test.go:212](../internal/domain/sprint_close_test.go#L212) | el que ya estaba | `33fbd2c` (sin RED: ya pasaba) |
+| [Despues de cerrar se puede crear el sprint siguiente](specs/sprint-3/10-cerrar-sprint.md?plain=1#L223) | `TestDespuesDeCerrarSePuedeCrearElSprintSiguiente` [sprint_close_test.go:27](../internal/domain/sprint_close_test.go#L27) | [sprint_close.go](../internal/domain/sprint_close.go) | `e3f37ce` → `2ebe154` |
+| [Una fecha de cierre distinta de la fecha de fin se acepta](specs/sprint-3/10-cerrar-sprint.md?plain=1#L229) | `TestUnaFechaDeCierreDistintaDeLaFechaDeFinSeAcepta` [sprint_close_test.go:231](../internal/domain/sprint_close_test.go#L231) | el que ya estaba | `8b85cc2` (sin RED: ya pasaba) |
+| [Los puntos registrados al cerrar no cambian si se reestima la historia](specs/sprint-3/10-cerrar-sprint.md?plain=1#L234) | `TestLosPuntosRegistradosAlCerrarNoCambianSiSeReestimaLaHistoria` [sprint_close_test.go:264](../internal/domain/sprint_close_test.go#L264) | [sprint_close.go](../internal/domain/sprint_close.go) | `f0ec86f` → `627b2b9` |
+| [Cerrar el sprint de un proyecto que no existe](specs/sprint-3/10-cerrar-sprint.md?plain=1#L240) | `TestCerrarElSprintDeUnProyectoQueNoExiste` [sprint_close_test.go:249](../internal/domain/sprint_close_test.go#L249) | el que ya estaba | `2aa23a1` (sin RED: ya pasaba) |
+| [Una historia sin estimar al cerrar registra cero puntos](specs/sprint-3/10-cerrar-sprint.md?plain=1#L245) | `TestUnaHistoriaSinEstimarAlCerrarRegistraCeroPuntos` [sprint_close_test.go:284](../internal/domain/sprint_close_test.go#L284) | [sprint_close.go](../internal/domain/sprint_close.go) | `f0ec86f` → `627b2b9` |
 
 ## #13 Votar en secreto en una ronda de Planning Poker
 
@@ -722,18 +772,18 @@ cinco casos posibles:
 
 | Escenario BDD | Test | Código | RED → GREEN |
 |---|---|---|---|
-| [Metricas de un sprint cerrado](specs/sprint-3/16-calcular-metricas.md?plain=1#L171) | `TestMetricasDeUnSprintCerrado` [metrics_test.go:124](../internal/domain/metrics_test.go#L124) | [metrics.go](../internal/domain/metrics.go) | `11f3554` → `fff2a46` |
-| ⚠️ [Una historia que volvio al backlog cuenta como completada solo donde se completo](specs/sprint-3/16-calcular-metricas.md?plain=1#L183) | **sin test** | | |
-| ⚠️ [Los puntos de un sprint cerrado no cambian si se reestima una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L191) | **sin test** | | |
-| [Las horas de una historia que paso por dos sprints cuentan en el ultimo](specs/sprint-3/16-calcular-metricas.md?plain=1#L198) | `TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo` [metrics_test.go:170](../internal/domain/metrics_test.go#L170) | [metrics.go](../internal/domain/metrics.go) | `cc515ff` → `b48e2be` |
-| [Las metricas de un sprint abierto son parciales](specs/sprint-3/16-calcular-metricas.md?plain=1#L206) | `TestLasMetricasDeUnSprintAbiertoSonParciales` [metrics_test.go:250](../internal/domain/metrics_test.go#L250) | el que ya estaba | `1909bb4` (sin RED: ya pasaba) |
+| [Metricas de un sprint cerrado](specs/sprint-3/16-calcular-metricas.md?plain=1#L171) | `TestMetricasDeUnSprintCerrado` [metrics_test.go:122](../internal/domain/metrics_test.go#L122) | [metrics.go](../internal/domain/metrics.go) | `11f3554` → `fff2a46` |
+| [Una historia que volvio al backlog cuenta como completada solo donde se completo](specs/sprint-3/16-calcular-metricas.md?plain=1#L183) | `TestUnaHistoriaQueVolvioAlBacklogCuentaComoCompletadaSoloDondeSeCompleto` [metrics_test.go:428](../internal/domain/metrics_test.go#L428) | [metrics.go](../internal/domain/metrics.go) | `9bacc10` → `8597d88` |
+| [Los puntos de un sprint cerrado no cambian si se reestima una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L191) | `TestLosPuntosDeUnSprintCerradoNoCambianSiSeReestimaUnaHistoria` [metrics_test.go:464](../internal/domain/metrics_test.go#L464) | [metrics.go](../internal/domain/metrics.go) | `b6808c6` → `033613d` |
+| [Las horas de una historia que paso por dos sprints cuentan en el ultimo](specs/sprint-3/16-calcular-metricas.md?plain=1#L198) | `TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo` [metrics_test.go:174](../internal/domain/metrics_test.go#L174) | [metrics.go](../internal/domain/metrics.go) | `cc515ff` → `b48e2be` |
+| [Las metricas de un sprint abierto son parciales](specs/sprint-3/16-calcular-metricas.md?plain=1#L206) | `TestLasMetricasDeUnSprintAbiertoSonParciales` [metrics_test.go:254](../internal/domain/metrics_test.go#L254) | el que ya estaba | `1909bb4` (sin RED: ya pasaba) |
 | [Sin datos cargados las metricas valen cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L214) | `TestSinDatosCargadosLasMetricasValenCero` [metrics_test.go:53](../internal/domain/metrics_test.go#L53) | [metrics.go](../internal/domain/metrics.go) | `7f4a880` → `0faa0aa` |
-| [Calcular la desviacion de horas](specs/sprint-3/16-calcular-metricas.md?plain=1#L225) | `TestCalcularLaDesviacionDeHoras` [metrics_test.go:210](../internal/domain/metrics_test.go#L210) | [metrics.go](../internal/domain/metrics.go) | `7bab460` → `96ed50e` |
-| ⚠️ [Calcular el porcentaje de historias completas](specs/sprint-3/16-calcular-metricas.md?plain=1#L238) | **sin test** | | |
-| [Defectos detectados y resueltos de cada sprint](specs/sprint-3/16-calcular-metricas.md?plain=1#L250) | `TestDefectosDetectadosYResueltosDeCadaSprint` [metrics_test.go:276](../internal/domain/metrics_test.go#L276) | [metrics.go](../internal/domain/metrics.go) | `b6806d0` → `81328ca` |
-| [Metricas del proyecto entero](specs/sprint-3/16-calcular-metricas.md?plain=1#L259) | `TestMetricasDelProyectoEntero` [metrics_test.go:319](../internal/domain/metrics_test.go#L319) | [metrics.go](../internal/domain/metrics.go) | `a03372b` → `d8b461e` |
-| ⚠️ [Velocidad del proyecto](specs/sprint-3/16-calcular-metricas.md?plain=1#L271) | **sin test** | | |
-| [Las metricas reflejan los datos cargados despues](specs/sprint-3/16-calcular-metricas.md?plain=1#L282) | `TestLasMetricasReflejanLosDatosCargadosDespues` [metrics_test.go:363](../internal/domain/metrics_test.go#L363) | el que ya estaba | `771ffff` (sin RED: ya pasaba) |
+| [Calcular la desviacion de horas](specs/sprint-3/16-calcular-metricas.md?plain=1#L225) | `TestCalcularLaDesviacionDeHoras` [metrics_test.go:214](../internal/domain/metrics_test.go#L214) | [metrics.go](../internal/domain/metrics.go) | `7bab460` → `96ed50e` |
+| [Calcular el porcentaje de historias completas](specs/sprint-3/16-calcular-metricas.md?plain=1#L238) | `TestCalcularElPorcentajeDeHistoriasCompletas` [metrics_test.go:485](../internal/domain/metrics_test.go#L485) | [metrics.go](../internal/domain/metrics.go) | `b27a92c` → `0afff9a` |
+| [Defectos detectados y resueltos de cada sprint](specs/sprint-3/16-calcular-metricas.md?plain=1#L250) | `TestDefectosDetectadosYResueltosDeCadaSprint` [metrics_test.go:280](../internal/domain/metrics_test.go#L280) | [metrics.go](../internal/domain/metrics.go) | `b6806d0` → `81328ca` |
+| [Metricas del proyecto entero](specs/sprint-3/16-calcular-metricas.md?plain=1#L259) | `TestMetricasDelProyectoEntero` [metrics_test.go:320](../internal/domain/metrics_test.go#L320) | [metrics.go](../internal/domain/metrics.go) | `a03372b` → `d8b461e` |
+| [Velocidad del proyecto](specs/sprint-3/16-calcular-metricas.md?plain=1#L271) | `TestVelocidadDelProyecto` [metrics_test.go:527](../internal/domain/metrics_test.go#L527) | [metrics.go](../internal/domain/metrics.go) | `9816638` → `ff6e1be` |
+| [Las metricas reflejan los datos cargados despues](specs/sprint-3/16-calcular-metricas.md?plain=1#L282) | `TestLasMetricasReflejanLosDatosCargadosDespues` [metrics_test.go:383](../internal/domain/metrics_test.go#L383) | el que ya estaba | `771ffff` (sin RED: ya pasaba) |
 | [Cargar y reemplazar las horas estimadas de una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L289) | `TestCargarYReemplazarLasHorasEstimadasDeUnaHistoria` [story_hours_test.go:18](../internal/domain/story_hours_test.go#L18) | [story.go](../internal/domain/story.go), [story_hours.go](../internal/domain/story_hours.go) | `56ff0bc` → `7e4e3b8` |
 | [Rechazar horas estimadas que no son mayores que cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L295) | `TestRechazarHorasEstimadasQueNoSonMayoresQueCero` [story_hours_test.go:46](../internal/domain/story_hours_test.go#L46) | [errors.go](../internal/domain/errors.go), [story_hours.go](../internal/domain/story_hours.go) | `eb4ad3d` → `e636a5c` |
 | [No cambiar las horas estimadas de una historia terminada](specs/sprint-3/16-calcular-metricas.md?plain=1#L307) | `TestNoCambiarLasHorasEstimadasDeUnaHistoriaTerminada` [story_hours_test.go:79](../internal/domain/story_hours_test.go#L79) | [story_hours.go](../internal/domain/story_hours.go) | `4d24c31` → `9d00e6f` |
@@ -745,4 +795,92 @@ cinco casos posibles:
 |---|---|---|---|
 | `TestRechazarHorasEstimadasQueNoSonUnNumero` [story_hours_test.go:105](../internal/domain/story_hours_test.go#L105) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `4708708` → `9dd7309` |
 | `TestRechazarHorasEstimadasInfinitas` [story_hours_test.go:132](../internal/domain/story_hours_test.go#L132) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `f0ee9fb` → `1a60943` |
+
+## #78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes
+
+- **Historia:** issue #78
+- **Spec:** [docs/specs/sprint-3/78-interfaz-web-operaciones.md](specs/sprint-3/78-interfaz-web-operaciones.md)
+- **Código según la spec:** `internal/web/`, `cmd/web/main.go`
+
+<details><summary>Criterios de aceptación (13)</summary>
+
+- Desde la web se crea un sprint, se le asignan historias, se cierra y se consultan los anteriores.
+- Desde la web se registra el esfuerzo real y se ven las horas por historia y por integrante.
+- Desde la web se cargan defectos, se cambia su estado, se resuelven y se filtran por estado y por severidad.
+- Desde la web se hace una ronda de Planning Poker: cada integrante vota sin ver los votos de los demás hasta que se revelan, y se acuerda la estimación.
+- Desde la web se ve el reporte del proyecto o de un sprint, y se descarga en PDF.
+- Los errores se muestran igual que en el resto de la interfaz web.
+- Antes de revelar, ningún voto aparece en ninguna página ni mensaje, ni siquiera el propio.
+- Antes de cerrar un sprint o resolver un defecto se pide confirmación, y cancelar no cambia nada.
+- La fecha de cierre y el día del esfuerzo vienen propuestos con la fecha de hoy.
+- Desde la web se cargan las horas estimadas de una historia.
+- La barra de un proyecto lleva a sus sprints, esfuerzo, defectos, Planning Poker y reporte.
+- Los sprints, el esfuerzo, los defectos y las rondas siguen al cerrar y volver a abrir.
+- La web no contiene ninguna validación de negocio propia.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [La barra de un proyecto lleva a todas sus secciones](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L219) | `TestLaBarraDeUnProyectoLlevaATodasSusSecciones` [sprints_test.go:19](../internal/web/sprints_test.go#L19) | [server.go](../internal/web/server.go), [sprints.go](../internal/web/sprints.go), [layout.html](../internal/web/templates/layout.html), [sprints.html](../internal/web/templates/sprints.html) | `fb7c03e` → `56d1f95` |
+| [Crear un sprint desde la web](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L224) | `TestCrearUnSprintDesdeLaWeb` [sprints_test.go:60](../internal/web/sprints_test.go#L60) | [server.go](../internal/web/server.go), [sprints.go](../internal/web/sprints.go), [sprint-form.html](../internal/web/templates/sprint-form.html), [sprints.html](../internal/web/templates/sprints.html) | `cc2b293` → `211237f` |
+| [Asignar y quitar historias del sprint abierto](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L231) | `TestAsignarYQuitarHistoriasDelSprintAbierto` [sprints_test.go:120](../internal/web/sprints_test.go#L120) | [server.go](../internal/web/server.go), [sprints.go](../internal/web/sprints.go), [layout.html](../internal/web/templates/layout.html), [sprint.html](../internal/web/templates/sprint.html), [sprints.html](../internal/web/templates/sprints.html) | `f3a96de` → `5077131` |
+| [Cerrar el sprint marcando las completadas](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L238) | `TestCerrarElSprintMarcandoLasCompletadas` [sprints_test.go:241](../internal/web/sprints_test.go#L241) | [forms.go](../internal/web/forms.go), [server.go](../internal/web/server.go), [sprints.go](../internal/web/sprints.go), [app.css](../internal/web/static/app.css), [sprint-cerrar.html](../internal/web/templates/sprint-cerrar.html), [sprint.html](../internal/web/templates/sprint.html) | `8b60975` → `3550e3f` |
+| [Consultar un sprint anterior](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L248) | `TestConsultarUnSprintAnterior` [sprints_test.go:329](../internal/web/sprints_test.go#L329) | [sprints.go](../internal/web/sprints.go), [sprint.html](../internal/web/templates/sprint.html), [sprints.html](../internal/web/templates/sprints.html) | `e4476d7` → `d7b0785` |
+| [Registrar esfuerzo y ver los totales](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L254) | `TestRegistrarEsfuerzoYVerLosTotales` [efforts_test.go:15](../internal/web/efforts_test.go#L15) | [main.go](../cmd/web/main.go), [efforts.go](../internal/web/efforts.go), [server.go](../internal/web/server.go), [esfuerzo-form.html](../internal/web/templates/esfuerzo-form.html), [esfuerzo.html](../internal/web/templates/esfuerzo.html), [layout.html](../internal/web/templates/layout.html) | `587fd47` → `97bb41b` |
+| [Cargar las horas estimadas de una historia](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L263) | `TestCargarLasHorasEstimadasDeUnaHistoria` [efforts_test.go:69](../internal/web/efforts_test.go#L69) | [efforts.go](../internal/web/efforts.go), [forms.go](../internal/web/forms.go), [server.go](../internal/web/server.go), [historia.html](../internal/web/templates/historia.html), [horas-estimadas.html](../internal/web/templates/horas-estimadas.html) | `e8124f5` → `cf1d745` |
+| [Cargar un defecto, pasarlo a en curso y resolverlo](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L269) | `TestCargarUnDefectoPasarloAEnCursoYResolverlo` [defects_test.go:49](../internal/web/defects_test.go#L49) | [defects.go](../internal/web/defects.go), [server.go](../internal/web/server.go), [defecto-form.html](../internal/web/templates/defecto-form.html), [defecto.html](../internal/web/templates/defecto.html), [defectos.html](../internal/web/templates/defectos.html), [layout.html](../internal/web/templates/layout.html) | `3b14453` → `9611795` |
+| [Filtrar los defectos](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L279) | `TestFiltrarLosDefectos` [defects_test.go:187](../internal/web/defects_test.go#L187) | [defects.go](../internal/web/defects.go), [defectos.html](../internal/web/templates/defectos.html) | `9090625` → `7066111` |
+| [Una ronda de Planning Poker sin ver los votos hasta revelar](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L290) | `TestUnaRondaDePlanningPokerSinVerLosVotosHastaRevelar` [poker_test.go:28](../internal/web/poker_test.go#L28) | [poker.go](../internal/web/poker.go), [server.go](../internal/web/server.go), [layout.html](../internal/web/templates/layout.html), [planning-poker.html](../internal/web/templates/planning-poker.html), [ronda.html](../internal/web/templates/ronda.html) | `8f37017` → `4297f72` |
+| [Nadie ve un voto antes de revelar](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L302) | `TestNadieVeUnVotoAntesDeRevelar` [poker_test.go:142](../internal/web/poker_test.go#L142) | [poker.go](../internal/web/poker.go) | `fff8bab` → `cba14ef` |
+| [Un voto rechazado no muestra el valor elegido](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L309) | `TestUnVotoRechazadoNoMuestraElValorElegido` [poker_test.go:181](../internal/web/poker_test.go#L181) | [poker.go](../internal/web/poker.go) | `fff8bab` → `cba14ef` |
+| [No se puede revelar con votos faltantes](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L315) | `TestNoSePuedeRevelarConVotosFaltantes` [poker_test.go:87](../internal/web/poker_test.go#L87) | [poker.go](../internal/web/poker.go), [server.go](../internal/web/server.go), [ronda.html](../internal/web/templates/ronda.html) | `5acab35` → `06a195a` |
+| [Diferencias, nueva ronda y acuerdo](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L321) | `TestDiferenciasNuevaRondaYAcuerdo` [poker_test.go:215](../internal/web/poker_test.go#L215) | [poker.go](../internal/web/poker.go), [server.go](../internal/web/server.go), [ronda.html](../internal/web/templates/ronda.html), [rondas.html](../internal/web/templates/rondas.html) | `43e3e5a` → `4ad7a5b` |
+| ⚠️ [Ver el reporte](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L332) | **sin test** | | |
+| ⚠️ [Descargar el reporte en PDF](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L343) | **sin test** | | |
+| [Confirmar o cancelar antes de lo que no se deshace](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L349) | `TestConfirmarOCancelarAntesDeResolverUnDefecto` [defects_test.go:136](../internal/web/defects_test.go#L136) | [defects.go](../internal/web/defects.go), [server.go](../internal/web/server.go), [defecto.html](../internal/web/templates/defecto.html) | `92d4364` → `bf4b303` |
+| ″ | `TestConfirmarOCancelarAntesDeCerrarElSprint` [sprints_test.go:295](../internal/web/sprints_test.go#L295) | [forms.go](../internal/web/forms.go), [server.go](../internal/web/server.go), [sprints.go](../internal/web/sprints.go), [app.css](../internal/web/static/app.css), [sprint-cerrar.html](../internal/web/templates/sprint-cerrar.html), [sprint.html](../internal/web/templates/sprint.html) | `8b60975` → `3550e3f` |
+| ⚠️ [Mostrar el rechazo sin perder lo escrito](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L362) | **sin test** | | |
+| ⚠️ [Las listas vacias dicen que hacer](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L379) | **sin test** | | |
+| ⚠️ [Pedir algo que no existe](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L392) | **sin test** | | |
+| [El proyecto muestra su resumen](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L404) | `TestElProyectoMuestraSuResumen` [projects_test.go:127](../internal/web/projects_test.go#L127) | [projects.go](../internal/web/projects.go), [proyecto.html](../internal/web/templates/proyecto.html) | `e10078c` → `b951ba3` |
+| [Los datos nuevos siguen al cerrar y volver a abrir](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L409) | `TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir` [server_test.go:1591](../internal/web/server_test.go#L1591) | el que ya estaba | `97ef3a2` (sin RED: ya pasaba) |
+
+## #73 Resolver diferencias y acordar la estimación
+
+- **Historia:** issue #73
+- **Spec:** [docs/specs/sprint-4/73-resolver-diferencias-y-acordar.md](specs/sprint-4/73-resolver-diferencias-y-acordar.md)
+- **Código según la spec:** `internal/domain/voting_round_agreement.go`, `internal/domain/voting_round.go`, `internal/domain/errors.go`
+
+<details><summary>Criterios de aceptación (11)</summary>
+
+- Con la ronda revelada, el sistema informa si hay diferencias entre los votos.
+- Informa el voto más bajo y el más alto, con el nombre de todos los que dieron cada uno.
+- Si todos votaron lo mismo, informa que no hay diferencias.
+- Con la ronda sin revelar no informa nada de los votos, ni siquiera si hay diferencias.
+- Se puede abrir una ronda nueva sobre la misma historia cuando la última está revelada, y las anteriores quedan guardadas como estaban.
+- Las rondas de cada historia se numeran en orden, empezando en 1, y se consultan en ese orden.
+- Se puede registrar la estimación acordada, y la historia queda estimada con ese valor.
+- La estimación acordada tiene que ser un valor de la escala, aunque nadie lo haya votado.
+- No se puede acordar sobre una ronda sin revelar, ya acordada o que no es la última de su historia.
+- No se puede acordar sobre una historia Terminada.
+- Un acuerdo rechazado no cambia ni la ronda ni la historia.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Informar las diferencias de una ronda revelada](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L138) | `TestInformarLasDiferenciasDeUnaRondaRevelada` [voting_round_agreement_test.go:47](../internal/domain/voting_round_agreement_test.go#L47) | [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `2ab9574` → `84e068b` |
+| [Sin diferencias cuando todos votaron lo mismo](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L150) | `TestSinDiferenciasCuandoTodosVotaronLoMismo` [voting_round_agreement_test.go:83](../internal/domain/voting_round_agreement_test.go#L83) | [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `2ab9574` → `84e068b` |
+| [No se informan diferencias de una ronda sin revelar](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L161) | `TestNoSeInformanDiferenciasDeUnaRondaSinRevelar` [voting_round_agreement_test.go:118](../internal/domain/voting_round_agreement_test.go#L118) | [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `2ab9574` → `84e068b` |
+| [Acordar la estimacion de una ronda revelada](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L167) | `TestAcordarLaEstimacionDeUnaRondaRevelada` [voting_round_agreement_test.go:142](../internal/domain/voting_round_agreement_test.go#L142) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `34f60c4` → `de58f0d` |
+| [Una ronda revelada sin acuerdo figura como sin estimacion acordada](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L179) | `TestUnaRondaReveladaSinAcuerdoFiguraComoSinEstimacionAcordada` [voting_round_agreement_test.go:175](../internal/domain/voting_round_agreement_test.go#L175) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `34f60c4` → `de58f0d` |
+| [Rechazar un acuerdo que la estimacion no permite](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L185) | `TestRechazarUnAcuerdoQueLaEstimacionNoPermite` [voting_round_agreement_test.go:185](../internal/domain/voting_round_agreement_test.go#L185) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `34f60c4` → `de58f0d` |
+| [Rechazar un acuerdo sobre una ronda sin revelar](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L199) | `TestRechazarUnAcuerdoSobreUnaRondaSinRevelar` [voting_round_agreement_test.go:225](../internal/domain/voting_round_agreement_test.go#L225) | [errors.go](../internal/domain/errors.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `5808f95` → `b13c00e` |
+| [Rechazar un segundo acuerdo sobre la misma ronda](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L206) | `TestRechazarUnSegundoAcuerdoSobreLaMismaRonda` [voting_round_agreement_test.go:248](../internal/domain/voting_round_agreement_test.go#L248) | [errors.go](../internal/domain/errors.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `5120a6d` → `01e8f5d` |
+| [Estimar una historia en dos rondas](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L213) | `TestEstimarUnaHistoriaEnDosRondas` [voting_round_agreement_test.go:291](../internal/domain/voting_round_agreement_test.go#L291) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Cada historia numera sus rondas desde 1](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L222) | `TestCadaHistoriaNumeraSusRondasDesde1` [voting_round_agreement_test.go:321](../internal/domain/voting_round_agreement_test.go#L321) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Abrir una ronda nueva despues de acordar](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L227) | `TestAbrirUnaRondaNuevaDespuesDeAcordar` [voting_round_agreement_test.go:343](../internal/domain/voting_round_agreement_test.go#L343) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Consultar las rondas de una historia](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L234) | `TestConsultarLasRondasDeUnaHistoria` [voting_round_agreement_test.go:367](../internal/domain/voting_round_agreement_test.go#L367) | [voting_round.go](../internal/domain/voting_round.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `a6a5a5a` → `185bce2` |
+| [Solo se acuerda sobre la ultima ronda de la historia](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L244) | `TestSoloSeAcuerdaSobreLaUltimaRondaDeLaHistoria` [voting_round_agreement_test.go:391](../internal/domain/voting_round_agreement_test.go#L391) | [errors.go](../internal/domain/errors.go), [voting_round_agreement.go](../internal/domain/voting_round_agreement.go) | `b1c418c` → `c1ce166` |
 

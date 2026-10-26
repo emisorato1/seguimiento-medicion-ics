@@ -99,21 +99,19 @@ escritas las horas que tenía cada historia al cierre.
 | SP completados (velocidad) | **6** | 31 + 8 adelantados = 39 * | _pendiente_ | _pendiente_ |
 | Historias completadas | 2 de 5 (40%) | 9 de 9 (100%) * | _pendiente_ | _pendiente_ |
 | Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
-| Horas reales | 38,25 | 27,5 * ‡ | _pendiente_ | _pendiente_ |
+| Horas reales | 38,25 | 31 * | _pendiente_ | _pendiente_ |
 | Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
-| Desviación de las historias terminadas | −11% | −49% * † ‡ | _pendiente_ | _pendiente_ |
-| Horas por story point completado | 2,7 | 1,4 * † ‡ | _pendiente_ | _pendiente_ |
+| Desviación de las historias terminadas | −11% | −52% * † | _pendiente_ | _pendiente_ |
+| Horas por story point completado | 2,7 | 1,3 * † | _pendiente_ | _pendiente_ |
 | Defectos detectados / resueltos | 2 / 1 | 1 / 2 * | _pendiente_ | _pendiente_ |
 | Cobertura del dominio | 100% | 100% * | _pendiente_ | _pendiente_ |
 | Tests | 52 | 263 * | _pendiente_ | _pendiente_ |
 
 _* Sprint 2 al 24/10: se revisa al cierre, el domingo 25._
 
-_† En el Sprint 2 la #5 y la #14 se implementaron con asistencia de IA, que la consigna
+_† En el Sprint 2 la #5, la #14 y la #15 se implementaron con asistencia de IA, que la consigna
 permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
 desviación da muy negativa (ver el [Sprint 2](#sprint-2--interfaz-usable))._
-
-_‡ Sin la #15, que está terminada pero todavía no tiene sus horas reales cargadas._
 
 **Velocidad del proyecto:** 6 (el promedio de los sprints cerrados; por ahora, uno solo).
 
@@ -258,16 +256,15 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 
 - Horas estimadas de las historias nuevas: **56,7**, a 2,7 h por story point. Las de la #6,
   la #12 y la #24 (30 h) ya están en el Sprint 1.
-- Horas trabajadas en el sprint al 24/10: **27,5**, contando la #13. Es el total del tablero
-  (49,75) menos las 22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
-- Historias terminadas, medidas enteras: **94,8 h estimadas contra 48,25 reales (−49%)**, 1,4 h
-  por story point. Entra la #13 (21,6 h contra 3). **Falta la #15**, terminada pero sin sus
-  horas reales cargadas: contarla con cero daría una desviación que no pasó.
-- **La #5, la #14 y la #77 se implementaron con asistencia de IA**, que la consigna permite.
-  Sus horas reales son el tiempo humano de dirección y revisión, todas de Emiliano Sorato:
-  0,5 h en la #5, 0,5 h en la #14 y 1,5 h en la #77. Por eso la desviación da muy negativa.
-  Sin la #5 y la #14, las otras siete terminadas dan **−40%** (78,6 h contra 47,25) y 1,7 h
-  por story point. La #15 también se hizo con asistencia de IA.
+- Horas trabajadas en el sprint: **31**, contando la #13. Es el total del tablero
+  (53,25) menos las 22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
+- Historias terminadas, medidas enteras: **108,3 h estimadas contra 51,75 reales (−52%)**, 1,3 h
+  por story point. Entran la #13 (21,6 h contra 6; Maxi corrigió sus horas de 3 a 6) y la #15 (13,5 h contra 0,5).
+- **La #5, la #14, la #15 y la #77 se implementaron con asistencia de IA**, que la consigna
+  permite. Sus horas reales son el tiempo humano de dirección y revisión, todas de Emiliano
+  Sorato: 0,5 h en la #5, en la #14 y en la #15, y 1,5 h en la #77. Por eso la desviación da muy negativa.
+  Sin la #5, la #14 y la #15, las otras siete terminadas dan **−36%** (78,6 h contra 50,25) y
+  1,8 h por story point.
 - **Cuánto cuesta un punto en el Sprint 2.** La #6, la #12 y la #24 se trabajaron casi todas
   en el Sprint 1. Las nuevas del sprint hechas a mano, la #7, la #8 y la #9 (las tres de
   Agustín Salinas), dan **27 h estimadas contra 20 reales (−26%)**, 2 h por story point.
