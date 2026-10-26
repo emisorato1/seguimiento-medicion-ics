@@ -314,12 +314,10 @@ func TestDefectosDetectadosYResueltosDeCadaSprint(t *testing.T) {
 }
 
 // Escenario: Metricas del proyecto entero
-// Cubre: RN-9, RN-11, RN-12
+// Cubre: RN-9, RN-11, RN-12, RN-13
 //
-// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
-// las horas, la desviación y los defectos. Los completados, el porcentaje y la velocidad salen
-// del registro del cierre de la #10 y los suman las tareas 6, 11 y 14. Asignar historias es de
-// la #9 y cerrar el sprint de la #10: el test arma los sprints dentro del paquete.
+// El escenario se completa en varias tareas (Fase 3): la velocidad la suma la tarea 14. El
+// sprint 1 se cierra con el cierre de la #10, que registra las completadas.
 func TestMetricasDelProyectoEntero(t *testing.T) {
 	project := unProyecto(t)
 	conIntegrante(t, project)
@@ -330,16 +328,28 @@ func TestMetricasDelProyectoEntero(t *testing.T) {
 	for i, hours := range []float64{5, 8, 3, 7, 10} {
 		cargar(t, project, i+1, "Juliana Bustos", hours)
 	}
-	first := unSprint(t, project)
-	first.stories = []int{1, 2, 3}
-	first.state = SprintClosed
-	unSprint(t, project).stories = []int{3}
-	for _, detectedIn := range []int{1, 1, 2} {
-		data := unDefecto()
-		data.DetectedIn = detectedIn
-		if _, err := project.AddDefect(data); err != nil {
+	unSprint(t, project)
+	for _, id := range []int{1, 2, 3} {
+		if err := project.AssignStory(id); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d al sprint 1: %v", id, err)
+		}
+	}
+	for i := 0; i < 2; i++ {
+		if _, err := project.AddDefect(unDefecto()); err != nil {
 			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
 		}
+	}
+	if err := project.CloseSprint([]int{1, 2}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1 de prueba: %v", err)
+	}
+	unSprint(t, project)
+	if err := project.AssignStory(3); err != nil {
+		t.Fatalf("no se pudo asignar la historia 3 al sprint 2: %v", err)
+	}
+	data := unDefecto()
+	data.DetectedIn = 2
+	if _, err := project.AddDefect(data); err != nil {
+		t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
 	}
 	if err := project.ResolveDefect(1, 2); err != nil {
 		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
@@ -349,6 +359,10 @@ func TestMetricasDelProyectoEntero(t *testing.T) {
 
 	if got.PlannedPoints != 21 || got.StoriesPlanned != 5 {
 		t.Fatalf("se esperaban 21 story points y 5 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+	if got.CompletedPoints != 8 || got.StoriesCompleted != 2 || !mismasHoras(got.CompletionRate, 40) {
+		t.Fatalf("se esperaban 8 puntos completados, 2 historias completadas y un porcentaje de 40, salieron %d, %d y %v",
+			got.CompletedPoints, got.StoriesCompleted, got.CompletionRate)
 	}
 	if !mismasHoras(got.EstimatedHours, 30) || !mismasHoras(got.ActualHours, 33) || !mismasHoras(got.HoursDeviation, 10) {
 		t.Fatalf("se esperaban 30 horas estimadas, 33 reales y una desviacion de 10, salieron %v, %v y %v",
