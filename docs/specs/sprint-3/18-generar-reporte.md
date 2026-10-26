@@ -5,9 +5,9 @@
 - **Responsable:** Agustín Salinas
 - **Estado:** Borrador completo — pendiente de las tres puertas
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
-- **Depende de:** #16 (las métricas), y por ella de la #10 (qué se completó en cada sprint),
-  la #11 (buscar un sprint por su número) y la #15 (los defectos que se listan). Ninguna está
-  en `dev` todavía: se trabaja contra el contrato del dominio
+- **Depende de:** #16 (las métricas), #8 (buscar un sprint por su número), #10 (qué se
+  completó en cada sprint) y #15 (los defectos que se listan), todas en `dev`; y de la #17,
+  que declara la regla de formato en `internal/domain/format.go`
 - **La necesitan:** #19 (exportar el reporte a PDF)
 
 ## Fase 1 — Requisitos
@@ -78,7 +78,9 @@ encabezado y sus líneas:
     backlog con su estado actual.
 11. **[RN-11]** La sección Estimación y esfuerzo debe tener los story points planificados y
     completados, la velocidad —"velocidad promedio" en el reporte del proyecto—, las horas
-    estimadas, las horas reales y la desviación.
+    estimadas, las horas reales y la desviación. Mientras el proyecto no tenga ningún sprint
+    cerrado, en lugar de la velocidad promedio debe decir "sin sprints cerrados", como el
+    dashboard (#17, RN-4).
 12. **[RN-12]** La sección Defectos debe tener los detectados y los resueltos, y una línea por
     defecto con su identificador, su título, su severidad, su estado y, si está resuelto, el
     sprint en que se resolvió. En el reporte de un sprint van los defectos detectados o
@@ -86,8 +88,11 @@ encabezado y sus líneas:
 13. **[RN-13]** El sistema debe listar las historias y los defectos por su identificador, de
     menor a mayor.
 14. **[RN-14]** El sistema debe escribir los porcentajes y las horas con un decimal, coma
-    decimal y su unidad (% o h); los story points, las historias y los defectos sin
-    decimales; la desviación con su signo cuando es negativa; y las fechas como día/mes/año.
+    decimal y su unidad (% o h); los story points, las historias, los defectos y la
+    velocidad, sin decimales; la desviación, con su signo cuando es negativa y sin signo
+    cuando es positiva o cero; y las fechas como día/mes/año, por ejemplo 01/10/2026. Es la
+    misma regla del dashboard (#17, RN-15): un número o una fecha se lee igual en el
+    dashboard, en el reporte y en el PDF.
 15. **[RN-15]** Cuando se genera un reporte, el sistema debe armarlo con los datos de ese
     momento, sin guardarlo y sin modificar ningún dato.
 16. **[RN-16]** Si se pide el reporte de un sprint que no existe en el proyecto, el sistema
@@ -99,7 +104,8 @@ encabezado y sus líneas:
 - Sprint sin historias comprometidas: la sección Historias tiene sus totales en cero y la
   línea "No hay historias en este sprint."
 - Sprint sin defectos: la sección Defectos dice "No hay defectos en este sprint."
-- Proyecto sin sprints: "0 sprints, 0 cerrados" y velocidad promedio 0.
+- Proyecto sin sprints, o sin ninguno cerrado: el Resumen dice "0 sprints, 0 cerrados" (o
+  los que tenga) y la velocidad promedio dice "sin sprints cerrados", no 0.
 - Historia que no se completó en el sprint 1 y sí en el 2: en el reporte del sprint 1 figura
   "no completada", en el del 2 "completada" y en el del proyecto "Terminada".
 - Defecto detectado en el sprint 1 y resuelto en el 2: aparece en los reportes de los dos.
@@ -134,7 +140,8 @@ Que falten datos **no** es un error: las secciones lo dicen (RN-5).
       reales, y desviación.
 - [ ] Incluye los defectos del período, uno por línea, con su severidad y su estado.
 - [ ] Horas y porcentajes van con un decimal, coma y su unidad, la desviación negativa con
-      su signo, y las fechas como día/mes/año.
+      su signo y la positiva sin signo, la velocidad sin decimales, y las fechas como
+      día/mes/año.
 - [ ] Generar el reporte no cambia ningún dato.
 - [ ] Pedir el reporte de un sprint o de un proyecto inexistente informa que no se encontró.
 
@@ -162,9 +169,9 @@ Escenario: Los numeros del reporte son los de las metricas
     | Desviacion: 25,0 %            |
 
 Esquema del escenario: El resumen dice en que estado esta el sprint
-  Dado el sprint 1 con el goal "Tener el MVP", del 20/10/2026 al 25/10/2026, <estado>
+  Dado el sprint 1 con el goal "Tener el MVP", del 01/10/2026 al 25/10/2026, <estado>
   Cuando genero el reporte del sprint 1
-  Entonces el resumen tiene el goal "Tener el MVP" y las fechas 20/10/2026 y 25/10/2026
+  Entonces el resumen tiene el goal "Tener el MVP" y las fechas 01/10/2026 y 25/10/2026
   Y el resumen dice <linea>
 
   Ejemplos:
@@ -220,6 +227,12 @@ Escenario: Un proyecto sin fecha de fin
   Cuando genero el reporte del proyecto
   Entonces el resumen dice "sin fecha de fin"
 
+Escenario: Un proyecto sin sprints cerrados no muestra una velocidad de cero
+  Dado un proyecto con el sprint 1 abierto y ninguno cerrado
+  Cuando genero el reporte del proyecto
+  Entonces el resumen dice "1 sprint, 0 cerrados"
+  Y la seccion "Estimacion y esfuerzo" tiene la linea "Velocidad promedio: sin sprints cerrados"
+
 Esquema del escenario: Formato de los numeros
   Dado un sprint cuyas metricas tienen <metrica> igual a <valor>
   Cuando genero el reporte del sprint
@@ -263,11 +276,14 @@ Esquema del escenario: Pedir un reporte de algo que no existe
    las horas de un sprint siguen la regla del "último sprint" de la #16 y una línea por
    historia podría no sumar el total; por integrante no es una métrica de la consigna. Si el
    equipo lo quiere, se agrega una sección y se decide qué hacer con esa diferencia.
-4. **El reporte escribe los números como texto (RN-14)**, con el mismo formato que el
+4. **El reporte escribe los números como texto (RN-14)**, con la misma regla que el
    dashboard (#17, RN-15): un número se lee igual en la pantalla, en el reporte y en el PDF,
-   que copia las líneas sin tocarlas. Si el equipo cambia el formato, cambia en los dos.
-5. **El día de generación lo pone el sistema**, porque el contrato pide el reporte sin
-   ninguna fecha de entrada. Los tests comparan contra el día de hoy.
+   que copia las líneas sin tocarlas. Si el equipo cambia el formato, cambia en los dos. Por
+   la misma razón, sin sprints cerrados la velocidad promedio dice "sin sprints cerrados"
+   (RN-11), como el dashboard, y no 0: un cero haría parecer que el equipo no hizo nada.
+5. **El día de generación lo indica quien pide el reporte**, no el sistema: el contrato pide
+   `p.SprintReport(number, today)` y `p.ProjectReport(today)`, porque el dominio no lee el
+   reloj (AGENTS.md). La web le pasa el día de hoy, y los tests una fecha fija.
 6. **Se puede generar el reporte de un sprint abierto (RN-7)**, avisando que los números son
    parciales: sirve para mostrar cómo viene el sprint. La alternativa era rechazarlo.
 
@@ -290,9 +306,9 @@ la #16, **elegir qué se lista** —las historias y los defectos del sprint o de
 **escribir cada sección** línea por línea con las reglas de formato de la RN-14.
 
 El armado **recibe las métricas ya calculadas**: no las pide él. Las dos operaciones del
-contrato solo piden las métricas a la #16 y se las pasan. Es lo que permite escribir y probar
-casi toda la historia sin la #16 en `dev`, con métricas armadas a mano en el test, como dice
-el contrato.
+contrato solo piden las métricas a la #16 y se las pasan. Así el reporte no tiene con qué
+recalcular un número (RN-2), y los tests del formato pueden pasarle métricas armadas a mano
+con los valores exactos de cada escenario.
 
 Los dos reportes comparten las piezas que escriben cada sección; lo que cambia es el alcance:
 qué historias, qué defectos y qué va en el Resumen.
@@ -301,11 +317,14 @@ qué historias, qué defectos y qué va en el Resumen.
 
 | Archivo | Se crea o se modifica | Para qué |
 |---|---|---|
-| `internal/domain/report.go` | se crea | el reporte, el armado de sus secciones y las dos operaciones; también la regla de formato de los números, si la #18 llega a `dev` antes que la #17 |
+| `internal/domain/report.go` | se crea | el reporte, el armado de sus secciones y las dos operaciones |
 | `internal/domain/report_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
 
-No se agregan errores: se reutilizan el de sprint no encontrado (#11) y el de proyecto no
-encontrado, que ya está en `dev`.
+**`internal/domain/format.go` no se crea acá**: es la regla de formato que declaró la #17
+(su tarea 3), con los números y las fechas. El reporte la usa tal como está.
+
+No se agregan errores: se reutilizan el de sprint no encontrado (#8) y el de proyecto no
+encontrado (#3), que ya están en `dev`.
 
 ### Decisiones
 
@@ -314,22 +333,19 @@ encontrado, que ya está en `dev`.
 | El armado recibe las métricas calculadas; las operaciones públicas se las piden a la #16 | que el armado las pida él mismo | deja probar la historia sin la #16 en `dev`, y garantiza la RN-2: el reporte no tiene con qué recalcular |
 | El reporte guarda las métricas y además las líneas de texto | guardar solo las líneas | lo pide el contrato, y así un test o la #17 leen números sin interpretar texto |
 | Los números se escriben como texto acá, con reglas fijas | que cada consumidor los formatee | la #19 solo arma páginas; si cada uno formateara, el PDF y la pantalla podrían mostrar números distintos |
-| La coma decimal se arma cambiando el punto que da la biblioteca estándar | depender de la configuración regional del sistema | la biblioteca estándar no tiene formato regional, y el resultado no puede depender de la máquina |
 | Siempre las cuatro secciones, aunque estén vacías | omitir las vacías | el reporte tiene siempre la misma forma, y "no hay defectos" también es información |
 | La fecha de generación la recibe la operación como dato de quien llama | sacarla del reloj del sistema | decidido por el Agile Enabler el 20/10 y escrito en AGENTS.md: el dominio no lee el reloj, así los tests fijan la fecha que necesitan |
 | La situación de cada historia en un sprint sale del registro del cierre | del estado actual de la historia | ver el punto 2 de la puerta |
-| El formato de los números lo comparte con el dashboard, y lo declara la primera de las dos historias que llegue a `dev` | que cada uno formatee a su manera | un número tiene que leerse igual en el dashboard, en el reporte y en el PDF; es la misma regla que se usó con `errors.go` |
+| El formato de los números y las fechas es el de `format.go`, que declaró la #17 | que cada uno formatee a su manera | un número tiene que leerse igual en el dashboard, en el reporte y en el PDF. El contrato decía que la declaraba la primera de las dos historias en llegar a `dev`, y la #17 la escribió primero |
 
 ### Dependencias y restricciones
 
-- **Depende de la #16, que no está en `dev`.** Las tareas 1 a 11 no la necesitan: le pasan al
-  armado métricas armadas a mano. La 12 conecta las operaciones públicas y espera a la #16.
-- **También se leen sprints (#8 a #11) y defectos (#15)**, que tampoco están: los tests los
-  arman dentro del paquete, contra el contrato.
+- **La #16, la #8, la #10 y la #15 ya están en `dev`.** Los tests arman los sprints, sus
+  cierres y los defectos con sus operaciones reales, y las tareas 2 y 3 le pasan al armado
+  métricas armadas a mano para fijar valores exactos.
 - **No se calcula ninguna métrica** ni se cambia ningún dato.
-- **La regla de formato de los números es compartida con la #17**: si la #17 ya la declaró en
-  `dev`, se usa tal como está; si no, la declara esta historia y la #17 la reutiliza. Cualquier
-  cambio se avisa a las dos.
+- **La regla de formato es la de la #17**, en `format.go`, y se usa tal como está. Cualquier
+  cambio se avisa a las dos historias.
 - **Lo necesita la #19**, que arma un reporte a mano en sus tests. Si cambia el formato de
   las secciones, se avisa.
 
@@ -355,7 +371,7 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 | 7 | Defectos del sprint: los detectados o resueltos en él, con su severidad y su estado | Los defectos del sprint son los detectados o resueltos en el | RN-12 | pendiente |
 | 8 | Una sección sin nada que listar lo dice, con sus totales en cero | Una seccion sin datos lo dice | RN-5 | pendiente |
 | 9 | Reporte del proyecto: título, resumen, todas las historias con su estado, todos los defectos y velocidad promedio | Generar el reporte del proyecto entero | RN-1, RN-3, RN-8, RN-10, RN-11, RN-12 | pendiente |
-| 10 | Un proyecto sin fecha de fin lo dice en el resumen | Un proyecto sin fecha de fin | RN-8 | pendiente |
+| 10 | Un proyecto sin fecha de fin lo dice en el resumen, y sin sprints cerrados la velocidad promedio lo dice | Un proyecto sin fecha de fin / Un proyecto sin sprints cerrados no muestra una velocidad de cero | RN-8, RN-11 | pendiente |
 | 11 | Historias y defectos ordenados por identificador | Las historias y los defectos van ordenados por identificador | RN-13 | pendiente |
 | 12 | Las operaciones del contrato piden las métricas a la #16: los números coinciden y ningún dato cambia | Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las metricas | RN-2, RN-15 | pendiente |
 | 13 | Un sprint o un proyecto inexistentes informan que no se encontraron | Pedir un reporte de algo que no existe | RN-16 | pendiente |
@@ -368,12 +384,13 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 - **De la 4 a la 8 se completan las secciones del sprint**, una por vez, y al final el caso de
   la sección vacía.
 - **La 9 a la 11 agregan el proyecto**, reutilizando las piezas del sprint.
-- **La 12 va casi al final** porque necesita la #16 en `dev`; **la 13**, los bordes de afuera.
+- **La 12 va casi al final** porque conecta las operaciones del contrato con la #16 sobre todo
+  lo anterior; **la 13**, los bordes de afuera.
 
 ### Cobertura
 
 Las dieciséis reglas quedan cubiertas: RN-1 (1, 9), RN-2 (2, 12), RN-3 (1, 9), RN-4 (1),
-RN-5 (8), RN-6 (4), RN-7 (4), RN-8 (9, 10), RN-9 (5, 6), RN-10 (5, 9), RN-11 (2, 9),
+RN-5 (8), RN-6 (4), RN-7 (4), RN-8 (9, 10), RN-9 (5, 6), RN-10 (5, 9), RN-11 (2, 9, 10),
 RN-12 (7, 9), RN-13 (11), RN-14 (3), RN-15 (12), RN-16 (13).
 
 | Criterio de aceptación | Tareas |
@@ -387,20 +404,19 @@ RN-12 (7, 9), RN-13 (11), RN-14 (3), RN-15 (12), RN-16 (13).
 | Situación de cada historia según el cierre del sprint | 5 |
 | Estimaciones y esfuerzo registrado | 2 |
 | Defectos del período, con severidad y estado | 7, 9 |
-| Formato de horas, porcentajes, desviación y fechas | 3, 4 |
+| Formato de horas, porcentajes, desviación, velocidad y fechas | 3, 4, 10 |
 | Generar no cambia ningún dato | 12 |
 | Sprint o proyecto inexistentes | 13 |
 
-Los doce escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los trece escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
-- **Las tareas 1 a 11 no esperan a nadie**: reciben métricas, sprints y defectos armados a
-  mano dentro del paquete, contra el contrato.
-- **La 12 necesita la #16 en `dev`.** Si no llegó cuando el resto está listo, la historia
-  queda en progreso con esa única tarea pendiente, en lugar de simular la #16.
-- **La 13 necesita el error de sprint no encontrado de la #11**; si no está en `dev`, se
-  declara con el nombre que fija la #11.
+- **La #16, la #8, la #10 y la #15 ya están en `dev`**: ninguna tarea espera a otra historia
+  de dominio.
+- **La 3, la 4 y la 10 usan la regla de formato de `format.go`** (#17).
+- **La 13 usa el error de sprint no encontrado de la #8** y el de proyecto no encontrado de
+  la #3.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
