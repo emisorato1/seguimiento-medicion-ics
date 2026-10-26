@@ -338,4 +338,11 @@ más de lo pensado y qué haríamos distinto.]_
 - **Historias adelantadas.** `scripts/metricas.sh` las reconoce por la etiqueta `adelantada`
   de la issue: no las cuenta en lo comprometido ni en sus horas y las muestra en un bloque
   aparte. Si una no se termina y vuelve a su sprint del plan, hay que sacarle la etiqueta.
+- **Historias agregadas durante el sprint.** Una historia que entra con el sprint ya empezado,
+  sin haber estado en la planning (como la #177 en el Sprint 3), lleva la etiqueta `agregada`.
+  `scripts/metricas.sh` la cuenta igual que una adelantada: no entra en lo comprometido ni en el
+  porcentaje de historias completadas, la muestra en un bloque aparte y, si se termina, la suma
+  a la velocidad.
+- **Defectos del sprint.** El bloque de defectos del script lista solo los del sprint: los que se
+  detectaron o se resolvieron en él, y los que quedaron abiertos al cierre.
 - **Redondeo.** Los porcentajes se redondean al entero más cercano.
