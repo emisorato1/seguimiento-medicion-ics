@@ -138,3 +138,20 @@ func TestCerrarUnSprintSinNingunaHistoriaAsignada(t *testing.T) {
 		t.Fatalf("se esperaba el sprint Cerrado y sin completadas, quedo %v con %v", sprint.State(), sprint.CompletedStories())
 	}
 }
+
+// Escenario: La misma historia indicada dos veces cuenta una sola vez
+// Cubre: RN-2, RN-8
+func TestLaMismaHistoriaIndicadaDosVecesCuentaUnaSolaVez(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3)
+
+	if err := project.CloseSprint([]int{1, 1}, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("se esperaba cerrar el sprint sin error, salio: %v", err)
+	}
+
+	if got := fmt.Sprint(sprint.CompletedStories()); got != "[1]" {
+		t.Fatalf("se esperaba una sola historia completada, salieron %s", got)
+	}
+	if got := estadoDe(t, project, 1); got != StoryDone {
+		t.Fatalf("se esperaba la historia 1 Terminada, quedo en %v", got)
+	}
+}
