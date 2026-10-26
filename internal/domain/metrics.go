@@ -193,6 +193,14 @@ func (p *Project) ProjectMetrics() Metrics {
 	for _, effort := range p.efforts {
 		scope.actualHours += effort.hours
 	}
+	// las completadas son las registradas como completadas en algún sprint cerrado, con los
+	// puntos que tenían al cerrarlo; una historia Terminada no vuelve a un sprint, así que
+	// cuenta una sola vez (RN-9)
+	for _, sprint := range p.sprints {
+		for _, id := range sprint.completedStories {
+			scope.completedPoints = append(scope.completedPoints, sprint.pointsAtClose[id])
+		}
+	}
 	for _, defect := range p.defects {
 		scope.defectsDetected++
 		if defect.state == DefectResolved {
