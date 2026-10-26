@@ -91,4 +91,81 @@ func TestCargarUnDefectoPasarloAEnCursoYResolverlo(t *testing.T) {
 	if n := len(project.DefectsByState(domain.DefectInProgress)); n != 1 || saver.saves != 2 {
 		t.Errorf("se esperaba un defecto En curso y dos guardados, hay %d y %d", n, saver.saves)
 	}
+
+	// Resolverlo: el sprint se elige de la lista y se pide confirmar, porque no se deshace.
+	html = navegador.get("/proyectos/1/defectos/1").Body.String()
+	if got := options(html, "sprint"); !slices.Equal(got, []string{"1", "2"}) {
+		t.Errorf("se esperaba elegir el sprint de resolucion entre 1 y 2, salio %v", got)
+	}
+	html = navegador.get("/proyectos/1/defectos/1/resolver?sprint=2").Body.String()
+	if !strings.Contains(html, "¿Resolver el defecto 1 en el sprint 2?") {
+		t.Fatalf("se esperaba la pregunta para confirmar, y no esta en:\n%s", html)
+	}
+	res = navegador.post("/proyectos/1/defectos/1/resolver", url.Values{"sprint": {"2"}})
+	if res.Code != http.StatusSeeOther || res.Header().Get("Location") != "/proyectos/1/defectos/1" {
+		t.Fatalf("se esperaba volver al defecto 1 con el estado %d, salio %d hacia %q:\n%s", http.StatusSeeOther, res.Code, res.Header().Get("Location"), res.Body.String())
+	}
+	html = joinTags(between(navegador.get("/proyectos/1/defectos/1").Body.String(), "<main", "</main>"))
+	for _, texto := range []string{"Se resolvió el defecto 1 en el sprint 2", "<dt>Estado</dt><dd>Resuelto</dd>", "<dt>Resuelto en</dt><dd>Sprint 2</dd>"} {
+		if !strings.Contains(html, texto) {
+			t.Errorf("se esperaba en el defecto resuelto %q, y no esta en:\n%s", texto, html)
+		}
+	}
+	// Un resuelto ya no ofrece cambiar su estado ni resolverlo.
+	for _, accion := range []string{`action="/proyectos/1/defectos/1/estado"`, `action="/proyectos/1/defectos/1/resolver"`} {
+		if strings.Contains(html, accion) {
+			t.Errorf("un defecto resuelto no deberia ofrecer %s:\n%s", accion, html)
+		}
+	}
+}
+
+// Esquema del escenario: Confirmar o cancelar antes de lo que no se deshace (resolver)
+// Cubre: RN-9
+func TestConfirmarOCancelarAntesDeResolverUnDefecto(t *testing.T) {
+	for _, confirmo := range []bool{true, false} {
+		nombre := map[bool]string{true: "confirmo", false: "cancelo"}[confirmo]
+		t.Run(nombre, func(t *testing.T) {
+			// Dado el sprint 1 abierto y el defecto 1 Abierto.
+			registry := domain.NewProjectRegistry()
+			project := addProject(t, registry, "Sistema de metricas")
+			addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			addSprint(t, registry, 1)
+			if _, err := project.AddDefect(domain.DefectData{Title: "Suma mal las horas", Description: "No suma el ultimo",
+				Severity: domain.SeverityMajor, StoryID: 1, DetectedIn: 1}); err != nil {
+				t.Fatalf("no se pudo preparar el defecto: %v", err)
+			}
+			saver := &fakeSaver{}
+			navegador := newBrowser(t, NewServer(registry, saver, testToday))
+			antes := snapshot(registry)
+
+			// Pedir resolverlo no resuelve nada: muestra la confirmacion.
+			res := navegador.get("/proyectos/1/defectos/1/resolver?sprint=1")
+			if res.Code != http.StatusOK {
+				t.Fatalf("se esperaba la confirmacion con el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			confirmacion := between(res.Body.String(), "<main", "</main>")
+			for _, texto := range []string{`action="/proyectos/1/defectos/1/resolver"`, `href="/proyectos/1/defectos/1"`, `name="sprint" value="1"`} {
+				if !strings.Contains(confirmacion, texto) {
+					t.Errorf("se esperaba en la confirmacion %s, y no esta en:\n%s", texto, confirmacion)
+				}
+			}
+			if despues := snapshot(registry); despues != antes {
+				t.Fatalf("pedir que se resuelva no deberia cambiar nada, y el registro paso de:\n%s\na:\n%s", antes, despues)
+			}
+
+			if confirmo {
+				navegador.post("/proyectos/1/defectos/1/resolver", url.Values{"sprint": {"1"}})
+			} else {
+				navegador.get("/proyectos/1/defectos/1")
+			}
+
+			quiero := map[bool]string{true: "<td>Resuelto</td>", false: "<td>Abierto</td>"}[confirmo]
+			if html := navegador.get("/proyectos/1/defectos").Body.String(); !strings.Contains(html, quiero) {
+				t.Errorf("se esperaba el defecto 1 con %s, y no esta en:\n%s", quiero, html)
+			}
+			if !confirmo && (snapshot(registry) != antes || saver.saves != 0) {
+				t.Errorf("cancelar no deberia cambiar nada")
+			}
+		})
+	}
 }
