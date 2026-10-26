@@ -268,7 +268,7 @@ func TestDiferenciasNuevaRondaYAcuerdo(t *testing.T) {
 	if strings.Contains(html, `/rondas/2/acordar"`) {
 		t.Errorf("una ronda acordada no deberia ofrecer acordar otra vez:\n%s", html)
 	}
-	if backlog := joinTags(navegador.get("/proyectos/1/backlog").Body.String()); !strings.Contains(backlog, "Registrar esfuerzo</a></td><td>5</td>") {
+	if backlog := joinTags(navegador.get("/proyectos/1/backlog").Body.String()); !strings.Contains(backlog, "Registrar esfuerzo</a></td><td>Alta</td><td>Pendiente</td><td>5</td>") {
 		t.Errorf("se esperaba la historia 1 con 5 story points en el backlog:\n%s", backlog)
 	}
 

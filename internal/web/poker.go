@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
@@ -85,22 +86,35 @@ func (s *Server) openRound(w http.ResponseWriter, r *http.Request) {
 	s.done(w, r, fmt.Sprintf("Se abrió la ronda %d de la historia %d", round.Number(), round.StoryID()), roundPath(project.ID(), round))
 }
 
-// findRound busca el proyecto, la historia y la ronda de la direccion. La ronda se vuelve a
-// encontrar con la consulta del nucleo para eso (CurrentVotingRound, #13).
-func (s *Server) findRound(r *http.Request) (*domain.Project, *domain.Story, *domain.VotingRound, error) {
+// findRound busca el proyecto, la historia y la ronda de la direccion entre las rondas de la
+// historia (VotingRounds, #73), asi tambien se ven las anteriores. Devuelve ademas si es la
+// ultima, la unica sobre la que se puede acordar.
+func (s *Server) findRound(r *http.Request) (*domain.Project, *domain.Story, *domain.VotingRound, bool, error) {
 	project, story, err := s.findStory(r)
 	if err != nil {
-		return project, nil, nil, err
+		return project, nil, nil, false, err
 	}
 	n, _ := strconv.Atoi(r.PathValue("r"))
-	round, ok, err := project.CurrentVotingRound(story.ID())
+	rounds, err := project.VotingRounds(story.ID())
 	if err != nil {
-		return project, story, nil, err
+		return project, story, nil, false, err
 	}
-	if !ok || round.Number() != n {
-		return project, story, nil, errRoundNotFound
+	for i, round := range rounds {
+		if round.Number() == n {
+			return project, story, round, i == len(rounds)-1, nil
+		}
 	}
-	return project, story, round, nil
+	return project, story, nil, false, errRoundNotFound
+}
+
+// differencesText arma la frase de las diferencias de una ronda revelada tal como las
+// informa el nucleo: el voto mas bajo y el mas alto con quienes los dieron (RN-8).
+func differencesText(d domain.Differences) string {
+	if !d.HasDifferences {
+		return fmt.Sprintf("No hay diferencias: todos votaron %d.", d.Lowest.Points)
+	}
+	return fmt.Sprintf("Hay diferencias: el más bajo es %d, de %s, y el más alto es %d, de %s.",
+		d.Lowest.Points, strings.Join(d.Lowest.Members, " y "), d.Highest.Points, strings.Join(d.Highest.Members, " y "))
 }
 
 // roundPage es lo que muestra la pagina de una ronda. Antes de revelar, solo lo que el
@@ -113,16 +127,25 @@ type roundPage struct {
 	Pending   []string
 	// Participants es cuantos participan: los que votaron mas los que faltan.
 	Participants int
-	// Votes son los votos con su integrante, que el nucleo entrega recien al revelar.
-	Votes  []domain.Vote
+	// Votes son los votos con su integrante, que el nucleo entrega recien al revelar, y
+	// Differences la frase que los compara.
+	Votes       []domain.Vote
+	Differences string
+	// Last dice si es la ultima ronda de la historia: solo sobre esa se acuerda (#73).
+	Last   bool
 	Points []string
 	Form   *form
 }
 
 // renderRound muestra la pagina de una ronda.
-func (s *Server) renderRound(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, story *domain.Story, round *domain.VotingRound, f *form) {
-	// Antes de revelar, Votes responde con un error y no hay votos que mostrar (D2).
+func (s *Server) renderRound(w http.ResponseWriter, r *http.Request, status int, project *domain.Project, story *domain.Story, round *domain.VotingRound, last bool, f *form) {
+	// Antes de revelar, Votes y Differences responden con un error y no hay nada que mostrar
+	// (D2).
 	votes, _ := round.Votes()
+	var differences string
+	if d, err := round.Differences(); err == nil {
+		differences = differencesText(d)
+	}
 	s.render(w, r, status, "ronda.html", page{
 		Title:   fmt.Sprintf("Ronda %d de la historia %d", round.Number(), story.ID()),
 		Project: project,
@@ -135,6 +158,8 @@ func (s *Server) renderRound(w http.ResponseWriter, r *http.Request, status int,
 			Pending:      round.Pending(),
 			Participants: len(round.Voted()) + len(round.Pending()),
 			Votes:        votes,
+			Differences:  differences,
+			Last:         last,
 			Points:       pointOptions(),
 			Form:         f,
 		},
@@ -143,18 +168,18 @@ func (s *Server) renderRound(w http.ResponseWriter, r *http.Request, status int,
 
 // showRound muestra una ronda de una historia.
 func (s *Server) showRound(w http.ResponseWriter, r *http.Request) {
-	project, story, round, err := s.findRound(r)
+	project, story, round, last, err := s.findRound(r)
 	if err != nil {
 		s.notFound(w, r, project, err)
 		return
 	}
-	s.renderRound(w, r, http.StatusOK, project, story, round, newForm())
+	s.renderRound(w, r, http.StatusOK, project, story, round, last, newForm())
 }
 
 // vote registra el voto elegido y vuelve a la ronda con 303. El mensaje nombra a quien voto
 // y no lleva el valor (RN-5).
 func (s *Server) vote(w http.ResponseWriter, r *http.Request) {
-	project, story, round, err := s.findRound(r)
+	project, story, round, last, err := s.findRound(r)
 	if err != nil {
 		s.notFound(w, r, project, err)
 		return
@@ -163,7 +188,7 @@ func (s *Server) vote(w http.ResponseWriter, r *http.Request) {
 	points := f.number("puntos", errInvalidPoints)
 	if f.hasErrors() {
 		f.Values["puntos"] = ""
-		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, f)
+		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, last, f)
 		return
 	}
 	if err := round.Vote(f.Values["integrante"], points); err != nil {
@@ -171,7 +196,7 @@ func (s *Server) vote(w http.ResponseWriter, r *http.Request) {
 		// de quien este mirando (RN-6, D3). Es la unica excepcion a volver con lo escrito.
 		f.Values["puntos"] = ""
 		f.reject(err)
-		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, f)
+		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, last, f)
 		return
 	}
 	s.done(w, r, "Se registró el voto de "+f.Values["integrante"], roundPath(project.ID(), round))
@@ -180,7 +205,7 @@ func (s *Server) vote(w http.ResponseWriter, r *http.Request) {
 // reveal revela la ronda y vuelve a ella con 303. Si faltan votos, el rechazo no es de
 // ningun campo y va arriba (RN-2).
 func (s *Server) reveal(w http.ResponseWriter, r *http.Request) {
-	project, story, round, err := s.findRound(r)
+	project, story, round, last, err := s.findRound(r)
 	if err != nil {
 		s.notFound(w, r, project, err)
 		return
@@ -188,8 +213,56 @@ func (s *Server) reveal(w http.ResponseWriter, r *http.Request) {
 	if err := round.Reveal(); err != nil {
 		f := newForm()
 		f.reject(err)
-		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, f)
+		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, last, f)
 		return
 	}
 	s.done(w, r, fmt.Sprintf("Se reveló la ronda %d de la historia %d", round.Number(), story.ID()), roundPath(project.ID(), round))
+}
+
+// agree registra la estimacion acordada de la ronda y vuelve a ella con 303 (#73). Si el
+// dominio la rechaza, vuelve a mostrar la ronda con el mensaje: junto a los story points si
+// es de la escala, arriba si es de la ronda.
+func (s *Server) agree(w http.ResponseWriter, r *http.Request) {
+	project, story, round, last, err := s.findRound(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	f := readForm(r, "puntos")
+	points := f.number("puntos", errInvalidPoints)
+	if f.hasErrors() {
+		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, last, f)
+		return
+	}
+	if err := round.Agree(points); err != nil {
+		f.reject(err)
+		s.renderRound(w, r, http.StatusUnprocessableEntity, project, story, round, last, f)
+		return
+	}
+	s.done(w, r, fmt.Sprintf("Se acordó la historia %d en %d story points", story.ID(), points), roundPath(project.ID(), round))
+}
+
+// listRounds muestra las rondas de una historia, en orden, con su acuerdo si lo tienen (#73).
+func (s *Server) listRounds(w http.ResponseWriter, r *http.Request) {
+	project, story, err := s.findStory(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	rounds, err := project.VotingRounds(story.ID())
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	data := struct {
+		ProjectID int
+		Story     *domain.Story
+		Rounds    []*domain.VotingRound
+	}{ProjectID: project.ID(), Story: story, Rounds: rounds}
+	s.render(w, r, http.StatusOK, "rondas.html", page{
+		Title:   fmt.Sprintf("Rondas de la historia %d", story.ID()),
+		Project: project,
+		Section: "planning-poker",
+		Data:    data,
+	})
 }
