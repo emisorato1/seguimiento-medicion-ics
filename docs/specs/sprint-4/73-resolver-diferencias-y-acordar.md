@@ -3,7 +3,7 @@
 - **Historia:** #73
 - **Sprint:** 4
 - **Responsable:** Maximiliano Eula
-- **Estado:** Implementada — **en review**. Adelantada al Sprint 3 con la regla del 21/10 de CLAUDE.md
+- **Estado:** Terminada en el Sprint 3 — **mergeada a `dev`** el 26/10 (PR #148, con el arreglo del defecto #156 en el #157). Adelantada al Sprint 3 con la regla del 21/10 de CLAUDE.md
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. Revisado por el responsable el 22/10: decidió los

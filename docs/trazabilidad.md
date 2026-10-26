@@ -33,11 +33,11 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#8 Crear un sprint con su Sprint Goal](#8-crear-un-sprint-con-su-sprint-goal) | 17 | 17 | 0 | 0 |
 | [#9 Asignar historias a un sprint](#9-asignar-historias-a-un-sprint) | 14 | 14 | 0 | 0 |
 | [#14 Registrar el esfuerzo real](#14-registrar-el-esfuerzo-real) | 19 | 19 | 0 | 2 |
-| [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 2 |
-| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 7 |
+| [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 3 |
+| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 8 |
 | [#10 Cerrar un sprint](#10-cerrar-un-sprint) | 14 | 14 | 0 | 0 |
 | [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
-| [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 12 | 4 | 2 |
+| [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 16 | 0 | 2 |
 | [#73 Resolver diferencias y acordar la estimación](#73-resolver-diferencias-y-acordar-la-estimación) | 13 | 13 | 0 | 0 |
 
 ## Qué dice el historial de TDD
@@ -47,7 +47,7 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 228 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 234 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
 | `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 38 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 14 |
@@ -534,8 +534,8 @@ cinco casos posibles:
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:562](../internal/domain/registry_json_test.go#L562) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
-| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:588](../internal/domain/registry_json_test.go#L588) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
+| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:568](../internal/domain/registry_json_test.go#L568) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
+| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:594](../internal/domain/registry_json_test.go#L594) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
 
 ## #15 Gestionar defectos
 
@@ -584,12 +584,13 @@ cinco casos posibles:
 | [Los defectos de un proyecto no aparecen en otro](specs/sprint-2/15-gestionar-defectos.md?plain=1#L330) | `TestLosDefectosDeUnProyectoNoAparecenEnOtro` [defect_test.go:488](../internal/domain/defect_test.go#L488) | el que ya estaba | `f686721` (sin RED: ya pasaba) |
 | [Operar sobre algo que no existe](specs/sprint-2/15-gestionar-defectos.md?plain=1#L336) | `TestOperarSobreAlgoQueNoExisteConDefectos` [defect_test.go:528](../internal/domain/defect_test.go#L528) | ⚠️ no se encontró el commit del test | — |
 
-**Tests que no citan un escenario de la Fase 1 (2).**
+**Tests que no citan un escenario de la Fase 1 (3).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
 | `TestUnaSeveridadQueNoExisteSeMuestraSinSeveridad` [defect_test.go:197](../internal/domain/defect_test.go#L197) | RN-6 | el que ya estaba | `9e53b08` (sin RED: ya pasaba) |
 | `TestRechazarUnEstadoQueNoExiste` [defect_test.go:328](../internal/domain/defect_test.go#L328) | RN-9, RN-18 | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go) | `90b1696` → `e06e055` |
+| `TestConvertirElTextoEnUnEstadoDeDefecto` [defect_test.go:589](../internal/domain/defect_test.go#L589) | RN-9, RN-10 | [defect.go](../internal/domain/defect.go), [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `d92cfbd` → `809a617` |
 
 ## #77 Interfaz web: proyectos, integrantes y backlog
 
@@ -641,13 +642,14 @@ cinco casos posibles:
 | [Dos pestanas a la vez](specs/sprint-2/77-interfaz-web-base.md?plain=1#L276) | `TestDosPestanasALaVez` [server_test.go:974](../internal/web/server_test.go#L974) | [server.go](../internal/web/server.go) | `4c925e3` → `1e7a4b1` |
 | [Usar la pagina en un celular y con el teclado](specs/sprint-2/77-interfaz-web-base.md?plain=1#L281) | `TestUsarLaPaginaEnUnCelularYConElTeclado` [server_test.go:1035](../internal/web/server_test.go#L1035) | [historia-form.html](../internal/web/templates/historia-form.html) | `4ab0d49` → `add6a34` |
 
-**Tests que no citan un escenario de la Fase 1 (7).**
+**Tests que no citan un escenario de la Fase 1 (8).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
 | `TestListarLosProyectosDeUnRegistroVacio` [project_registry_test.go:7](../internal/domain/project_registry_test.go#L7) | dependencia de la #77, RN-7 y RN-23 (la lista vacía no es un error) | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
-| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:536](../internal/domain/registry_json_test.go#L536) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:542](../internal/domain/registry_json_test.go#L542) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestUnaRondaReveladaSinParticipantesNoSeCarga` [registry_json_test.go:626](../internal/domain/registry_json_test.go#L626) | #77 RN-24, RN-6 de la #13 | [registry_json.go](../internal/domain/registry_json.go) | `684fcb2` → `87264b3` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
@@ -766,18 +768,18 @@ cinco casos posibles:
 
 | Escenario BDD | Test | Código | RED → GREEN |
 |---|---|---|---|
-| [Metricas de un sprint cerrado](specs/sprint-3/16-calcular-metricas.md?plain=1#L171) | `TestMetricasDeUnSprintCerrado` [metrics_test.go:124](../internal/domain/metrics_test.go#L124) | [metrics.go](../internal/domain/metrics.go) | `11f3554` → `fff2a46` |
-| ⚠️ [Una historia que volvio al backlog cuenta como completada solo donde se completo](specs/sprint-3/16-calcular-metricas.md?plain=1#L183) | **sin test** | | |
-| ⚠️ [Los puntos de un sprint cerrado no cambian si se reestima una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L191) | **sin test** | | |
-| [Las horas de una historia que paso por dos sprints cuentan en el ultimo](specs/sprint-3/16-calcular-metricas.md?plain=1#L198) | `TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo` [metrics_test.go:170](../internal/domain/metrics_test.go#L170) | [metrics.go](../internal/domain/metrics.go) | `cc515ff` → `b48e2be` |
-| [Las metricas de un sprint abierto son parciales](specs/sprint-3/16-calcular-metricas.md?plain=1#L206) | `TestLasMetricasDeUnSprintAbiertoSonParciales` [metrics_test.go:250](../internal/domain/metrics_test.go#L250) | el que ya estaba | `1909bb4` (sin RED: ya pasaba) |
+| [Metricas de un sprint cerrado](specs/sprint-3/16-calcular-metricas.md?plain=1#L171) | `TestMetricasDeUnSprintCerrado` [metrics_test.go:122](../internal/domain/metrics_test.go#L122) | [metrics.go](../internal/domain/metrics.go) | `11f3554` → `fff2a46` |
+| [Una historia que volvio al backlog cuenta como completada solo donde se completo](specs/sprint-3/16-calcular-metricas.md?plain=1#L183) | `TestUnaHistoriaQueVolvioAlBacklogCuentaComoCompletadaSoloDondeSeCompleto` [metrics_test.go:428](../internal/domain/metrics_test.go#L428) | [metrics.go](../internal/domain/metrics.go) | `9bacc10` → `8597d88` |
+| [Los puntos de un sprint cerrado no cambian si se reestima una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L191) | `TestLosPuntosDeUnSprintCerradoNoCambianSiSeReestimaUnaHistoria` [metrics_test.go:464](../internal/domain/metrics_test.go#L464) | [metrics.go](../internal/domain/metrics.go) | `b6808c6` → `033613d` |
+| [Las horas de una historia que paso por dos sprints cuentan en el ultimo](specs/sprint-3/16-calcular-metricas.md?plain=1#L198) | `TestLasHorasDeUnaHistoriaQuePasoPorDosSprintsCuentanEnElUltimo` [metrics_test.go:174](../internal/domain/metrics_test.go#L174) | [metrics.go](../internal/domain/metrics.go) | `cc515ff` → `b48e2be` |
+| [Las metricas de un sprint abierto son parciales](specs/sprint-3/16-calcular-metricas.md?plain=1#L206) | `TestLasMetricasDeUnSprintAbiertoSonParciales` [metrics_test.go:254](../internal/domain/metrics_test.go#L254) | el que ya estaba | `1909bb4` (sin RED: ya pasaba) |
 | [Sin datos cargados las metricas valen cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L214) | `TestSinDatosCargadosLasMetricasValenCero` [metrics_test.go:53](../internal/domain/metrics_test.go#L53) | [metrics.go](../internal/domain/metrics.go) | `7f4a880` → `0faa0aa` |
-| [Calcular la desviacion de horas](specs/sprint-3/16-calcular-metricas.md?plain=1#L225) | `TestCalcularLaDesviacionDeHoras` [metrics_test.go:210](../internal/domain/metrics_test.go#L210) | [metrics.go](../internal/domain/metrics.go) | `7bab460` → `96ed50e` |
-| ⚠️ [Calcular el porcentaje de historias completas](specs/sprint-3/16-calcular-metricas.md?plain=1#L238) | **sin test** | | |
-| [Defectos detectados y resueltos de cada sprint](specs/sprint-3/16-calcular-metricas.md?plain=1#L250) | `TestDefectosDetectadosYResueltosDeCadaSprint` [metrics_test.go:276](../internal/domain/metrics_test.go#L276) | [metrics.go](../internal/domain/metrics.go) | `b6806d0` → `81328ca` |
-| [Metricas del proyecto entero](specs/sprint-3/16-calcular-metricas.md?plain=1#L259) | `TestMetricasDelProyectoEntero` [metrics_test.go:319](../internal/domain/metrics_test.go#L319) | [metrics.go](../internal/domain/metrics.go) | `a03372b` → `d8b461e` |
-| ⚠️ [Velocidad del proyecto](specs/sprint-3/16-calcular-metricas.md?plain=1#L271) | **sin test** | | |
-| [Las metricas reflejan los datos cargados despues](specs/sprint-3/16-calcular-metricas.md?plain=1#L282) | `TestLasMetricasReflejanLosDatosCargadosDespues` [metrics_test.go:363](../internal/domain/metrics_test.go#L363) | el que ya estaba | `771ffff` (sin RED: ya pasaba) |
+| [Calcular la desviacion de horas](specs/sprint-3/16-calcular-metricas.md?plain=1#L225) | `TestCalcularLaDesviacionDeHoras` [metrics_test.go:214](../internal/domain/metrics_test.go#L214) | [metrics.go](../internal/domain/metrics.go) | `7bab460` → `96ed50e` |
+| [Calcular el porcentaje de historias completas](specs/sprint-3/16-calcular-metricas.md?plain=1#L238) | `TestCalcularElPorcentajeDeHistoriasCompletas` [metrics_test.go:485](../internal/domain/metrics_test.go#L485) | [metrics.go](../internal/domain/metrics.go) | `b27a92c` → `0afff9a` |
+| [Defectos detectados y resueltos de cada sprint](specs/sprint-3/16-calcular-metricas.md?plain=1#L250) | `TestDefectosDetectadosYResueltosDeCadaSprint` [metrics_test.go:280](../internal/domain/metrics_test.go#L280) | [metrics.go](../internal/domain/metrics.go) | `b6806d0` → `81328ca` |
+| [Metricas del proyecto entero](specs/sprint-3/16-calcular-metricas.md?plain=1#L259) | `TestMetricasDelProyectoEntero` [metrics_test.go:320](../internal/domain/metrics_test.go#L320) | [metrics.go](../internal/domain/metrics.go) | `a03372b` → `d8b461e` |
+| [Velocidad del proyecto](specs/sprint-3/16-calcular-metricas.md?plain=1#L271) | `TestVelocidadDelProyecto` [metrics_test.go:527](../internal/domain/metrics_test.go#L527) | [metrics.go](../internal/domain/metrics.go) | `9816638` → `ff6e1be` |
+| [Las metricas reflejan los datos cargados despues](specs/sprint-3/16-calcular-metricas.md?plain=1#L282) | `TestLasMetricasReflejanLosDatosCargadosDespues` [metrics_test.go:383](../internal/domain/metrics_test.go#L383) | el que ya estaba | `771ffff` (sin RED: ya pasaba) |
 | [Cargar y reemplazar las horas estimadas de una historia](specs/sprint-3/16-calcular-metricas.md?plain=1#L289) | `TestCargarYReemplazarLasHorasEstimadasDeUnaHistoria` [story_hours_test.go:18](../internal/domain/story_hours_test.go#L18) | [story.go](../internal/domain/story.go), [story_hours.go](../internal/domain/story_hours.go) | `56ff0bc` → `7e4e3b8` |
 | [Rechazar horas estimadas que no son mayores que cero](specs/sprint-3/16-calcular-metricas.md?plain=1#L295) | `TestRechazarHorasEstimadasQueNoSonMayoresQueCero` [story_hours_test.go:46](../internal/domain/story_hours_test.go#L46) | [errors.go](../internal/domain/errors.go), [story_hours.go](../internal/domain/story_hours.go) | `eb4ad3d` → `e636a5c` |
 | [No cambiar las horas estimadas de una historia terminada](specs/sprint-3/16-calcular-metricas.md?plain=1#L307) | `TestNoCambiarLasHorasEstimadasDeUnaHistoriaTerminada` [story_hours_test.go:79](../internal/domain/story_hours_test.go#L79) | [story_hours.go](../internal/domain/story_hours.go) | `4d24c31` → `9d00e6f` |

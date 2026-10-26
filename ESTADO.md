@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 12:26. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 12:39. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,19 +10,16 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 16
+- Terminadas: 18
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
+_No hay historias en este estado._
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 
 ## Lista para implementar
@@ -65,18 +62,20 @@ _No hay historias en este estado._
 | #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
+| #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
 
 ## Ultimos commits
 
 ```
-aaaee3a 2026-10-26 Merge pull request #148 from emisorato1/historia-73-acordar-estimacion
-e467f02 2026-10-26 Merge pull request #150 from emisorato1/historia-10-cerrar-sprint
-23c3899 2026-10-26 Merge pull request #145 from emisorato1/horas-15-y-punto-de-control
-6da7bec 2026-10-26 docs: la historia 10 implementada, con su fase 4 y su fila del indice
-b888fd5 2026-10-26 feat: al cargar se rechazan los datos del cierre incoherentes (historia 10, tarea 15)
-cdd11ed 2026-10-26 test: al cargar se rechazan los datos del cierre incoherentes (historia 10, tarea 15)
-52361c0 2026-10-26 feat: los datos del cierre entran en la conversion del registro (historia 10, tarea 14)
-0e9d002 2026-10-26 test: un sprint cerrado sigue igual al cerrar y volver a abrir (historia 10, tarea 14)
+f6889fe 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con la historia 16 terminada y el defecto 156 resuelto
+057baeb 2026-10-26 docs: la historia 16 terminada en su spec y el indice
+28f418c 2026-10-26 Merge pull request #157 from emisorato1/defecto-ronda-sin-participantes
+4dc72ef 2026-10-26 Merge pull request #151 from emisorato1/historia-16-parte-3
+365fadb 2026-10-26 docs: el defecto #156 en la fase 4 de la historia 73
+87264b3 2026-10-26 fix: la carga rechaza una ronda sin participantes, con uno sin nombre o repetido (defecto #156)
+684fcb2 2026-10-26 test: una ronda sin participantes, con uno sin nombre o repetido no se carga (defecto #156)
+1549f0c 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-16-parte-3
 ```

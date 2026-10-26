@@ -3,7 +3,7 @@
 - **Historia:** #16
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Implementada — **en review** (las 16 tareas). Puertas aprobadas y ratificadas por Juliana Bustos (20/10)
+- **Estado:** Terminada en el Sprint 3 — **mergeada a `dev`** el 26/10 (PRs #81, #140 y #151). Puertas aprobadas y ratificadas por Juliana Bustos (20/10)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #8, #9 y #10 (los sprints, lo comprometido y lo completado), #11 (buscar un
   sprint por su número), #12 (los story points), #14 (las horas reales) y #15 (los defectos).
