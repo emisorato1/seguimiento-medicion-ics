@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"slices"
 	"strings"
 	"testing"
@@ -71,8 +72,12 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
 	}
 	closed.state = SprintClosed
-	// el sprint 1 tuvo la historia Terminada en su Sprint Backlog (#9); cerrarlo es de la #10
+	// el sprint 1 tuvo la historia Terminada en su Sprint Backlog (#9), y la completo al
+	// cerrar: los datos del cierre son de la #10, que los suma a la conversion
 	closed.stories = []int{done.ID()}
+	closed.closedOn = unDia(2026, 10, 14)
+	closed.completedStories = []int{done.ID()}
+	closed.pointsAtClose = map[int]int{done.ID(): 3}
 	if _, err := first.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 10, 15), End: unDia(2026, 10, 28)}); err != nil {
 		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
 	}
@@ -208,6 +213,16 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 				if gotStories[k] != wantStories[k] {
 					t.Fatalf("sprint %d: se esperaba el Sprint Backlog %v, salio %v", ws.Number(), wantStories, gotStories)
 				}
+			}
+		}
+		for j, ws := range wantSprints {
+			gs := gotSprints[j]
+			// los datos del cierre de la #10
+			if !gs.ClosedOn().Equal(ws.ClosedOn()) || fmt.Sprint(gs.CompletedStories()) != fmt.Sprint(ws.CompletedStories()) ||
+				fmt.Sprint(gs.PointsAtClose()) != fmt.Sprint(ws.PointsAtClose()) {
+				t.Fatalf("sprint %d: se esperaba el cierre del %v con %v y los puntos %v, salio %v con %v y %v",
+					ws.Number(), ws.ClosedOn(), ws.CompletedStories(), ws.PointsAtClose(),
+					gs.ClosedOn(), gs.CompletedStories(), gs.PointsAtClose())
 			}
 		}
 		if g.lastSprintNumber != w.lastSprintNumber {
