@@ -453,7 +453,7 @@ func defectFromJSON(project *Project, dj defectJSON) (*Defect, error) {
 	if err != nil {
 		return nil, err
 	}
-	state, err := parseDefectState(dj.State)
+	state, err := ParseDefectState(dj.State)
 	if err != nil {
 		return nil, err
 	}

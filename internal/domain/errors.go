@@ -59,6 +59,9 @@ var (
 	// ErrDefectNotFound: cambiarle el estado o resolver un defecto que no existe en el
 	// proyecto (historia #15, RN-19).
 	ErrDefectNotFound = errors.New("no se encontró el defecto")
+	// ErrDefectStateUnknown: un texto que no es Abierto, En curso ni Resuelto (historia #15,
+	// agregado pedido por la #78).
+	ErrDefectStateUnknown = errors.New("el estado debe ser Abierto, En curso o Resuelto")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.
