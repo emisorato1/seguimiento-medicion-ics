@@ -181,3 +181,29 @@ func TestAsignarYQuitarHistoriasDelSprintAbierto(t *testing.T) {
 		t.Errorf("se esperaba la historia 1 Pendiente, esta %v", story.State())
 	}
 }
+
+// Sin escenario: quitar del sprint una historia que no esta asignada vuelve a pedir confirmar
+// con el mensaje del nucleo, sin cambiar nada (RN-2; RN-10 y RN-13 de la #77).
+// Cubre: RN-2
+func TestQuitarDelSprintUnaHistoriaQueNoEstaAsignada(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := addProject(t, registry, "Sistema de metricas")
+	addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+	addSprint(t, registry, 1)
+	saver := &fakeSaver{}
+	navegador := newBrowser(t, NewServer(registry, saver, testToday))
+	antes := snapshot(registry)
+
+	res := navegador.post("/proyectos/1/sprints/quitar", url.Values{"historia": {"1"}})
+
+	if res.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+	}
+	html := res.Body.String()
+	if !strings.Contains(html, `id="error-formulario">`) || !strings.Contains(html, "¿Quitar la historia 1 del sprint 1?") {
+		t.Errorf("se esperaba la confirmacion otra vez con el mensaje del nucleo arriba:\n%s", html)
+	}
+	if snapshot(registry) != antes || saver.saves != 0 {
+		t.Errorf("no se esperaba ningun cambio")
+	}
+}

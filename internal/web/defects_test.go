@@ -210,20 +210,28 @@ func TestFiltrarLosDefectos(t *testing.T) {
 	}
 
 	casos := []struct {
-		filtro string
-		pagina string
-		veo    []string
-		noVeo  []string
+		filtro  string
+		pagina  string
+		veo     []string
+		noVeo   []string
+		mensaje string // el rechazo arriba de la lista, si el filtro no es de la lista
 	}{
-		{"el estado Abierto", "/proyectos/1/defectos?estado=Abierto", []string{"Suma mal las horas"}, []string{"No guarda el voto"}},
-		{"la severidad Menor", "/proyectos/1/defectos?severidad=Menor", []string{"No guarda el voto"}, []string{"Suma mal las horas"}},
-		{"nada", "/proyectos/1/defectos", []string{"Suma mal las horas", "No guarda el voto"}, nil},
+		{"el estado Abierto", "/proyectos/1/defectos?estado=Abierto", []string{"Suma mal las horas"}, []string{"No guarda el voto"}, ""},
+		{"la severidad Menor", "/proyectos/1/defectos?severidad=Menor", []string{"No guarda el voto"}, []string{"Suma mal las horas"}, ""},
+		{"nada", "/proyectos/1/defectos", []string{"Suma mal las horas", "No guarda el voto"}, nil, ""},
+		// No estan en los Ejemplos: un filtro que no es de la lista, escrito a mano en la
+		// direccion, lo rechaza el nucleo, y se ven todos con su mensaje arriba.
+		{"un estado que no existe", "/proyectos/1/defectos?estado=Cerrado", []string{"Suma mal las horas", "No guarda el voto"}, nil, domain.ErrDefectStateUnknown.Error()},
+		{"una severidad que no existe", "/proyectos/1/defectos?severidad=Leve", []string{"Suma mal las horas", "No guarda el voto"}, nil, domain.ErrDefectSeverityInvalid.Error()},
 	}
 	for _, caso := range casos {
 		t.Run(caso.filtro, func(t *testing.T) {
 			res := get(t, server, caso.pagina)
 			if res.Code != http.StatusOK {
 				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			if caso.mensaje != "" && !strings.Contains(res.Body.String(), `id="error-formulario">`+caso.mensaje) {
+				t.Errorf("se esperaba arriba el mensaje %q, y no esta en:\n%s", caso.mensaje, res.Body.String())
 			}
 			filas := between(res.Body.String(), "<tbody>", "</tbody>")
 			for _, titulo := range caso.veo {

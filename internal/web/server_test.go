@@ -719,6 +719,19 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			err:        domain.ErrEstimatedHoursInvalid,
 		},
 		{
+			// No esta en los Ejemplos: la historia que no existe la rechaza el nucleo (RN-2).
+			nombre: "abrir una ronda de una historia que no existe (#78)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario:   "/proyectos/1/planning-poker",
+			datos:        url.Values{"historia": {"99"}},
+			campo:        "historia",
+			err:          domain.ErrStoryNotFound,
+			fueraDeLista: []string{"historia"},
+		},
+		{
 			nombre:     "defecto con el titulo vacio (#78)",
 			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := defectRegistry(t); return registry },
 			formulario: "/proyectos/1/defectos/nuevo",
