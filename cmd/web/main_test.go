@@ -13,6 +13,7 @@ import (
 	"strings"
 	"syscall"
 	"testing"
+	"time"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/store"
@@ -333,4 +334,60 @@ func TestLaWebGuardaEnLaBase(t *testing.T) {
 	if err := os.Remove(path); err != nil {
 		t.Errorf("la base tenia que quedar cerrada al terminar, y no se pudo borrar: %v", err)
 	}
+}
+
+// Escenarios: Exportar e importar da los mismos datos / Traer los datos de la versión
+// anterior (con un archivo de prueba propio, no los datos de demo: Dependencias de la spec)
+// Cubre: #177 RN-7, RN-8
+func TestExportarEImportarDesdeElComando(t *testing.T) {
+	dir := t.TempDir()
+	base := filepath.Join(dir, "datos-ics.db")
+	archivo := filepath.Join(dir, "exportado.json")
+	registry := domain.NewProjectRegistry()
+	if _, err := registry.Create(domain.ProjectData{Name: "Sistema de métricas", Start: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)}); err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+	db, err := store.OpenDatabase(base)
+	if err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+	if err := db.Save(registry); err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+	db.Close()
+
+	t.Run("exportar escribe el archivo y termina sin abrir la web", func(t *testing.T) {
+		var out, errOut bytes.Buffer
+
+		code := run([]string{"-datos", base, "-exportar", archivo}, &out, &errOut, noServe(t))
+
+		if code != 0 || !strings.Contains(out.String(), "Se exportaron los datos a "+archivo) {
+			t.Errorf("se esperaba el codigo 0 y el aviso, salio %d:\n%s\n%s", code, out.String(), errOut.String())
+		}
+		leido, err := store.NewFile(archivo).Load()
+		if err != nil || len(leido.Projects()) != 1 {
+			t.Errorf("se esperaba el archivo con el proyecto, salio %v", err)
+		}
+	})
+
+	t.Run("importar trae el archivo a una base nueva y abre con sus datos", func(t *testing.T) {
+		var out, errOut bytes.Buffer
+		var proyectos string
+		serve := func(listener net.Listener, handler http.Handler) error {
+			listener.Close()
+			res := httptest.NewRecorder()
+			handler.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/proyectos", nil))
+			proyectos = res.Body.String()
+			return http.ErrServerClosed
+		}
+
+		run([]string{"-puerto", "0", "-datos", filepath.Join(dir, "nueva.db"), "-importar", archivo}, &out, &errOut, serve)
+
+		if !strings.Contains(out.String(), "Se importaron los datos de "+archivo) {
+			t.Errorf("se esperaba el aviso de la importacion, salio:\n%s\n%s", out.String(), errOut.String())
+		}
+		if !strings.Contains(proyectos, "Sistema de métricas") {
+			t.Errorf("se esperaba abrir con el proyecto importado, salio:\n%s", proyectos)
+		}
+	})
 }
