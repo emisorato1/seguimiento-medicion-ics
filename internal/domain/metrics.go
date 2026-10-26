@@ -207,5 +207,21 @@ func (p *Project) ProjectMetrics() Metrics {
 			scope.defectsResolved++
 		}
 	}
-	return scope.metrics()
+	m := scope.metrics()
+	// la velocidad del proyecto es el promedio de las velocidades de sus sprints cerrados,
+	// redondeado al entero más cercano con las mitades hacia arriba; sin ninguno cerrado, es
+	// cero (RN-10). Con enteros: (2*suma + n) / (2*n) redondea así sin pasar por decimales
+	closed, total := 0, 0
+	for _, sprint := range p.sprints {
+		if sprint.state == SprintClosed {
+			closed++
+			for _, id := range sprint.completedStories {
+				total += sprint.pointsAtClose[id]
+			}
+		}
+	}
+	if closed > 0 {
+		m.Velocity = (2*total + closed) / (2 * closed)
+	}
+	return m
 }
