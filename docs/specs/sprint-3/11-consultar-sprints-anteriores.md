@@ -69,8 +69,8 @@ cierre, las historias que se le asignaron y cuáles de ellas se completaron.
    traen sprints de ese proyecto.
 10. **[RN-10]** Si se pide el listado o el detalle de un proyecto que no existe, el sistema
     debe informar que no se encontró el proyecto.
-11. **[RN-11]** El sistema debe conservar los sprints cerrados mientras el programa esté
-    corriendo: cerrar un sprint nuevo no cambia ni borra los anteriores.
+11. **[RN-11]** Cuando se cierra un sprint nuevo, el sistema debe dejar sin cambios a los
+    sprints cerrados anteriores: no cambia ni borra nada de lo que registraron.
 
 ### Casos límite
 
@@ -167,9 +167,10 @@ Esquema del escenario: Pedir un sprint que no existe
     | -1     |
 
 Escenario: Consultar un sprint no lo modifica
-  Dado un proyecto cuyo sprint 1 se cerro con 2 historias asignadas
-  Cuando pido el detalle del sprint 1 y modifico la lista de historias que recibo
+  Dado un proyecto cuyo sprint 1 se cerro con 2 historias asignadas y 1 completada
+  Cuando pido el detalle del sprint 1 y modifico las listas de historias que recibo
   Entonces el sprint 1 sigue teniendo sus 2 historias asignadas
+  Y sigue registrando su historia completada
 
 Escenario: Cada proyecto lista solamente sus sprints
   Dado un proyecto A con su sprint 1 cerrado y un proyecto B con su sprint 1 cerrado
@@ -196,7 +197,10 @@ Escenario: Consultar los sprints de un proyecto que no existe
    las métricas vivan en una sola historia. Esta historia entrega lo que hace falta para
    calcularlos: las historias que se le asignaron a cada sprint y cuáles se completaron. Si
    el equipo prefiere ver los números sin esperar a la #16, hay que mover ese cálculo acá y
-   la #16 queda sin su primera mitad.
+   la #16 queda sin su primera mitad. **El segundo criterio de la issue** ("de cada sprint
+   se ven los story points planificados y los completados") **se cumple con la #16**, en su
+   escenario *Metricas de un sprint cerrado*: al cerrar esta issue, la trazabilidad de ese
+   criterio apunta ahí.
 2. **El detalle también se entrega del sprint abierto (RN-7).** Es el mismo dato y negarlo
    obligaría a la interfaz a usar dos caminos distintos para mostrar lo mismo. Lo que sí es
    solo de los cerrados es el **listado** (RN-2).
@@ -312,16 +316,18 @@ el nombre del escenario.
 - **La 9, la 10 y la 11 van al final** porque son las garantías de que consultar no rompe
   nada: ni el sprint que se devuelve, ni otro proyecto, ni los sprints anteriores.
 - **La 12 cierra** con el borde de afuera, el proyecto que no existe.
-- **La 4, la 7, la 9, la 10 y la 12 se espera que pasen sin código nuevo.** La consulta por
-  número, su error y la copia de las historias asignadas ya los trae la #8; un proyecto que
-  no existe lo informa el registro antes de llegar a sus sprints, igual que en la #8; y una
-  vez que existe el listado, cada proyecto solo tiene los suyos. Cada una va en un solo
-  commit de test con "sin RED" en el asunto, explicando por qué: forzar un RED sería simular
-  TDD.
-- **Mientras la #10 no esté en `dev`, el orden real cambia.** La 2, la 5, la 6, la 8 y la 11
-  necesitan la fecha de cierre o las historias completadas (ver Dependencias), así que se
-  hacen primero la 1, 3, 4, 7, 9, 10 y 12, y después la 2, 5, 6, 8 y 11. La 3 puede ir antes
-  que la 2 porque su escenario ya trae un sprint cerrado contra el cual probar el filtro.
+- **La 4, la 7, la 10 y la 12 se espera que pasen sin código nuevo.** La consulta por
+  número y su error ya los trae la #8; un proyecto que no existe lo informa el registro
+  antes de llegar a sus sprints, igual que en la #8; y una vez que existe el listado, cada
+  proyecto solo tiene los suyos. Cada una va en un solo commit de test con "sin RED" en el
+  asunto, explicando por qué: forzar un RED sería simular TDD. **La 9** prueba las dos
+  listas: la de asignadas ya sale copiada (#8), y la de completadas la entrega la #10; si
+  la #10 ya la entrega copiada, también va "sin RED".
+- **Mientras la #10 no esté en `dev`, el orden real cambia.** La 2, la 5, la 6, la 8, la 9 y
+  la 11 necesitan la fecha de cierre o las historias completadas (ver Dependencias), así que
+  se hacen primero la 1, 3, 4, 7, 10 y 12, y después la 2, 5, 6, 8, 9 y 11. La 3 puede ir
+  antes que la 2 porque su escenario ya trae un sprint cerrado contra el cual probar el
+  filtro.
 
 ### Cobertura
 
@@ -345,11 +351,11 @@ Los doce escenarios de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
-- **Todas las tareas necesitan los sprints de la #8**, que ya están en `dev`, y salvo la 1 y
-  la 8, **sprints cerrados**. El estado Cerrado los tests lo fijan dentro del paquete.
-- **Las tareas 2, 5, 6, 8 y 11 necesitan leer la fecha de cierre o las historias
-  completadas**, que trae la #10. Esas cinco esperan a que la #10 esté en `dev`; las otras
-  siete se pueden hacer antes.
+- **Todas las tareas necesitan los sprints de la #8**, que ya están en `dev`, y salvo la 1, la
+  8 y la 12, **sprints cerrados**. El estado Cerrado los tests lo fijan dentro del paquete.
+- **Las tareas 2, 5, 6, 8, 9 y 11 necesitan leer la fecha de cierre o las historias
+  completadas**, que trae la #10. Esas seis esperan a que la #10 esté en `dev`; las otras
+  seis se pueden hacer antes.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
