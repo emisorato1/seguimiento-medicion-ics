@@ -1,6 +1,9 @@
 package domain
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 // unSprintParaCerrar arma un proyecto con el sprint 1 abierto y una historia asignada por
 // cada valor de puntos, estimada con ese valor. Asignar es de la #9.
@@ -36,5 +39,38 @@ func TestDespuesDeCerrarSePuedeCrearElSprintSiguiente(t *testing.T) {
 	next, err := project.AddSprint(SprintData{Goal: "Seguir midiendo", Start: unDia(2026, 10, 31), End: unDia(2026, 11, 1)})
 	if err != nil || next.Number() != 2 {
 		t.Fatalf("se esperaba poder crear el sprint 2, salio %v (error: %v)", next, err)
+	}
+}
+
+// estadoDe devuelve el estado de la historia con ese identificador o corta el test.
+func estadoDe(t *testing.T, project *Project, id int) StoryState {
+	t.Helper()
+	story, err := project.Story(id)
+	if err != nil {
+		t.Fatalf("no se encontro la historia %d: %v", id, err)
+	}
+	return story.State()
+}
+
+// Escenario: Cerrar el sprint registrando que se completo y que no
+// Cubre: RN-1, RN-2, RN-3, RN-4
+func TestCerrarElSprintRegistrandoQueSeCompletoYQueNo(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3, 5, 2)
+
+	err := project.CloseSprint([]int{1, 2}, unDia(2026, 10, 25))
+
+	if err != nil {
+		t.Fatalf("se esperaba cerrar el sprint sin error, salio: %v", err)
+	}
+	if sprint.State() != SprintClosed || !sprint.ClosedOn().Equal(unDia(2026, 10, 25)) {
+		t.Fatalf("se esperaba el sprint Cerrado el 25/10/2026, quedo %v con fecha %v", sprint.State(), sprint.ClosedOn())
+	}
+	if got := fmt.Sprint(sprint.CompletedStories()); got != "[1 2]" {
+		t.Fatalf("se esperaban completadas las historias [1 2], salieron %s", got)
+	}
+	for id, want := range map[int]StoryState{1: StoryDone, 2: StoryDone, 3: StoryPending} {
+		if got := estadoDe(t, project, id); got != want {
+			t.Fatalf("se esperaba la historia %d en %v, quedo en %v", id, want, got)
+		}
 	}
 }
