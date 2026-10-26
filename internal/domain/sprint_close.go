@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // CloseSprint cierra el sprint abierto del proyecto con la fecha de cierre indicada (historia
 // #10, RN-1). El sprint que se cierra es siempre el abierto: por eso se le pide al proyecto, y
@@ -10,11 +13,15 @@ func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
 	// las completadas quedan registradas aparte de las asignadas (RN-2); las asignadas quedan
 	// Terminadas si se completaron y vuelven al Product Backlog como Pendientes si no (RN-3,
 	// RN-4)
-	// una historia indicada dos veces se registra una sola vez, en el orden en que apareció
-	// primero (RN-8)
+	// se revisa la lista entera antes de tocar una sola historia, así un cierre rechazado deja
+	// todo como estaba (RN-7, RN-13); una historia indicada dos veces se registra una sola
+	// vez, en el orden en que apareció primero (RN-8)
 	done := map[int]bool{}
 	unique := []int{}
 	for _, id := range completed {
+		if !sprint.hasStory(id) {
+			return fmt.Errorf("%w: la historia %d", ErrStoryNotInSprint, id)
+		}
 		if !done[id] {
 			unique = append(unique, id)
 		}
