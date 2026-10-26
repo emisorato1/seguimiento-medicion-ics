@@ -456,3 +456,32 @@ func TestLosParentesisYLasBarrasNoRompenElArchivo(t *testing.T) {
 		t.Errorf("se esperaba leer la linea tal cual, salio %v", textos)
 	}
 }
+
+// Escenario: Letras del castellano y caracteres que no se pueden representar
+// Cubre: RN-10
+func TestLetrasDelCastellanoYCaracteresQueNoSePuedenRepresentar(t *testing.T) {
+	cases := []struct {
+		contenido string
+		text      string
+		want      []byte
+	}{
+		{contenido: "tildes, enie, dieresis y signos de apertura", text: "áéíóú ñ ü ¿¡", want: []byte{0xE1, 0xE9, 0xED, 0xF3, 0xFA, ' ', 0xF1, ' ', 0xFC, ' ', 0xBF, 0xA1}},
+		// La raya no esta en Latin-1: en WinAnsi es el byte 0x97.
+		{contenido: "la raya larga del titulo del reporte de un sprint", text: "Reporte del sprint 1 — X", want: []byte("Reporte del sprint 1 \x97 X")},
+		{contenido: "un emoji", text: "ok 😀 ok", want: []byte("ok ? ok")},
+		{contenido: "un caracter de control de Latin-1", text: "a\u0085b", want: []byte("a?b")},
+	}
+	for _, c := range cases {
+		t.Run(c.contenido, func(t *testing.T) {
+			if got := encodeWinAnsi(c.text); !bytes.Equal(got, c.want) {
+				t.Errorf("se esperaba % X, salio % X", c.want, got)
+			}
+		})
+	}
+
+	doc := unDocChico()
+	textos := extraerTextos(buildPDF(layoutReport(doc)))
+	if textos[0].text != doc.title || textos[len(textos)-1].text != "Página 1 de 1" {
+		t.Errorf("se esperaba leer el titulo con su raya y el pie con su tilde, salio %q y %q", textos[0].text, textos[len(textos)-1].text)
+	}
+}
