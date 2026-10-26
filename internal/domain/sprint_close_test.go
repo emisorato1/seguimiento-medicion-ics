@@ -258,3 +258,44 @@ func TestCerrarElSprintDeUnProyectoQueNoExiste(t *testing.T) {
 		t.Fatalf("se esperaba ErrProjectNotFound, salio: %v", err)
 	}
 }
+
+// Escenario: Los puntos registrados al cerrar no cambian si se reestima la historia
+// Cubre: RN-16
+func TestLosPuntosRegistradosAlCerrarNoCambianSiSeReestimaLaHistoria(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3, 2, 5)
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+	}
+
+	if err := project.EstimateStory(3, 8); err != nil {
+		t.Fatalf("no se pudo reestimar la historia 3: %v", err)
+	}
+
+	if got := sprint.PointsAtClose()[3]; got != 5 {
+		t.Fatalf("se esperaba que el sprint siguiera registrando 5 puntos para la historia 3, salio %d", got)
+	}
+}
+
+// Escenario: Una historia sin estimar al cerrar registra cero puntos
+// Cubre: RN-16
+//
+// La #9 solo asigna historias estimadas, pero la #12 deja quitarle la estimación mientras está
+// En curso (punto 9 de "Para decidir en la puerta").
+func TestUnaHistoriaSinEstimarAlCerrarRegistraCeroPuntos(t *testing.T) {
+	project, sprint := unSprintParaCerrar(t, 3, 2, 5, 8)
+	if err := project.RemoveStoryEstimate(4); err != nil {
+		t.Fatalf("no se pudo quitar la estimacion de la historia 4: %v", err)
+	}
+
+	if err := project.CloseSprint([]int{4}, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("se esperaba cerrar el sprint sin error, salio: %v", err)
+	}
+
+	points, ok := sprint.PointsAtClose()[4]
+	if !ok || points != 0 {
+		t.Fatalf("se esperaba que la historia 4 quedara registrada con 0 puntos, salio %d (registrada: %v)", points, ok)
+	}
+	if got := estadoDe(t, project, 4); got != StoryDone {
+		t.Fatalf("se esperaba la historia 4 Terminada, quedo en %v", got)
+	}
+}
