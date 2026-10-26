@@ -430,3 +430,61 @@ func TestUnaBaseQueNoSePuedeCrearSeAvisa(t *testing.T) {
 		t.Errorf("se esperaba ErrSavedDataInvalid con la ruta de la base, salio: %v", err)
 	}
 }
+
+// Escenario: Un cambio que no se pudo guardar no deja nada a medias, con la falla en cada
+// una de las tablas: el guardado se puede cortar en cualquier punto.
+// Cubre: #177 RN-2, D4, D9
+func TestUnGuardadoQueFallaEnCualquierTablaNoDejaNada(t *testing.T) {
+	for _, tabla := range tables {
+		t.Run(tabla, func(t *testing.T) {
+			db := abrirBase(t, filepath.Join(t.TempDir(), "datos-ics.db"))
+			antes := unProyecto(t, func(p *domain.Project) {})
+			sinError(t, db.Save(antes))
+			if _, err := db.db.Exec("CREATE TRIGGER falla BEFORE INSERT ON " + tabla + " BEGIN SELECT RAISE(ABORT, 'falla'); END"); err != nil {
+				t.Fatalf("no se pudo preparar la falla: %v", err)
+			}
+
+			err := db.Save(unRegistroCompleto(t))
+
+			if !errors.Is(err, ErrNotSaved) {
+				t.Fatalf("se esperaba ErrNotSaved, salio: %v", err)
+			}
+			cargado, err := db.Load()
+			sinError(t, err)
+			if got, want := comoTexto(t, cargado), comoTexto(t, antes); !bytes.Equal(got, want) {
+				t.Errorf("la base tenia que quedar como antes, y tiene:\n%s", got)
+			}
+		})
+	}
+}
+
+// Sin escenario: una base editada a mano con una fila que apunta a algo que no esta (un
+// proyecto, una historia, un sprint o una ronda) no se carga.
+// Cubre: #177 RN-4
+func TestUnaFilaQueApuntaANadaNoSeCarga(t *testing.T) {
+	filas := map[string]string{
+		"un integrante de un proyecto que no esta": "INSERT INTO members VALUES (9, 0, 'Ana Pérez', 'Product Builder')",
+		"un criterio de una historia que no esta":  "INSERT INTO acceptance_criteria VALUES (1, 99, 0, 'Algo')",
+		"una historia de un sprint que no esta":    "INSERT INTO sprint_stories VALUES (1, 99, 0, 1)",
+		"lo completado de un sprint que no esta":   "INSERT INTO sprint_completed_stories VALUES (1, 99, 0, 1)",
+		"los puntos de un sprint que no esta":      "INSERT INTO sprint_points_at_close VALUES (1, 99, 1, 3)",
+		"un participante de una ronda que no esta": "INSERT INTO voting_round_participants VALUES (1, 99, 0, 'Ana Pérez')",
+		"un voto de una ronda que no esta":         "INSERT INTO votes VALUES (1, 99, 0, 'Ana Pérez', 5)",
+	}
+	for nombre, fila := range filas {
+		t.Run(nombre, func(t *testing.T) {
+			path := filepath.Join(t.TempDir(), "datos-ics.db")
+			db := abrirBase(t, path)
+			sinError(t, db.Save(unRegistroCompleto(t)))
+			if _, err := db.db.Exec(fila); err != nil {
+				t.Fatalf("no se pudo preparar la fila: %v", err)
+			}
+
+			_, err := db.Load()
+
+			if !errors.Is(err, domain.ErrSavedDataInvalid) || !strings.Contains(err.Error(), path) {
+				t.Errorf("se esperaba ErrSavedDataInvalid con la ruta de la base, salio: %v", err)
+			}
+		})
+	}
+}
