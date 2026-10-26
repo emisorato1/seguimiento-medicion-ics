@@ -61,6 +61,8 @@ type votingRoundJSON struct {
 	Participants []string   `json:"participants"`
 	Votes        []voteJSON `json:"votes,omitempty"`
 	Revealed     bool       `json:"revealed,omitempty"`
+	// Agreed es la estimación acordada de la #73; 0 es "sin acordar".
+	Agreed int `json:"agreed,omitempty"`
 }
 
 type voteJSON struct {
@@ -100,6 +102,11 @@ type sprintJSON struct {
 	State  string `json:"state"`
 	// El Sprint Backlog es de la #9: los identificadores de las historias, en orden.
 	Stories []int `json:"stories,omitempty"`
+	// Los datos del cierre son de la #10. Van con omitempty: un sprint abierto no los tiene.
+	// Los puntos van por historia, con el número de la historia como clave.
+	ClosedOn         string      `json:"closed_on,omitempty"`
+	CompletedStories []int       `json:"completed_stories,omitempty"`
+	PointsAtClose    map[int]int `json:"points_at_close,omitempty"`
 }
 
 type memberJSON struct {
@@ -162,14 +169,21 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 		}
 		project.LastSprintNumber = p.lastSprintNumber
 		for _, s := range p.sprints {
-			project.Sprints = append(project.Sprints, sprintJSON{
+			sj := sprintJSON{
 				Number:  s.number,
 				Goal:    s.goal,
 				Start:   s.start.Format(dayLayout),
 				End:     s.end.Format(dayLayout),
 				State:   s.state.String(),
 				Stories: s.Stories(),
-			})
+				// el cierre, de la #10
+				CompletedStories: s.CompletedStories(),
+				PointsAtClose:    s.PointsAtClose(),
+			}
+			if !s.closedOn.IsZero() {
+				sj.ClosedOn = s.closedOn.Format(dayLayout)
+			}
+			project.Sprints = append(project.Sprints, sj)
 		}
 		project.LastDefectID = p.lastDefectID
 		for _, d := range p.defects {
@@ -185,7 +199,7 @@ func (r *ProjectRegistry) ToJSON() ([]byte, error) {
 			})
 		}
 		for _, r := range p.votingRounds {
-			round := votingRoundJSON{StoryID: r.storyID, Number: r.number, Participants: r.participants, Revealed: r.revealed}
+			round := votingRoundJSON{StoryID: r.storyID, Number: r.number, Participants: r.participants, Revealed: r.revealed, Agreed: r.agreed}
 			for _, v := range r.votes {
 				round.Votes = append(round.Votes, voteJSON{MemberName: v.MemberName, Points: v.Points})
 			}
@@ -364,21 +378,34 @@ func projectFromJSON(pj projectJSON) (*Project, error) {
 // tarea 14). Cada voto entra con la misma operación que al votar, que controla que sea de un
 // participante, que no vote dos veces y que el valor esté en la escala; una ronda guardada
 // como revelada se revela igual, que controla que no le falten votos. Además se controla lo
-// que solo un archivo puede traer mal: una historia que no existe, un número de ronda que no
-// es válido y dos rondas sin revelar sobre la misma historia.
+// que solo un archivo puede traer mal: una historia que no existe, números de ronda que no van
+// seguidos desde 1 en su historia y una ronda sin revelar seguida de otra. Desde la #73 (tarea
+// 7) cada ronda recupera su proyecto y su acuerdo, que se controla como al acordar.
 func votingRoundsFromJSON(project *Project, in []votingRoundJSON) ([]*VotingRound, error) {
 	rounds := make([]*VotingRound, 0, len(in))
-	inProgress := map[int]bool{}
+	last := map[int]*VotingRound{}
 	for _, rj := range in {
 		if _, err := project.Story(rj.StoryID); err != nil {
 			return nil, err
 		}
-		if rj.Number < 1 {
-			return nil, fmt.Errorf("la ronda de la historia %d tiene el número %d y tiene que ser al menos 1", rj.StoryID, rj.Number)
+		// Las rondas de cada historia van seguidas desde 1 (#73, RN-6), y nunca hay una ronda
+		// después de otra sin revelar de la misma historia (RN-7 de la #13): no se puede abrir.
+		previous := last[rj.StoryID]
+		expected := 1
+		if previous != nil {
+			if !previous.revealed {
+				return nil, fmt.Errorf("%w: la ronda %d de la historia %d está sin revelar y le sigue otra",
+					ErrVotingRoundInProgress, previous.number, rj.StoryID)
+			}
+			expected = previous.number + 1
+		}
+		if rj.Number != expected {
+			return nil, fmt.Errorf("la ronda de la historia %d tiene el número %d y tendría que ser la %d", rj.StoryID, rj.Number, expected)
 		}
 		participants := make([]string, len(rj.Participants))
 		copy(participants, rj.Participants)
-		round := &VotingRound{storyID: rj.StoryID, number: rj.Number, participants: participants}
+		// la ronda recupera el proyecto que la abrió, así se puede acordar después de cargarla
+		round := &VotingRound{storyID: rj.StoryID, number: rj.Number, participants: participants, project: project}
 		for _, vj := range rj.Votes {
 			if err := round.Vote(vj.MemberName, vj.Points); err != nil {
 				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, err)
@@ -388,12 +415,20 @@ func votingRoundsFromJSON(project *Project, in []votingRoundJSON) ([]*VotingRoun
 			if err := round.Reveal(); err != nil {
 				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, err)
 			}
-		} else {
-			if inProgress[rj.StoryID] {
-				return nil, fmt.Errorf("%w: la historia %d tiene dos rondas sin revelar", ErrVotingRoundInProgress, rj.StoryID)
-			}
-			inProgress[rj.StoryID] = true
 		}
+		// El acuerdo (#73) se controla como al acordar: solo sobre una ronda revelada y con un
+		// valor de la escala. No se vuelve a estimar la historia, que ya trae sus puntos, y una
+		// ronda acordada puede no ser la última: después de acordar se puede abrir otra.
+		if rj.Agreed != 0 {
+			if !round.revealed {
+				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, ErrRoundNotRevealed)
+			}
+			if !inScale(rj.Agreed) {
+				return nil, fmt.Errorf("ronda %d de la historia %d: %w", rj.Number, rj.StoryID, ErrStoryPointsInvalid)
+			}
+			round.agreed = rj.Agreed
+		}
+		last[rj.StoryID] = round
 		rounds = append(rounds, round)
 	}
 	return rounds, nil
@@ -418,7 +453,7 @@ func defectFromJSON(project *Project, dj defectJSON) (*Defect, error) {
 	if err != nil {
 		return nil, err
 	}
-	state, err := parseDefectState(dj.State)
+	state, err := ParseDefectState(dj.State)
 	if err != nil {
 		return nil, err
 	}
@@ -505,7 +540,59 @@ func sprintFromJSON(project *Project, sj sprintJSON) (*Sprint, error) {
 		seen[id] = true
 		stories = append(stories, id)
 	}
-	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories}, nil
+	// los datos del cierre (historia #10)
+	closedOn, err := parseDay(sj.ClosedOn)
+	if err != nil {
+		return nil, err
+	}
+	if err := checkClose(state, stories, closedOn, sj.CompletedStories, sj.PointsAtClose); err != nil {
+		return nil, err
+	}
+	return &Sprint{number: sj.Number, goal: data.Goal, start: data.Start, end: data.End, state: state, stories: stories,
+		closedOn: closedOn, completedStories: sj.CompletedStories, pointsAtClose: sj.PointsAtClose}, nil
+}
+
+// checkClose controla que los datos del cierre de un sprint guardado sean coherentes (historia
+// #10, tarea 15), como pide la D15 de la #77: un sprint abierto no tiene ningún dato del
+// cierre, y uno cerrado tiene su fecha, completadas sin repetir y todas entre las asignadas,
+// y una entrada de puntos por cada historia asignada, con un valor de la escala o 0.
+func checkClose(state SprintState, stories []int, closedOn time.Time, completed []int, points map[int]int) error {
+	if state == SprintOpen {
+		if !closedOn.IsZero() || len(completed) > 0 || len(points) > 0 {
+			return fmt.Errorf("un sprint abierto no tiene datos de cierre")
+		}
+		return nil
+	}
+	if closedOn.IsZero() {
+		return ErrSprintCloseDateRequired
+	}
+	inSprint := map[int]bool{}
+	for _, id := range stories {
+		inSprint[id] = true
+	}
+	seen := map[int]bool{}
+	for _, id := range completed {
+		if !inSprint[id] {
+			return fmt.Errorf("%w: la historia %d", ErrStoryNotInSprint, id)
+		}
+		if seen[id] {
+			return fmt.Errorf("la historia completada %d está repetida", id)
+		}
+		seen[id] = true
+	}
+	for id, value := range points {
+		if !inSprint[id] {
+			return fmt.Errorf("hay puntos al cerrar de la historia %d, que no estaba en el sprint", id)
+		}
+		// cero es una historia que estaba sin estimar al cerrar (RN-16)
+		if value != 0 && !inScale(value) {
+			return ErrStoryPointsInvalid
+		}
+	}
+	if len(points) != len(stories) {
+		return fmt.Errorf("faltan los puntos al cerrar de alguna historia del sprint")
+	}
+	return nil
 }
 
 // storyFromJSON reconstruye una historia con su numero, su estado y su estimacion.

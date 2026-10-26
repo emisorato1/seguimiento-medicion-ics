@@ -124,11 +124,16 @@ func showAddress(out io.Writer, o options) {
 
 // lanAddresses son las direcciones IPv4 de esta computadora en la red local.
 func lanAddresses() []string {
-	var ips []string
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
-		return ips
+		return nil
 	}
+	return localIPv4(addrs)
+}
+
+// localIPv4 deja, de las direcciones de la computadora, las IPv4 que no son de ella misma.
+func localIPv4(addrs []net.Addr) []string {
+	var ips []string
 	for _, addr := range addrs {
 		ipNet, ok := addr.(*net.IPNet)
 		if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil {
@@ -139,27 +144,34 @@ func lanAddresses() []string {
 }
 
 func main() {
-	opts, err := parseOptions(os.Args[1:])
+	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr, http.Serve))
+}
+
+// run abre el sistema y devuelve el codigo con el que termina el comando. La web la atiende
+// serve, que en el comando es http.Serve y en los tests una funcion que no se queda esperando.
+func run(args []string, out, errOut io.Writer, serve func(net.Listener, http.Handler) error) int {
+	opts, err := parseOptions(args)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "No se pudo abrir el sistema:", err)
-		os.Exit(2)
+		fmt.Fprintln(errOut, "No se pudo abrir el sistema:", err)
+		return 2
 	}
 	handler, err := open(opts)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "No se pudo abrir el sistema: %v\nEl archivo %s quedó como estaba.\n", err, opts.dataPath)
-		os.Exit(1)
+		fmt.Fprintf(errOut, "No se pudo abrir el sistema: %v\nEl archivo %s quedó como estaba.\n", err, opts.dataPath)
+		return 1
 	}
 
 	// La direccion se muestra recien cuando el puerto es nuestro: si no, se mostraria una
 	// direccion donde atiende otro programa.
 	listener, err := listen(opts)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "No se pudo abrir el sistema:", err)
-		os.Exit(1)
+		fmt.Fprintln(errOut, "No se pudo abrir el sistema:", err)
+		return 1
 	}
-	showAddress(os.Stdout, opts)
-	if err := http.Serve(listener, handler); err != nil {
-		fmt.Fprintln(os.Stderr, "La web se detuvo:", err)
-		os.Exit(1)
+	showAddress(out, opts)
+	if err := serve(listener, handler); err != nil {
+		fmt.Fprintln(errOut, "La web se detuvo:", err)
+		return 1
 	}
+	return 0
 }
