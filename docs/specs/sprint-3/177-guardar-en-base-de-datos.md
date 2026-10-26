@@ -3,7 +3,7 @@
 - **Historia:** #177
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 1, Puerta 2 y Puerta 3 aprobadas por el responsable el 2026-10-26 en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), como excepción — **pendientes de que un compañero las ratifique**; ningún PR de la historia entra a `dev` antes de eso
+- **Estado:** Puerta 1, Puerta 2 y Puerta 3 aprobadas por el responsable el 2026-10-26 en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), como excepción — **pendientes de que un compañero las ratifique**; ningún PR de la historia entra a `dev` antes de eso. Implementación en la rama `historia-177-implementacion`
 - **Depende de:** #77 (guardar los datos de la web), y de que cada historia de dominio ya
   haya sumado sus datos a lo que se guarda (#8 a #15, #13, #73)
 - **La necesitan:** nadie todavía
@@ -350,20 +350,20 @@ implementación en el siguiente.
 
 | # | Tarea | Escenario BDD | Regla | Estado |
 |---|---|---|---|---|
-| 1 | Abrir una base nueva crea el esquema; volver a abrirla no lo vuelve a crear | Abrir por primera vez | RN-5 | pendiente |
-| 2 | Guardar y cargar un registro vacío y uno con un proyecto | Abrir por primera vez | RN-1, RN-3 | pendiente |
-| 3 | Ida y vuelta completa: un registro con todas las entidades vuelve idéntico, comparado con la conversión del dominio | Los datos siguen al cerrar y volver a abrir | RN-3 | pendiente |
-| 4 | Los datos difíciles: signos y renglones, decimales, fechas, ronda sin revelar, integrante quitado con horas, borrar el último, la numeración | Los datos difíciles vuelven iguales | RN-3, RN-6 | pendiente |
-| 5 | Un guardado que falla a mitad deja la base como estaba, y el siguiente que funciona guarda todo | Un cambio que no se pudo guardar no deja nada a medias | RN-2 | pendiente |
-| 6 | Un dato de la conversión que la base no conoce hace fallar el guardado | — (D5) | RN-2 | pendiente |
-| 7 | Un dato guardado que no cumple las reglas, una base dañada y una de versión más nueva: avisan y no se tocan | Un dato guardado que no cumple las reglas no se carga / Una base de una versión más nueva no se abre | RN-4, RN-13 | pendiente |
-| 8 | Una carpeta donde no se puede escribir: "No quedó guardado" | — (Condiciones de error) | RN-2 | pendiente |
-| 9 | El arranque usa la base por defecto | Abrir por primera vez | RN-5 | pendiente |
-| 10 | Exportar escribe el archivo y termina; importar en una base nueva; exportar e importar dan lo mismo | Exportar e importar da los mismos datos / Traer los datos de la versión anterior | RN-7, RN-8, RN-11 | pendiente |
-| 11 | Importar algo que no se puede: archivo que no existe, con un dato inválido, o sobre una base con datos | Importar algo que no se puede no cambia nada | RN-9, RN-10 | pendiente |
-| 12 | El archivo de la versión anterior se importa solo con la base vacía, se renombra y se avisa; no vuelve aunque se borre todo; uno inválido no se toca y no abre; un renombre que no se puede hacer no abre | Lo guardado con la versión anterior se importa solo / Lo de la versión anterior no vuelve aunque se borre todo / Si lo de la versión anterior no se puede importar, no se toca | RN-14, RN-15, RN-9 | pendiente |
-| 13 | La web guarda en la base: el escenario de la #77 y la #78 de cerrar y volver a abrir, con la base | Los datos siguen al cerrar y volver a abrir | RN-1, RN-3 | pendiente |
-| 14 | El manual de usuario y la documentación técnica | — | — | pendiente |
+| 1 | Abrir una base nueva crea el esquema; volver a abrirla no lo vuelve a crear | Abrir por primera vez | RN-5 | hecha |
+| 2 | Guardar y cargar un registro vacío y uno con un proyecto | Abrir por primera vez | RN-1, RN-3 | hecha |
+| 3 | Ida y vuelta completa: un registro con todas las entidades vuelve idéntico, comparado con la conversión del dominio | Los datos siguen al cerrar y volver a abrir | RN-3 | hecha |
+| 4 | Los datos difíciles: signos y renglones, decimales, fechas, ronda sin revelar, integrante quitado con horas, borrar el último, la numeración | Los datos difíciles vuelven iguales | RN-3, RN-6 | hecha |
+| 5 | Un guardado que falla a mitad deja la base como estaba, y el siguiente que funciona guarda todo | Un cambio que no se pudo guardar no deja nada a medias | RN-2 | hecha |
+| 6 | Un dato de la conversión que la base no conoce hace fallar el guardado | — (D5) | RN-2 | hecha |
+| 7 | Un dato guardado que no cumple las reglas, una base dañada y una de versión más nueva: avisan y no se tocan | Un dato guardado que no cumple las reglas no se carga / Una base de una versión más nueva no se abre | RN-4, RN-13 | hecha |
+| 8 | Una carpeta donde no se puede escribir: "No quedó guardado" | — (Condiciones de error) | RN-2 | hecha |
+| 9 | El arranque usa la base por defecto | Abrir por primera vez | RN-5 | hecha |
+| 10 | Exportar escribe el archivo y termina; importar en una base nueva; exportar e importar dan lo mismo | Exportar e importar da los mismos datos / Traer los datos de la versión anterior | RN-7, RN-8, RN-11 | hecha |
+| 11 | Importar algo que no se puede: archivo que no existe, con un dato inválido, o sobre una base con datos | Importar algo que no se puede no cambia nada | RN-9, RN-10 | hecha |
+| 12 | El archivo de la versión anterior se importa solo con la base vacía, se renombra y se avisa; no vuelve aunque se borre todo; uno inválido no se toca y no abre; un renombre que no se puede hacer no abre | Lo guardado con la versión anterior se importa solo / Lo de la versión anterior no vuelve aunque se borre todo / Si lo de la versión anterior no se puede importar, no se toca | RN-14, RN-15, RN-9 | hecha |
+| 13 | La web guarda en la base: el escenario de la #77 y la #78 de cerrar y volver a abrir, con la base | Los datos siguen al cerrar y volver a abrir | RN-1, RN-3 | hecha |
+| 14 | El manual de usuario y la documentación técnica | — | — | hecha |
 
 Los tests corren en los dos sistemas del CI, Linux y Windows (RN-12): ninguno depende de
 permisos de Unix ni de rutas con `/`.
@@ -374,7 +374,67 @@ permisos de Unix ni de rutas con `/`.
 
 ## Fase 4 — Implementación
 
-Se completa al implementar.
+En la rama `historia-177-implementacion`, desde `dev`. Cada tarea tiene el test en un commit,
+con su salida en rojo después de `RED:`, y la implementación en el siguiente; lo que pasó sin
+código nuevo dice «sin RED» en el asunto y cuenta cómo se probó que el test sirve (se rompió
+el código a propósito, falló, y se volvió atrás).
+
+### Commits por tarea
+
+| Tarea | Test (RED) | Implementación (GREEN) |
+|---|---|---|
+| 1. Abrir una base nueva crea el esquema | `5c1b0be` | `46f6516` |
+| 2. Guardar y cargar el registro y sus proyectos | `5ea2432` | `5ad0f3b` |
+| 3. Ida y vuelta completa | `b305866` | `487bac5` |
+| 4. Los datos difíciles | `582d427` | — (sin RED) |
+| 5. Un guardado que falla a mitad | `b8e6140` | — (sin RED) |
+| 6. Un dato que la base no conoce | `b36baae` | — (sin RED) |
+| 7. Lo que no se puede abrir | `d23737e` | `f6ffce5` |
+| 8. Una base que no se puede crear | `9a1c02c` | — (sin RED) |
+| 9. La web guarda en la base por defecto | `c218f64` | `f210ae8` |
+| 10. Exportar e importar | `61d92a4` | `50cc4c3` |
+| 11. Importar algo que no se puede | `e2f87d9` | `beca251` |
+| 12. El archivo de la versión anterior | `df065cc` | `641e723` |
+| 13. La web, con la base, al cerrar y volver a abrir | `f5b86b3` | — (sin RED) |
+| 14. Manual y documentación técnica | — | `fae70af` |
+| La falla en cualquier tabla y las filas que apuntan a nada (cobertura) | `e3863eb` | — (sin RED) |
+
+### Desvíos
+
+- **Tarea 8: con SQLite, "no se puede escribir" aparece al abrir, no al guardar.** La spec
+  la pensaba como un guardado que falla porque la carpeta no permite escribir; con la base,
+  ese caso hace fallar la apertura, con `domain.ErrSavedDataInvalid` y la ruta. El guardado
+  que falla a mitad lo cubren la tarea 5 y el test de la falla en cualquier tabla.
+- **Antes de importar el archivo de la versión anterior se mira que no exista ya un
+  `datos-ics.json.importado`**, además del orden de D10: en Linux y macOS renombrar pisa el
+  destino sin avisar, y se perdería el archivo de una importación anterior. Si existe, se
+  avisa y no se abre, sin cambiar nada.
+- **El camino de D10 en que el renombre falla después de importar no tiene test**: no hay una
+  forma de provocarlo que funcione igual en los tres sistemas sin agregar código que solo usen
+  los tests (lo que D9 evita). El caso que sí se puede armar, el destino que ya existe, está
+  probado.
+- **Tests de la #77 que se cambiaron**, porque fijaban el archivo como lugar de guardado: el
+  valor por defecto de `-datos` (`datos-ics.db`), el aviso de los datos dañados («La base …
+  quedó como estaba.») y `open`, que ahora devuelve también la base para cerrarla y recibe
+  dónde avisar. Y los dos escenarios de cerrar y volver a abrir de la web corren con el
+  archivo y con la base.
+- **Al abrir, un error de la carga suma en qué base está** («… (en la base …)»), y al importar,
+  en qué archivo; los mensajes del dominio no cambian.
+- **Cobertura**: `internal/store` queda en 86,8% (antes 96,0%): lo que no se recorre son los
+  errores del driver al leer una fila o al ejecutar una consulta, que no se pueden provocar
+  sin inyectar fallas. `cmd/web` queda en 88,0%: los errores al exportar. El total es 95,3%.
+
+### Verificación
+
+- `nice -n 10 go test -race ./...`, `go vet ./...` y `gofmt -l .`: sin errores.
+- **Con el binario**, los comandos del manual: importar los datos de demo de la rama
+  `datos-demo` en una base nueva, exportarlos (el archivo sale igual al original) e importar
+  sobre la base con datos (se rechaza, código 1).
+- **En el navegador**, el script de Playwright de la #78 con la base, en Chromium 151,
+  Firefox 153 y WebKit 26.5: 135 controles bien, entre ellos los datos después de matar el
+  proceso y volver a abrirlo. Falló solo el control del puerto 8080 ocupado, porque ese día
+  Docker no estaba corriendo.
+- **Windows**: lo prueba el CI en el pull request.
 
 ## Trazabilidad
 
@@ -384,5 +444,5 @@ Se completa al implementar.
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/store/database_test.go`, `cmd/web/main_test.go` y los de persistencia de `internal/web` |
-| Código Go | `internal/store/database.go`, `internal/store/migrations/`, `cmd/web/main.go` |
+| Tests | `internal/store/database_test.go`, `rows_test.go` y `exchange_test.go`; `cmd/web/main_test.go`; en `internal/web/server_test.go`, los dos escenarios de cerrar y volver a abrir |
+| Código Go | `internal/store/database.go`, `rows.go`, `exchange.go`, `migrations.go` y `migrations/0001_inicial.sql`; `cmd/web/main.go` |
