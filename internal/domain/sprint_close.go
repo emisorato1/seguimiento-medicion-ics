@@ -7,9 +7,34 @@ import "time"
 // cerrado el sprint, el proyecto queda sin sprint abierto y puede crear el siguiente (RN-14).
 func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
 	sprint, _ := p.OpenSprint()
+	// las completadas quedan registradas aparte de las asignadas (RN-2); las asignadas quedan
+	// Terminadas si se completaron y vuelven al Product Backlog como Pendientes si no (RN-3,
+	// RN-4)
+	done := map[int]bool{}
+	for _, id := range completed {
+		done[id] = true
+	}
+	for _, id := range sprint.stories {
+		story, _ := p.Story(id)
+		if done[id] {
+			story.state = StoryDone
+		} else {
+			story.state = StoryPending
+		}
+	}
+	sprint.completedStories = append([]int{}, completed...)
 	sprint.state = SprintClosed
 	sprint.closedOn = toDay(closedOn)
 	return nil
+}
+
+// CompletedStories devuelve una copia de los identificadores de las historias que se
+// registraron como completadas al cerrar el sprint, vacía mientras está abierto. Cambiar lo
+// que se recibe no cambia el sprint, como en Stories().
+func (s *Sprint) CompletedStories() []int {
+	completed := make([]int, len(s.completedStories))
+	copy(completed, s.completedStories)
+	return completed
 }
 
 // ClosedOn devuelve el día en que el sprint se cerró de verdad, o la fecha cero si sigue
