@@ -39,9 +39,11 @@ const (
 
 // options son las opciones del comando (D20).
 type options struct {
-	port     int
-	dataPath string
-	lan      bool
+	port       int
+	dataPath   string
+	lan        bool
+	importPath string
+	exportPath string
 }
 
 // parseOptions lee las opciones de la linea de comandos. Una opcion que no existe es un
@@ -53,8 +55,10 @@ func parseOptions(args []string) (options, error) {
 	flags.IntVar(&opts.port, "puerto", 8080, "puerto donde escucha la web")
 	flags.StringVar(&opts.dataPath, "datos", "datos-ics.db", "base donde se guardan los datos")
 	flags.BoolVar(&opts.lan, "red", false, "aceptar conexiones de otras computadoras de la red local")
+	flags.StringVar(&opts.importPath, "importar", "", "archivo con datos para traer a la base al abrir")
+	flags.StringVar(&opts.exportPath, "exportar", "", "archivo donde escribir todos los datos, sin abrir la web")
 	if err := flags.Parse(args); err != nil {
-		return options{}, fmt.Errorf("opciones: %v (las que existen son -puerto, -datos y -red)", err)
+		return options{}, fmt.Errorf("opciones: %v (las que existen son -puerto, -datos, -red, -importar y -exportar)", err)
 	}
 	return opts, nil
 }
@@ -99,12 +103,20 @@ func portError(port int, err error) error {
 }
 
 // open abre la base, carga los datos guardados y arma la web, que guarda en la misma base
-// (historia #177, D8). Devuelve tambien la base, que quien llama cierra al terminar. Si los
-// datos no se pueden leer devuelve el error y no toca la base (RN-24 de la #77, RN-4).
-func open(o options) (http.Handler, *store.Database, error) {
+// (historia #177, D8). Con -importar, antes trae a la base los datos del archivo (RN-8).
+// Devuelve tambien la base, que quien llama cierra al terminar. Si los datos no se pueden
+// leer devuelve el error y no toca la base (RN-24 de la #77, RN-4).
+func open(o options, out io.Writer) (http.Handler, *store.Database, error) {
 	db, err := store.OpenDatabase(o.dataPath)
 	if err != nil {
 		return nil, nil, err
+	}
+	if o.importPath != "" {
+		if err := store.Import(db, o.importPath); err != nil {
+			db.Close()
+			return nil, nil, err
+		}
+		fmt.Fprintf(out, "Se importaron los datos de %s\n", o.importPath)
 	}
 	registry, err := db.Load()
 	if err != nil {
@@ -112,6 +124,23 @@ func open(o options) (http.Handler, *store.Database, error) {
 		return nil, nil, err
 	}
 	return web.NewServer(registry, db, time.Now), db, nil
+}
+
+// export escribe todos los datos de la base en el archivo de -exportar y termina sin abrir la
+// web (RN-7).
+func export(o options, out, errOut io.Writer) int {
+	db, err := store.OpenDatabase(o.dataPath)
+	if err != nil {
+		fmt.Fprintf(errOut, "No se pudieron exportar los datos: %v\nLa base %s quedó como estaba.\n", err, o.dataPath)
+		return 1
+	}
+	defer db.Close()
+	if err := store.Export(db, o.exportPath); err != nil {
+		fmt.Fprintln(errOut, "No se pudieron exportar los datos:", err)
+		return 1
+	}
+	fmt.Fprintf(out, "Se exportaron los datos a %s\n", o.exportPath)
+	return 0
 }
 
 // showAddress muestra donde abrir el sistema en el navegador y donde se guardan los datos.
@@ -160,7 +189,10 @@ func run(args []string, out, errOut io.Writer, serve func(net.Listener, http.Han
 		fmt.Fprintln(errOut, "No se pudo abrir el sistema:", err)
 		return 2
 	}
-	handler, db, err := open(opts)
+	if opts.exportPath != "" {
+		return export(opts, out, errOut)
+	}
+	handler, db, err := open(opts, out)
 	if err != nil {
 		fmt.Fprintf(errOut, "No se pudo abrir el sistema: %v\nLa base %s quedó como estaba.\n", err, opts.dataPath)
 		return 1

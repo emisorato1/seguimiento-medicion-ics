@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -235,7 +236,7 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 	t.Run("en esa direccion la lista de proyectos se ve completa, con sus estilos", func(t *testing.T) {
 		opts, _ := parseOptions([]string{"-datos", filepath.Join(t.TempDir(), "datos-ics.db")})
 
-		handler, db, err := open(opts)
+		handler, db, err := open(opts, io.Discard)
 		if err != nil {
 			t.Fatalf("no se esperaba error al abrir sin datos guardados, salio: %v", err)
 		}
@@ -261,7 +262,7 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 	}
 	opts, _ := parseOptions([]string{"-datos", path})
 
-	_, _, err := open(opts)
+	_, _, err := open(opts, io.Discard)
 
 	if !errors.Is(err, domain.ErrSavedDataInvalid) {
 		t.Fatalf("se esperaba ErrSavedDataInvalid, salio: %v", err)
