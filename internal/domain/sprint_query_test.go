@@ -257,3 +257,28 @@ func TestCadaProyectoListaSolamenteSusSprints(t *testing.T) {
 		t.Errorf("se esperaba el sprint 1 del proyecto A, salio el %d con %q", sprints[0].Number(), sprints[0].Goal())
 	}
 }
+
+// Escenario: Cerrar un sprint nuevo no cambia los anteriores
+// Cubre: RN-11
+func TestCerrarUnSprintNuevoNoCambiaLosAnteriores(t *testing.T) {
+	project := unProyecto(t)
+	first := unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), []int{1}, 3)
+	if _, err := project.AddSprint(SprintData{Goal: "Tener los sprints", Start: unDia(2026, 10, 20), End: unDia(2026, 10, 25)}); err != nil {
+		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
+	}
+	story := unaHistoriaEstimada(t, project, 5)
+	if err := project.AssignStory(story.ID()); err != nil {
+		t.Fatalf("no se pudo asignar la historia de prueba %d: %v", story.ID(), err)
+	}
+
+	if err := project.CloseSprint(nil, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("se esperaba cerrar el sprint 2 sin error, salio: %v", err)
+	}
+
+	if !slices.Equal(first.CompletedStories(), []int{1}) {
+		t.Errorf("se esperaba que el sprint 1 siguiera registrando completada la historia [1], tiene %v", first.CompletedStories())
+	}
+	if !slices.Equal(first.Stories(), []int{1}) || !first.ClosedOn().Equal(unDia(2026, 10, 19)) {
+		t.Errorf("se esperaba el sprint 1 con la historia [1] y cerrado el 19/10/2026, tiene %v y cierre %v", first.Stories(), first.ClosedOn())
+	}
+}
