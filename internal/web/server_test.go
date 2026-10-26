@@ -741,6 +741,25 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			err:        domain.ErrSprintCloseDateRequired,
 		},
 		{
+			// No esta en los Ejemplos: una fecha que no es fecha no llega al nucleo (RN-14 de la #77).
+			nombre:     "cerrar el sprint con una fecha que no es fecha (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {"el viernes"}, "completadas": {"1"}},
+			campo:      "cierre",
+			err:        errInvalidDate,
+		},
+		{
+			// No esta en los Ejemplos: algo que no viene de las casillas va arriba.
+			nombre:     "cerrar el sprint con una historia que no es un numero (#78)",
+			inicial:    func(t *testing.T) *domain.ProjectRegistry { registry, _ := closeRegistry(t); return registry },
+			formulario: "/proyectos/1/sprints/cerrar",
+			datos:      url.Values{"cierre": {"2026-10-30"}, "completadas": {"uno"}},
+			err:        errInvalidStory,
+			// las completadas viajan en un campo oculto de la confirmacion, no en el formulario
+			fueraDeLista: []string{"completadas"},
+		},
+		{
 			// No esta en los Ejemplos: acordar sin elegir es un dato sin forma (RN-2).
 			nombre: "acordar sin elegir los story points (#78)",
 			inicial: func(t *testing.T) *domain.ProjectRegistry {
@@ -1058,6 +1077,9 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/1/historias/99/rondas/1", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/historias/1/rondas/1", err: errRoundNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/historias/99/rondas", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/sprints/cerrar", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/1/sprints/cerrar/confirmar?cierre=2026-10-30", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/historias/1/rondas", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/1/defectos/99", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/99/defectos", err: domain.ErrProjectNotFound},

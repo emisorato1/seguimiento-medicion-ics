@@ -359,3 +359,24 @@ func TestConsultarUnSprintAnterior(t *testing.T) {
 		t.Errorf("se esperaba en la lista el sprint Cerrado con su fecha de cierre, y no esta en:\n%s", lista)
 	}
 }
+
+// Sin escenario: pedir cerrar con una fecha que no es fecha no lleva a confirmar nada: vuelve
+// al formulario con el error junto a la fecha y las casillas como estaban (RN-14 de la #77).
+// Cubre: RN-2, RN-9
+func TestCerrarConUnaFechaQueNoEsFecha(t *testing.T) {
+	registry, _ := closeRegistry(t)
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/sprints/cerrar/confirmar?cierre=el+viernes&completada=2")
+
+	if res.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+	}
+	html := res.Body.String()
+	if !strings.Contains(html, `id="cierre-error">`+errInvalidDate.Error()) || strings.Contains(html, "¿Cerrar") {
+		t.Errorf("se esperaba el error junto a la fecha y ninguna pregunta para confirmar:\n%s", html)
+	}
+	if !strings.Contains(html, `value="2" checked`) || strings.Contains(html, `value="1" checked`) {
+		t.Errorf("se esperaba marcada solo la historia 2, como se habia elegido:\n%s", html)
+	}
+}
