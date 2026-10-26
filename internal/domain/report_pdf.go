@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 	"time"
@@ -240,4 +241,46 @@ func headingRows(rows []pdfRow, i int) int {
 		count++
 	}
 	return count
+}
+
+// buildPDF escribe las paginas maquetadas como un archivo PDF 1.4: la cabecera, los objetos
+// numerados, la tabla con la posicion de cada objeto y la marca de fin. Los objetos son el
+// catalogo (1), el arbol de paginas (2), Helvetica (3), Helvetica-Bold (4) y, por cada
+// pagina, la pagina y su contenido. Las letras son de las 14 estandar, sin incrustar, con la
+// codificacion WinAnsi (Fase 2 de la spec).
+func buildPDF(pages []pdfPage) []byte {
+	var objects []string
+	kids := make([]string, len(pages))
+	for i := range pages {
+		kids[i] = fmt.Sprintf("%d 0 R", 5+2*i)
+	}
+	objects = append(objects,
+		"<< /Type /Catalog /Pages 2 0 R >>",
+		fmt.Sprintf("<< /Type /Pages /Kids [%s] /Count %d >>", strings.Join(kids, " "), len(pages)),
+		"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+		"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
+	)
+	for i := range pages {
+		content := ""
+		objects = append(objects,
+			fmt.Sprintf("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 %.2f %.2f] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents %d 0 R >>",
+				pdfPageWidth, pdfPageHeight, 6+2*i),
+			fmt.Sprintf("<< /Length %d >>\nstream\n%s\nendstream", len(content), content),
+		)
+	}
+
+	var out bytes.Buffer
+	out.WriteString("%PDF-1.4\n")
+	offsets := make([]int, len(objects))
+	for i, object := range objects {
+		offsets[i] = out.Len()
+		fmt.Fprintf(&out, "%d 0 obj\n%s\nendobj\n", i+1, object)
+	}
+	xref := out.Len()
+	fmt.Fprintf(&out, "xref\n0 %d\n0000000000 65535 f \n", len(objects)+1)
+	for _, offset := range offsets {
+		fmt.Fprintf(&out, "%010d 00000 n \n", offset)
+	}
+	fmt.Fprintf(&out, "trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n", len(objects)+1, xref)
+	return out.Bytes()
 }
