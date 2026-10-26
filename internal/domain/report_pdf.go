@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 // La exportacion del reporte a PDF (historia #19) tiene tres pasos, cada uno con sus tests:
@@ -141,7 +142,8 @@ func textWidth(text string, style pdfStyle) float64 {
 }
 
 // wrapText corta un texto en renglones que entran en el ancho de la pagina, entre palabras
-// (RN-6). Un texto que entra queda como esta, con todos sus espacios.
+// (RN-6). Un texto que entra queda como esta, con todos sus espacios. Una palabra que sola no
+// entra se corta letra por letra donde llega al margen.
 func wrapText(text string, style pdfStyle) []string {
 	if textWidth(text, style) <= pdfLineWidth {
 		return []string{text}
@@ -149,17 +151,34 @@ func wrapText(text string, style pdfStyle) []string {
 	var rows []string
 	current := ""
 	for i, word := range strings.Split(text, " ") {
-		candidate := word
-		if i > 0 {
-			candidate = current + " " + word
-		}
-		if i > 0 && textWidth(candidate, style) > pdfLineWidth {
+		if i == 0 {
+			current = word
+		} else if candidate := current + " " + word; textWidth(candidate, style) <= pdfLineWidth {
+			current = candidate
+		} else {
 			rows = append(rows, current)
-			candidate = word
+			current = word
 		}
-		current = candidate
+		for textWidth(current, style) > pdfLineWidth {
+			head, rest := splitAtMargin(current, style)
+			rows = append(rows, head)
+			current = rest
+		}
 	}
 	return append(rows, current)
+}
+
+// splitAtMargin separa de un texto que no entra la parte que si entra en el renglon, sin
+// partir ninguna letra: se recorre por runas y no por bytes.
+func splitAtMargin(text string, style pdfStyle) (string, string) {
+	end := 0
+	for i, r := range text {
+		if textWidth(text[:i+utf8.RuneLen(r)], style) > pdfLineWidth {
+			break
+		}
+		end = i + utf8.RuneLen(r)
+	}
+	return text[:end], text[end:]
 }
 
 // pdfRow es un renglon de una pagina. Un texto vacio es un renglon en blanco.
