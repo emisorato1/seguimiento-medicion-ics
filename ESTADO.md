@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 19:40. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 19:42. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -69,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+ae2380a 2026-10-26 Merge pull request #174 from emisorato1/trazabilidad-170
+7202ee1 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con el #170, y aclarar la regla de la ronda 2
 bd522fe 2026-10-26 Merge pull request #171 from emisorato1/planning-s3-ronda2-maxi
 ea75e4d 2026-10-26 docs: ronda 2 de Maximiliano para la 77 y la 78 en la planning del sprint 3
 6f2abfe 2026-10-26 Merge pull request #170 from emisorato1/historia-78-poker-dos-pestanas
 04a098b 2026-10-26 Merge pull request #169 from emisorato1/actas-cierre-sprint-2
 ef4c6d1 2026-10-26 docs: la ronda votada desde dos pestañas en la verificación de la #78
 70d8529 2026-10-26 test: una ronda de Planning Poker votada desde dos pestañas (historia 78, sin RED)
-9278879 2026-10-26 docs: la historia 19 se termina antes del cierre del producto
-81cb877 2026-10-26 docs: decisiones del 26/10 en las actas y fecha de cierre del producto en el plan
 ```

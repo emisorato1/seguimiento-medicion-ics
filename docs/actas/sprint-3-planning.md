@@ -50,7 +50,8 @@ próxima historia. No suma a los 28 comprometidos: se cuenta aparte.
 
 Maximiliano escribió: "adelanto la #73 (5 SP), que tiene sus tres puertas aprobadas (PR #142) y
 la #13 ya en `dev`. Horas estimadas cargadas: 13,5 h". La #73 era del Sprint 4. Sus horas
-reales están [pendientes: las carga Maximiliano Eula].
+reales son **3 h**, contra 13,5 estimadas (−10,5 h, −78%): las cargó Maximiliano Eula en el
+tablero y lo dejó dicho el 26/10 [en el PR #169](https://github.com/emisorato1/seguimiento-medicion-ics/pull/169#issuecomment-6428626374).
 
 ## Planning Poker de la #77 y la #78
 
@@ -122,4 +123,4 @@ Los cuatro contestaron "ok".
 
 - [ ] La ronda 2 del Planning Poker de Juliana, y la estimación acordada de la #77 y la #78.
 - [ ] Las horas estimadas de la #78, cuando tenga story points.
-- [ ] Las horas reales de la #73 (Maximiliano Eula).
+- [x] Las horas reales de la #73: 3 h, cargadas por Maximiliano Eula el 26/10.
