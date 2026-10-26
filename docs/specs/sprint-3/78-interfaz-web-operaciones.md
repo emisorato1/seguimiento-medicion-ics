@@ -835,10 +835,19 @@ historia completada siguen después de reiniciar, y a 360 de ancho ninguna de la
 páginas se desplaza de costado. Resultado: 135 controles bien; falló solo el del 8080, por
 lo mismo que en las partes 1 y 2.
 
+### Revisión de accesibilidad de las partes 1 a 3
+
+El 26/10, con un script de Playwright aparte (fuera del repo), sobre 37 páginas con datos
+de todas las pantallas, incluidos tres formularios rechazados y el enlace para saltar la
+barra con el foco: el contraste de cada texto visible contra su fondo (WCAG AA: 4,5 a 1, o
+3 a 1 si es grande), un solo `h1` por página, los títulos sin saltos de nivel y que todo
+enlace y botón tenga nombre. Resultado: ningún problema. Para saber que el control del
+contraste sirve, se le agregó a una página un texto gris claro y lo marcó (1,79 a 1).
+
 ### Lo que falta
 
 - **Reporte y PDF (tareas 20 y 21)**: esperan la #18 y la #19.
-- **La verificación manual** de las pantallas que faltan, la ronda desde dos pestañas, el contraste de lo nuevo y el PDF.
+- **La verificación manual** del reporte y su PDF, y la ronda votada desde dos pestañas.
 
 ## Trazabilidad
 
