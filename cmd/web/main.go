@@ -51,7 +51,7 @@ func parseOptions(args []string) (options, error) {
 	flags := flag.NewFlagSet("web", flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
 	flags.IntVar(&opts.port, "puerto", 8080, "puerto donde escucha la web")
-	flags.StringVar(&opts.dataPath, "datos", "datos-ics.json", "archivo donde se guardan los datos")
+	flags.StringVar(&opts.dataPath, "datos", "datos-ics.db", "base donde se guardan los datos")
 	flags.BoolVar(&opts.lan, "red", false, "aceptar conexiones de otras computadoras de la red local")
 	if err := flags.Parse(args); err != nil {
 		return options{}, fmt.Errorf("opciones: %v (las que existen son -puerto, -datos y -red)", err)
@@ -98,15 +98,20 @@ func portError(port int, err error) error {
 	}
 }
 
-// open carga los datos guardados y arma la web, que guarda en el mismo archivo. Si los datos
-// no se pueden leer devuelve el error y no toca el archivo (RN-24, D18).
-func open(o options) (http.Handler, error) {
-	file := store.NewFile(o.dataPath)
-	registry, err := file.Load()
+// open abre la base, carga los datos guardados y arma la web, que guarda en la misma base
+// (historia #177, D8). Devuelve tambien la base, que quien llama cierra al terminar. Si los
+// datos no se pueden leer devuelve el error y no toca la base (RN-24 de la #77, RN-4).
+func open(o options) (http.Handler, *store.Database, error) {
+	db, err := store.OpenDatabase(o.dataPath)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return web.NewServer(registry, file, time.Now), nil
+	registry, err := db.Load()
+	if err != nil {
+		db.Close()
+		return nil, nil, err
+	}
+	return web.NewServer(registry, db, time.Now), db, nil
 }
 
 // showAddress muestra donde abrir el sistema en el navegador y donde se guardan los datos.
@@ -155,11 +160,13 @@ func run(args []string, out, errOut io.Writer, serve func(net.Listener, http.Han
 		fmt.Fprintln(errOut, "No se pudo abrir el sistema:", err)
 		return 2
 	}
-	handler, err := open(opts)
+	handler, db, err := open(opts)
 	if err != nil {
-		fmt.Fprintf(errOut, "No se pudo abrir el sistema: %v\nEl archivo %s quedó como estaba.\n", err, opts.dataPath)
+		fmt.Fprintf(errOut, "No se pudo abrir el sistema: %v\nLa base %s quedó como estaba.\n", err, opts.dataPath)
 		return 1
 	}
+	// En Windows una base abierta no se puede borrar ni mover: se cierra en todos los caminos.
+	defer db.Close()
 
 	// La direccion se muestra recien cuando el puerto es nuestro: si no, se mostraria una
 	// direccion donde atiende otro programa.
