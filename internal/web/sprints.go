@@ -92,12 +92,15 @@ func storyOptions(project *domain.Project) []option {
 }
 
 // sprintPage es lo que muestra la pagina de un sprint: el sprint, sus historias, si es el
-// abierto y, para el abierto, el formulario para asignar.
+// abierto y, para el abierto, el formulario para asignar. De uno cerrado, cuales historias se
+// completaron y los story points que tenian al cerrarlo, que guarda la #10.
 type sprintPage struct {
 	ProjectID int
 	Sprint    *domain.Sprint
 	Open      bool
 	Stories   []*domain.Story
+	Completed map[int]bool
+	Points    map[int]int
 	Choices   []option
 	Form      *form
 }
@@ -112,6 +115,11 @@ func (s *Server) renderSprint(w http.ResponseWriter, r *http.Request, status int
 		Form:      f,
 	}
 	data.Stories = sprintStories(project, sprint)
+	data.Completed = map[int]bool{}
+	for _, id := range sprint.CompletedStories() {
+		data.Completed[id] = true
+	}
+	data.Points = sprint.PointsAtClose()
 	s.render(w, r, status, "sprint.html", page{
 		Title:   fmt.Sprintf("Sprint %d", sprint.Number()),
 		Project: project,

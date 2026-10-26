@@ -19,6 +19,7 @@
         <th scope="col">Inicio</th>
         <th scope="col">Fin</th>
         <th scope="col">Estado</th>
+        <th scope="col">Cierre</th>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,7 @@
         <td>{{fecha .Start}}</td>
         <td>{{fecha .End}}</td>
         <td>{{.State}}</td>
+        <td>{{if .ClosedOn.IsZero}}<span class="sin-dato">sin cerrar</span>{{else}}{{fecha .ClosedOn}}{{end}}</td>
       </tr>
       {{end}}
     </tbody>
