@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-24 22:15. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 12:26. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,7 +10,7 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 23
 - Sin estimar: 4
 - Story points cargados: 83
-- Terminadas: 15
+- Terminadas: 16
 
 ## En review
 
@@ -27,14 +27,14 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Lista para implementar
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 
 ## Especificacion SDD
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
-| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
@@ -60,6 +60,7 @@ _No hay historias en este estado._
 | #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+| #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 | #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
@@ -70,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-843ac07 2026-10-24 docs: registrar la implementación de la historia 73
-3fbd33a 2026-10-24 feat: el acuerdo entra en el archivo y cada ronda cargada recupera su proyecto (historia 73, tarea 7)
-03e2280 2026-10-24 test: el acuerdo sigue al cerrar y volver a abrir (historia 73, tarea 7)
-c1ce166 2026-10-24 feat: acordar solo sobre la última ronda de la historia (historia 73, tarea 6)
-b1c418c 2026-10-24 test: solo se acuerda sobre la última ronda de la historia (historia 73, tarea 6)
-ed24b67 2026-10-24 refactor: la ronda actual usa la misma búsqueda que la apertura (historia 73)
-185bce2 2026-10-24 feat: rondas nuevas numeradas por historia y la consulta de sus rondas (historia 73, tarea 5)
-a6a5a5a 2026-10-24 test: abrir una ronda nueva cuando la última está revelada (historia 73, tarea 5)
+aaaee3a 2026-10-26 Merge pull request #148 from emisorato1/historia-73-acordar-estimacion
+e467f02 2026-10-26 Merge pull request #150 from emisorato1/historia-10-cerrar-sprint
+23c3899 2026-10-26 Merge pull request #145 from emisorato1/horas-15-y-punto-de-control
+6da7bec 2026-10-26 docs: la historia 10 implementada, con su fase 4 y su fila del indice
+b888fd5 2026-10-26 feat: al cargar se rechazan los datos del cierre incoherentes (historia 10, tarea 15)
+cdd11ed 2026-10-26 test: al cargar se rechazan los datos del cierre incoherentes (historia 10, tarea 15)
+52361c0 2026-10-26 feat: los datos del cierre entran en la conversion del registro (historia 10, tarea 14)
+0e9d002 2026-10-26 test: un sprint cerrado sigue igual al cerrar y volver a abrir (historia 10, tarea 14)
 ```
