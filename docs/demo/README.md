@@ -7,13 +7,31 @@ las [actas](../actas). Lo que no está registrado quedó afuera (ver más abajo)
 
 ## Cómo se abre
 
-El sistema guarda cada cambio en el archivo que se le indica, así que conviene abrir una
-copia para no tocar este:
+Desde la #177 la web guarda en una base de datos, y el archivo se importa en una base nueva:
+
+```bash
+go run ./cmd/web -datos demo.db -importar docs/demo/datos-demo.json
+```
+
+Las veces siguientes se abre sin `-importar`: `go run ./cmd/web -datos demo.db`. Para volver a
+empezar, se borra `demo.db` y se importa de nuevo.
+
+Antes de la #177, el sistema guardaba en el mismo archivo que se le indicaba, así que conviene
+abrir una copia para no tocar este:
 
 ```bash
 cp docs/demo/datos-demo.json /tmp/demo.json
 go run ./cmd/web -datos /tmp/demo.json
 ```
+
+## Para la presentación
+
+- [guion-de-demo.md](guion-de-demo.md): el recorrido de 8 a 10 minutos, paso a paso.
+- [capturas/](capturas): una captura de cada pantalla con estos datos, a 1280 de ancho, para
+  el informe y la presentación. Solo muestran estados que existieron: estos datos, la ronda 2
+  de la #77 antes de que votara Juliana Bustos (el 26/10) y el Sprint 3 con el goal, las
+  fechas y el Sprint Backlog de su acta de planning, abierto. Las del dashboard (#17), el
+  reporte (#18) y el PDF (#19) se suman cuando esas historias estén en `dev`.
 
 ## Qué tiene
 
