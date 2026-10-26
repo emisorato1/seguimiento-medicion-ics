@@ -302,7 +302,7 @@ func pageContent(page pdfPage) string {
 			font = "F1"
 		}
 		y := pdfTop - pdfRowHeight*float64(row+1)
-		fmt.Fprintf(&out, "BT /%s %d Tf %.2f %.2f Td (%s) Tj ET\n", font, int(style.fontSize()), pdfMargin, y, encodeWinAnsi(text))
+		fmt.Fprintf(&out, "BT /%s %d Tf %.2f %.2f Td (%s) Tj ET\n", font, int(style.fontSize()), pdfMargin, y, escapePDFString(encodeWinAnsi(text)))
 	}
 	for i, row := range page.rows {
 		if row.text != "" {
@@ -321,6 +321,20 @@ func encodeWinAnsi(text string) []byte {
 			r = '?'
 		}
 		out = append(out, byte(r))
+	}
+	return out
+}
+
+// escapePDFString pone una barra delante de los parentesis y de las barras del texto: en un
+// PDF el texto va entre parentesis, y sin la barra un parentesis del reporte cerraria el
+// texto antes de tiempo y el archivo no abriria (RN-11).
+func escapePDFString(text []byte) []byte {
+	var out []byte
+	for _, b := range text {
+		if b == '(' || b == ')' || b == '\\' {
+			out = append(out, '\\')
+		}
+		out = append(out, b)
 	}
 	return out
 }
