@@ -39,20 +39,51 @@ func sprintOptions(project *domain.Project) []option {
 	return options
 }
 
-// listDefects muestra los defectos del proyecto, en el orden del nucleo. Sin defectos
-// muestra que no hay y ofrece cargar el primero (RN-7 de la #77).
+// defectList es lo que muestra la lista de defectos: los que cumplen el filtro, el filtro
+// elegido y las listas para elegirlo.
+type defectList struct {
+	ProjectID  int
+	Defects    []*domain.Defect
+	States     []string
+	Severities []string
+	State      string
+	Severity   string
+	Error      string
+}
+
+// listDefects muestra los defectos del proyecto, en el orden del nucleo. Se filtran por un
+// estado o por una severidad, que llegan en la direccion (RN-13, D7): el filtro lo aplica el
+// nucleo, y si llegan los dos se usa el estado. Sin defectos muestra que no hay y ofrece
+// cargar el primero (RN-7 de la #77).
 func (s *Server) listDefects(w http.ResponseWriter, r *http.Request) {
 	project, err := s.findProject(r)
 	if err != nil {
 		s.notFound(w, r, nil, err)
 		return
 	}
-	data := struct {
-		ProjectID int
-		Defects   []*domain.Defect
-	}{
-		ProjectID: project.ID(),
-		Defects:   project.Defects(),
+	data := defectList{
+		ProjectID:  project.ID(),
+		Defects:    project.Defects(),
+		States:     []string{domain.DefectOpen.String(), domain.DefectInProgress.String(), domain.DefectResolved.String()},
+		Severities: severityOptions(),
+		State:      r.FormValue("estado"),
+		Severity:   r.FormValue("severidad"),
+	}
+	switch {
+	case data.State != "":
+		state, err := domain.ParseDefectState(data.State)
+		if err != nil {
+			data.Error = err.Error()
+			break
+		}
+		data.Defects = project.DefectsByState(state)
+	case data.Severity != "":
+		severity, err := domain.ParseSeverity(data.Severity)
+		if err != nil {
+			data.Error = err.Error()
+			break
+		}
+		data.Defects = project.DefectsBySeverity(severity)
 	}
 	s.render(w, r, http.StatusOK, "defectos.html", page{
 		Title:   "Defectos de " + project.Name(),

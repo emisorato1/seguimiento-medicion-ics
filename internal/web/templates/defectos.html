@@ -1,7 +1,7 @@
 {{define "content"}}
 {{with .Data}}
 <h1>Defectos</h1>
-{{if not .Defects}}
+{{if and (not .Defects) (not .State) (not .Severity)}}
 <div class="vacio">
   <p>Todavía no hay defectos.</p>
   <a class="boton" href="/proyectos/{{.ProjectID}}/defectos/nuevo">Cargar el primer defecto</a>
@@ -10,6 +10,38 @@
 <div class="acciones">
   <a class="boton" href="/proyectos/{{.ProjectID}}/defectos/nuevo">Nuevo defecto</a>
 </div>
+<h2>Filtrar</h2>
+{{template "error-formulario" .Error}}
+<div>
+  <form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/defectos">
+    <div class="campo">
+      <label for="estado">Por estado</label>
+      <select id="estado" name="estado">
+        {{template "opciones" (choices "Elegí un estado" .States .State)}}
+      </select>
+    </div>
+    <div class="acciones">
+      <button type="submit">Filtrar por estado</button>
+    </div>
+  </form>
+  <form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/defectos">
+    <div class="campo">
+      <label for="severidad">Por severidad</label>
+      <select id="severidad" name="severidad">
+        {{template "opciones" (choices "Elegí una severidad" .Severities .Severity)}}
+      </select>
+    </div>
+    <div class="acciones">
+      <button type="submit">Filtrar por severidad</button>
+    </div>
+  </form>
+</div>
+{{if or .State .Severity}}
+<p><a href="/proyectos/{{.ProjectID}}/defectos">Ver todos los defectos</a></p>
+{{end}}
+{{if not .Defects}}
+<p class="sin-dato">Ningún defecto cumple el filtro.</p>
+{{else}}
 <div class="tabla">
   <table>
     <thead>
@@ -38,6 +70,7 @@
     </tbody>
   </table>
 </div>
+{{end}}
 {{end}}
 {{end}}
 {{end}}
