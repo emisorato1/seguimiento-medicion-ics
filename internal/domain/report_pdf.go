@@ -313,14 +313,29 @@ func pageContent(page pdfPage) string {
 	return out.String()
 }
 
-// encodeWinAnsi pasa el texto a la codificacion de las letras: un byte por caracter.
+// winAnsiExtra son los caracteres de la codificacion WinAnsi que no estan en Latin-1, con su
+// byte: van del 0x80 al 0x9F, donde Latin-1 tiene caracteres de control. La raya del titulo
+// del reporte de un sprint es uno de ellos (tabla del apendice D de la referencia de PDF).
+var winAnsiExtra = map[rune]byte{
+	'€': 0x80, '‚': 0x82, 'ƒ': 0x83, '„': 0x84, '…': 0x85, '†': 0x86, '‡': 0x87, 'ˆ': 0x88,
+	'‰': 0x89, 'Š': 0x8A, '‹': 0x8B, 'Œ': 0x8C, 'Ž': 0x8E, '‘': 0x91, '’': 0x92, '“': 0x93,
+	'”': 0x94, '•': 0x95, '–': 0x96, '—': 0x97, '˜': 0x98, '™': 0x99, 'š': 0x9A, '›': 0x9B,
+	'œ': 0x9C, 'ž': 0x9E, 'Ÿ': 0x9F,
+}
+
+// encodeWinAnsi pasa el texto a la codificacion de las letras, un byte por caracter. Los
+// caracteres imprimibles de ASCII y de Latin-1 van con su mismo numero, los de winAnsiExtra con
+// su byte, y cualquier otro, como un emoji o un caracter de control, sale como "?" (RN-10).
 func encodeWinAnsi(text string) []byte {
 	var out []byte
 	for _, r := range text {
-		if r > 0xFF {
-			r = '?'
+		if b, ok := winAnsiExtra[r]; ok {
+			out = append(out, b)
+		} else if (r >= 0x20 && r <= 0x7E) || (r >= 0xA0 && r <= 0xFF) {
+			out = append(out, byte(r))
+		} else {
+			out = append(out, '?')
 		}
-		out = append(out, byte(r))
 	}
 	return out
 }
