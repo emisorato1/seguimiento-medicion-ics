@@ -44,6 +44,9 @@ type metricsScope struct {
 	// plannedPoints tiene los story points de cada historia planificada, uno por historia:
 	// la cantidad de historias es su largo. Una historia sin estimar aporta 0 (RN-16).
 	plannedPoints []int
+	// completedPoints tiene los story points de cada historia completada, uno por historia,
+	// igual que plannedPoints.
+	completedPoints []int
 	// estimatedHours y actualHours son las horas estimadas y las registradas de las historias
 	// cuyas horas cuentan en este ámbito.
 	estimatedHours float64
@@ -57,11 +60,12 @@ type metricsScope struct {
 // sprint y el proyecto.
 func (sc metricsScope) metrics() Metrics {
 	m := Metrics{
-		StoriesPlanned:  len(sc.plannedPoints),
-		EstimatedHours:  sc.estimatedHours,
-		ActualHours:     sc.actualHours,
-		DefectsDetected: sc.defectsDetected,
-		DefectsResolved: sc.defectsResolved,
+		StoriesPlanned:   len(sc.plannedPoints),
+		StoriesCompleted: len(sc.completedPoints),
+		EstimatedHours:   sc.estimatedHours,
+		ActualHours:      sc.actualHours,
+		DefectsDetected:  sc.defectsDetected,
+		DefectsResolved:  sc.defectsResolved,
 	}
 	// sin horas estimadas no hay contra qué comparar: la desviación queda en cero, y no es un
 	// error (RN-14)
@@ -70,6 +74,9 @@ func (sc metricsScope) metrics() Metrics {
 	}
 	for _, points := range sc.plannedPoints {
 		m.PlannedPoints += points
+	}
+	for _, points := range sc.completedPoints {
+		m.CompletedPoints += points
 	}
 	return m
 }
@@ -97,6 +104,11 @@ func (p *Project) SprintMetrics(number int) (Metrics, error) {
 			scope.actualHours += actual[id]
 		}
 	}
+	// las completadas son las que quedaron registradas al cerrar, con los puntos que tenían
+	// en ese momento; un sprint abierto no tiene ninguna todavía (RN-4, RN-6)
+	for _, id := range sprint.completedStories {
+		scope.completedPoints = append(scope.completedPoints, sprint.pointsAtClose[id])
+	}
 	// un defecto cuenta como detectado en su sprint de detección y como resuelto en el de
 	// resolución; uno sin resolver tiene 0, que no es el número de ningún sprint (RN-8)
 	for _, defect := range p.defects {
@@ -107,7 +119,10 @@ func (p *Project) SprintMetrics(number int) (Metrics, error) {
 			scope.defectsResolved++
 		}
 	}
-	return scope.metrics(), nil
+	m := scope.metrics()
+	// la velocidad de un sprint son sus puntos completados (RN-5)
+	m.Velocity = m.CompletedPoints
+	return m, nil
 }
 
 // lastSprintOf devuelve el número del último sprint, el de número más alto, en que la
