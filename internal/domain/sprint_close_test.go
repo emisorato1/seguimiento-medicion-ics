@@ -194,3 +194,15 @@ func TestRechazarElCierreSinFechaDeCierre(t *testing.T) {
 		t.Fatalf("se esperaba la historia 1 En curso, quedo en %v", got)
 	}
 }
+
+// Escenario: Rechazar el cierre si no hay sprint abierto
+// Cubre: RN-6
+func TestRechazarElCierreSiNoHaySprintAbierto(t *testing.T) {
+	project := unProyecto(t)
+
+	err := project.CloseSprint(nil, unDia(2026, 10, 25))
+
+	if !errors.Is(err, ErrNoOpenSprint) {
+		t.Fatalf("se esperaba ErrNoOpenSprint, salio: %v", err)
+	}
+}
