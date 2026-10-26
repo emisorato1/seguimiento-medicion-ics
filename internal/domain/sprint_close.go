@@ -9,7 +9,12 @@ import (
 // #10, RN-1). El sprint que se cierra es siempre el abierto: por eso se le pide al proyecto, y
 // cerrado el sprint, el proyecto queda sin sprint abierto y puede crear el siguiente (RN-14).
 func (p *Project) CloseSprint(completed []int, closedOn time.Time) error {
-	sprint, _ := p.OpenSprint()
+	// sin sprint abierto no hay nada que cerrar; también cubre cerrar dos veces, porque
+	// después del primer cierre ya no queda ninguno abierto (RN-6, RN-12)
+	sprint, ok := p.OpenSprint()
+	if !ok {
+		return ErrNoOpenSprint
+	}
 	// la fecha de cierre es obligatoria, y no se compara con ninguna otra (RN-10, RN-11)
 	if closedOn.IsZero() {
 		return ErrSprintCloseDateRequired
