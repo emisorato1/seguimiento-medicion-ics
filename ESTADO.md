@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 12:39. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 12:41. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+fbace28 2026-10-26 Merge pull request #161 from emisorato1/gitattributes-plantillas
+80b0d55 2026-10-26 Merge pull request #160 from emisorato1/historia-16-terminada
+be97185 2026-10-26 docs: la historia 73 terminada en su spec, el indice y ESTADO.md
+530f4fb 2026-10-26 chore: las plantillas y el CSS de la web bajan siempre con LF
+444a133 2026-10-26 Merge pull request #149 from emisorato1/historia-78-web
 f6889fe 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con la historia 16 terminada y el defecto 156 resuelto
 057baeb 2026-10-26 docs: la historia 16 terminada en su spec y el indice
 28f418c 2026-10-26 Merge pull request #157 from emisorato1/defecto-ronda-sin-participantes
-4dc72ef 2026-10-26 Merge pull request #151 from emisorato1/historia-16-parte-3
-365fadb 2026-10-26 docs: el defecto #156 en la fase 4 de la historia 73
-87264b3 2026-10-26 fix: la carga rechaza una ronda sin participantes, con uno sin nombre o repetido (defecto #156)
-684fcb2 2026-10-26 test: una ronda sin participantes, con uno sin nombre o repetido no se carga (defecto #156)
-1549f0c 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-16-parte-3
 ```
