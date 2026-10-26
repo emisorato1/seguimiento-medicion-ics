@@ -98,7 +98,13 @@ func (p *Project) SprintMetrics(number int) (Metrics, error) {
 	actual := p.actualHoursByStory()
 	var scope metricsScope
 	for _, id := range sprint.stories {
-		scope.plannedPoints = append(scope.plannedPoints, points[id])
+		// un sprint cerrado usa los puntos que tenía cada historia al cerrar, así reestimar
+		// después una que volvió al backlog no cambia un sprint viejo (RN-3)
+		planned := points[id]
+		if sprint.state == SprintClosed {
+			planned = sprint.pointsAtClose[id]
+		}
+		scope.plannedPoints = append(scope.plannedPoints, planned)
 		if p.lastSprintOf(id) == sprint.number {
 			scope.estimatedHours += estimated[id]
 			scope.actualHours += actual[id]

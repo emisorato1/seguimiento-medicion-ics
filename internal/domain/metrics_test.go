@@ -115,29 +115,27 @@ func conHorasEstimadas(t *testing.T, project *Project, id int, hours float64) {
 }
 
 // Escenario: Metricas de un sprint cerrado
-// Cubre: RN-3, RN-7, RN-8, RN-12, RN-16
+// Cubre: RN-3, RN-4, RN-5, RN-7, RN-8, RN-12, RN-16
 //
-// El escenario se completa en varias tareas (Fase 3): por ahora verifica los planificados,
-// las horas, la desviación y los defectos, y las tareas 6 y 11 le suman su número. Asignar historias es de la #9 y
-// cerrar el sprint de la #10, que todavía no están en dev: el test arma el sprint dentro del
-// paquete.
+// El escenario se completa en varias tareas (Fase 3): por ahora verifica todo menos el
+// porcentaje, que suma la tarea 11. Desde la tarea 7 el sprint se cierra con el cierre de la
+// #10, que registra las completadas y los puntos de cada historia.
 func TestMetricasDeUnSprintCerrado(t *testing.T) {
-	project := unProyecto(t)
+	project, _ := unSprintParaCerrar(t, 3, 5, 2, 3)
 	conIntegrante(t, project)
-	historiasEstimadas(t, project, 3, 5, 2, 3)
 	for i, hours := range []float64{4, 6, 2, 4} {
 		conHorasEstimadas(t, project, i+1, hours)
 	}
 	for i, hours := range []float64{5, 8, 3, 4} {
 		cargar(t, project, i+1, "Juliana Bustos", hours)
 	}
-	sprint := unSprint(t, project)
-	sprint.stories = []int{1, 2, 3, 4}
-	sprint.state = SprintClosed
 	for i := 0; i < 2; i++ {
 		if _, err := project.AddDefect(unDefecto()); err != nil {
 			t.Fatalf("no se pudo registrar el defecto de prueba: %v", err)
 		}
+	}
+	if err := project.CloseSprint([]int{1, 2, 3}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
 	}
 	if err := project.ResolveDefect(1, 1); err != nil {
 		t.Fatalf("no se pudo resolver el defecto de prueba: %v", err)
@@ -150,6 +148,10 @@ func TestMetricasDeUnSprintCerrado(t *testing.T) {
 	}
 	if got.PlannedPoints != 13 || got.StoriesPlanned != 4 {
 		t.Fatalf("se esperaban 13 story points y 4 historias planificadas, salieron %d y %d", got.PlannedPoints, got.StoriesPlanned)
+	}
+	if got.CompletedPoints != 10 || got.Velocity != 10 || got.StoriesCompleted != 3 {
+		t.Fatalf("se esperaban 10 puntos completados, velocidad 10 y 3 historias completadas, salieron %d, %d y %d",
+			got.CompletedPoints, got.Velocity, got.StoriesCompleted)
 	}
 	if !mismasHoras(got.EstimatedHours, 16) || !mismasHoras(got.ActualHours, 20) {
 		t.Fatalf("se esperaban 16 horas estimadas y 20 reales, salieron %v y %v", got.EstimatedHours, got.ActualHours)
