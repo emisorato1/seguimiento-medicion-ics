@@ -1,16 +1,19 @@
 # Acta — Review del Sprint 2
 
 > **Armada el 24/10 con los datos del tablero**, calculados con `scripts/metricas.sh "Sprint 2"`,
-> y la calidad medida sobre `dev`. El domingo 25 se revisan otra vez antes de cerrar. Lo que
-> está entre corchetes, **[pendiente]**, lo completa el equipo en la review: acá no se escribe
-> nada que alguien no haya dicho. La retrospectiva va en [un archivo aparte](sprint-2-retrospectiva.md).
+> y la calidad medida sobre `dev`. **Completada el 26/10** con lo que escribió cada uno en la
+> [issue #147](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147). Lo que sigue
+> entre corchetes, **[pendiente]**, nadie lo contestó: acá no se escribe nada que alguien no haya
+> dicho. La retrospectiva va en [un archivo aparte](sprint-2-retrospectiva.md).
 
-- **Fecha:** [pendiente — el sprint cierra el domingo 25/10]
-- **Participantes:** [pendiente]
+- **Fecha:** del 24 al 26/10/2026, por escrito en la issue #147, sin reunión
+- **Participantes:** Emiliano Sorato, Maximiliano Eula, Juliana Bustos y Agustín Salinas
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 - **Sprint Goal:** que el sistema maneje sprints, esfuerzo y defectos, y que todo se pueda operar
   desde la consola.
-- **¿Se cumplió el Sprint Goal?** [pendiente: lo dice el equipo en la review]
+- **¿Se cumplió el Sprint Goal?** [pendiente: en la #147 nadie lo dijo]. Las 9 historias
+  comprometidas están terminadas. La parte de "operar desde la consola" la cuentan en la demo:
+  según Juliana y Agustín, sus historias todavía no tienen pantalla ni opción en la consola.
 
 ## Qué se completó
 
@@ -89,14 +92,24 @@ cada hora una sola vez, en el sprint donde se trabajó.
 
 | Integrante | Horas reales en el Sprint 2 |
 |---|---|
-| Agustín Salinas | [pendiente] |
-| Juliana Bustos | [pendiente] |
-| Maximiliano Eula | [pendiente] |
-| Emiliano Sorato | [pendiente] |
-| **Total** | **[pendiente]** |
+| Integrante | Historias | Horas en el tablero |
+|---|---|---|
+| Agustín Salinas | #7 5 h, #8 6 h, #9 9 h | 20 |
+| Maximiliano Eula | #12 4 h y #24 7,25 h (menos las 9,25 h que ya contaban en el Sprint 1), #13 6 h | 8 |
+| Emiliano Sorato | #5, #14 y #15 0,5 h cada una, #77 1,5 h (las 13 h de la #6 son del Sprint 1) | 3 |
+| Juliana Bustos | sus historias (#5, #14 y #15) las implementó Emiliano | 0 |
+| **Total** | | **31** |
 
-El tablero guarda las horas por historia y no por persona, así que este reparto lo completa
-cada uno en la review.
+Cada uno confirmó en la #147 que sus horas están cargadas. El tablero guarda las horas por
+historia; el reparto por persona sale de quién trabajó cada historia.
+
+**Las horas propias de Juliana Bustos no están en el tablero.** [Escribió](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147#issuecomment-6400529426): "Mis
+horas propias del Sprint 2, para la tabla por integrante del acta: 14 h. Spec de la #17 (Fases
+1, 2 y 3, y respuestas a las observaciones de Agustín, Maxi y Emiliano): 6 h. Revisiones de PRs
+y de puertas (#88, #136, #141, #142 y #143): 6 h. Tablero, criterios y actas: 2 h". No suman a
+las 31 h ni a la desviación, porque no son de una historia del Sprint 2: la spec de la #17 es de
+una historia del Sprint 3, y el resto es revisión y gestión. Contando las 14 h, el equipo
+trabajó **45 h** en el sprint.
 
 **Historias terminadas**, medidas enteras —todas sus horas, de los dos sprints— en el sprint
 donde se terminaron:
@@ -172,8 +185,27 @@ Medido sobre `dev` en `b45cbe6` (24/10), con `go test -cover ./...`. Todos los t
 
 ## Demostración
 
-[Qué se mostró y qué dijeron los Product Architects. Si hubo pedidos de cambio, anotarlos: van
-al Product Backlog como historias nuevas, no se arreglan sobre la marcha.]
+No hubo reunión: cada uno probó lo suyo sobre `dev` y lo contó en la #147.
+
+- **[Emiliano Sorato](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147#issuecomment-6390684355)** (sobre `1537556`): "compila todo, la web abre en la página
+  de Proyectos y la consola muestra su menú. Lo mío del Sprint 2 (la web base #77, la #5 y la #14
+  y la #15 que tomé de Juli) anda".
+- **[Maximiliano Eula](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147#issuecomment-6391163190)** (sobre `1537556`): "En la consola (#24) creé un proyecto,
+  agregué un integrante, cargué una historia y la estimé en 8 (#12); un 4 se rechaza con el
+  mensaje de la escala y el backlog la muestra con 8 story points. En la web la estimación
+  también anda y queda guardada en el archivo. La #13 todavía no tiene pantalla (la conecta la
+  #78): se prueba con sus tests, que pasan".
+- **[Juliana Bustos](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147#issuecomment-6400529426)** (sobre `1537556`): "Mis historias del Sprint 2 (#5, #14 y
+  #15, que implementó Emiliano) todavía no tienen pantalla ni operación en la consola: la consola
+  ofrece proyectos, integrantes, historias, backlog y estimación, y la web llega hasta el
+  backlog. Las conecta la #78. Las probé con sus tests, que pasan todos: #5 10 de 10, #14 19 de
+  19 y #15 22 de 22".
+- **[Agustín Salinas](https://github.com/emisorato1/seguimiento-medicion-ics/issues/147#issuecomment-6406773200)** (sobre `cdda205`): "compila todo y los tests pasan. Mis
+  historias del Sprint 2 (#7, #8 y #9) todavía no tienen pantalla ni opción en la consola: las
+  conecta la #78. Las probé con sus tests, que pasan todos: #7 16 de 16, #8 17 de 17 y #9 14 de
+  14".
+
+Los Product Architects no participaron de esta review por escrito.
 
 ## Punto de control del 25/10
 
