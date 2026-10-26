@@ -515,6 +515,39 @@
             "13": 8
           }
         }
+      ],
+      "last_defect_id": 108,
+      "defects": [
+        {
+          "id": 59,
+          "title": "Las fechas de un proyecto se comparan con hora, no por día",
+          "description": "La Fase 2 de la historia #3 decidió que las fechas de un proyecto son días, sin hora: \"un proyecto que empieza y termina el mismo día es válido\". Pero la validación de fechas coherentes (RN-4) compara las fechas completas, con hora.",
+          "severity": "Mayor",
+          "state": "Resuelto",
+          "story_id": 3,
+          "detected_in": 1,
+          "resolved_in": 1
+        },
+        {
+          "id": 60,
+          "title": "Los mensajes de error del dominio no llevan tildes",
+          "description": "Los mensajes de internal/domain/errors.go están escritos sin tildes: \"no se encontro el proyecto\", \"la fecha de finalizacion\", etc. AGENTS.md dice que los mensajes son para el usuario y van en español, y la consola (#24, RN-2) los muestra tal cual.",
+          "severity": "Menor",
+          "state": "Resuelto",
+          "story_id": 3,
+          "detected_in": 1,
+          "resolved_in": 2
+        },
+        {
+          "id": 108,
+          "title": "Tres tests de internal/store fallan en Windows",
+          "description": "go test ./... da rojo en Windows con el código actual de dev (d6eafaf), aunque el CI, que corre en Linux, está en verde. Fallan tres tests de internal/store/file_test.go.",
+          "severity": "Mayor",
+          "state": "Resuelto",
+          "story_id": 77,
+          "detected_in": 2,
+          "resolved_in": 2
+        }
       ]
     }
   ]

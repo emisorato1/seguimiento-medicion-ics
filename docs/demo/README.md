@@ -25,6 +25,7 @@ go run ./cmd/web -datos /tmp/demo.json
 | **Sprint 1** (28/09 al 16/10, cerrado el 16/10): su Sprint Goal, las 5 historias asignadas y las 2 completadas (la #3 y la #4) | actas de planning y review del Sprint 1 |
 | **Sprint 2** (20 al 25/10, cerrado el 25/10): su Sprint Goal y las 10 historias, todas completadas, con la #13 adelantada | anexo de la planning y review del Sprint 2 |
 | **13 registros de esfuerzo**, uno por historia con horas reales, 69,25 h en total | campo *Horas reales* del tablero; las 38,25 h del Sprint 1 y las 31 h del Sprint 2 de las actas de review |
+| **3 defectos**, todos resueltos, con su número de issue: el #59 (historia #3, detectado y resuelto en el Sprint 1), el #60 (historia #3, detectado en el Sprint 1 y resuelto en el 2) y el #108 (historia #77, detectado y resuelto en el Sprint 2) | los issues con la etiqueta `defecto` (título, «Qué pasa» y «Datos para el informe») y la review de cada sprint |
 
 El estado de cada historia es el que tenía al cierre del Sprint 2: Terminada si se completó
 en el Sprint 1 o en el 2, Pendiente si no. La #10, la #16 y la #73 se terminaron después, en
@@ -32,6 +33,10 @@ el Sprint 3, y acá figuran Pendientes.
 
 ## Lo que hubo que adaptar
 
+- **La severidad de los defectos la asignó Emiliano Sorato el 26/10**: ningún registro la
+  tenía y el sistema la pide. El #59 y el #108 son Mayor; el #60, Menor.
+- **El #60 tocaba la #3 y la #6**, y el sistema relaciona cada defecto con una sola historia:
+  figura con la #3, que es la que su issue nombra primero.
 - **El día de cada registro de esfuerzo es el día en que la historia se mergeó a `dev`.**
   El tablero guarda las horas reales por historia, sin día, y el sistema pide uno. Las horas
   se trabajaron en los días anteriores, no todas ese día.
@@ -46,7 +51,7 @@ el Sprint 3, y acá figuran Pendientes.
 
 | Qué | Por qué |
 |---|---|
-| **Los defectos** (#59, #60 y #108 al cierre del Sprint 2) | ningún registro dice su **severidad**, y el sistema la pide para cargar un defecto. El resto de sus datos sí está (historia, sprint de detección y de resolución). Se suman cuando el equipo les asigne una |
+| **El defecto #156** | se detectó en el Sprint 3, después de esta foto |
 | **Rondas de Planning Poker** | no hay votos registrados: el Sprint 1 se estimó por afinidad y el Sprint 2 mantuvo esas estimaciones (actas de planning) |
 | **El Sprint 3** | estaba en curso al momento de esta foto |
 | **El reparto de horas por persona del Sprint 2** | la review lo tiene pendiente; las horas van a nombre del responsable de cada historia |
