@@ -88,3 +88,21 @@ func TestListarLosSprintsCerradosDeUnProyecto(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: El sprint abierto no aparece en el listado
+// Cubre: RN-2
+func TestElSprintAbiertoNoApareceEnElListado(t *testing.T) {
+	project := unProyecto(t)
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), nil)
+	unSprint(t, project)
+
+	sprints := project.ClosedSprints()
+
+	if len(sprints) != 1 || sprints[0].Number() != 1 {
+		numbers := []int{}
+		for _, s := range sprints {
+			numbers = append(numbers, s.Number())
+		}
+		t.Fatalf("se esperaba solamente el sprint 1, salieron %v", numbers)
+	}
+}
