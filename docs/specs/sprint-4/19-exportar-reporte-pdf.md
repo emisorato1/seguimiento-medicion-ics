@@ -3,7 +3,7 @@
 - **Historia:** #19
 - **Sprint:** 4
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **lista para implementar** (el código espera la #18)
+- **Estado:** Puerta 3 aprobada — **en implementación**: las tareas 1 a 12, sin esperar la #18 (ver la Fase 4)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #18 (el reporte ya armado), y por ella de la #16. El código espera que el
   reporte y sus secciones estén en `dev` (ver Dependencias de la Fase 2)
@@ -340,18 +340,18 @@ antes de mostrar nada. Que **de verdad abra** se verifica a mano (ver abajo).
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Maquetar un reporte chico: una página con el título, "Generado el" y la fecha, los encabezados y las líneas en orden, "Página 1 de 1", y una línea vacía como renglón en blanco | Exportar el reporte de un sprint a PDF / Una linea vacia queda como renglon en blanco | RN-2, RN-3, RN-8 | pendiente |
-| 2 | Medir el ancho con la tabla de Helvetica: una línea más larga que el renglón se corta entre palabras, también el título con su letra, y ningún renglón pasa los 481,9 pt | Una linea larga sigue en el renglon siguiente / Un titulo largo sigue en varios renglones con su letra | RN-4, RN-5, RN-6 | pendiente |
-| 3 | Una palabra más larga que el renglón se corta en el margen | Una palabra mas larga que el renglon se corta en el margen | RN-6 | pendiente |
-| 4 | Un reporte largo sigue en páginas nuevas, cada una con su "Página N de M" | Un reporte largo ocupa varias paginas numeradas | RN-7, RN-8 | pendiente |
-| 5 | Un encabezado que caería en el último renglón pasa a la página siguiente | Un encabezado nunca queda solo al pie de una pagina | RN-7 | pendiente |
-| 6 | Escribir: el archivo tiene la cabecera de PDF 1.4, objetos, tabla de posiciones exacta, árbol de páginas y marca de fin, con páginas A4 | El archivo se abre en un lector de PDF | RN-1, RN-4 | pendiente |
-| 7 | El texto de cada renglón está en el contenido de su página, con el título más grande y los encabezados en negrita. Amplía el test de la tarea 1, que es del mismo escenario | Exportar el reporte de un sprint a PDF | RN-2, RN-5, RN-9 | pendiente |
-| 8 | Los paréntesis y las barras invertidas se escriben sin romper el archivo | Los parentesis y las barras no rompen el archivo | RN-11 | pendiente |
-| 9 | Tildes, ñ, ü, ¿, ¡ y la raya «—» se escriben en la codificación WinAnsi —la raya no está en Latin-1: no alcanza con pasar cada letra a un byte—, y lo que no entra en ella sale como "?" | Letras del castellano y caracteres que no se pueden representar | RN-10 | pendiente |
-| 10 | Si el destino falla al escribir, la exportación informa que no se pudo generar el PDF | Un PDF que no se puede entregar se informa | RN-12 | pendiente |
-| 11 | Un reporte de proyecto y uno de sprint se exportan igual, sin nada agregado ni quitado | El PDF no agrega ni quita nada del reporte | RN-3, RN-13 | pendiente |
-| 12 | Exportar dos veces el mismo reporte da los mismos bytes: nada del archivo sale del reloj ni del azar | Exportar dos veces el mismo reporte da el mismo archivo | RN-3 | pendiente |
+| 1 | Maquetar un reporte chico: una página con el título, "Generado el" y la fecha, los encabezados y las líneas en orden, "Página 1 de 1", y una línea vacía como renglón en blanco | Exportar el reporte de un sprint a PDF / Una linea vacia queda como renglon en blanco | RN-2, RN-3, RN-8 | hecha |
+| 2 | Medir el ancho con la tabla de Helvetica: una línea más larga que el renglón se corta entre palabras, también el título con su letra, y ningún renglón pasa los 481,9 pt | Una linea larga sigue en el renglon siguiente / Un titulo largo sigue en varios renglones con su letra | RN-4, RN-5, RN-6 | hecha |
+| 3 | Una palabra más larga que el renglón se corta en el margen | Una palabra mas larga que el renglon se corta en el margen | RN-6 | hecha |
+| 4 | Un reporte largo sigue en páginas nuevas, cada una con su "Página N de M" | Un reporte largo ocupa varias paginas numeradas | RN-7, RN-8 | hecha |
+| 5 | Un encabezado que caería en el último renglón pasa a la página siguiente | Un encabezado nunca queda solo al pie de una pagina | RN-7 | hecha |
+| 6 | Escribir: el archivo tiene la cabecera de PDF 1.4, objetos, tabla de posiciones exacta, árbol de páginas y marca de fin, con páginas A4 | El archivo se abre en un lector de PDF | RN-1, RN-4 | hecha |
+| 7 | El texto de cada renglón está en el contenido de su página, con el título más grande y los encabezados en negrita. Amplía el test de la tarea 1, que es del mismo escenario | Exportar el reporte de un sprint a PDF | RN-2, RN-5, RN-9 | hecha |
+| 8 | Los paréntesis y las barras invertidas se escriben sin romper el archivo | Los parentesis y las barras no rompen el archivo | RN-11 | hecha |
+| 9 | Tildes, ñ, ü, ¿, ¡ y la raya «—» se escriben en la codificación WinAnsi —la raya no está en Latin-1: no alcanza con pasar cada letra a un byte—, y lo que no entra en ella sale como "?" | Letras del castellano y caracteres que no se pueden representar | RN-10 | hecha |
+| 10 | Si el destino falla al escribir, la exportación informa que no se pudo generar el PDF | Un PDF que no se puede entregar se informa | RN-12 | hecha |
+| 11 | Un reporte de proyecto y uno de sprint se exportan igual, sin nada agregado ni quitado | El PDF no agrega ni quita nada del reporte | RN-3, RN-13 | hecha |
+| 12 | Exportar dos veces el mismo reporte da los mismos bytes: nada del archivo sale del reloj ni del azar | Exportar dos veces el mismo reporte da el mismo archivo | RN-3 | hecha |
 
 **Verificación manual, que no es un ciclo de TDD.** Antes de abrir el pull request, se exporta
 un reporte real (de la #18, o armado a mano si la #18 no llegó) —descargado desde la web si la
@@ -406,7 +406,84 @@ criterio de la issue (Sprint 4) no lleva tarea: es de planificación (punto 5 de
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+### Cambio de las dependencias (26/10)
+
+La Fase 3 dice que ninguna tarea empieza sin `Report`, `Section` y `Metrics` en `dev`. **Se
+cambió: decidido por Emiliano Sorato el 26/10 para no esperar el código de la #18; pendiente
+que lo acepte Maximiliano Eula, que aprobó las puertas.**
+
+- Las tareas 1 a 12 trabajan sobre un tipo privado, `pdfDoc`, con los mismos tres datos que
+  el PDF lee del reporte: el título, el día de generación y las secciones con su encabezado y
+  sus líneas. No se declaran `Report` ni `Section`, que siguen siendo de la #18.
+- La conexión con el reporte, `r.WritePDF(w)`, queda para cuando la #18 esté en `dev`: es el
+  segundo PR, el que cierra la historia (`Closes #19`). Ahí los tests de los escenarios arman
+  un `Report` a mano y la verificación manual se hace con un reporte real.
+- La RN-3 se sigue cumpliendo igual: `pdfDoc` no tiene métricas ni alcance, así que el PDF no
+  tiene con qué calcular nada.
+
+### Primer PR (`Refs #19`), 26/10: las tareas 1 a 12
+
+Ciclo RED → GREEN. El test en un commit, con la salida que falla en su mensaje, y la
+implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `15d3634` | `b77dfb3` |
+| 2 | `48a0757` | `a781f46` |
+| 3 | `e083a2d` | `fa863dc` |
+| 4 | `b87ac8a` | `cae1730` |
+| 5 | `cce7625` | `b919c4e` |
+| 6 | `625c17b` | `6b90bf1` |
+| 7 | `15f3415` | `87f84a8` |
+| 8 | `7cab343` | `745621b` |
+| 9 | `7a46cb9` | `109e222` |
+| 10 | `05d3a80` | `81215d9` |
+| 11 | `9711eb6` | — (sin RED, ver abajo) |
+| 12 | `916d3cb` | — (sin RED, ver abajo) |
+| 2 (un carácter que no está en la tabla de anchos) | `cee31eb` | — (sin RED, ver abajo) |
+
+- **RED por compilación** en las tareas 1, 2, 6 y 10: el tipo, la medida, la escritura o el
+  error todavía no existían.
+- **RED por comportamiento** en las demás:
+  - la 3 y la 4 daban un solo renglón o una sola página;
+  - la 5 dejaba el encabezado al pie;
+  - la 7 no escribía ningún texto;
+  - la 8 no escapaba los paréntesis;
+  - la 9 sacaba "?" en lugar de la raya y dejaba pasar un carácter de control.
+- **La 11 y la 12 pasaron sin RED**, y sus commits lo dicen. La 11 recorre los tres pasos con
+  un reporte de proyecto y uno de sprint, y lo que verifica ya lo hicieron la 1 y la 7. La 12:
+  el archivo no tiene nada que salga del reloj ni del azar.
+- **Un test más de la tarea 2, sin RED**: un carácter que no está en la tabla se mide con el
+  ancho más grande. La rama existía desde la tarea 2 y ningún test la recorría. Con él, el
+  dominio queda al 100 % de cobertura.
+
+**Casos que agregó el plan**, que los escenarios no prueban directamente:
+- Una línea con espacios dobles, o con solo espacios: queda tal cual (tarea 2).
+- Una palabra larga hecha de "ñ": se corta sin partir ninguna letra (tarea 3).
+- Un encabezado sin líneas al final de la página: pasa a la siguiente, sin dejar páginas
+  vacías (tarea 5, `TestUnEncabezadoSinLineasAlFinalNoAgregaPaginaVacia`).
+- Un destino que escribe la mitad sin devolver error: también es una falla (tarea 10).
+- Un reporte sin secciones: da una página con el título, "Generado el" y el pie
+  (`TestUnReporteSinSeccionesTieneUnaPagina`).
+
+**Nombres de los tests.** El escenario "Exportar el reporte de un sprint a PDF" tiene dos
+tests: `TestExportarElReporteDeUnSprintAPDF`, del maquetado (tarea 1), y
+`TestExportarElReporteDeUnSprintAPDFTextoYLetras`, del archivo escrito (tarea 7). La tabla de
+anchos tiene el suyo, `TestAnchosDeHelvetica`, con algunos valores conocidos y la condición de
+que todos los caracteres ASCII imprimibles estén en las dos tablas.
+
+**Detalles que la spec dejaba abiertos:**
+- **Los anchos** son los de los AFM de Adobe. Las letras con tilde, la ñ y la ü miden como su
+  letra sin marca, salvo la i con tilde, que mide 278 y no 222. Un carácter que no está en la
+  tabla mide 1015, el de "@", el más ancho.
+- **El texto va en el borde izquierdo**, en x = 56,69 pt. El renglón i se escribe en
+  y = 785,2 − 18 × (i + 1), y el pie, en el lugar del renglón 40 (y = 65,2). Los renglones en
+  blanco no se escriben, pero ocupan su lugar.
+- **Un encabezado necesita lugar para él y para un renglón más**; si no lo tiene, pasa a la
+  página siguiente. Un encabezado largo ocupa varios renglones y se cuenta entero.
+
+**Pendiente para el segundo PR:** `r.WritePDF(w)` sobre el `Report` de la #18, y la
+verificación manual en Vista Previa y en un navegador.
 
 ## Trazabilidad
 
