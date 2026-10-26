@@ -27,12 +27,16 @@ type Database struct {
 func OpenDatabase(path string) (*Database, error) {
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
-		return nil, fmt.Errorf("no se pudo abrir la base %s", path)
+		return nil, fmt.Errorf("%w: no se pudo abrir la base %s", domain.ErrSavedDataInvalid, path)
 	}
 	db.SetMaxOpenConns(1)
 	if err := migrate(db); err != nil {
 		db.Close()
-		return nil, fmt.Errorf("no se pudo abrir la base %s: %w", path, err)
+		if errors.Is(err, errNewerSchema) {
+			return nil, fmt.Errorf("%w: la base %s %w y este no la puede abrir", domain.ErrSavedDataInvalid, path, errNewerSchema)
+		}
+		// el detalle del driver viene en ingles y el mensaje es para el usuario (AGENTS.md)
+		return nil, fmt.Errorf("%w: no se pudo abrir la base %s", domain.ErrSavedDataInvalid, path)
 	}
 	return &Database{db: db, path: path}, nil
 }
@@ -199,7 +203,13 @@ func (d *Database) Load() (*domain.ProjectRegistry, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%w: no se pudo leer la base %s", domain.ErrSavedDataInvalid, d.path)
 	}
-	return domain.RegistryFromJSON(data)
+	loaded, err := domain.RegistryFromJSON(data)
+	if err != nil {
+		// el error del dominio ya dice que los datos guardados no se pueden leer y por que; se
+		// le suma en que base estan
+		return nil, fmt.Errorf("%w (en la base %s)", err, d.path)
+	}
+	return loaded, nil
 }
 
 // readRegistry lee las filas de la base en el orden en que se guardaron. Sin fila en
