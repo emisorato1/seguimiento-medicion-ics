@@ -7,6 +7,11 @@
   <dt>Fin</dt><dd>{{fecha .Sprint.End}}</dd>
   <dt>Estado</dt><dd>{{.Sprint.State}}</dd>
 </dl>
+{{if .Open}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/sprints/cerrar">Cerrar el sprint</a>
+</div>
+{{end}}
 <h2>Sprint Backlog</h2>
 {{if .Open}}
 {{template "error-formulario" .Form.General}}
