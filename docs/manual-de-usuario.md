@@ -178,10 +178,10 @@ cada una.
 | Lo que ves | Qué hacer |
 |---|---|
 | Un mensaje en rojo debajo de un campo | corregir ese campo y volver a enviar |
-| «No se encontró el proyecto», «la historia», «el sprint», «el defecto» o «la ronda» | volver con el botón y elegirlo de la lista |
-| «Ya hay un sprint abierto en el proyecto» al crear uno | cerrar primero el sprint abierto |
-| «Todavía faltan votos para revelar la ronda» | esperar a que voten todos los que figuran en «Faltan» |
-| «El cambio no quedó guardado» | el cambio sigue cargado y se guarda con el próximo que funcione; revisá que se pueda escribir en la carpeta de los datos |
+| «no se encontró el proyecto» (o la historia, el sprint, el defecto o la ronda) | volver con el botón y elegirlo de la lista |
+| «ya hay un sprint abierto en el proyecto: el sprint 1» al crear uno | cerrar primero el sprint abierto |
+| «todavía faltan votos para revelar la ronda» | esperar a que voten todos los que figuran en «Faltan» |
+| «No quedó guardado» | el cambio sigue cargado y se guarda con el próximo que funcione; revisá que se pueda escribir en la carpeta de los datos |
 | Al abrir, «el puerto ya lo está usando otro programa» | abrirlo con `-puerto 8081` |
 | Al abrir, «los datos guardados no se pueden leer» | arreglar el archivo de datos o arrancar con otro usando `-datos` |
 
