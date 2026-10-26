@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
@@ -47,4 +48,40 @@ func Import(d *Database, path string) error {
 		return fmt.Errorf("%w (en el archivo %s)", err, path)
 	}
 	return d.Save(registry)
+}
+
+// LegacyFile es el archivo donde la version anterior, la de la #77, guardaba los datos.
+const LegacyFile = "datos-ics.json"
+
+// ImportLegacy trae solo el archivo de la version anterior, si esta en dir y la base no tiene
+// datos (RN-14), y lo renombra a LegacyFile + ".importado" para no traerlo otra vez (RN-15).
+// Devuelve si lo importo. Sin archivo, o con la base con datos, no hace nada. Si el archivo no
+// cumple las reglas, no lo toca y la base queda vacia (RN-9). El orden es importar y guardar,
+// y despues renombrar; si el renombre falla, vacia la base otra vez, asi se importa una sola
+// vez cuando se resuelva (D10).
+func ImportLegacy(d *Database, dir string) (bool, error) {
+	path := filepath.Join(dir, LegacyFile)
+	if _, err := os.Stat(path); err != nil {
+		return false, nil
+	}
+	empty, err := d.IsEmpty()
+	if err != nil || !empty {
+		return false, err
+	}
+	// En Linux y macOS renombrar pisa el destino sin avisar: se mira antes, para no perder el
+	// archivo de una importacion anterior.
+	target := path + ".importado"
+	if _, err := os.Stat(target); err == nil {
+		return false, fmt.Errorf("ya existe %s, así que no se importa %s para no importarlo dos veces: mové o borrá uno de los dos y volvé a abrir el sistema", target, path)
+	}
+	if err := Import(d, path); err != nil {
+		return false, err
+	}
+	if err := os.Rename(path, target); err != nil {
+		if emptyErr := d.Save(domain.NewProjectRegistry()); emptyErr != nil {
+			return false, emptyErr
+		}
+		return false, fmt.Errorf("no se pudo renombrar %s a %s, así que la base quedó vacía para importarlo una sola vez: revisá que se pueda escribir en la carpeta y volvé a abrir el sistema", path, target)
+	}
+	return true, nil
 }

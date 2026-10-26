@@ -15,6 +15,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -117,6 +118,18 @@ func open(o options, out io.Writer) (http.Handler, *store.Database, error) {
 			return nil, nil, err
 		}
 		fmt.Fprintf(out, "Se importaron los datos de %s\n", o.importPath)
+	} else {
+		// Sin -importar, lo que guardo la version anterior junto a la base se importa solo,
+		// una sola vez (RN-14, RN-15).
+		imported, err := store.ImportLegacy(db, filepath.Dir(o.dataPath))
+		if err != nil {
+			db.Close()
+			return nil, nil, err
+		}
+		if imported {
+			legacy := filepath.Join(filepath.Dir(o.dataPath), store.LegacyFile)
+			fmt.Fprintf(out, "Se importaron los datos de %s y el archivo se renombró a %s.importado\n", legacy, legacy)
+		}
 	}
 	registry, err := db.Load()
 	if err != nil {
