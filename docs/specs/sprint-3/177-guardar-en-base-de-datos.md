@@ -9,7 +9,8 @@
 - **La necesitan:** nadie todavía
 - **Origen:** decisión de Emiliano Sorato como integrante del equipo, el 26/10. Cambia dos
   reglas de `AGENTS.md` (la de cómo se guardan los datos y la de no usar dependencias
-  externas); el cambio va en el pull request de esta spec.
+  externas); el cambio lo aplica Emiliano Sorato en un commit aparte, antes del merge de la
+  implementación.
 - **Acuerdo del equipo para la dependencia:** Maximiliano Eula dio el ok en persona a
   Emiliano el 26/10 (según lo que registró Emiliano).
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de las decisiones
@@ -95,7 +96,7 @@ otra, para cargar los datos de demo y para traer lo guardado con la versión ant
     renombrarlo a `datos-ics.json.importado` y avisar que lo renombró, para que no se vuelva a
     importar: aunque después se borre todo, al volver a abrir no reaparecen los datos viejos.
     Si la importación falla, el archivo no se toca, la base queda vacía y el sistema avisa
-    qué pasó y no abre (RN-9). **Decidido el 26/10**, como lo transmitió la manager.
+    qué pasó y no abre (RN-9). **Decidido por Emiliano Sorato el 26/10.**
 
 ### Casos límite
 
@@ -255,7 +256,7 @@ Escenario: Una base de una versión más nueva no se abre
 
 ### Decidido antes de la puerta
 
-Se decidieron el 26/10 los puntos que el borrador dejaba abiertos:
+Emiliano Sorato decidió el 26/10 los puntos que el borrador dejaba abiertos:
 
 1. **Importar sobre una base con datos se rechaza** (RN-10): importar reemplazaría todo lo
    que hay, y un error de tipeo en el comando borraría el proyecto.
@@ -263,8 +264,8 @@ Se decidieron el 26/10 los puntos que el borrador dejaba abiertos:
    (RN-14). El borrador proponía solo avisar.
 3. **Se importa una sola vez** (RN-15): después de importarlo bien se renombra a
    `datos-ics.json.importado`. Así, alguien que borra todo y vuelve a abrir no recibe otra
-   vez los datos viejos. Si la importación falla, el archivo no se toca. Lo transmitió la
-   manager el 26/10.
+   vez los datos viejos. Si la importación falla, el archivo no se toca. Decidido por
+   Emiliano Sorato el 26/10.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
@@ -303,14 +304,14 @@ escribir ese archivo con lo que ya existe.
 | `go.mod` y `go.sum` | se modifican | el driver de la base |
 | `docs/manual-de-usuario.md` | se modifica | cómo se guardan los datos, importar y exportar |
 | `docs/documentacion-tecnica.md` | se modifica | el esquema y cómo se suma un dato nuevo |
-| `AGENTS.md` | se modifica (lo edita la manager) | la fila de cómo se guardan los datos y la regla de las dependencias, ya acordadas |
+| `AGENTS.md` | se modifica: lo aplica Emiliano Sorato en un commit aparte, antes del merge de la implementación | la fila de cómo se guardan los datos y la regla de las dependencias, ya acordadas |
 
 ### Decisiones
 
 | Decisión | Alternativa descartada | Por qué |
 |---|---|---|
 | **D1** SQLite con el driver `modernc.org/sqlite`, por `database/sql` | un driver con CGO (`mattn/go-sqlite3`); otro motor con servidor (PostgreSQL) | es Go puro: compila y corre en el CI de Windows y en las tres plataformas del CD sin un compilador de C. Un motor con servidor obliga a instalar algo aparte (RN-12). Decidido por Emiliano |
-| **D2** Una tabla por entidad, y tablas aparte para lo que una entidad tiene varias veces: los criterios de cada historia, las historias asignadas y completadas de cada sprint con sus puntos al cerrar, los participantes y los votos de cada ronda | una tabla con el texto del registro entero | se pidió explícitamente: guardar el texto en una columna no es una base de datos de verdad. Decidido por Emiliano |
+| **D2** Una tabla por entidad, y tablas aparte para lo que una entidad tiene varias veces: los criterios de cada historia, las historias asignadas y completadas de cada sprint con sus puntos al cerrar, los participantes y los votos de cada ronda. **Los contadores de la numeración se guardan tal como los trae la conversión**: el próximo número de proyecto, en una tabla del registro con una sola fila; el próximo número de historia, el último sprint y el último defecto de cada proyecto, como columnas de la tabla de proyectos. **Nunca se deducen del número más alto guardado** | una tabla con el texto del registro entero; deducir el próximo número del máximo guardado | se pidió explícitamente: guardar el texto en una columna no es una base de datos de verdad (decidido por Emiliano). Con D4, que borra y vuelve a insertar, deducir el contador del máximo reutilizaría el número del último elemento quitado; la conversión ya trae los contadores (RN-22 de la #77), así que se guardan como vienen. Las rondas se numeran por historia y el dominio controla al cargar que vayan seguidas: no llevan contador |
 | **D3** El puente es la conversión del dominio (Enfoque) | que el dominio exporte constructores y lectores para cada dato; que `internal/store` reimplemente las validaciones | lo primero cambia el contrato del dominio, que esta historia no toca; lo segundo duplica las reglas y las deja divergir. Así la carga valida exactamente lo mismo que hoy, por el mismo código |
 | **D4** Guardar reescribe todas las tablas dentro de **una transacción**: borra y vuelve a insertar | actualizar solo lo que cambió | la web pide guardar el registro entero (D13 de la #77), y saber qué cambió exigiría que el dominio lo informe. Los datos son pocos. La transacción es lo que garantiza todo o nada (RN-2) |
 | **D5** Si la conversión trae un dato que la base no tiene dónde guardar, **el guardado falla** con "No quedó guardado" | ignorar el dato | es lo que hoy obliga a cada historia a sumar su dato a la conversión (AGENTS.md): ahora también a una tabla, con una migración nueva. Fallar en voz alta evita perder datos en silencio, y el test de ida y vuelta lo detecta antes del merge |
@@ -324,12 +325,18 @@ escribir ese archivo con lo que ya existe.
 
 - **La dependencia está acordada con el equipo** (AGENTS.md: "agregar una dependencia se
   acuerda con el equipo"): Maximiliano Eula dio el ok en persona a Emiliano el 26/10 (según lo
-  que registró Emiliano). El cambio de `AGENTS.md` va en el PR.
+  que registró Emiliano). El cambio de `AGENTS.md` lo aplica Emiliano Sorato en un commit
+  aparte, antes del merge de la implementación.
 - **No se toca** `internal/domain` (decisión de Emiliano), `internal/web` (los handlers ya
   guardan a través de algo que sabe guardar) ni `cmd/app` (la consola sigue en memoria).
 - **El CI baja el driver** al compilar (`go mod download`); hoy no baja nada.
 - Los tests de errores de archivos se arman con el lugar de las cosas y no con permisos de
   Unix, que Windows ignora (defecto #108).
+- **El escenario "Traer los datos de la versión anterior" nombra los datos de demo**
+  (`docs/demo/datos-demo.json`), que están en la rama `datos-demo` y todavía no en `dev`. La
+  tarea 10 no depende de esa rama: **su test usa un archivo de prueba propio** con los mismos
+  tipos de datos. Si `datos-demo` está en `dev` al implementar, se importa además a mano y se
+  anota en la Fase 4.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios:
