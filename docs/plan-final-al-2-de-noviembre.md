@@ -107,6 +107,11 @@ espere una puerta. Es el cuello de botella que mató al Sprint 1.
 
 Es el sprint más cargado y el que decide la presentación.
 
+**Historia agregada durante el sprint, el 26/10:** la #177 *Guardar los datos en una base de
+datos* (SQLite), decidida por Emiliano Sorato, que es su responsable. Sus story points están
+[pendientes] del Planning Poker. Suma una dependencia nueva al proyecto: Maximiliano Eula dio
+el ok en persona a Emiliano el 26/10.
+
 ### Sprint 4 — 31 de octubre y 1 de noviembre (10 SP)
 
 | Quién | Historias | SP |

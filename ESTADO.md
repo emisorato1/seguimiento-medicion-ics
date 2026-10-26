@@ -1,28 +1,30 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 19:45. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 19:59. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 23
-- Sin estimar: 4
+- Historias en el tablero: 24
+- Sin estimar: 5
 - Story points cargados: 83
 - Terminadas: 18
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
+| #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
 
 ## Lista para implementar
 
@@ -69,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+3eccdbb 2026-10-26 Merge pull request #176 from emisorato1/trazabilidad-173
+73a2672 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con el #173
 9b84b3e 2026-10-26 Merge pull request #175 from emisorato1/actas-maxi-goal-73
 4c89c44 2026-10-26 Merge pull request #173 from emisorato1/defecto-172-ronda-nombres
 5282fa8 2026-10-26 docs: sprint goal del sprint 2 y horas de la 73 segun Maximiliano
 ae2380a 2026-10-26 Merge pull request #174 from emisorato1/trazabilidad-170
 7202ee1 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con el #170, y aclarar la regla de la ronda 2
 bd522fe 2026-10-26 Merge pull request #171 from emisorato1/planning-s3-ronda2-maxi
-e0eee64 2026-10-26 docs: el defecto 172 en la fase 4 de la historia 73
-0585017 2026-10-26 fix: la carga compara los participantes de una ronda como la búsqueda de la #4 (defecto 172)
 ```

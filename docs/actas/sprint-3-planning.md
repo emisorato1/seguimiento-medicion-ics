@@ -53,6 +53,17 @@ la #13 ya en `dev`. Horas estimadas cargadas: 13,5 h". La #73 era del Sprint 4. 
 reales son **3 h**, contra 13,5 estimadas (−10,5 h, −78%): las cargó Maximiliano Eula en el
 tablero y lo dejó dicho el 26/10 [en el PR #169](https://github.com/emisorato1/seguimiento-medicion-ics/pull/169#issuecomment-6428626374).
 
+### Historia agregada durante el sprint
+
+| # | Historia | SP | Responsable | Horas estimadas | Estado al 26/10 |
+|---|---|---|---|---|---|
+| 177 | Guardar los datos en una base de datos (SQLite) | [pendiente] | Emiliano Sorato | sin horas | En progreso |
+
+La agregó Emiliano Sorato el 26/10, ya empezado el sprint, y no estaba en el compromiso de los
+28 story points. Sus story points salen del Planning Poker: Emiliano votó 8, y los demás todavía
+no votaron [pendiente]. Hasta que tenga story points no tiene horas estimadas. Trae una
+dependencia nueva para el proyecto: Maximiliano Eula dio el ok en persona a Emiliano el 26/10.
+
 ## Planning Poker de la #77 y la #78
 
 Ninguna de las dos tenía story points. La #77 ya está terminada: se estima solo para la
@@ -123,4 +134,6 @@ Los cuatro contestaron "ok".
 
 - [ ] La ronda 2 del Planning Poker de Juliana, y la estimación acordada de la #77 y la #78.
 - [ ] Las horas estimadas de la #78, cuando tenga story points.
+- [ ] El Planning Poker de la #177 (falta el voto de Juliana, Maximiliano y Agustín) y sus horas
+  estimadas.
 - [x] Las horas reales de la #73: 3 h, cargadas por Maximiliano Eula el 26/10.
