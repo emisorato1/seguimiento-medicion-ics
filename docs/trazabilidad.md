@@ -36,6 +36,7 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 3 |
 | [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 12 |
 | [#10 Cerrar un sprint](#10-cerrar-un-sprint) | 14 | 14 | 0 | 0 |
+| [#11 Consultar sprints anteriores](#11-consultar-sprints-anteriores) | 12 | 12 | 0 | 0 |
 | [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
 | [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 16 | 0 | 2 |
 | [#78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](#78-interfaz-web-sprints-esfuerzo-defectos-planning-poker-y-reportes) | 22 | 17 | 5 | 0 |
@@ -48,9 +49,9 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 250 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 252 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 45 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 55 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 13 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
@@ -701,6 +702,42 @@ cinco casos posibles:
 | [Los puntos registrados al cerrar no cambian si se reestima la historia](specs/sprint-3/10-cerrar-sprint.md?plain=1#L234) | `TestLosPuntosRegistradosAlCerrarNoCambianSiSeReestimaLaHistoria` [sprint_close_test.go:264](../internal/domain/sprint_close_test.go#L264) | [sprint_close.go](../internal/domain/sprint_close.go) | `f0ec86f` → `627b2b9` |
 | [Cerrar el sprint de un proyecto que no existe](specs/sprint-3/10-cerrar-sprint.md?plain=1#L240) | `TestCerrarElSprintDeUnProyectoQueNoExiste` [sprint_close_test.go:249](../internal/domain/sprint_close_test.go#L249) | el que ya estaba | `2aa23a1` (sin RED: ya pasaba) |
 | [Una historia sin estimar al cerrar registra cero puntos](specs/sprint-3/10-cerrar-sprint.md?plain=1#L245) | `TestUnaHistoriaSinEstimarAlCerrarRegistraCeroPuntos` [sprint_close_test.go:284](../internal/domain/sprint_close_test.go#L284) | [sprint_close.go](../internal/domain/sprint_close.go) | `f0ec86f` → `627b2b9` |
+
+## #11 Consultar sprints anteriores
+
+- **Historia:** issue #11
+- **Spec:** [docs/specs/sprint-3/11-consultar-sprints-anteriores.md](specs/sprint-3/11-consultar-sprints-anteriores.md)
+- **Código según la spec:** `internal/domain/sprint_query.go`, `p.Sprint(number)`, `internal/domain/sprint.go`
+
+<details><summary>Criterios de aceptación (10)</summary>
+
+- Se listan los sprints cerrados de un proyecto con su número, su goal, sus fechas, su fecha de cierre y sus historias.
+- De cada sprint cerrado se ve qué historias se le asignaron y cuáles se completaron.
+- El sprint abierto no aparece en el listado.
+- El listado viene ordenado por número, del más viejo al más nuevo.
+- Un proyecto sin sprints cerrados devuelve un listado vacío y eso no es un error.
+- Se puede pedir el detalle de un sprint por su número.
+- Pedir un sprint con un número que no existe informa que no se encontró el sprint.
+- Consultar un sprint no lo modifica, y lo que se recibe no permite modificarlo.
+- El listado de un proyecto no trae sprints de otro.
+- Consultar en un proyecto que no existe informa que no se encontró el proyecto.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Listar los sprints cerrados de un proyecto](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L113) | `TestListarLosSprintsCerradosDeUnProyecto` [sprint_query_test.go:61](../internal/domain/sprint_query_test.go#L61) | [sprint_query.go](../internal/domain/sprint_query.go) | `252e761` → `ae68d7f` |
+| [El sprint abierto no aparece en el listado](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L119) | `TestElSprintAbiertoNoApareceEnElListado` [sprint_query_test.go:96](../internal/domain/sprint_query_test.go#L96) | el que ya estaba | `9bdc11e` (sin RED: ya pasaba) |
+| [Un proyecto sin sprints cerrados devuelve un listado vacio](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L124) | `TestUnProyectoSinSprintsCerradosDevuelveUnListadoVacio` [sprint_query_test.go:34](../internal/domain/sprint_query_test.go#L34) | [sprint_query.go](../internal/domain/sprint_query.go) | `b913e5c` → `0ca7b01` |
+| [Ver que historias se completaron en un sprint cerrado](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L135) | `TestVerQueHistoriasSeCompletaronEnUnSprintCerrado` [sprint_query_test.go:134](../internal/domain/sprint_query_test.go#L134) | el que ya estaba | `957e198` (sin RED: ya pasaba) |
+| [Un sprint cerrado sin historias se consulta igual](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L141) | `TestUnSprintCerradoSinHistoriasSeConsultaIgual` [sprint_query_test.go:153](../internal/domain/sprint_query_test.go#L153) | el que ya estaba | `a2de059` (sin RED: ya pasaba) |
+| [Pedir el detalle de un sprint por su numero](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L147) | `TestPedirElDetalleDeUnSprintPorSuNumero` [sprint_query_test.go:114](../internal/domain/sprint_query_test.go#L114) | el que ya estaba | `af315e0` (sin RED: ya pasaba) |
+| [Pedir el detalle del sprint abierto](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L152) | `TestPedirElDetalleDelSprintAbierto` [sprint_query_test.go:195](../internal/domain/sprint_query_test.go#L195) | el que ya estaba | `0c1ea94` (sin RED: ya pasaba) |
+| [Pedir un sprint que no existe](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L158) | `TestPedirUnSprintQueNoExiste` [sprint_query_test.go:175](../internal/domain/sprint_query_test.go#L175) | el que ya estaba | `9d28eba` (sin RED: ya pasaba) |
+| [Consultar un sprint no lo modifica](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L169) | `TestConsultarUnSprintNoLoModifica` [sprint_query_test.go:214](../internal/domain/sprint_query_test.go#L214) | el que ya estaba | `932af91` (sin RED: ya pasaba) |
+| [Cada proyecto lista solamente sus sprints](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L175) | `TestCadaProyectoListaSolamenteSusSprints` [sprint_query_test.go:238](../internal/domain/sprint_query_test.go#L238) | el que ya estaba | `37400f3` (sin RED: ya pasaba) |
+| [Cerrar un sprint nuevo no cambia los anteriores](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L181) | `TestCerrarUnSprintNuevoNoCambiaLosAnteriores` [sprint_query_test.go:263](../internal/domain/sprint_query_test.go#L263) | el que ya estaba | `1cdc45c` (sin RED: ya pasaba) |
+| [Consultar los sprints de un proyecto que no existe](specs/sprint-3/11-consultar-sprints-anteriores.md?plain=1#L187) | `TestConsultarLosSprintsDeUnProyectoQueNoExiste` [sprint_query_test.go:292](../internal/domain/sprint_query_test.go#L292) | el que ya estaba | `f20e276` (sin RED: ya pasaba) |
 
 ## #13 Votar en secreto en una ronda de Planning Poker
 
