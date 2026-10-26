@@ -208,3 +208,27 @@ func TestPedirElDetalleDelSprintAbierto(t *testing.T) {
 		t.Errorf("se esperaba la fecha de cierre vacia, salio %v", sprint.ClosedOn())
 	}
 }
+
+// Escenario: Consultar un sprint no lo modifica
+// Cubre: RN-8
+func TestConsultarUnSprintNoLoModifica(t *testing.T) {
+	project := unProyecto(t)
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), []int{1}, 3, 5)
+
+	sprint, err := project.Sprint(1)
+	if err != nil {
+		t.Fatalf("se esperaba encontrar el sprint 1, salio: %v", err)
+	}
+	stories := sprint.Stories()
+	stories[0] = 99
+	completed := sprint.CompletedStories()
+	completed[0] = 99
+
+	again, _ := project.Sprint(1)
+	if !slices.Equal(again.Stories(), []int{1, 2}) {
+		t.Errorf("se esperaba que el sprint 1 siguiera con sus historias [1 2] asignadas, tiene %v", again.Stories())
+	}
+	if !slices.Equal(again.CompletedStories(), []int{1}) {
+		t.Errorf("se esperaba que el sprint 1 siguiera registrando completada la historia [1], tiene %v", again.CompletedStories())
+	}
+}
