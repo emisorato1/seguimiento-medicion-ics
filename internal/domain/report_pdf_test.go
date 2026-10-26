@@ -435,3 +435,24 @@ func TestExportarElReporteDeUnSprintAPDFTextoYLetras(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Los parentesis y las barras no rompen el archivo
+// Cubre: RN-11
+func TestLosParentesisYLasBarrasNoRompenElArchivo(t *testing.T) {
+	line := `Desviacion (sobre lo estimado): 25,0 % \ revisar`
+	doc := pdfDoc{title: "Reporte", generatedOn: unDia(2026, 10, 25), sections: []pdfSection{{heading: "Resumen", lines: []string{line}}}}
+
+	pdf := buildPDF(layoutReport(doc))
+
+	if !bytes.Contains(pdf, []byte(`(Desviacion \(sobre lo estimado\): 25,0 % \\ revisar) Tj`)) {
+		t.Errorf("la linea no se escribio con los parentesis y la barra escapados")
+	}
+	start, offsets := parseXref(t, pdf)
+	if start == 0 || len(offsets) != 6 {
+		t.Errorf("la tabla de posiciones no quedo bien: empieza en %d con %d objetos", start, len(offsets))
+	}
+	textos := extraerTextos(pdf)
+	if len(textos) < 4 || textos[3].text != line {
+		t.Errorf("se esperaba leer la linea tal cual, salio %v", textos)
+	}
+}
