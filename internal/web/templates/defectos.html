@@ -1,0 +1,43 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Defectos</h1>
+{{if not .Defects}}
+<div class="vacio">
+  <p>Todavía no hay defectos.</p>
+  <a class="boton" href="/proyectos/{{.ProjectID}}/defectos/nuevo">Cargar el primer defecto</a>
+</div>
+{{else}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/defectos/nuevo">Nuevo defecto</a>
+</div>
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Título</th>
+        <th scope="col">Severidad</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Historia</th>
+        <th scope="col">Detectado en</th>
+        <th scope="col">Resuelto en</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Defects}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/defectos/{{.ID}}">{{.Title}}</a></td>
+        <td>{{.Severity}}</td>
+        <td>{{.State}}</td>
+        <td><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}">{{.StoryID}}</a></td>
+        <td>Sprint {{.DetectedIn}}</td>
+        <td>{{if .ResolvedIn}}Sprint {{.ResolvedIn}}{{else}}<span class="sin-dato">sin resolver</span>{{end}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
+{{end}}

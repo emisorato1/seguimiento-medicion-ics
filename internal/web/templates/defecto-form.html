@@ -1,0 +1,58 @@
+{{define "content"}}
+<h1>Nuevo defecto</h1>
+{{if not .Data.Sprints}}
+<div class="vacio">
+  <p>Este proyecto todavía no tiene sprints: un defecto se carga en el sprint en que se detectó.</p>
+  <a class="boton" href="/proyectos/{{.Data.ProjectID}}/sprints/nuevo">Crear el primer sprint</a>
+</div>
+{{else}}
+{{template "error-formulario" .Data.Form.General}}
+<form class="formulario" method="post" action="/proyectos/{{.Data.ProjectID}}/defectos/nuevo" novalidate>
+  {{with .Data.Form.Field "titulo"}}
+  <div class="campo">
+    <label for="titulo">Título</label>
+    <input type="text" id="titulo" name="titulo" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "descripcion"}}
+  <div class="campo">
+    <label for="descripcion">Descripción</label>
+    <textarea id="descripcion" name="descripcion"{{template "invalido" .}}>{{.Value}}</textarea>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "severidad"}}
+  <div class="campo">
+    <label for="severidad">Severidad</label>
+    <select id="severidad" name="severidad"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí la severidad" $.Data.Severities .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "historia"}}
+  <div class="campo">
+    <label for="historia">Historia</label>
+    <select id="historia" name="historia"{{template "invalido" .}}>
+      {{template "opciones-con-texto" (labeled "Elegí una historia" $.Data.Stories .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{with .Data.Form.Field "sprint"}}
+  <div class="campo">
+    <label for="sprint">Detectado en el sprint</label>
+    <select id="sprint" name="sprint"{{template "invalido" .}}>
+      {{template "opciones-con-texto" (labeled "Elegí un sprint" $.Data.Sprints .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Cargar defecto</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.Data.ProjectID}}/defectos">Cancelar</a>
+  </div>
+</form>
+{{end}}
+{{end}}
