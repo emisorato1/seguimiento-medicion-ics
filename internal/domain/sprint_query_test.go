@@ -106,3 +106,23 @@ func TestElSprintAbiertoNoApareceEnElListado(t *testing.T) {
 		t.Fatalf("se esperaba solamente el sprint 1, salieron %v", numbers)
 	}
 }
+
+// Escenario: Pedir el detalle de un sprint por su numero
+// Cubre: RN-5
+func TestPedirElDetalleDeUnSprintPorSuNumero(t *testing.T) {
+	project := unProyecto(t)
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), nil)
+	unSprintCerrado(t, project, "Tener los sprints", unDia(2026, 10, 20), unDia(2026, 10, 25), unDia(2026, 10, 24), nil)
+
+	sprint, err := project.Sprint(2)
+
+	if err != nil {
+		t.Fatalf("se esperaba encontrar el sprint 2, salio: %v", err)
+	}
+	if sprint.Number() != 2 || sprint.Goal() != "Tener los sprints" {
+		t.Fatalf("se esperaba el sprint 2 con su goal, salio el %d con %q", sprint.Number(), sprint.Goal())
+	}
+	if !sprint.Start().Equal(unDia(2026, 10, 20)) || !sprint.End().Equal(unDia(2026, 10, 25)) || !sprint.ClosedOn().Equal(unDia(2026, 10, 24)) {
+		t.Errorf("se esperaban las fechas 20/10/2026 y 25/10/2026 y el cierre el 24/10/2026, salio %v, %v y %v", sprint.Start(), sprint.End(), sprint.ClosedOn())
+	}
+}
