@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 19:11. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-26 19:25. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -69,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-9947452 2026-10-25 docs: la tarea 4 de la historia 17 hecha, con el nombre de su test en los desvios
-e84abc3 2026-10-25 feat: el sprint en curso muestra su meta y lo que lleva registrado (historia 17, tarea 4)
-6330fb4 2026-10-25 test: el sprint en curso muestra su meta y lo que lleva registrado (historia 17, tarea 4)
-41ace53 2026-10-25 Merge remote-tracking branch 'origin/dev' into historia-17-dashboard
-1537556 2026-10-24 Merge pull request #144 from emisorato1/historia-15-terminada
-7fb3b85 2026-10-24 chore: regenerar ESTADO.md y la trazabilidad con la historia 13 terminada
-86ea60c 2026-10-24 docs: review del sprint 2 con los datos del tablero al 24/10 y los numeros del punto de control
-cbef874 2026-10-24 Merge remote-tracking branch 'origin/dev' into historia-15-terminada
+aa70242 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-17-dashboard
+4f7644b 2026-10-26 Merge pull request #168 from emisorato1/manual-78-textos
+2679db7 2026-10-26 docs: los mensajes del manual tal como salen en pantalla
+5ec2ef2 2026-10-26 Merge pull request #167 from emisorato1/manual-78
+04fb015 2026-10-26 Merge pull request #166 from emisorato1/chore-trazabilidad-78-parte-3
+f5d7d9a 2026-10-26 docs: la revisión de accesibilidad de las pantallas de la #78 en su spec
+d34d60a 2026-10-26 docs: el manual de usuario con las pantallas de la #78 (sprints, esfuerzo, defectos y Planning Poker)
+55451e9 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con la parte 3 de la historia 78
 ```
