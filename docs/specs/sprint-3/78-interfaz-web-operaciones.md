@@ -4,8 +4,9 @@
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
 - **Estado:** En implementación. Parte 1 en dev (PR #149): sprints sin el cierre, esfuerzo,
-  horas estimadas, Planning Poker hasta revelar y el resumen del proyecto. Parte 2 (los
-  defectos) en su PR, rama `historia-78-defectos`. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
+  horas estimadas, Planning Poker hasta revelar y el resumen del proyecto. Parte 2 en dev
+  (PR #163): los defectos. Parte 3 en su PR, rama `historia-78-cierre-acuerdo`: cerrar el
+  sprint, consultar uno anterior y el acuerdo del Planning Poker. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
   (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), con dos cambios que esta spec ya incorpora (la
   tarea 17 y el punto 8 de "Para decidir en la puerta") y una nota sobre los casos límite
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna, de
@@ -578,8 +579,8 @@ lo comparten le suman sus filas. Un test que pase sin código nuevo va a Desvío
 | 3 | Goal vacío junto al campo y segundo sprint abierto arriba del formulario | Mostrar el rechazo sin perder lo escrito | RN-2 | hecha |
 | 4 | Asignar desde la lista de todo el backlog y quitar con confirmación; el Sprint Backlog con su estado | Asignar y quitar historias del sprint abierto | RN-1, RN-16 | hecha |
 | 5 | Asignar una historia sin estimar: el mensaje del dominio junto a la historia | Mostrar el rechazo sin perder lo escrito | RN-2, RN-16 | hecha |
-| 6 | Cerrar el sprint: fecha de hoy propuesta, casillas sin marcar, confirmación con lo que queda completado y lo que vuelve; confirmar cierra, cancelar no | Cerrar el sprint marcando las completadas / Confirmar o cancelar antes de lo que no se deshace | RN-9, RN-10, RN-11 | espera la #10 |
-| 7 | Lista de sprints y detalle de uno anterior con los títulos de sus historias y cuáles se completaron | Consultar un sprint anterior | RN-1 | en parte: la lista y el detalle están; lo completado espera la #10 y la #11 |
+| 6 | Cerrar el sprint: fecha de hoy propuesta, casillas sin marcar, confirmación con lo que queda completado y lo que vuelve; confirmar cierra, cancelar no | Cerrar el sprint marcando las completadas / Confirmar o cancelar antes de lo que no se deshace | RN-9, RN-10, RN-11 | hecha |
+| 7 | Lista de sprints y detalle de uno anterior con los títulos de sus historias y cuáles se completaron | Consultar un sprint anterior | RN-1 | hecha |
 | 8 | Sprint 99: el mensaje del dominio y el acceso al proyecto | Pedir algo que no existe | RN-18 | hecha |
 | 9 | Esfuerzo: lista vacía, día propuesto hoy, registrar con integrante e historia de la lista, la tabla y los totales por historia y por integrante | Registrar esfuerzo y ver los totales / Las listas vacias dicen que hacer | RN-1, RN-11 | hecha |
 | 10 | Día futuro y cero horas junto a su campo; unas horas que no son número se marcan sin llamar al dominio; sin integrantes, el aviso en lugar del formulario | Mostrar el rechazo sin perder lo escrito / Las listas vacias dicen que hacer | RN-2, RN-12, RN-17 | hecha |
@@ -591,12 +592,12 @@ lo comparten le suman sus filas. Un test que pase sin código nuevo va a Desvío
 | 16 | Abrir una ronda; quién votó, quién falta y cuántos; votar eligiendo de los que faltan, con el mensaje sin el valor | Una ronda de Planning Poker sin ver los votos hasta revelar | RN-1, RN-5, RN-7 | hecha |
 | 17 | Ningún valor antes de revelar en ninguna página, mensaje ni recarga; un voto rechazado vuelve sin el valor. El test no busca el número suelto, porque el formulario de votar ofrece la escala entera y el número puede estar en una fecha o un identificador: comprueba que la tabla de votos no existe hasta revelar, que ninguna fila ni elemento que nombra a quien votó lleva su valor, y que el mensaje que confirma el voto no lleva ningún número (revisión de Maximiliano Eula) | Nadie ve un voto antes de revelar / Un voto rechazado no muestra el valor elegido | RN-4, RN-6 | hecha |
 | 18 | Revelar: con votos faltantes, el mensaje arriba; con todos, cada voto con su integrante | No se puede revelar con votos faltantes / Una ronda de Planning Poker sin ver los votos hasta revelar | RN-2, RN-8 | hecha |
-| 19 | Diferencias, ronda nueva, acuerdo y la lista de rondas de una historia; historia 99 | Diferencias, nueva ronda y acuerdo / Pedir algo que no existe | RN-1, RN-8, RN-18 | espera la #73 |
+| 19 | Diferencias, ronda nueva, acuerdo y la lista de rondas de una historia; historia 99 | Diferencias, nueva ronda y acuerdo / Pedir algo que no existe | RN-1, RN-8, RN-18 | hecha |
 | 20 | El reporte del proyecto y el de un sprint, con la fecha de hoy y las líneas del dominio sin reformatear | Ver el reporte | RN-1, RN-12, RN-14 | espera la #18 |
 | 21 | Descargar el PDF con su nombre como archivo para guardar; si no se puede generar, el aviso y ningún archivo | Descargar el reporte en PDF | RN-15, RN-19 | espera la #19 |
 | 22 | El resumen de la #5 en la página del proyecto | El proyecto muestra su resumen | RN-20 | hecha |
-| 23 | Con el archivo real: sprints, esfuerzo, defectos y rondas siguen al reabrir, y el sprint nuevo recibe el número siguiente | Los datos nuevos siguen al cerrar y volver a abrir | RN-2 | en parte: sprints, esfuerzo, rondas y defectos; falta el sprint siguiente (#10) |
-| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | en parte: los formularios hechos, también los de defectos; faltan los de cierre y reporte |
+| 23 | Con el archivo real: sprints, esfuerzo, defectos y rondas siguen al reabrir, y el sprint nuevo recibe el número siguiente | Los datos nuevos siguen al cerrar y volver a abrir | RN-2 | hecha: también el cierre, el acuerdo y el sprint siguiente |
+| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | en parte: los formularios hechos, también los de defectos, cierre y acuerdo; falta el del reporte |
 
 **Verificación manual**, como en la #77: el contraste, el modo celular a 360 de ancho, los
 formularios nuevos recorridos con el teclado, una ronda votada desde dos pestañas y el PDF
@@ -689,6 +690,11 @@ implementación en el siguiente.
 | 15. Rechazos de los defectos junto a su campo y defecto 99 | `8847aa0` | `153b2a6` |
 | 23 y 24. Defectos al reabrir y sus formularios con el teclado | `e04ef0b` | — (sin RED: pasa sin código nuevo) |
 | Rechazos que quedaban sin probar (cobertura) | `b7523ca` | — (sin RED: prueba código existente) |
+| 6. Cerrar el sprint con las completadas y confirmación | `8b60975` | `3550e3f` |
+| 7. Consultar un sprint anterior | `e4476d7` | `d7b0785` |
+| 19. Diferencias, ronda nueva, acuerdo y lista de rondas | `43e3e5a` | `4ad7a5b` |
+| 23 y 24. Cierre, acuerdo y sprint 2 al reabrir; sus formularios | `44abfe2` | — (sin RED: pasa sin código nuevo) |
+| Fechas y casillas mal formadas al cerrar (cobertura) | `09d23fa` | — (sin RED: prueba código existente) |
 
 ### Desvíos
 
@@ -787,6 +793,29 @@ espera el 8080 ocupado por Docker: ese día Docker no estaba corriendo y el puer
 estaba libre, así que no es un error del programa. Queda para el final: la ronda votada
 desde dos pestañas, el contraste de lo nuevo y el PDF.
 
+- **Cierre y acuerdo (parte 3)**:
+  - **La confirmación del cierre lleva las completadas en un solo campo oculto**
+    (`completadas=1,2`), porque la página de confirmación de la #77 pasa un valor por
+    campo. Algo que no es un número ahí no viene de las casillas: va arriba del formulario.
+  - **Una fecha de cierre que no es fecha** vuelve al formulario sin preguntar, con las
+    casillas como estaban; **una vacía** sí llega a la confirmación («¿Cerrar el sprint 1?»,
+    sin fecha) y al confirmar la rechaza el núcleo junto a la fecha (#10, RN-10).
+  - **Un sprint cerrado muestra los story points que tenía al cerrarse** (`PointsAtClose`
+    de la #10), no los de hoy, y una columna «Completada» con Sí o No.
+  - **La ronda se busca entre todas las de la historia** (`VotingRounds`), así se ven las
+    anteriores; solo la última sin acuerdo ofrece acordar y abrir una ronda nueva, que es
+    el mismo formulario de la tarea 16 con la historia ya elegida.
+  - **CSS**: la Fase 2 nombraba solo la ronda y el reporte; se sumaron las reglas de las
+    casillas del cierre (la casilla al lado de su texto).
+  - **El test del RED de la tarea 19 buscaba mal una fila del backlog** (los story points
+    pegados al título, y la fila tiene antes la prioridad y el estado); se corrigió en el
+    commit de la implementación, que lo dice.
+  - **Pasaron sin código nuevo**, con «sin RED» en el asunto: los rechazos del cierre y del
+    acuerdo, que se escribieron con las tareas 6 y 19 porque las necesitaban para volver a
+    mostrar el formulario; los datos al reabrir; y los formularios con el teclado. Se probó
+    que sirven sacando una línea de la tabla de errores y la marca de las casillas.
+  - **Cobertura**: `internal/web` queda en 94,0%.
+
 ### Verificación manual de la parte 2
 
 El 26/10, con el mismo script ampliado con los defectos, en Chromium 151, Firefox 153 y
@@ -797,12 +826,17 @@ las 26 páginas se desplaza de costado, y el defecto sigue después de reiniciar
 Resultado: 114 controles bien; falló solo el del 8080 ocupado, por lo mismo que en la
 parte 1 (Docker no estaba corriendo).
 
+### Verificación manual de la parte 3
+
+El 26/10, con el mismo script, en Chromium 151, Firefox 153 y WebKit 26.5: con el teclado,
+acordar la estimación de una ronda revelada y ver la lista de rondas, y cerrar el sprint
+marcando una historia con la barra espaciadora, con su confirmación. El sprint cerrado y su
+historia completada siguen después de reiniciar, y a 360 de ancho ninguna de las 27
+páginas se desplaza de costado. Resultado: 135 controles bien; falló solo el del 8080, por
+lo mismo que en las partes 1 y 2.
+
 ### Lo que falta
 
-- **Cerrar un sprint y lo completado (tareas 6 y 7)**: la #10 ya está en dev (`CloseSprint`,
-  `CompletedStories`); va en la parte siguiente.
-- **Diferencias, otra ronda y acuerdo (tarea 19)**: la #73 ya está en dev (`Differences`,
-  `Agree`); va en la parte siguiente.
 - **Reporte y PDF (tareas 20 y 21)**: esperan la #18 y la #19.
 - **La verificación manual** de las pantallas que faltan, la ronda desde dos pestañas, el contraste de lo nuevo y el PDF.
 
