@@ -50,7 +50,8 @@ próxima historia. No suma a los 28 comprometidos: se cuenta aparte.
 
 Maximiliano escribió: "adelanto la #73 (5 SP), que tiene sus tres puertas aprobadas (PR #142) y
 la #13 ya en `dev`. Horas estimadas cargadas: 13,5 h". La #73 era del Sprint 4. Sus horas
-reales están [pendientes: las carga Maximiliano Eula].
+reales son **3 h**, contra 13,5 estimadas (−10,5 h, −78%): las cargó Maximiliano Eula en el
+tablero y lo dejó dicho el 26/10 [en el PR #169](https://github.com/emisorato1/seguimiento-medicion-ics/pull/169#issuecomment-6428626374).
 
 ## Planning Poker de la #77 y la #78
 
@@ -87,16 +88,20 @@ Hubo diferencias, así que se explicaron los extremos:
 
 | | Agustín | Juliana | Maximiliano | Emiliano |
 |---|---|---|---|---|
-| #77 Web base | 13 | [pendiente] | [pendiente] | 13 |
-| #78 Operaciones web | 13 | [pendiente] | [pendiente] | 13 |
+| #77 Web base | 13 | [pendiente] | 13 | 13 |
+| #78 Operaciones web | 13 | [pendiente] | 13 | 13 |
 
-**Estimación acordada:** [pendiente: se cierra cuando estén los votos de Juliana y
-Maximiliano].
+Maximiliano Eula mandó su ronda 2 el 26/10, por WhatsApp a Emiliano. Mantiene los votos de
+la ronda 1: "La #77 armó desde cero el servidor, el guardado en archivo y la seguridad de los
+formularios, y la #78 suma cinco pantallas, con el Planning Poker completo, sobre esa base."
+
+**Estimación acordada:** [pendiente: se cierra cuando esté el voto de Juliana].
 
 **Si no votan a tiempo** (decisión de Emiliano Sorato, del 26/10): si Juliana y Maximiliano no
-mandan su ronda 2 antes del 28/10, se aplica la [guía de Planning Poker](../guia-planning-poker.md):
-después de las rondas, queda el valor más alto. Con los votos que hay, eso daría 13 para la #77
-y 13 para la #78. Todavía no es la estimación acordada.
+mandan su ronda 2 antes del 28/10, queda el valor más alto. La
+[guía de Planning Poker](../guia-planning-poker.md) dice que eso se hace "después de 3 rondas".
+Aplicarlo después de la ronda 2 es una decisión de Emiliano Sorato. Con los votos que hay, eso daría 13 para la #77 y 13 para la #78.
+Todavía no es la estimación acordada.
 
 ## Puertas y revisiones
 
@@ -116,7 +121,6 @@ Los cuatro contestaron "ok".
 
 ## Pendientes
 
-- [ ] La ronda 2 del Planning Poker de Juliana y Maximiliano, y la estimación acordada de la #77
-  y la #78.
+- [ ] La ronda 2 del Planning Poker de Juliana, y la estimación acordada de la #77 y la #78.
 - [ ] Las horas estimadas de la #78, cuando tenga story points.
-- [ ] Las horas reales de la #73 (Maximiliano Eula).
+- [x] Las horas reales de la #73: 3 h, cargadas por Maximiliano Eula el 26/10.

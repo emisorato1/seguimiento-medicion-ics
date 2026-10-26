@@ -34,7 +34,7 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#9 Asignar historias a un sprint](#9-asignar-historias-a-un-sprint) | 14 | 14 | 0 | 0 |
 | [#14 Registrar el esfuerzo real](#14-registrar-el-esfuerzo-real) | 19 | 19 | 0 | 2 |
 | [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 3 |
-| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 11 |
+| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 12 |
 | [#10 Cerrar un sprint](#10-cerrar-un-sprint) | 14 | 14 | 0 | 0 |
 | [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
 | [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 16 | 0 | 2 |
@@ -50,7 +50,7 @@ cinco casos posibles:
 |---|---|---|
 | `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 250 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 44 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 45 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 13 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
@@ -535,8 +535,8 @@ cinco casos posibles:
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:568](../internal/domain/registry_json_test.go#L568) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
-| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:594](../internal/domain/registry_json_test.go#L594) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
+| `TestUnEsfuerzoDeUnDiaPosteriorAHoySeCargaIgual` [registry_json_test.go:577](../internal/domain/registry_json_test.go#L577) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `c819ca6` → `4836ba4` |
+| `TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual` [registry_json_test.go:603](../internal/domain/registry_json_test.go#L603) | Fase 2 de la #14, la decisión sobre los datos guardados | [effort.go](../internal/domain/effort.go), [registry_json.go](../internal/domain/registry_json.go) | `dffc162` → `abe3750` |
 
 ## #15 Gestionar defectos
 
@@ -643,18 +643,19 @@ cinco casos posibles:
 | [Dos pestanas a la vez](specs/sprint-2/77-interfaz-web-base.md?plain=1#L276) | `TestDosPestanasALaVez` [server_test.go:1306](../internal/web/server_test.go#L1306) | [server.go](../internal/web/server.go) | `4c925e3` → `1e7a4b1` |
 | [Usar la pagina en un celular y con el teclado](specs/sprint-2/77-interfaz-web-base.md?plain=1#L281) | `TestUsarLaPaginaEnUnCelularYConElTeclado` [server_test.go:1367](../internal/web/server_test.go#L1367) | [historia-form.html](../internal/web/templates/historia-form.html) | `4ab0d49` → `add6a34` |
 
-**Tests que no citan un escenario de la Fase 1 (11).**
+**Tests que no citan un escenario de la Fase 1 (12).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
 | `TestListarLosProyectosDeUnRegistroVacio` [project_registry_test.go:7](../internal/domain/project_registry_test.go#L7) | dependencia de la #77, RN-7 y RN-23 (la lista vacía no es un error) | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
 | `TestListarTodosLosProyectosEnOrdenDeNumero` [project_registry_test.go:22](../internal/domain/project_registry_test.go#L22) | dependencia de la #77 | [project_registry.go](../internal/domain/project_registry.go) | `1f94f7a` → `3e81aca` |
-| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:542](../internal/domain/registry_json_test.go#L542) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
-| `TestUnaRondaReveladaSinParticipantesNoSeCarga` [registry_json_test.go:626](../internal/domain/registry_json_test.go#L626) | #77 RN-24, RN-6 de la #13 | [registry_json.go](../internal/domain/registry_json.go) | `684fcb2` → `87264b3` |
+| `TestElMensajeDeDatosDanadosEstaEnCastellano` [registry_json_test.go:551](../internal/domain/registry_json_test.go#L551) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
+| `TestUnaRondaReveladaSinParticipantesNoSeCarga` [registry_json_test.go:635](../internal/domain/registry_json_test.go#L635) | #77 RN-24, RN-6 de la #13 | [registry_json.go](../internal/domain/registry_json.go) | `684fcb2` → `87264b3` |
 | `TestLeerLaEscalaDeStoryPoints` [story_estimation_test.go:253](../internal/domain/story_estimation_test.go#L253) | #77 RN-11 | [story_estimation.go](../internal/domain/story_estimation.go) | `4227227` → `5a6d632` |
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
 | `TestResolverSinElegirElSprint` [defects_test.go:254](../internal/web/defects_test.go#L254) | RN-2, RN-9 | el que ya estaba | `8847aa0` (sin RED: ya pasaba) |
+| `TestUnaRondaVotadaDesdeDosPestanas` [poker_test.go:310](../internal/web/poker_test.go#L310) | RN-4, RN-5, RN-7, RN-8; RN-20 de la #77 | el que ya estaba | `70d8529` (sin RED: ya pasaba) |
 | `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1658](../internal/web/server_test.go#L1658) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
 | `TestQuitarDelSprintUnaHistoriaQueNoEstaAsignada` [sprints_test.go:188](../internal/web/sprints_test.go#L188) | RN-2 | el que ya estaba | `b7523ca` (sin RED: ya pasaba) |
 | `TestCerrarConUnaFechaQueNoEsFecha` [sprints_test.go:366](../internal/web/sprints_test.go#L366) | RN-2, RN-9 | el que ya estaba | `09d23fa` (sin RED: ya pasaba) |

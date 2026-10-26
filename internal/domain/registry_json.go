@@ -409,15 +409,24 @@ func votingRoundsFromJSON(project *Project, in []votingRoundJSON) ([]*VotingRoun
 		if len(rj.Participants) == 0 {
 			return nil, fmt.Errorf("la ronda %d de la historia %d no tiene participantes", rj.Number, rj.StoryID)
 		}
+		// Los nombres se comparan como los busca la ronda al votar y la #4 al cargar integrantes:
+		// sin distinguir mayúsculas y sin espacios en los extremos. Un repetido con otras
+		// mayúsculas, o un nombre con espacios de más, dejaría a un participante que nunca puede
+		// votar, y la ronda no se podría revelar.
 		seen := map[string]bool{}
 		for _, name := range rj.Participants {
-			if strings.TrimSpace(name) == "" {
+			trimmed := strings.TrimSpace(name)
+			if trimmed == "" {
 				return nil, fmt.Errorf("la ronda %d de la historia %d tiene un participante sin nombre", rj.Number, rj.StoryID)
 			}
-			if seen[name] {
+			if trimmed != name {
+				return nil, fmt.Errorf("la ronda %d de la historia %d tiene a %q con espacios de más", rj.Number, rj.StoryID, name)
+			}
+			key := strings.ToLower(name)
+			if seen[key] {
 				return nil, fmt.Errorf("la ronda %d de la historia %d tiene repetido a %s", rj.Number, rj.StoryID, name)
 			}
-			seen[name] = true
+			seen[key] = true
 		}
 		participants := make([]string, len(rj.Participants))
 		copy(participants, rj.Participants)

@@ -16,7 +16,12 @@
   todavía no tienen pantalla ni opción en la consola.
   - **Emiliano Sorato (26/10): cumplido en parte.** El sistema maneja sprints, esfuerzo y
     defectos, pero se opera desde la web (#78) y no desde la consola, por la decisión del 20/10.
-  - **Maximiliano Eula, Juliana Bustos y Agustín Salinas:** [pendiente: en la #147 no lo dijeron].
+  - **Maximiliano Eula ([26/10, en el PR #169](https://github.com/emisorato1/seguimiento-medicion-ics/pull/169#issuecomment-6428626374)): cumplido en parte.** "Terminamos las
+    9 historias del sprint, y el sistema ya maneja sprints, esfuerzo y defectos. Lo de operarlo
+    todo desde la consola cambió en el camino: el 20/10 decidimos usar la web para lo nuevo, y
+    esas pantallas llegaron con la #78, ya en el Sprint 3. La consola quedó con proyectos,
+    integrantes, backlog y estimación."
+  - **Juliana Bustos y Agustín Salinas:** [pendiente: en la #147 no lo dijeron].
 
 ## Qué se completó
 
