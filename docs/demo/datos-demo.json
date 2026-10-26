@@ -321,7 +321,7 @@
           "description": "Como integrante del equipo quiero usar el sistema desde una pagina web clara y prolija para cargar y consultar el proyecto sin tener que manejar una consola",
           "priority": "Alta",
           "state": "Terminada",
-          "story_points": 0,
+          "story_points": 13,
           "acceptance_criteria": [
             "El sistema se abre en el navegador con un solo comando y funciona sin conexion a internet.",
             "Desde la web se crean, modifican y consultan proyectos.",
@@ -339,7 +339,7 @@
           "description": "Como integrante del equipo quiero hacer desde la web todo lo que el sistema permite sobre sprints, esfuerzo, defectos, estimacion y reportes para llevar el proyecto completo desde la misma interfaz",
           "priority": "Alta",
           "state": "Pendiente",
-          "story_points": 0,
+          "story_points": 13,
           "acceptance_criteria": [
             "Desde la web se crea un sprint, se le asignan historias, se cierra y se consultan los anteriores.",
             "Desde la web se registra el esfuerzo real y se ven las horas por historia y por integrante.",
@@ -347,7 +347,8 @@
             "Desde la web se hace una ronda de Planning Poker: cada integrante vota sin ver los votos de los demas hasta que se revelan, y se acuerda la estimacion.",
             "Desde la web se ve el reporte del proyecto o de un sprint, y se descarga en PDF.",
             "Los errores se muestran igual que en el resto de la interfaz web."
-          ]
+          ],
+          "estimated_hours": 35.1
         }
       ],
       "efforts": [
@@ -565,10 +566,16 @@
               "points": 13
             },
             {
+              "member_name": "Juliana Bustos",
+              "points": 13
+            },
+            {
               "member_name": "Maximiliano Eula",
               "points": 13
             }
-          ]
+          ],
+          "revealed": true,
+          "agreed": 13
         },
         {
           "story_id": 78,
@@ -618,10 +625,16 @@
               "points": 13
             },
             {
+              "member_name": "Juliana Bustos",
+              "points": 13
+            },
+            {
               "member_name": "Maximiliano Eula",
               "points": 13
             }
-          ]
+          ],
+          "revealed": true,
+          "agreed": 13
         }
       ],
       "last_defect_id": 108,
