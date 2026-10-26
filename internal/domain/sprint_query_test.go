@@ -189,3 +189,22 @@ func TestPedirUnSprintQueNoExiste(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Pedir el detalle del sprint abierto
+// Cubre: RN-7
+func TestPedirElDetalleDelSprintAbierto(t *testing.T) {
+	project := unProyecto(t)
+	unSprint(t, project)
+
+	sprint, err := project.Sprint(1)
+
+	if err != nil {
+		t.Fatalf("se esperaba encontrar el sprint 1, salio: %v", err)
+	}
+	if sprint.State() != SprintOpen {
+		t.Errorf("se esperaba el sprint 1 en estado Abierto, salio %v", sprint.State())
+	}
+	if !sprint.ClosedOn().IsZero() {
+		t.Errorf("se esperaba la fecha de cierre vacia, salio %v", sprint.ClosedOn())
+	}
+}
