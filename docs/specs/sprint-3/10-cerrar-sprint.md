@@ -3,7 +3,7 @@
 - **Historia:** #10
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **en implementación**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas.
@@ -392,21 +392,21 @@ siguió abierto y que ninguna historia cambió de estado (RN-13).
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Cerrar el sprint lo deja Cerrado, con su fecha de cierre, y el proyecto queda sin sprint abierto | Despues de cerrar se puede crear el sprint siguiente | RN-1, RN-14 | pendiente |
-| 2 | Cerrar registra las historias completadas y deja Terminadas a esas, y Pendientes a las demás; el sprint queda Cerrado con la fecha indicada | Cerrar el sprint registrando que se completo y que no | RN-1, RN-2, RN-3, RN-4 | pendiente |
-| 3 | El sprint cerrado conserva la lista de las historias que se le habían asignado | El sprint cerrado conserva lo que se le habia comprometido | RN-5 | pendiente |
-| 4 | Cerrar con ninguna, con algunas y con todas las historias completadas | Cerrar con distinta cantidad de historias completadas | RN-3, RN-4, RN-9 | pendiente |
-| 5 | Cerrar un sprint sin ninguna historia asignada | Cerrar un sprint sin ninguna historia asignada | RN-9 | pendiente |
-| 6 | La misma historia indicada dos veces se registra una sola vez | La misma historia indicada dos veces cuenta una sola vez | RN-2, RN-8 | pendiente |
-| 7 | Rechazar el cierre si una historia indicada no está en el sprint, sin cambiar ninguna historia | Rechazar el cierre si una historia completada no esta en el sprint | RN-7, RN-13 | pendiente |
-| 8 | Rechazar el cierre sin fecha de cierre | Rechazar el cierre sin fecha de cierre | RN-10, RN-13 | pendiente |
-| 9 | Rechazar el cierre cuando el proyecto no tiene sprint abierto | Rechazar el cierre si no hay sprint abierto | RN-6 | pendiente |
-| 10 | Cerrar dos veces se rechaza y el sprint conserva lo que había quedado registrado | No se puede cerrar dos veces el mismo sprint | RN-12, RN-13 | pendiente |
-| 11 | Una fecha de cierre distinta de la fecha de fin del sprint se acepta | Una fecha de cierre distinta de la fecha de fin se acepta | RN-11 | pendiente |
-| 12 | Cerrar el sprint de un proyecto que no existe informa que no se encontró | Cerrar el sprint de un proyecto que no existe | RN-15 | pendiente |
-| 13 | Al cerrar se registran los puntos de cada historia, y reestimarla después no los cambia; una historia sin estimar registra 0 y se puede completar | Los puntos registrados al cerrar no cambian si se reestima la historia / Una historia sin estimar al cerrar registra cero puntos | RN-16 | pendiente |
-| 14 | Un sprint cerrado —estado, fecha de cierre, completadas y puntos al cerrar— se guarda y se reconstruye igual | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | RN-1, RN-2, RN-16 | pendiente |
-| 15 | Al cargar se rechazan los datos del cierre incoherentes: cerrado sin fecha, abierto con datos de cierre, completadas repetidas o fuera de las asignadas, puntos que no corresponden a las asignadas o fuera de la escala | — (regla de la #77: Los datos guardados estan danados) | RN-2, RN-5, RN-16 | pendiente |
+| 1 | Cerrar el sprint lo deja Cerrado, con su fecha de cierre, y el proyecto queda sin sprint abierto | Despues de cerrar se puede crear el sprint siguiente | RN-1, RN-14 | hecha |
+| 2 | Cerrar registra las historias completadas y deja Terminadas a esas, y Pendientes a las demás; el sprint queda Cerrado con la fecha indicada | Cerrar el sprint registrando que se completo y que no | RN-1, RN-2, RN-3, RN-4 | hecha |
+| 3 | El sprint cerrado conserva la lista de las historias que se le habían asignado | El sprint cerrado conserva lo que se le habia comprometido | RN-5 | hecha |
+| 4 | Cerrar con ninguna, con algunas y con todas las historias completadas | Cerrar con distinta cantidad de historias completadas | RN-3, RN-4, RN-9 | hecha |
+| 5 | Cerrar un sprint sin ninguna historia asignada | Cerrar un sprint sin ninguna historia asignada | RN-9 | hecha |
+| 6 | La misma historia indicada dos veces se registra una sola vez | La misma historia indicada dos veces cuenta una sola vez | RN-2, RN-8 | hecha |
+| 7 | Rechazar el cierre si una historia indicada no está en el sprint, sin cambiar ninguna historia | Rechazar el cierre si una historia completada no esta en el sprint | RN-7, RN-13 | hecha |
+| 8 | Rechazar el cierre sin fecha de cierre | Rechazar el cierre sin fecha de cierre | RN-10, RN-13 | hecha |
+| 9 | Rechazar el cierre cuando el proyecto no tiene sprint abierto | Rechazar el cierre si no hay sprint abierto | RN-6 | hecha |
+| 10 | Cerrar dos veces se rechaza y el sprint conserva lo que había quedado registrado | No se puede cerrar dos veces el mismo sprint | RN-12, RN-13 | hecha |
+| 11 | Una fecha de cierre distinta de la fecha de fin del sprint se acepta | Una fecha de cierre distinta de la fecha de fin se acepta | RN-11 | hecha |
+| 12 | Cerrar el sprint de un proyecto que no existe informa que no se encontró | Cerrar el sprint de un proyecto que no existe | RN-15 | hecha |
+| 13 | Al cerrar se registran los puntos de cada historia, y reestimarla después no los cambia; una historia sin estimar registra 0 y se puede completar | Los puntos registrados al cerrar no cambian si se reestima la historia / Una historia sin estimar al cerrar registra cero puntos | RN-16 | hecha |
+| 14 | Un sprint cerrado —estado, fecha de cierre, completadas y puntos al cerrar— se guarda y se reconstruye igual | — (regla de la #77: Los datos siguen al cerrar y volver a abrir) | RN-1, RN-2, RN-16 | hecha |
+| 15 | Al cargar se rechazan los datos del cierre incoherentes: cerrado sin fecha, abierto con datos de cierre, completadas repetidas o fuera de las asignadas, puntos que no corresponden a las asignadas o fuera de la escala | — (regla de la #77: Los datos guardados estan danados) | RN-2, RN-5, RN-16 | hecha |
 
 ### Por qué este orden
 
@@ -463,7 +463,53 @@ que se guarda y validarlo al cargar.
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. El test en un commit y la implementación en otro; cada commit
+de test lleva en su mensaje la salida del test fallando, después de la línea `RED:`. Antes de
+la tarea 1, `98a4400` registró las tres puertas y aplicó los dos ajustes de Agustín.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `e3f37ce` | `2ebe154` |
+| 2 | `e2e1137` | `bf2ac19` |
+| 3 | `aea7f11` | — (sin RED, ver Desvíos) |
+| 4 y 5 | `e1a1b77` | — (sin RED, ver Desvíos) |
+| 6 | `e44c2af` | `e32d3e5` |
+| 7 | `ee65d1d` | `c5463df` |
+| 8 | `ec1e59c` | `ceee9ed` |
+| 9 | `0670e00` | `fe38044` |
+| 10 | `33fbd2c` | — (sin RED, ver Desvíos) |
+| 11 | `8b85cc2` | — (sin RED, ver Desvíos) |
+| 12 | `2aa23a1` | — (sin RED, ver Desvíos) |
+| 13 | `f0ec86f` | `627b2b9` |
+| 14 | `0e9d002` | `52361c0` |
+| 15 | `cdd11ed` | `b888fd5` |
+
+Los RED de las tareas 1, 2, 8 y 13 fueron por compilación: la operación, la lectura o el
+error todavía no existían. Los de las tareas 6, 7, 14 y 15, por comportamiento. El de la
+tarea 9 fue un pánico: sin sprint abierto, el cierre de la tarea 1 usaba un sprint que no
+existía. En la 15, la fila de la fecha de cierre que no es fecha pasó sola, porque la tarea 14
+ya la leía como el resto de las fechas.
+
+### Desvíos respecto de la spec
+
+Ninguno de comportamiento. Los de proceso y de detalle:
+
+- **Pasaron sin RED las tareas 3, 4, 5, 10, 11 y 12.** Sus commits dicen por qué:
+  - Desde la tarea 2, el cierre recorre las asignadas, cambia sus estados y no toca la lista,
+    así que la 3, la 4 y la 5 ya pasaban. La 4 y la 5 van en un solo commit, porque ninguna
+    trae código.
+  - Desde la tarea 9, sin sprint abierto el cierre se rechaza antes de tocar nada: eso cubre
+    cerrar dos veces (10).
+  - El cierre nunca comparó la fecha con nada (11).
+  - El proyecto se busca en el registro de la #3, que ya informa que no se encontró (12).
+- **Las lecturas del cierre son tres**, por el ajuste 1 de la Puerta 2: `ClosedOn()`,
+  `CompletedStories()` y `PointsAtClose()`, con la lista y el mapa copiados, como
+  `Stories()`.
+- **El mensaje de una historia que no está en el sprint dice cuál es** («la historia no está en
+  el sprint: la historia 2»), como pide la RN-7, envolviendo el error de la #9.
+- **Un test de la #8 cambió.** En los datos guardados de prueba, el sprint 1 trae desde la
+  tarea 14 los datos del cierre. El caso "dos sprints abiertos" ahora se los saca, para que
+  el motivo del rechazo siga siendo el que ese caso prueba.
 
 ## Trazabilidad
 
