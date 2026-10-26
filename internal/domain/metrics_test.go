@@ -399,3 +399,42 @@ func TestLasMetricasReflejanLosDatosCargadosDespues(t *testing.T) {
 		t.Fatalf("se esperaba que pedir las metricas no cambiara ningun dato, y el registro cambio")
 	}
 }
+
+// Escenario: Una historia que volvio al backlog cuenta como completada solo donde se completo
+// Cubre: RN-4, RN-5
+//
+// Los dos sprints se cierran con el cierre de la #10: la historia 2 no se completó en el 1,
+// volvió al backlog, se comprometió en el 2 y se completó ahí.
+func TestUnaHistoriaQueVolvioAlBacklogCuentaComoCompletadaSoloDondeSeCompleto(t *testing.T) {
+	project, _ := unSprintParaCerrar(t, 3, 5)
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1 de prueba: %v", err)
+	}
+	unSprint(t, project)
+	if err := project.AssignStory(2); err != nil {
+		t.Fatalf("no se pudo asignar la historia 2 al sprint 2: %v", err)
+	}
+	if err := project.CloseSprint([]int{2}, unDia(2026, 10, 31)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 2 de prueba: %v", err)
+	}
+
+	cases := []struct {
+		sprint, planned, completed int
+	}{
+		{1, 8, 3},
+		{2, 5, 5},
+	}
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("sprint %d", tc.sprint), func(t *testing.T) {
+			got, err := project.SprintMetrics(tc.sprint)
+
+			if err != nil {
+				t.Fatalf("se esperaba que no fuera un error, salio: %v", err)
+			}
+			if got.PlannedPoints != tc.planned || got.CompletedPoints != tc.completed || got.Velocity != tc.completed {
+				t.Fatalf("se esperaban %d puntos planificados, %d completados y velocidad %d, salieron %d, %d y %d",
+					tc.planned, tc.completed, tc.completed, got.PlannedPoints, got.CompletedPoints, got.Velocity)
+			}
+		})
+	}
+}
