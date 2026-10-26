@@ -35,11 +35,11 @@ historia sin estimar no suma al compromiso hasta que el equipo la estima.
 | 17 | Mostrar el dashboard | 8 | Juliana Bustos | 21,6 | En progreso | "confirmo la #17 (8 SP). Ya está en progreso: las tareas 1 a 3 de 17 están hechas en su rama" |
 | 11 | Consultar sprints anteriores | 2 | Agustín Salinas | 5,4 | Lista para implementar | "confirmo la #11 (2 SP; puertas aprobadas por Juli en el #143; 6 de sus 12 tareas esperan a la #10)" |
 | 18 | Generar el reporte | 5 | Agustín Salinas | 13,5 | Especificación SDD | "[confirmo] la #18 (5 SP; espera a la #16 y reutiliza el `format.go` de la #17 para no duplicar la regla de formato)" |
-| 78 | Operar todo desde la web | 13 (acordado el 26/10) | Emiliano Sorato | [pendiente] | En progreso (3 partes en `dev`, 17 de 22 escenarios con test) | "confirmo [...] la #78" |
+| 78 | Operar todo desde la web | 13 (acordado el 26/10) | Emiliano Sorato | 35,1 | En progreso (3 partes en `dev`, 17 de 22 escenarios con test) | "confirmo [...] la #78" |
 
-- **Horas estimadas de lo comprometido: 75,6** (28 SP a 2,7 h por punto), sin la #78. Cada uno
-  las cargó en el tablero. Las de la #78 están [pendientes]: las carga su responsable ahora que
-  tiene story points.
+- **Horas estimadas de lo comprometido: 110,7** (41 SP a 2,7 h por punto). Cada uno las cargó
+  en el tablero. Las 35,1 h de la #78 (13 × 2,7, la conversión del equipo) las cargó Emiliano
+  Sorato, su responsable, el 26/10, cuando la historia ya tenía story points.
 - **La #10 y la #16 ya están terminadas el 26/10**, el primer día del sprint. Sus horas reales
   son de Emiliano Sorato, que las hizo con asistencia de IA: 0,5 h en la #10 y 1 h en la #16.
 
@@ -139,5 +139,5 @@ Los cuatro contestaron "ok".
 
 - [x] La ronda 2 del Planning Poker de Juliana, y la estimación acordada de la #77 y la #78:
   13 y 13, el 26/10.
-- [ ] Las horas estimadas de la #78 (Emiliano Sorato).
+- [x] Las horas estimadas de la #78: 35,1 h, cargadas por Emiliano Sorato el 26/10.
 - [x] Las horas reales de la #73: 3 h, cargadas por Maximiliano Eula el 26/10.
