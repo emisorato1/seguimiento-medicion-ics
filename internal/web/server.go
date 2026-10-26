@@ -107,6 +107,8 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.
 	s.mux.HandleFunc("POST /proyectos/{id}/defectos/nuevo", s.createDefect)
 	s.mux.HandleFunc("GET /proyectos/{id}/defectos/{n}", s.showDefect)
 	s.mux.HandleFunc("POST /proyectos/{id}/defectos/{n}/estado", s.changeDefectState)
+	s.mux.HandleFunc("GET /proyectos/{id}/defectos/{n}/resolver", s.confirmResolve)
+	s.mux.HandleFunc("POST /proyectos/{id}/defectos/{n}/resolver", s.resolveDefect)
 	s.mux.HandleFunc("GET /proyectos/{id}/planning-poker", s.showPoker)
 	s.mux.HandleFunc("POST /proyectos/{id}/planning-poker", s.openRound)
 	s.mux.HandleFunc("GET /proyectos/{id}/historias/{n}/rondas/{r}", s.showRound)

@@ -147,12 +147,14 @@ func (s *Server) findDefect(r *http.Request) (*domain.Project, *domain.Defect, e
 	return project, nil, domain.ErrDefectNotFound
 }
 
-// defectPage es lo que muestra la pagina de un defecto: sus datos y el formulario para
-// cambiarle el estado.
+// defectPage es lo que muestra la pagina de un defecto: sus datos y, si no esta resuelto,
+// los formularios para cambiarle el estado y para resolverlo.
 type defectPage struct {
 	ProjectID int
 	Defect    *domain.Defect
+	Resolved  bool
 	States    []string
+	Sprints   []option
 	Form      *form
 }
 
@@ -162,7 +164,14 @@ func (s *Server) renderDefect(w http.ResponseWriter, r *http.Request, status int
 		Title:   fmt.Sprintf("Defecto %d", defect.ID()),
 		Project: project,
 		Section: "defectos",
-		Data:    defectPage{ProjectID: project.ID(), Defect: defect, States: stateOptions(), Form: f},
+		Data: defectPage{
+			ProjectID: project.ID(),
+			Defect:    defect,
+			Resolved:  defect.State() == domain.DefectResolved,
+			States:    stateOptions(),
+			Sprints:   sprintOptions(project),
+			Form:      f,
+		},
 	})
 }
 
@@ -195,4 +204,56 @@ func (s *Server) changeDefectState(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.done(w, r, fmt.Sprintf("El defecto %d pasó a %s", defect.ID(), state), fmt.Sprintf("/proyectos/%d/defectos/%d", project.ID(), defect.ID()))
+}
+
+// resolveConfirmation es la pagina que pide confirmar antes de resolver un defecto, que no
+// se deshace (RN-9, D9).
+func resolveConfirmation(project *domain.Project, defect *domain.Defect, sprint string) confirmation {
+	return confirmation{
+		Question: fmt.Sprintf("¿Resolver el defecto %d en el sprint %s?", defect.ID(), sprint),
+		Detail:   fmt.Sprintf("«%s» queda Resuelto y ya no cambia de estado.", defect.Title()),
+		Action:   fmt.Sprintf("/proyectos/%d/defectos/%d/resolver", project.ID(), defect.ID()),
+		Fields:   map[string]string{"sprint": sprint},
+		Confirm:  "Sí, resolver",
+		Cancel:   fmt.Sprintf("/proyectos/%d/defectos/%d", project.ID(), defect.ID()),
+	}
+}
+
+// confirmResolve pide confirmar antes de resolver el defecto en el sprint elegido.
+func (s *Server) confirmResolve(w http.ResponseWriter, r *http.Request) {
+	project, defect, err := s.findDefect(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	s.render(w, r, http.StatusOK, "confirmar.html", page{
+		Title:   "Resolver defecto",
+		Project: project,
+		Section: "defectos",
+		Data:    resolveConfirmation(project, defect, r.FormValue("sprint")),
+	})
+}
+
+// resolveDefect resuelve el defecto en el sprint elegido, despues de que se confirmo, y
+// vuelve a su pagina con 303. Si el dominio lo rechaza, vuelve a pedir confirmar con su
+// mensaje.
+func (s *Server) resolveDefect(w http.ResponseWriter, r *http.Request) {
+	project, defect, err := s.findDefect(r)
+	if err != nil {
+		s.notFound(w, r, project, err)
+		return
+	}
+	sprint, _ := strconv.Atoi(r.FormValue("sprint"))
+	if err := project.ResolveDefect(defect.ID(), sprint); err != nil {
+		data := resolveConfirmation(project, defect, r.FormValue("sprint"))
+		data.Error = err.Error()
+		s.render(w, r, http.StatusUnprocessableEntity, "confirmar.html", page{
+			Title:   "Resolver defecto",
+			Project: project,
+			Section: "defectos",
+			Data:    data,
+		})
+		return
+	}
+	s.done(w, r, fmt.Sprintf("Se resolvió el defecto %d en el sprint %d", defect.ID(), sprint), fmt.Sprintf("/proyectos/%d/defectos/%d", project.ID(), defect.ID()))
 }

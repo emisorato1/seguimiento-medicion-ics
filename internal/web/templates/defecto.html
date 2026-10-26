@@ -21,6 +21,7 @@
   <dd>{{if .ResolvedIn}}Sprint {{.ResolvedIn}}{{else}}<span class="sin-dato">sin resolver</span>{{end}}</dd>
 </dl>
 {{end}}
+{{if not .Resolved}}
 <h2>Cambiar el estado</h2>
 {{template "error-formulario" .Form.General}}
 <form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/defectos/{{.Defect.ID}}/estado" novalidate>
@@ -37,6 +38,19 @@
     <button type="submit">Cambiar el estado</button>
   </div>
 </form>
+<h2>Resolver</h2>
+<form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/defectos/{{.Defect.ID}}/resolver">
+  <div class="campo">
+    <label for="sprint">Resuelto en el sprint</label>
+    <select id="sprint" name="sprint">
+      {{template "opciones-con-texto" (labeled "Elegí un sprint" .Sprints "")}}
+    </select>
+  </div>
+  <div class="acciones">
+    <button type="submit">Resolver</button>
+  </div>
+</form>
+{{end}}
 <div class="acciones">
   <a class="boton boton-secundario" href="/proyectos/{{.ProjectID}}/defectos">Volver a los defectos</a>
 </div>
