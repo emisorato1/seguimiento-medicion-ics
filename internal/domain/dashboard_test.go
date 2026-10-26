@@ -170,6 +170,48 @@ func TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCursoEnElDashboard(t
 	}
 }
 
+// Escenario: Dashboard de un proyecto con un sprint en curso
+// Cubre: RN-8, RN-10
+// Mira los tres primeros gráficos; el de velocidad, cuarto, es de la tarea 6.
+func TestDashboardDeUnProyectoConUnSprintEnCurso(t *testing.T) {
+	project := unProyecto(t)
+	dashboardSprint(t, project, true)
+	open := dashboardSprint(t, project, false)
+	metrics := Metrics{
+		PlannedPoints: 40, CompletedPoints: 30,
+		EstimatedHours: 40, ActualHours: 45.25,
+		DefectsDetected: 5, DefectsResolved: 3,
+	}
+	// Las del sprint abierto son otras, para ver que los gráficos usan las del proyecto.
+	sprintMetrics := map[int]Metrics{
+		open.Number(): {PlannedPoints: 13, EstimatedHours: 10, ActualHours: 6.5, DefectsDetected: 2},
+	}
+
+	dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), projectMetrics: metrics, sprintMetrics: sprintMetrics})
+
+	// Value lleva el número tal como llegó, para medir la barra; Text, ya redondeado.
+	want := []Chart{
+		{Title: "Story points", Bars: []Bar{
+			{Label: "Planificados", Value: 40, Text: "40"},
+			{Label: "Completados", Value: 30, Text: "30"},
+		}},
+		{Title: "Horas", Bars: []Bar{
+			{Label: "Estimadas", Value: 40, Text: "40,0 h"},
+			{Label: "Reales", Value: 45.25, Text: "45,3 h"},
+		}},
+		{Title: "Defectos", Bars: []Bar{
+			{Label: "Detectados", Value: 5, Text: "5"},
+			{Label: "Resueltos", Value: 3, Text: "3"},
+		}},
+	}
+	if len(dashboard.Charts) < len(want) {
+		t.Fatalf("se esperaban al menos %d graficos, salieron %d: %+v", len(want), len(dashboard.Charts), dashboard.Charts)
+	}
+	if got := dashboard.Charts[:len(want)]; !reflect.DeepEqual(got, want) {
+		t.Fatalf("se esperaban los graficos %+v, salieron %+v", want, got)
+	}
+}
+
 // figureText devuelve el valor escrito del número con ese rótulo, y si está.
 func figureText(figures []Figure, label string) (string, bool) {
 	for _, figure := range figures {
