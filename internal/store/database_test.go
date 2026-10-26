@@ -412,3 +412,21 @@ func TestLoQueNoSePuedeAbrirSeAvisaYNoSeToca(t *testing.T) {
 		})
 	}
 }
+
+// Sin escenario (Condiciones de error): una base que no se puede crear. Con SQLite, que no se
+// pueda escribir en la carpeta aparece al abrir, antes de cualquier guardado; el guardado
+// que falla a mitad lo cubre TestUnGuardadoQueFallaNoDejaNadaAMedias.
+// Cubre: #177 RN-2, RN-4
+func TestUnaBaseQueNoSePuedeCrearSeAvisa(t *testing.T) {
+	path := unArchivoEnLugarDeLaCarpeta(t, t.TempDir())
+
+	db, err := OpenDatabase(path)
+
+	if err == nil {
+		db.Close()
+		t.Fatal("se esperaba un error al crear una base en una carpeta que es un archivo")
+	}
+	if !errors.Is(err, domain.ErrSavedDataInvalid) || !strings.Contains(err.Error(), path) {
+		t.Errorf("se esperaba ErrSavedDataInvalid con la ruta de la base, salio: %v", err)
+	}
+}
