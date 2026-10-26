@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"testing"
@@ -357,6 +358,80 @@ func TestElArchivoSeAbreEnUnLectorDePDF(t *testing.T) {
 	for _, font := range []string{"/BaseFont /Helvetica ", "/BaseFont /Helvetica-Bold "} {
 		if !strings.Contains(text, font+"/Encoding /WinAnsiEncoding") {
 			t.Errorf("falta la letra %q con la codificacion WinAnsi", font)
+		}
+	}
+}
+
+// textoPDF es un texto escrito en el contenido de una pagina, con su letra y su posicion.
+type textoPDF struct {
+	font, size, text string
+	x, y             float64
+}
+
+var textoEnPDF = regexp.MustCompile(`BT /(F\d) (\d+) Tf ([\d.]+) ([\d.]+) Td \(((?:[^\\()]|\\.)*)\) Tj ET`)
+
+// winAnsiDeTest pasa a texto los bytes de 0x80 a 0x9F que se usan en los tests; el resto de la
+// codificacion WinAnsi coincide con Latin-1.
+var winAnsiDeTest = map[byte]rune{0x80: '€', 0x85: '…', 0x91: '‘', 0x92: '’', 0x93: '“', 0x94: '”', 0x95: '•', 0x96: '–', 0x97: '—'}
+
+// extraerTextos devuelve, en orden, los textos que el PDF escribe en sus paginas, como los
+// leeria un lector: sin las barras del escape y con los bytes WinAnsi pasados a letras.
+func extraerTextos(pdf []byte) []textoPDF {
+	var textos []textoPDF
+	for _, m := range textoEnPDF.FindAllSubmatch(pdf, -1) {
+		var text []rune
+		raw := m[5]
+		for i := 0; i < len(raw); i++ {
+			b := raw[i]
+			if b == '\\' {
+				i++
+				b = raw[i]
+			}
+			if r, ok := winAnsiDeTest[b]; ok {
+				text = append(text, r)
+			} else {
+				text = append(text, rune(b))
+			}
+		}
+		x, _ := strconv.ParseFloat(string(m[3]), 64)
+		y, _ := strconv.ParseFloat(string(m[4]), 64)
+		textos = append(textos, textoPDF{font: string(m[1]), size: string(m[2]), text: string(text), x: x, y: y})
+	}
+	return textos
+}
+
+// Escenario: Exportar el reporte de un sprint a PDF
+// Cubre: RN-2, RN-5, RN-9
+//
+// Amplia TestExportarElReporteDeUnSprintAPDF, que es del mismo escenario: aca se mira el
+// archivo escrito y no el maquetado. La raya del titulo es de la tarea 9.
+func TestExportarElReporteDeUnSprintAPDFTextoYLetras(t *testing.T) {
+	doc := unDocChico()
+	doc.title = "Reporte del sprint 1 - Seguimiento ICS"
+
+	textos := extraerTextos(buildPDF(layoutReport(doc)))
+
+	want := []textoPDF{
+		{font: "F2", size: "16", text: "Reporte del sprint 1 - Seguimiento ICS"},
+		{font: "F1", size: "10", text: "Generado el 25/10/2026"},
+		{font: "F2", size: "12", text: "Resumen"},
+		{font: "F1", size: "10", text: "Proyecto: Seguimiento ICS"},
+		{font: "F1", size: "10", text: "Sprint Goal: Tener el MVP"},
+		{font: "F2", size: "12", text: "Defectos"},
+		{font: "F1", size: "10", text: "Defectos detectados: 0"},
+		{font: "F1", size: "10", text: "No hay defectos en este sprint."},
+		{font: "F1", size: "10", text: "Página 1 de 1"},
+	}
+	if len(textos) != len(want) {
+		t.Fatalf("se esperaban %d textos en el archivo, salieron %d: %v", len(want), len(textos), textos)
+	}
+	for i, w := range want {
+		got := textos[i]
+		if got.font != w.font || got.size != w.size || got.text != w.text {
+			t.Errorf("texto %d: se esperaba %s %s %q, salio %s %s %q", i+1, w.font, w.size, w.text, got.font, got.size, got.text)
+		}
+		if got.x != pdfMargin || got.y < pdfMargin || got.y > pdfPageHeight-pdfMargin {
+			t.Errorf("el texto %q esta fuera de los margenes: (%v, %v)", got.text, got.x, got.y)
 		}
 	}
 }
