@@ -1306,7 +1306,9 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 	if _, err := project.OpenVotingRound(1); err != nil {
 		t.Fatalf("no se pudo preparar la ronda: %v", err)
 	}
+	addDefect(t, project, 1)
 	navegador := newBrowser(t, newTestServer(t, registry))
+	defecto := url.Values{"titulo": {"Uno"}, "descripcion": {"Otro"}, "severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"}}
 
 	historia := url.Values{"titulo": {"Una"}, "descripcion": {"Otra"}, "prioridad": {"Alta"}, "criterios": {"Un criterio"}}
 	esfuerzo := url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"2"}, "actividad": {"Escribir tests"}}
@@ -1354,6 +1356,16 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		"votar":                        navegador.get("/proyectos/1/historias/1/rondas/1"),
 		"votar sin elegir":             navegador.post("/proyectos/1/historias/1/rondas/1/votar", url.Values{}),
 		"votar sin elegir quien vota":  navegador.post("/proyectos/1/historias/1/rondas/1/votar", url.Values{"puntos": {"5"}}),
+		"defecto nuevo":                navegador.get("/proyectos/1/defectos/nuevo"),
+		"defecto sin titulo":           navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "titulo")),
+		"defecto sin descripcion":      navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "descripcion")),
+		"defecto sin severidad":        navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "severidad")),
+		"defecto sin historia":         navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "historia")),
+		"defecto sin sprint":           navegador.post("/proyectos/1/defectos/nuevo", sin(defecto, "sprint")),
+		"filtrar los defectos":         navegador.get("/proyectos/1/defectos"),
+		"cambiar el estado y resolver": navegador.get("/proyectos/1/defectos/1"),
+		"estado sin elegir":            navegador.post("/proyectos/1/defectos/1/estado", url.Values{}),
+		"resolver sin sprint":          navegador.post("/proyectos/1/defectos/1/resolver", url.Values{}),
 	}
 
 	for nombre, res := range paginas {
@@ -1422,7 +1434,7 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 
 	// Toda tabla esta dentro de su recuadro, que se desplaza de costado si no entra.
 	for _, pagina := range []string{"/proyectos", "/proyectos/1/integrantes", "/proyectos/1/backlog",
-		"/proyectos/1/sprints", "/proyectos/1/esfuerzo", "/proyectos/1/planning-poker"} {
+		"/proyectos/1/sprints", "/proyectos/1/esfuerzo", "/proyectos/1/planning-poker", "/proyectos/1/defectos"} {
 		html := navegador.get(pagina).Body.String()
 		tablas := strings.Count(html, "<table")
 		if tablas == 0 || len(tableStart.FindAllString(html, -1)) != tablas {
@@ -1522,6 +1534,11 @@ func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	operar(primera, "/proyectos/1/planning-poker", url.Values{"historia": {"1"}})
 	operar(primera, "/proyectos/1/historias/1/rondas/1/votar", url.Values{"integrante": {"Ana Perez"}, "puntos": {"5"}})
 	operar(primera, "/proyectos/1/historias/1/rondas/1/revelar", nil)
+	operar(primera, "/proyectos/1/defectos/nuevo", url.Values{
+		"titulo": {"Suma mal las horas"}, "descripcion": {"No suma el ultimo registro"},
+		"severidad": {"Mayor"}, "historia": {"1"}, "sprint": {"1"},
+	})
+	operar(primera, "/proyectos/1/defectos/1/estado", url.Values{"estado": {"En curso"}})
 
 	// Cuando cierro el sistema y lo vuelvo a abrir.
 	segunda := abrir()
@@ -1531,6 +1548,7 @@ func TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 		"/proyectos/1/sprints/1":            "Registrar esfuerzo",
 		"/proyectos/1/esfuerzo":             "Escribir tests",
 		"/proyectos/1/historias/1/rondas/1": "<td>Ana Perez</td><td>5</td>",
+		"/proyectos/1/defectos":             "<td>Mayor</td><td>En curso</td>",
 	}
 	for pagina, texto := range esperado {
 		if html := joinTags(segunda.get(pagina).Body.String()); !strings.Contains(html, texto) {
