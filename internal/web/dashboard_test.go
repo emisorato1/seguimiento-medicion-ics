@@ -100,6 +100,120 @@ func TestUnProyectoSinSprintsAvisaQueNoHayDatos(t *testing.T) {
 	}
 }
 
+// Desde la tarea 12, los tests de la página arman el proyecto con las operaciones de verdad
+// y no con un dashboard armado a mano (desvío de la D10, en la Fase 4).
+
+// dashboardProject crea "Sistema de metricas" con una historia por cada valor de points,
+// estimada con esos puntos, y el sprint 1 cerrado con la historia 1 comprometida y
+// completada.
+func dashboardProject(t *testing.T, registry *domain.ProjectRegistry, points ...int) *domain.Project {
+	t.Helper()
+	project := addProject(t, registry, "Sistema de metricas")
+	for i, p := range points {
+		story := addStory(t, project, fmt.Sprintf("Historia %d", i+1), domain.PriorityHigh)
+		if err := project.EstimateStory(story.ID(), p); err != nil {
+			t.Fatalf("no se pudo estimar la historia %d: %v", story.ID(), err)
+		}
+	}
+	addSprint(t, registry, project.ID())
+	if err := project.AssignStory(1); err != nil {
+		t.Fatalf("no se pudo asignar la historia 1: %v", err)
+	}
+	if err := project.CloseSprint([]int{1}, time.Date(2026, 10, 30, 0, 0, 0, 0, time.UTC)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1: %v", err)
+	}
+	return project
+}
+
+// Escenario: El estado general muestra las metricas tal como se calcularon
+// Cubre: RN-4, RN-15
+func TestElEstadoGeneralMuestraLasMetricasTalComoSeCalcularon(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := dashboardProject(t, registry, 3, 5)
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/dashboard")
+
+	estado := between(res.Body.String(), `<section id="estado-general"`, "</section>")
+	if !strings.Contains(estado, "Estado general") {
+		t.Fatalf("se esperaba la parte del estado general, y no esta en:\n%s", res.Body.String())
+	}
+	// Cada número tal como lo entrega el dominio, con su rótulo y en su orden.
+	last := 0
+	for _, figure := range project.Dashboard().Overview {
+		fila := "<dt>" + figure.Label + "</dt><dd>" + figure.Text + "</dd>"
+		i := strings.Index(estado, fila)
+		if i < last {
+			t.Fatalf("se esperaba %q en el estado general, despues del anterior, y no esta asi en:\n%s", fila, estado)
+		}
+		last = i
+	}
+	// Y los que da la #16 con estos datos: 8 planificados, 3 completados en el sprint 1.
+	for _, fila := range []string{"<dt>Story points planificados</dt><dd>8</dd>", "<dt>Story points completados</dt><dd>3</dd>", "<dt>Velocidad</dt><dd>3</dd>"} {
+		if !strings.Contains(estado, fila) {
+			t.Errorf("se esperaba %q en el estado general, y no esta en:\n%s", fila, estado)
+		}
+	}
+}
+
+// Escenario: El sprint en curso muestra su meta y lo que lleva registrado
+// Cubre: RN-5, RN-15
+func TestElSprintEnCursoMuestraSuMetaYLoQueLlevaRegistrado(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := dashboardProject(t, registry, 3, 13)
+	if _, err := project.AddSprint(domain.SprintData{
+		Goal:  "Tener el dashboard",
+		Start: time.Date(2026, 10, 26, 0, 0, 0, 0, time.UTC),
+		End:   time.Date(2026, 10, 30, 0, 0, 0, 0, time.UTC),
+	}); err != nil {
+		t.Fatalf("no se pudo crear el sprint 2: %v", err)
+	}
+	if err := project.AssignStory(2); err != nil {
+		t.Fatalf("no se pudo asignar la historia 2: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/dashboard")
+
+	enCurso := between(res.Body.String(), `<section id="sprint-en-curso"`, "</section>")
+	for _, want := range []string{"Sprint 2", "Tener el dashboard", "26/10/2026", "30/10/2026",
+		"<dt>Story points planificados</dt><dd>13</dd>", "<dt>Horas reales</dt><dd>0,0 h</dd>", "<dt>Defectos detectados</dt><dd>0</dd>"} {
+		if !strings.Contains(enCurso, want) {
+			t.Errorf("se esperaba %q en el sprint en curso, y no esta en:\n%s", want, enCurso)
+		}
+	}
+	for _, unwanted := range []string{"completados", "Velocidad"} {
+		if strings.Contains(enCurso, unwanted) {
+			t.Errorf("no se esperaba %q en el sprint en curso, y esta en:\n%s", unwanted, enCurso)
+		}
+	}
+}
+
+// Escenario: Un proyecto con todos sus sprints cerrados no tiene sprint en curso
+// Cubre: RN-6
+func TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCurso(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := dashboardProject(t, registry, 3, 5)
+	addSprint(t, registry, project.ID())
+	if err := project.CloseSprint(nil, time.Date(2026, 10, 30, 0, 0, 0, 0, time.UTC)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 2: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/dashboard")
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+	}
+	body := res.Body.String()
+	if enCurso := between(body, `<section id="sprint-en-curso"`, "</section>"); !strings.Contains(enCurso, "No hay ningún sprint en curso") {
+		t.Errorf("se esperaba el aviso de que no hay sprint en curso, y no esta en:\n%s", body)
+	}
+	if estado := between(body, `<section id="estado-general"`, "</section>"); !strings.Contains(estado, "<dt>Story points planificados</dt><dd>8</dd>") {
+		t.Errorf("se esperaba igual el estado general, y no esta en:\n%s", body)
+	}
+}
+
 // Escenario: Pedir el dashboard de un proyecto que no existe
 // Cubre: RN-17
 func TestPedirElDashboardDeUnProyectoQueNoExiste(t *testing.T) {
