@@ -568,3 +568,34 @@ func TestUnArchivoJSONComoBaseSeRechaza(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Una base abierta no la abre otro sistema (exportar con la web abierta). Lo que
+// hay que hacer es cerrar la web y volver a exportar, no "volver a abrir este".
+// Cubre: #177 RN-19
+func TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb(t *testing.T) {
+	dir := t.TempDir()
+	base := filepath.Join(dir, "datos-ics.db")
+	destino := filepath.Join(dir, "copia.json")
+	registry := domain.NewProjectRegistry()
+	if _, err := registry.Create(domain.ProjectData{Name: "Sistema de métricas", Start: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)}); err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+	web, err := store.OpenDatabase(base)
+	if err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+	defer web.Close()
+	if err := web.Save(registry); err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+
+	var out, errOut bytes.Buffer
+	code := run([]string{"-datos", base, "-exportar", destino}, &out, &errOut, noServe(t))
+
+	if code != 1 || !strings.Contains(errOut.String(), "Cerrá la web y volvé a exportar") || strings.Contains(errOut.String(), "volvé a abrir este") {
+		t.Errorf("se esperaba el codigo 1 y el aviso de cerrar la web y volver a exportar, salio %d:\n%s", code, errOut.String())
+	}
+	if _, err := os.Stat(destino); !errors.Is(err, os.ErrNotExist) {
+		t.Errorf("no tenia que escribir el archivo, y Stat dio: %v", err)
+	}
+}
