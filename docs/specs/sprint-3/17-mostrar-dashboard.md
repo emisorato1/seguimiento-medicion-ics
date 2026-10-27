@@ -462,7 +462,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 9 | El largo de una barra: 100 % para el valor más grande, la parte proporcional con un decimal, sin barra para un cero y al menos 1 % para un valor mayor que cero | El largo de cada barra es proporcional al valor mas grande del grafico | RN-11, RN-12, RN-13 | pendiente |
+| 9 | El largo de una barra: 100 % para el valor más grande, la parte proporcional con un decimal, sin barra para un cero y al menos 1 % para un valor mayor que cero | El largo de cada barra es proporcional al valor mas grande del grafico | RN-11, RN-12, RN-13 | hecha |
 | 10 | La página del dashboard, con el encabezado del proyecto, su fecha de inicio como día/mes/año y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-15, RN-17, RN-18 | pendiente |
 | 11 | Sin sprints, la página muestra el encabezado y el aviso, sin gráficos | Un proyecto sin sprints avisa que no hay datos | RN-7 | pendiente |
 | 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | pendiente |
@@ -554,6 +554,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 6 | `1be2d30` | `2e28197` |
 | 7 | `4f8e6d1` (sin RED) | — |
 | 8 | `792ee9a` | `acc6ff5` |
+| 9 | `a176c80` | `1833a8d` |
 
 ### Decisiones tomadas al implementar
 
@@ -590,6 +591,10 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
 - **El test de la tarea 8 usa las operaciones de verdad** (las historias, el sprint, la
   asignación y el cierre de la #10) y fija los números que da la #16 con esos datos, en lugar
   de compararlos contra una llamada a la #16 dentro del test.
+- **El largo de la barra es un número, no el texto del SVG** (tarea 9): la web lo mide en
+  porcentaje con un decimal (61,5), y escribirlo con punto en el atributo (`61.5%`, D3) es de
+  la tarea 13, que dibuja la barra. El test suma dos casos que el escenario no muestra: el
+  redondeo a un decimal (8 de 13 da 61,5) y un gráfico todo en cero, que no divide por cero.
 
 ### Desvíos respecto de la spec
 
