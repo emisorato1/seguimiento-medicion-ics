@@ -344,6 +344,9 @@ que hacen la #8, la #11 y el contrato del Dashboard.
 | La fecha de generación la recibe la operación como dato de quien llama | sacarla del reloj del sistema | decidido por el Agile Enabler el 20/10 y escrito en AGENTS.md: el dominio no lee el reloj, así los tests fijan la fecha que necesitan |
 | La situación de cada historia en un sprint sale del registro del cierre | del estado actual de la historia | ver el punto 2 de la puerta |
 | El formato de los números y las fechas va en `format.go`, compartido con la #17, y lo declara la primera de las dos que llegue a `dev` | que cada uno formatee a su manera, o que la #18 espere a la #17 | un número tiene que leerse igual en el dashboard, en el reporte y en el PDF; y esperar a la #17 frenaría también a la #19. Es la misma regla que se usó con `errors.go` |
+| **El reporte y sus secciones son datos simples**, con sus datos a la vista (título, día de generación, alcance, métricas y secciones; cada sección con su encabezado y sus líneas) | entregarlos detrás de operaciones de lectura | es lo que ya son `Metrics` y el Dashboard: el reporte no tiene nada que proteger, porque se arma de una vez y no se guarda (RN-15). Así la web (#78) y el PDF (#19) lo leen sin pasos extra |
+| **El reporte se entrega como un valor**, y la exportación a PDF de la #19 lo recibe igual | entregar una referencia al reporte | cada pedido arma uno nuevo y nadie lo comparte, así que no hay nada que se pueda cambiar de costado. Acordado con Emiliano Sorato en el #181, para que el PDF lo lea de la misma forma |
+| **El reporte del proyecto no informa errores; el de un sprint, solo el de sprint no encontrado (#8)** | que los dos informen también el proyecto que no existe | los dos se le piden a un proyecto que ya se encontró: el proyecto que no existe lo informa el registro (#3), como en el Dashboard. Un sprint sí puede no existir dentro del proyecto (RN-16) |
 
 ### Dependencias y restricciones
 
