@@ -12,6 +12,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"net"
 	"net/http"
 	"os"
@@ -60,6 +61,10 @@ func parseOptions(args []string) (options, error) {
 	flags.StringVar(&opts.exportPath, "exportar", "", "archivo donde escribir todos los datos, sin abrir la web")
 	if err := flags.Parse(args); err != nil {
 		return options{}, fmt.Errorf("opciones: %v (las que existen son -puerto, -datos, -red, -importar y -exportar)", err)
+	}
+	// Juntas, no queda claro que se quiere hacer primero: se rechaza sin hacer ninguna (RN-17).
+	if opts.importPath != "" && opts.exportPath != "" {
+		return options{}, errors.New("opciones: -importar y -exportar no se pueden usar juntas: importá primero y exportá después")
 	}
 	return opts, nil
 }
@@ -142,6 +147,11 @@ func open(o options, out io.Writer) (http.Handler, *store.Database, error) {
 // export escribe todos los datos de la base en el archivo de -exportar y termina sin abrir la
 // web (RN-7).
 func export(o options, out, errOut io.Writer) int {
+	// Sin base no hay nada que exportar: abrirla la crearia vacia (RN-18).
+	if _, err := os.Stat(o.dataPath); errors.Is(err, fs.ErrNotExist) {
+		fmt.Fprintf(errOut, "No se pudieron exportar los datos: no hay datos para exportar, porque la base %s no existe.\n", o.dataPath)
+		return 1
+	}
 	db, err := store.OpenDatabase(o.dataPath)
 	if err != nil {
 		fmt.Fprintf(errOut, "No se pudieron exportar los datos: %v\nLa base %s quedó como estaba.\n", err, o.dataPath)
