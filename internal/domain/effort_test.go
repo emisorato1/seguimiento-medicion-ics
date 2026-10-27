@@ -434,3 +434,54 @@ func TestRegistrarEsfuerzoEnUnProyectoQueNoExiste(t *testing.T) {
 		t.Fatalf("se esperaba ErrProjectNotFound para el proyecto 99, salio: %v", err)
 	}
 }
+
+// Defecto #192: un registro es de un solo dia, asi que no puede tener mas de 24 horas. El
+// tope por dia sumando registros sigue afuera (decision 5 de la spec).
+// Cubre: RN-20
+func TestUnRegistroNoPuedeTenerMasDe24Horas(t *testing.T) {
+	for _, horas := range []float64{24.5, 25, 1000} {
+		project := unProyectoConJuliana(t)
+		data := unEsfuerzo()
+		data.Hours = horas
+
+		_, err := project.LogEffort(data, hoy)
+
+		if !errors.Is(err, ErrEffortHoursOverDay) {
+			t.Errorf("se esperaba ErrEffortHoursOverDay con %v horas, salio: %v", horas, err)
+		}
+		if len(project.Efforts()) != 0 {
+			t.Errorf("con %v horas el proyecto tenia que seguir sin registros, tiene %d", horas, len(project.Efforts()))
+		}
+	}
+
+	// 24 horas justas se aceptan, y dos registros del mismo dia que juntos pasan de 24 tambien.
+	project := unProyectoConJuliana(t)
+	for _, horas := range []float64{24, 3} {
+		data := unEsfuerzo()
+		data.Hours = horas
+		if _, err := project.LogEffort(data, hoy); err != nil {
+			t.Errorf("se esperaba aceptar un registro de %v horas, salio: %v", horas, err)
+		}
+	}
+}
+
+// Defecto #192: un registro de mas de 24 horas que se guardo antes de la regla se sigue
+// cargando, igual que uno de un dia futuro (la carga no rechaza lo que el uso produjo).
+// Cubre: RN-20
+func TestUnRegistroDeMasDe24HorasYaGuardadoSeCarga(t *testing.T) {
+	data := []byte(`{"next_id": 2, "projects": [{"id": 1, "name": "Sistema", "start": "2026-10-01", "next_story_id": 2,
+		"members": [{"name": "Juliana Bustos", "role": "Product Builder"}],
+		"stories": [{"id": 1, "title": "Una", "description": "Algo", "priority": "Alta", "state": "Pendiente",
+			"story_points": 0, "acceptance_criteria": ["Se puede"]}],
+		"efforts": [{"story_id": 1, "member_name": "Juliana Bustos", "activity": "Tests", "hours": 25, "day": "2026-10-20"}]}]}`)
+
+	registry, err := RegistryFromJSON(data)
+
+	if err != nil {
+		t.Fatalf("un registro de 25 horas ya guardado tenia que cargarse, salio: %v", err)
+	}
+	project, _ := registry.Get(1)
+	if horas, _ := project.StoryHours(1); horas != 25 {
+		t.Errorf("se esperaban las 25 horas guardadas, hay %v", horas)
+	}
+}
