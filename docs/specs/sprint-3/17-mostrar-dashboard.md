@@ -456,7 +456,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | hecha |
 | 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso, y la velocidad del estado general escrita como «sin sprints cerrados» | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-4, RN-8, RN-9 | hecha |
 | 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | hecha |
-| 8 | El dashboard se pide al proyecto y usa las métricas que calcula la #16 | — (conexión con la #16) | RN-2 | pendiente |
+| 8 | El dashboard se pide al proyecto y usa las métricas que calcula la #16 | — (conexión con la #16) | RN-2 | hecha |
 
 **Web** (`internal/web/dashboard_test.go`), con los datos del dashboard armados a mano:
 
@@ -553,6 +553,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 5 | `ef5ab19` | `fc0c221` |
 | 6 | `1be2d30` | `2e28197` |
 | 7 | `4f8e6d1` (sin RED) | — |
+| 8 | `792ee9a` | `acc6ff5` |
 
 ### Decisiones tomadas al implementar
 
@@ -582,6 +583,13 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   velocidad de cero no dice si hay sprints cerrados, porque la #16 da cero en los dos casos.
   El test de la tarea suma como subcaso el caso límite de los sprints cerrados con velocidad
   promedio de cero, que se escribe «0».
+- **`p.Dashboard()` descarta el error de las métricas de cada sprint** (tarea 8), con un
+  comentario: `SprintMetrics` solo falla con un sprint que no existe, y los números salen de
+  los sprints del propio proyecto. Es lo mismo que hace el cierre de la #10 con `p.Story`, y
+  así no se toca el código de la #16.
+- **El test de la tarea 8 usa las operaciones de verdad** (las historias, el sprint, la
+  asignación y el cierre de la #10) y fija los números que da la #16 con esos datos, en lugar
+  de compararlos contra una llamada a la #16 dentro del test.
 
 ### Desvíos respecto de la spec
 
