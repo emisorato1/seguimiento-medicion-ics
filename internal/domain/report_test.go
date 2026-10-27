@@ -85,3 +85,40 @@ func TestLosNumerosDelReporteSonLosDeLasMetricas(t *testing.T) {
 		t.Errorf("se esperaban las lineas\n%q\nsalieron\n%q", want, got)
 	}
 }
+
+// todasLasLineas devuelve las lineas de todas las secciones del reporte, en orden.
+func todasLasLineas(r Report) []string {
+	lines := []string{}
+	for _, section := range r.Sections {
+		lines = append(lines, section.Lines...)
+	}
+	return lines
+}
+
+// Esquema del escenario: Formato de los numeros
+// Cubre: RN-14
+func TestFormatoDeLosNumeros(t *testing.T) {
+	cases := []struct {
+		metrica string
+		metrics Metrics
+		linea   string
+	}{
+		{"horas reales", Metrics{ActualHours: 7.5}, "Horas reales: 7,5 h"},
+		{"desviacion 25", Metrics{HoursDeviation: 25}, "Desviación: 25,0 %"},
+		{"desviacion -20", Metrics{HoursDeviation: -20}, "Desviación: -20,0 %"},
+		{"desviacion 0", Metrics{HoursDeviation: 0}, "Desviación: 0,0 %"},
+		{"porcentaje con 2 completadas", Metrics{StoriesPlanned: 3, StoriesCompleted: 2, CompletionRate: 200.0 / 3}, "Historias completadas: 2 (66,7 %)"},
+	}
+	for _, c := range cases {
+		t.Run(c.metrica, func(t *testing.T) {
+			project := unProyecto(t)
+			sprint := unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 20), unDia(2026, 10, 25), unDia(2026, 10, 25), nil)
+
+			report := project.buildSprintReport(sprint, c.metrics, unDia(2026, 10, 27))
+
+			if lines := todasLasLineas(report); !slices.Contains(lines, c.linea) {
+				t.Errorf("se esperaba la linea %q, y no esta en:\n%q", c.linea, lines)
+			}
+		})
+	}
+}
