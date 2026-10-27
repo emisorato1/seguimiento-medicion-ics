@@ -41,7 +41,7 @@ go run ./cmd/web -datos /tmp/demo.json
 | **Los cuatro integrantes** con su rol: Emiliano Sorato (Agile Enabler), Agustín Salinas, Juliana Bustos y Maximiliano Eula (Product Builders) | `CLAUDE.md` y las actas |
 | **Las 21 historias** con su número de issue, título, descripción («Como… quiero… para…»), criterios de aceptación, prioridad, story points y horas estimadas | los issues y los campos del tablero |
 | **Sprint 1** (28/09 al 16/10, cerrado el 16/10): su Sprint Goal, las 5 historias asignadas y las 2 completadas (la #3 y la #4) | actas de planning y review del Sprint 1 |
-| **Sprint 2** (20 al 25/10, cerrado el 25/10): su Sprint Goal y las 10 historias, todas completadas, con la #13 adelantada | anexo de la planning y review del Sprint 2 |
+| **Sprint 2** (20 al 25/10, cerrado el 25/10): su Sprint Goal y las 11 historias, todas completadas, con la #13 adelantada y la #77 (ver más abajo) | anexo de la planning y review del Sprint 2, y el recálculo del 26/10 (PR #185) |
 | **13 registros de esfuerzo**, uno por historia con horas reales, 69,25 h en total | campo *Horas reales* del tablero; las 38,25 h del Sprint 1 y las 31 h del Sprint 2 de las actas de review |
 | **El Planning Poker de la #77 y la #78**, del 26/10: la ronda 1 de cada una, revelada con los cuatro votos y sus diferencias, y la ronda 2, revelada con los cuatro votos (13 de todos) y la estimación acordada en 13. Con eso la #77 y la #78 tienen 13 story points, como en el tablero | acta de planning del Sprint 3 (PR #169 y #171); el voto de Juliana Bustos en la ronda 2 lo registró Emiliano Sorato el 26/10, y el acta todavía lo tiene pendiente |
 | **3 defectos**, todos resueltos, con su número de issue: el #59 (historia #3, detectado y resuelto en el Sprint 1), el #60 (historia #3, detectado en el Sprint 1 y resuelto en el 2) y el #108 (historia #77, detectado y resuelto en el Sprint 2) | los issues con la etiqueta `defecto` (título, «Qué pasa» y «Datos para el informe») y la review de cada sprint |
@@ -68,8 +68,11 @@ el Sprint 3, y acá figuran Pendientes.
   tablero. Para la #5, la #14, la #15 y la #77, la review del Sprint 2 dice que son horas de
   Emiliano Sorato dirigiendo y revisando la implementación con asistencia de IA, y así figura
   la actividad.
-- **La #77 está Terminada pero fuera del Sprint 2**: se terminó en ese sprint sin story
-  points (se estimó recién el 26/10), y el sistema solo asigna historias estimadas.
+- **La #77 figura asignada al Sprint 2 y completada al cierre**, aunque se terminó en ese
+  sprint sin story points y se estimó en 13 recién el 26/10. El recálculo de ese día (PR
+  #185) la cuenta como completada en el Sprint 2, y así figura: el Sprint 2 suma 52 story
+  points y la velocidad del proyecto da 29. Así el reporte muestra 13 historias completadas
+  de 13 Terminadas, sin contradicción.
 
 ## Lo que quedó afuera, y por qué
 
