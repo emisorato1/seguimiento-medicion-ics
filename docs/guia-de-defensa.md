@@ -167,3 +167,12 @@ se hace desde la web.
 Nadie pushea directo: todo entra por PR. A `dev` hace falta el CI en verde, y cada PR recibe una
 revisión escrita de otro integrante. A `main` hace falta además una aprobación. Solo se mergea
 con merge commit, así queda el historial del TDD.
+
+**15. ¿Por qué algunas historias tienen ciclos de TDD en pocos minutos?**
+Las más rápidas son historias hechas con asistencia de IA, las de la lista de la pregunta 5.
+Por ejemplo, las 12 tareas de la #19 se commitearon en siete minutos (26/10, de 20:09 a 20:16).
+Cada ciclo es real: el test se escribe y se corre antes que el código, y el commit `test:` trae
+la salida del RED. Si se vuelve a ese commit y se corren los tests, fallan igual, y en el
+`feat:` siguiente pasan. Maxi lo comprobó commit por commit en la revisión del PR #184. Lo que
+lleva tiempo en esas historias no es escribir el código sino dirigir y revisar el trabajo, y eso
+es lo que se carga como horas reales.
