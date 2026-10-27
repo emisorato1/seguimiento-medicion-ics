@@ -122,3 +122,43 @@ func TestFormatoDeLosNumeros(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: El resumen dice en que estado esta el sprint
+// Cubre: RN-6, RN-7, RN-14
+func TestElResumenDiceEnQueEstadoEstaElSprint(t *testing.T) {
+	cases := []struct {
+		estado string
+		closed bool
+		linea  string
+	}{
+		{"cerrado el 25/10/2026", true, "Estado: cerrado el 25/10/2026"},
+		{"abierto", false, "Estado: abierto. Los números son parciales."},
+	}
+	for _, c := range cases {
+		t.Run(c.estado, func(t *testing.T) {
+			project := unProyectoLlamado(t, "Seguimiento ICS")
+			sprint, err := project.AddSprint(SprintData{Goal: "Tener el MVP", Start: unDia(2026, 10, 1), End: unDia(2026, 10, 25)})
+			if err != nil {
+				t.Fatalf("no se pudo crear el sprint de prueba: %v", err)
+			}
+			if c.closed {
+				if err := project.CloseSprint(nil, unDia(2026, 10, 25)); err != nil {
+					t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+				}
+			}
+
+			report := project.buildSprintReport(sprint, Metrics{}, unDia(2026, 10, 27))
+
+			want := []string{
+				"Proyecto: Seguimiento ICS",
+				"Sprint Goal: Tener el MVP",
+				"Inicio: 01/10/2026",
+				"Fin: 25/10/2026",
+				c.linea,
+			}
+			if got := seccion(t, report, "Resumen"); !slices.Equal(got, want) {
+				t.Errorf("se esperaba el resumen\n%q\nsalio\n%q", want, got)
+			}
+		})
+	}
+}
