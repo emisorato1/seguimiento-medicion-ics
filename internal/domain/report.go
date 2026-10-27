@@ -92,6 +92,10 @@ func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
 		}
 		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", id, story.title, pointsText(points), situation))
 	}
+	// una seccion sin nada que listar lo dice, en lugar de quedar solo con los totales (RN-5)
+	if len(sprint.stories) == 0 {
+		lines = append(lines, "No hay historias en este sprint.")
+	}
 	return lines
 }
 
@@ -113,6 +117,7 @@ func (p *Project) sprintDefectLines(sprint *Sprint, metrics Metrics) []string {
 		"Defectos detectados: " + formatCount(metrics.DefectsDetected),
 		"Defectos resueltos: " + formatCount(metrics.DefectsResolved),
 	}
+	listed := 0
 	for _, defect := range p.defects {
 		if defect.detectedIn != sprint.number && defect.resolvedIn != sprint.number {
 			continue
@@ -122,6 +127,11 @@ func (p *Project) sprintDefectLines(sprint *Sprint, metrics Metrics) []string {
 			state = fmt.Sprintf("%s en el sprint %d", state, defect.resolvedIn)
 		}
 		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", defect.id, defect.title, defect.severity, state))
+		listed++
+	}
+	// una seccion sin nada que listar lo dice, en lugar de quedar solo con los totales (RN-5)
+	if listed == 0 {
+		lines = append(lines, "No hay defectos en este sprint.")
 	}
 	return lines
 }
