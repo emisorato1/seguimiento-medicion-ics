@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"testing"
@@ -520,5 +521,36 @@ func TestUnaBaseAbiertaNoLaAbreOtroSistema(t *testing.T) {
 	sinError(t, err)
 	if len(cargado.Projects()) != 2 {
 		t.Errorf("se esperaban los dos proyectos guardados, hay %d", len(cargado.Projects()))
+	}
+}
+
+// Sin escenario: una ruta con signos raros abre la base en ese lugar y no en otro, y una con
+// "?" se rechaza: el driver corta el nombre ahi y la crearia en otro archivo, sin avisar.
+// Windows no permite "?" en los nombres, asi que ese caso solo se prueba en Linux y macOS.
+// Cubre: #177 RN-5
+func TestLaBaseSeAbreEnLaRutaQueSeIndica(t *testing.T) {
+	for _, nombre := range []string{"con espacios y año.db", "por%20ciento.db", "nu#meral.db"} {
+		dir := t.TempDir()
+		path := filepath.Join(dir, nombre)
+		db := abrirBase(t, path)
+		sinError(t, db.Save(unRegistroCompleto(t)))
+		if _, err := os.Stat(path); err != nil {
+			t.Errorf("%s: la base tenia que estar en la ruta indicada: %v", nombre, err)
+		}
+	}
+
+	if runtime.GOOS == "windows" {
+		return
+	}
+	dir := t.TempDir()
+	db, err := OpenDatabase(filepath.Join(dir, "pre?gunta.db"))
+	if err == nil {
+		db.Close()
+		t.Error("una ruta con ? tenia que rechazarse")
+	} else if !strings.Contains(err.Error(), "?") {
+		t.Errorf("el aviso tenia que nombrar el signo ?, salio: %v", err)
+	}
+	if entries, _ := os.ReadDir(dir); len(entries) != 0 {
+		t.Errorf("no tenia que crear ningun archivo, y hay %d", len(entries))
 	}
 }
