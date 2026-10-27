@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 20:23. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-27 12:32. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -21,6 +21,7 @@ _No hay historias en este estado._
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+| #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 13 | Alta | Sprint 3 |
 | #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
 
@@ -32,7 +33,6 @@ _No hay historias en este estado._
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 
 ## Sprint Backlog
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-bd09ddc 2026-10-26 docs: estimacion acordada de la 77 y la 78 (13 y 13) y lo que cambia en el sprint 2 y el 3
-203859d 2026-10-26 Merge pull request #178 from emisorato1/docs-manual-ajustes
-d728aa3 2026-10-26 Merge pull request #143 from emisorato1/historia-11-consultar-sprints-anteriores
-b7045e5 2026-10-26 docs: el manual con las dos interfaces en el mismo tono, Go y el número en la introducción, y cómo reestimar
-fb579d4 2026-10-26 chore: regenerar ESTADO.md con la historia 11 en review
-3f5979e 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-11-consultar-sprints-anteriores
-d0a6f83 2026-10-26 docs: registrar la implementacion de la historia 11
-3eccdbb 2026-10-26 Merge pull request #176 from emisorato1/trazabilidad-173
+9b1430f 2026-10-27 Merge remote-tracking branch 'origin/dev' into historia-18-generar-reporte
+d9de00e 2026-10-27 docs: registrar las tres puertas de la historia 18, aprobadas por Emiliano
+d3fd46b 2026-10-27 docs: aplicar las correcciones de las puertas de la historia 18
+bc41ede 2026-10-27 Merge pull request #204 from emisorato1/historia-17-dashboard
+deca9d6 2026-10-27 docs: el contrato dice que los datos del dashboard y format.go ya estan en dev (historia 17, primera parte)
+94ebf02 2026-10-27 Merge remote-tracking branch 'origin/dev' into historia-17-dashboard
+d044b48 2026-10-27 Merge pull request #197 from emisorato1/defecto-193-filtro-minusculas
+25d5e96 2026-10-27 Merge pull request #188 from emisorato1/datos-demo
 ```
