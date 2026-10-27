@@ -30,6 +30,12 @@ Maximiliano Eula (legajo 8665).
   está en implementación; se confirma cuando se mergee a `dev`.] Fuente:
   `docs/documentacion-tecnica.md` y `docs/diseno-dominio.md`.
 
+![Arquitectura: los paquetes de Go y los archivos de datos](graficos/arquitectura.png)
+
+El diagrama sale de `scripts/diagrama-arquitectura.py`. Las flechas son los import entre
+paquetes: la web y la consola solo usan el dominio, y el guardado está aparte, en
+`internal/store`.
+
 ## 2. Cómo trabajamos
 
 - **Scrum:** roles, calendario de los cinco sprints (0 a 4) y ceremonias. Fuente: el plan y
