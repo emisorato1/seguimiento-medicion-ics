@@ -2,6 +2,7 @@ package domain
 
 import (
 	"slices"
+	"strings"
 	"testing"
 )
 
@@ -408,5 +409,51 @@ func TestUnProyectoSinSprintsCerradosNoMuestraUnaVelocidadDeCero(t *testing.T) {
 	velocity := "Velocidad promedio: sin sprints cerrados"
 	if lines := seccion(t, report, "Estimación y esfuerzo"); !slices.Contains(lines, velocity) {
 		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", velocity, lines)
+	}
+}
+
+// Escenario: Las historias y los defectos van ordenados por identificador
+// Cubre: RN-13
+func TestLasHistoriasYLosDefectosVanOrdenadosPorIdentificador(t *testing.T) {
+	project := unProyecto(t)
+	for _, priority := range []Priority{PriorityMedium, PriorityLow, PriorityHigh} {
+		data := unosDatos()
+		data.Priority = priority
+		if _, err := project.AddStory(data); err != nil {
+			t.Fatalf("no se pudo crear la historia de prueba: %v", err)
+		}
+	}
+	conSprints(t, project, 2)
+	for i := 1; i <= 2; i++ {
+		if _, err := project.AddDefect(unDefecto()); err != nil {
+			t.Fatalf("no se pudo registrar el defecto %d: %v", i, err)
+		}
+	}
+	for _, id := range []int{2, 1} {
+		if err := project.ResolveDefect(id, 2); err != nil {
+			t.Fatalf("no se pudo resolver el defecto %d: %v", id, err)
+		}
+	}
+	prioritized := []int{}
+	for _, story := range project.PrioritizedBacklog() {
+		prioritized = append(prioritized, story.ID())
+	}
+	if !slices.Equal(prioritized, []int{3, 1, 2}) {
+		t.Fatalf("el backlog priorizado tenia que mostrar las historias como 3, 1 y 2, salio %v", prioritized)
+	}
+
+	report := project.buildProjectReport(project.ProjectMetrics(), unDia(2026, 10, 27))
+
+	stories := seccion(t, report, "Historias")[2:]
+	for i, prefix := range []string{"#1 — ", "#2 — ", "#3 — "} {
+		if i >= len(stories) || !strings.HasPrefix(stories[i], prefix) {
+			t.Fatalf("se esperaban las historias como 1, 2 y 3, salio:\n%q", stories)
+		}
+	}
+	defects := seccion(t, report, "Defectos")[2:]
+	for i, prefix := range []string{"#1 — ", "#2 — "} {
+		if i >= len(defects) || !strings.HasPrefix(defects[i], prefix) {
+			t.Fatalf("se esperaban los defectos como 1 y 2, salio:\n%q", defects)
+		}
 	}
 }
