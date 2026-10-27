@@ -47,3 +47,41 @@ func TestGenerarElReporteDeUnSprintCerrado(t *testing.T) {
 		t.Errorf("se esperaban las secciones %q en ese orden, salieron %q", want, got)
 	}
 }
+
+// seccion devuelve las lineas de la seccion con ese encabezado, o corta el test si el
+// reporte no la tiene.
+func seccion(t *testing.T, r Report, heading string) []string {
+	t.Helper()
+	for _, section := range r.Sections {
+		if section.Heading == heading {
+			return section.Lines
+		}
+	}
+	t.Fatalf("el reporte no tiene la seccion %q; tiene %q", heading, encabezados(r))
+	return nil
+}
+
+// Escenario: Los numeros del reporte son los de las metricas
+// Cubre: RN-2, RN-11
+func TestLosNumerosDelReporteSonLosDeLasMetricas(t *testing.T) {
+	project := unProyecto(t)
+	sprint := unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 20), unDia(2026, 10, 25), unDia(2026, 10, 25), nil)
+	metrics := Metrics{PlannedPoints: 13, CompletedPoints: 10, Velocity: 10, EstimatedHours: 16, ActualHours: 20, HoursDeviation: 25}
+
+	report := project.buildSprintReport(sprint, metrics, unDia(2026, 10, 27))
+
+	if report.Metrics != metrics {
+		t.Errorf("se esperaban las metricas %+v, salieron %+v", metrics, report.Metrics)
+	}
+	want := []string{
+		"Story points planificados: 13",
+		"Story points completados: 10",
+		"Velocidad: 10",
+		"Horas estimadas: 16,0 h",
+		"Horas reales: 20,0 h",
+		"Desviación: 25,0 %",
+	}
+	if got := seccion(t, report, "Estimación y esfuerzo"); !slices.Equal(got, want) {
+		t.Errorf("se esperaban las lineas\n%q\nsalieron\n%q", want, got)
+	}
+}
