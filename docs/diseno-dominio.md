@@ -194,6 +194,16 @@ sin que la historia #16 esté implementada.
 Se pide: `p.ProjectReport(today)` y `p.SprintReport(sprintNumber, today)`: el día lo pasa quien
 llama, porque el dominio no lee el reloj.
 
+Las firmas, como las aceptó Agustín en el #181 (505bc4d). `Report` y `Section` son datos
+simples, con los campos públicos como `Metrics`, y el reporte se entrega **como un valor**, no
+como una referencia: cada pedido arma uno nuevo y nadie lo comparte.
+
+| Operación | Devuelve |
+|---|---|
+| `p.ProjectReport(today)` | `Report`; no falla: el proyecto que no existe lo informa el registro |
+| `p.SprintReport(sprintNumber, today)` | `(Report, error)`; el único error es `ErrSprintNotFound` |
+| `r.WritePDF(w)`, con `r` de tipo `Report` (no un puntero) | `error`: `ErrPDFNotGenerated` si el destino falla o lo recibe incompleto (#19) |
+
 **`Section` es del reporte.** Tiene `Heading` (texto) y `Lines` (lista de textos ya armados).
 Lo que comparten el reporte (#18) y el dashboard (#17) es **la regla de formato de los
 números** (horas con "h", el signo de la desviación, los decimales): la escribe la primera de
