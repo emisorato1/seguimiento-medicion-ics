@@ -48,17 +48,19 @@ y no cambia. Si después se estima una historia que se terminó en ese sprint, e
 el acta aparte y con fecha, como pasó con la #77 en el Sprint 2. El [informe de métricas](informe-de-metricas.md) explica cómo se calcula cada
 uno y por qué el tablero solo no alcanza para un sprint cerrado.
 
-| Métrica | Sprint 0 | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
-|---|---|---|---|---|---|
-| Fechas | 07/09 → 28/09 | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 28/10 | 29/10 |
-| SP planificados | — | 16 | 31 (44 con la #77) | 41 | [pendiente] |
-| SP completados (velocidad) | — | **6** | **52** (44 + 8 adelantados) | [pendiente] | [pendiente] |
-| Historias completadas | 2 ítems de preparación | 2 de 5 (40%) | 10 de 10 (100%) | [pendiente] | [pendiente] |
-| Horas estimadas | — | 48 | 56,7 | 110,7 | [pendiente] |
-| Horas reales trabajadas | no se registraron | 38,25 | 31 | [pendiente] | [pendiente] |
-| Desviación de las historias terminadas | — | −11% | −52% (−36% sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
-| Horas por story point completado | — | 2,7 | 1,0 (1,8 sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
-| Defectos detectados / resueltos | 0 / 0 | 2 / 1 | 1 / 2 | [pendiente] | [pendiente] |
+| Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
+|---|---|---|---|---|
+| Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 28/10 | 29/10 |
+| SP planificados | 16 | 31 (44 con la #77) | 41 | [pendiente] |
+| SP completados (velocidad) | **6** | **52** (44 + 8 adelantados) | [pendiente] | [pendiente] |
+| Historias completadas | 2 de 5 (40%) | 10 de 10 (100%) | [pendiente] | [pendiente] |
+| Horas estimadas | 48 | 56,7 | 110,7 | [pendiente] |
+| Horas reales trabajadas | 38,25 | 31 | [pendiente] | [pendiente] |
+| Desviación de las historias terminadas | −11% | −52% (−36% sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
+| Horas por story point completado | 2,7 | 1,0 (1,8 sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
+| Defectos detectados / resueltos | 2 / 1 | 1 / 2 | [pendiente] | [pendiente] |
+
+_El Sprint 0 fue de preparación, sin story points: lo que se hizo está en el párrafo del Sprint 0, abajo._
 
 **Sprint 0 — preparación** ([acta](actas/sprint-0-cierre.md)). No tuvo story points: era
 dejar listos el repositorio, el tablero y el Product Backlog. Se cumplió el objetivo: el
@@ -109,9 +111,17 @@ Sprint 3, la tabla ya tiene lo planificado: 41 SP y 110,7 horas estimadas.
 
 ## 4. Gráficos
 
-[pendiente] Velocidad por sprint, horas estimadas contra reales y defectos detectados y
-resueltos. Fuente: los mismos números de la sección 3, o capturas del dashboard de la
-aplicación (#17) cargado con los datos de nuestro propio proyecto.
+Los tres gráficos salen de la tabla de la sección 3, con `scripts/graficos-informe.py`. Se
+regeneran cada vez que cambia la tabla. Un sprint con [pendiente] todavía no aparece.
+
+![Velocidad por sprint](graficos/velocidad.png)
+
+![Horas estimadas contra horas reales por sprint](graficos/horas.png)
+
+![Defectos detectados y resueltos por sprint](graficos/defectos.png)
+
+[pendiente: si la #17 llega a `dev`, sumar una captura del dashboard con los datos del
+proyecto.]
 
 ## 5. Pruebas y cobertura
 
