@@ -83,8 +83,9 @@ el driver de SQLite de la #177.
 
 **2. ¿Por qué SQLite?**
 La base es un solo archivo, así que no hay que instalar un servidor para usar el sistema. El
-driver (`modernc.org/sqlite`) está escrito en Go puro, sin C, así que compila igual en el CI de
-Windows y en las tres plataformas del CD. El archivo JSON de antes quedó para importar y
+driver (`modernc.org/sqlite`) está escrito en Go puro, sin C, así que compila igual en el CI,
+que prueba en Linux y en Windows, y en las dos plataformas para las que el CD arma los binarios
+(Linux amd64 y macOS arm64). El archivo JSON de antes quedó para importar y
 exportar. [pendiente: la #177 está en implementación; se confirma cuando se mergee.]
 
 **3. ¿Cómo se ve el TDD en el historial?**
@@ -101,20 +102,24 @@ y queda registrado en la spec quién la aprobó y cuándo. Así nadie programa s
 que no revisó otro.
 
 **5. ¿Cómo usaron la IA y cómo la validaron?**
-La consigna la permite. Algunas historias las implementó Emiliano con asistencia de IA, que
-trabajó bajo su dirección y con su revisión: la #6, la #5, la #14, la #15, la #77, la #10, la
-#16, la #78, la #177 y la #19. También el arreglo del defecto #108 (PR #116), el del defecto
-#156 (PR #157) y los tests del arranque de la web (PR #146). Todo siguió el mismo camino que lo
-demás:
+La consigna la permite, y el equipo usó asistencia de IA. Lo que tenemos anotado:
+- **Emiliano** implementó con asistencia de IA la #6, la #5, la #14, la #15, la #77, la #10, la
+  #16, la #78, la #177 y la #19. También el arreglo del defecto #108 (PR #116), el del defecto
+  #156 (PR #157) y los tests del arranque de la web (PR #146). La IA trabajó bajo su dirección
+  y con su revisión.
+- **Maxi** la usó en la #12, la #24, la #13 y la #73: la IA proponía el test y el código, y él
+  aprobaba cada paso y cada commit.
+
+Con IA o sin ella, todo siguió el mismo camino:
 - **Puertas:** la spec tiene sus tres puertas aprobadas por otra persona, antes del código.
-- **TDD:** primero el test, que falla y deja la salida del RED en el commit, y después el
-  código, en el commit siguiente.
+- **TDD:** primero el test, que falla y deja la salida del RED en el commit (RED), y después el
+  código que lo hace pasar, en el commit siguiente (GREEN).
 - **Revisión:** revisión escrita de cada PR y, desde el 26/10, la firma de un compañero.
 - **CI:** los tests corren en Linux y en Windows en cada PR.
 
-Cada integrante responde por su parte, igual que si la hubiera escrito a mano. Las horas reales
-de esas historias son el tiempo de dirigir y revisar, y por eso el informe muestra la
-desviación con ellas y sin ellas.
+Cada uno responde por lo suyo, igual que si lo hubiera escrito a mano. En las historias que
+implementó Emiliano, las horas reales son el tiempo de dirigir y revisar, y por eso el informe
+muestra la desviación con ellas y sin ellas.
 
 **6. ¿Cómo garantizan que los votos del Planning Poker son secretos?**
 Mientras la ronda no se revela, `Votes()` no devuelve ningún voto, ni siquiera el propio: da el
@@ -131,9 +136,9 @@ lo que nos costó un punto en el Sprint 1. Todo sale del tablero con `scripts/me
 [informe de métricas](informe-de-metricas.md).
 
 **8. ¿Por qué la desviación da tan negativa?**
-Porque en las historias hechas con asistencia de IA las horas reales son pocas. Por eso el
-informe da también la cuenta sin ellas: en el Sprint 2, −52% con todas y −36% sin la #5, la
-#14 y la #15.
+Porque en las historias que implementó Emiliano con asistencia de IA las horas reales son
+pocas: son solo el tiempo de dirigir y revisar. Por eso el informe da también la cuenta sin
+ellas: en el Sprint 2, −52% con todas y −36% sin la #5, la #14 y la #15.
 
 **9. ¿Qué pasa con una historia que no se termina en el sprint?**
 No suma puntos y vuelve al Product Backlog. Una historia cuenta en el sprint en que se mergea a
