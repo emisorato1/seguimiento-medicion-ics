@@ -258,7 +258,15 @@ func (s *Server) confirmResolve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f := readForm(r, "sprint")
-	if f.number("sprint", errInvalidSprint); f.hasErrors() {
+	number := f.number("sprint", errInvalidSprint)
+	if !f.hasErrors() {
+		// Un sprint que no existe se avisa antes de preguntar, junto al sprint: a este caso solo
+		// se llega con la direccion armada a mano (#190).
+		if _, err := project.Sprint(number); err != nil {
+			f.reject(err)
+		}
+	}
+	if f.hasErrors() {
 		s.renderDefect(w, r, http.StatusUnprocessableEntity, project, defect, f)
 		return
 	}
