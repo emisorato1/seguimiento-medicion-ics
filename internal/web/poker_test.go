@@ -303,7 +303,7 @@ func revealedRound(t *testing.T, project *domain.Project) *domain.VotingRound {
 }
 
 // Sin escenario propio: la verificacion de la Fase 3 de una ronda votada desde dos pestañas
-// (agregada el 26/10). Ana Perez y Juan Gomez votan cada uno desde su pestaña;
+// (pedida por la manager el 26/10). Ana Perez y Juan Gomez votan cada uno desde su pestaña;
 // ninguna ve un voto hasta revelar, una pestaña con la pagina vieja no puede votar otra vez
 // por quien ya voto, y al revelar las dos ven la diferencia.
 // Cubre: #78 RN-4, RN-5, RN-7, RN-8; RN-20 de la #77
