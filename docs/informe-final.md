@@ -62,8 +62,8 @@ uno y por qué el tablero solo no alcanza para un sprint cerrado.
 | Historias completadas | 2 de 5 (40%) | 10 de 10 (100%) | [pendiente] | [pendiente] |
 | Horas estimadas | 48 | 56,7 | 110,7 | [pendiente] |
 | Horas reales trabajadas | 38,25 | 31 | [pendiente] | [pendiente] |
-| Desviación de las historias terminadas | −11% | −52% (−36% sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
-| Horas por story point completado | 2,7 | 1,0 (1,8 sin las hechas con asistencia de IA) | [pendiente] | [pendiente] |
+| Desviación de las historias terminadas | −11% | −52% (−36% sin la #5, la #14 y la #15) | [pendiente] | [pendiente] |
+| Horas por story point completado | 2,7 | 1,0 (1,8 sin la #5, la #14 y la #15) | [pendiente] | [pendiente] |
 | Defectos detectados / resueltos | 2 / 1 | 1 / 2 | [pendiente] | [pendiente] |
 
 _El Sprint 0 fue de preparación, sin story points: lo que se hizo está en el párrafo del Sprint 0, abajo._
@@ -91,8 +91,8 @@ sprint, pero sin story points. El 26/10 el equipo la estimó en 13 y sumó al sp
 con 44 SP terminados y velocidad 52. Las horas trabajadas en el sprint fueron 31: Agustín
 Salinas 20, Maximiliano Eula 8, Emiliano Sorato 3 y Juliana Bustos 0, según el tablero.
 Juliana Bustos anotó además 14 horas propias que no están en el tablero (la spec de la #17,
-revisiones y gestión). La #5, la #14 y la #15 se implementaron con asistencia de IA. Sus horas
-reales son el tiempo de dirección y revisión de Emiliano Sorato, y por eso la desviación da
+revisiones y gestión). La #5, la #14 y la #15 las implementó Emiliano Sorato con asistencia de
+IA. Sus horas reales son su tiempo de dirección y revisión, y por eso la desviación da
 tan negativa; por eso se muestra también la cuenta sin esas tres. La #77 tampoco entra en la
 desviación, porque no tiene horas estimadas: se estimó cuando ya estaba terminada.
 
