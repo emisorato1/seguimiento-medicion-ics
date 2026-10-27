@@ -95,14 +95,14 @@ escritas las horas que tenía cada historia al cierre.
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|
 | Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
-| SP planificados | 16 | 31 | _pendiente_ | _pendiente_ |
-| SP completados (velocidad) | **6** | 31 + 8 adelantados = 39 * | _pendiente_ | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | 9 de 9 (100%) * | _pendiente_ | _pendiente_ |
+| SP planificados | 16 | 31 (44 con la #77) ‡ | _pendiente_ | _pendiente_ |
+| SP completados (velocidad) | **6** | 44 + 8 adelantados = **52** ‡ | _pendiente_ | _pendiente_ |
+| Historias completadas | 2 de 5 (40%) | 10 de 10 (100%) ‡ | _pendiente_ | _pendiente_ |
 | Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
 | Horas reales | 38,25 | 31 * | _pendiente_ | _pendiente_ |
 | Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
 | Desviación de las historias terminadas | −11% | −52% * † | _pendiente_ | _pendiente_ |
-| Horas por story point completado | 2,7 | 1,3 * † | _pendiente_ | _pendiente_ |
+| Horas por story point completado | 2,7 | 1,0 † ‡ | _pendiente_ | _pendiente_ |
 | Defectos detectados / resueltos | 2 / 1 | 1 / 2 * | _pendiente_ | _pendiente_ |
 | Cobertura del dominio | 100% | 100% * | _pendiente_ | _pendiente_ |
 | Tests | 52 | 263 * | _pendiente_ | _pendiente_ |
@@ -113,7 +113,11 @@ _† En el Sprint 2 la #5, la #14 y la #15 se implementaron con asistencia de IA
 permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
 desviación da muy negativa (ver el [Sprint 2](#sprint-2--interfaz-usable))._
 
-**Velocidad del proyecto:** 6 (el promedio de los sprints cerrados; por ahora, uno solo).
+_‡ La #77 se terminó en el Sprint 2 sin story points y el equipo la estimó en 13 el 26/10, en la
+planning del Sprint 3. Ya estimada, suma al Sprint 2: al cierre eran 31 de 31, velocidad 39 y
+1,3 h por story point._
+
+**Velocidad del proyecto:** 29 (el promedio de los sprints cerrados: 6 en el Sprint 1 y 52 en el Sprint 2).
 
 ## Sprint 1 — MVP
 
@@ -249,6 +253,9 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
   suma a los 31 comprometidos. **Se terminó el 23/10** (PR #141), así que la velocidad del
   sprint es **31 + 8 = 39**, y el Sprint 3 se planifica sin esos 8 puntos. Está en el
   [acta de review](actas/sprint-2-review.md#historias-adelantadas).
+- **La #77, estimada el 26/10 en 13 SP**, suma al Sprint 2, donde se terminó: el sprint queda
+  con 44 SP terminados, 10 de 10 historias y **velocidad 52** (44 + 8 de la #13). Está en el
+  [acta de review](actas/sprint-2-review.md).
 - Completados al 24/10: **31 SP**, las 9 historias comprometidas. Tres llegaron del Sprint 1, y
   las otras seis son nuevas del sprint: la #7, la #5, la #14, la #8, la #9 y la #15.
 
@@ -268,8 +275,10 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
 - **Cuánto cuesta un punto en el Sprint 2.** La #6, la #12 y la #24 se trabajaron casi todas
   en el Sprint 1. Las nuevas del sprint hechas a mano, la #7, la #8 y la #9 (las tres de
   Agustín Salinas), dan **27 h estimadas contra 20 reales (−26%)**, 2 h por story point.
-- La #77 no entra en la desviación ni en las horas por story point porque no está estimada:
-  no hay horas estimadas con qué comparar su 1,5 h. Sí cuenta en las horas trabajadas.
+- La #77 no entra en la desviación porque no tiene horas estimadas con qué comparar su 1,5 h.
+  Desde que tiene story points (13, desde el 26/10), sí entra en las horas por story point: el
+  sprint da **1,0** (53,25 h ÷ 52 SP). Sin las cuatro hechas con asistencia de IA (la #5, la #14,
+  la #15 y la #77), sigue en 1,8. También cuenta en las horas trabajadas.
 
 ### Defectos
 
@@ -332,9 +341,12 @@ más de lo pensado y qué haríamos distinto.]_
   que se abre su issue y se resuelve el día que se cierra. Lo que cae entre dos sprints va al
   siguiente, así que para el script el Sprint 2 arranca el 17/10, el día después del cierre
   del Sprint 1.
-- **Historias sin estimar.** Una historia terminada sin story points, como la #77, suma sus
-  horas reales a las trabajadas en el sprint, pero `scripts/metricas.sh` no la cuenta en la
-  desviación ni en las horas por story point, porque no tiene con qué compararlas.
+- **Historias sin estimar.** Una historia terminada sin story points, como la #77 hasta el
+  26/10, suma sus horas reales a las trabajadas en el sprint, pero `scripts/metricas.sh` no la
+  cuenta en la desviación ni en las horas por story point, porque no tiene con qué compararlas.
+  Cuando el equipo la estima, suma sus puntos al sprint donde se terminó. Si tiene story points
+  pero no horas estimadas, como la #77, el script la cuenta en la desviación con 0 h estimadas:
+  para el Sprint 2 da −51%, y el número que vale es el del acta, −52%, sin la #77.
 - **Historias adelantadas.** `scripts/metricas.sh` las reconoce por la etiqueta `adelantada`
   de la issue: no las cuenta en lo comprometido ni en sus horas y las muestra en un bloque
   aparte. Si una no se termina y vuelve a su sprint del plan, hay que sacarle la etiqueta.
