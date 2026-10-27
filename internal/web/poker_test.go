@@ -303,10 +303,10 @@ func revealedRound(t *testing.T, project *domain.Project) *domain.VotingRound {
 }
 
 // Sin escenario propio: la verificacion de la Fase 3 de una ronda votada desde dos pestañas
-// (pedida por la manager el 26/10). Ana Perez y Juan Gomez votan cada uno desde su pestaña;
+// (agregada el 26/10). Ana Perez y Juan Gomez votan cada uno desde su pestaña;
 // ninguna ve un voto hasta revelar, una pestaña con la pagina vieja no puede votar otra vez
 // por quien ya voto, y al revelar las dos ven la diferencia.
-// Cubre: RN-4, RN-5, RN-7, RN-8; RN-20 de la #77
+// Cubre: #78 RN-4, RN-5, RN-7, RN-8; RN-20 de la #77
 func TestUnaRondaVotadaDesdeDosPestanas(t *testing.T) {
 	registry, project := pokerRegistry(t)
 	if _, err := project.OpenVotingRound(1); err != nil {
