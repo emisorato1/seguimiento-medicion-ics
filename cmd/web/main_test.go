@@ -491,3 +491,37 @@ func TestLoQueNoSePuedePedirAlExportarOImportar(t *testing.T) {
 		t.Error("exportar sobre la base: la base tenia que quedar como estaba")
 	}
 }
+
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar (las dos juntas, y
+// exportar sin base)
+// Cubre: #177 RN-17, RN-18
+func TestImportarYExportarJuntosOSinBase(t *testing.T) {
+	t.Run("importar y exportar a la vez se rechaza", func(t *testing.T) {
+		dir := t.TempDir()
+		args := []string{"-datos", filepath.Join(dir, "a.db"), "-importar", filepath.Join(dir, "x.json"), "-exportar", filepath.Join(dir, "y.json")}
+		_, err := parseOptions(args)
+		if err == nil || !strings.Contains(err.Error(), "-importar y -exportar") {
+			t.Errorf("se esperaba el aviso de que no se pueden usar juntas, salio: %v", err)
+		}
+		var out, errOut bytes.Buffer
+		code := run(args, &out, &errOut, noServe(t))
+		if code != 2 {
+			t.Errorf("se esperaba el codigo 2, salio %d:\n%s", code, errOut.String())
+		}
+		if entries, _ := os.ReadDir(dir); len(entries) != 0 {
+			t.Errorf("no tenia que crear nada, y en la carpeta hay %d archivos", len(entries))
+		}
+	})
+
+	t.Run("exportar sin base avisa y no crea nada", func(t *testing.T) {
+		dir := t.TempDir()
+		var out, errOut bytes.Buffer
+		code := run([]string{"-datos", filepath.Join(dir, "no-existe.db"), "-exportar", filepath.Join(dir, "x.json")}, &out, &errOut, noServe(t))
+		if code != 1 || !strings.Contains(errOut.String(), "no hay datos para exportar") {
+			t.Errorf("se esperaba el codigo 1 y el aviso, salio %d:\n%s", code, errOut.String())
+		}
+		if entries, _ := os.ReadDir(dir); len(entries) != 0 {
+			t.Errorf("no tenia que crear nada, y en la carpeta hay %d archivos", len(entries))
+		}
+	})
+}
