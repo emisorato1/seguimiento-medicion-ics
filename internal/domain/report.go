@@ -2,6 +2,7 @@ package domain
 
 import (
 	"fmt"
+	"slices"
 	"time"
 )
 
@@ -45,9 +46,7 @@ func (p *Project) buildSprintReport(sprint *Sprint, metrics Metrics, today time.
 		Metrics:     metrics,
 		Sections: []Section{
 			{Heading: "Resumen", Lines: p.sprintSummaryLines(sprint)},
-			{Heading: "Historias", Lines: []string{
-				fmt.Sprintf("Historias completadas: %s (%s)", formatCount(metrics.StoriesCompleted), formatPercent(metrics.CompletionRate)),
-			}},
+			{Heading: "Historias", Lines: p.sprintStoryLines(sprint, metrics)},
 			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics)},
 			{Heading: "Defectos"},
 		},
@@ -69,6 +68,27 @@ func (p *Project) sprintSummaryLines(sprint *Sprint) []string {
 		"Fin: " + formatDate(sprint.end),
 		state,
 	}
+}
+
+// sprintStoryLines escribe la seccion Historias del reporte de un sprint: los totales de las
+// metricas y una linea por historia comprometida (RN-9). Que se completo sale de lo que
+// registro el cierre de ese sprint, y no del estado actual de la historia, que pudo
+// terminarse despues en otro sprint (RN-10, punto 2 de la puerta). Los puntos tambien son
+// los que tenia al cerrar (#10).
+func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
+	lines := []string{
+		"Historias planificadas: " + formatCount(metrics.StoriesPlanned),
+		fmt.Sprintf("Historias completadas: %s (%s)", formatCount(metrics.StoriesCompleted), formatPercent(metrics.CompletionRate)),
+	}
+	for _, id := range sprint.stories {
+		story, _ := p.Story(id)
+		situation := "no completada"
+		if slices.Contains(sprint.completedStories, id) {
+			situation = "completada"
+		}
+		lines = append(lines, fmt.Sprintf("#%d — %s — %s SP — %s", id, story.title, formatCount(sprint.pointsAtClose[id]), situation))
+	}
+	return lines
 }
 
 // effortLines escribe la seccion Estimacion y esfuerzo con los numeros de las metricas, sin
