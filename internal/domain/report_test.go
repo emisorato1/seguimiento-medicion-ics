@@ -162,3 +162,38 @@ func TestElResumenDiceEnQueEstadoEstaElSprint(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Las historias del sprint figuran segun el cierre de ese sprint
+// Cubre: RN-9, RN-10
+func TestLasHistoriasDelSprintFiguranSegunElCierreDeEseSprint(t *testing.T) {
+	project := unProyecto(t)
+	first := unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 12), unDia(2026, 10, 19), unDia(2026, 10, 19), []int{1}, 3, 5)
+	if _, err := project.AddSprint(SprintData{Goal: "Terminar lo pendiente", Start: unDia(2026, 10, 20), End: unDia(2026, 10, 25)}); err != nil {
+		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
+	}
+	if err := project.AssignStory(2); err != nil {
+		t.Fatalf("no se pudo asignar la historia 2 al sprint 2: %v", err)
+	}
+	if err := project.CloseSprint([]int{2}, unDia(2026, 10, 25)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 2: %v", err)
+	}
+	if estadoDe(t, project, 2) != StoryDone {
+		t.Fatalf("se esperaba la historia 2 Terminada despues del sprint 2")
+	}
+	metrics, err := project.SprintMetrics(1)
+	if err != nil {
+		t.Fatalf("no se pudieron calcular las metricas del sprint 1: %v", err)
+	}
+
+	report := project.buildSprintReport(first, metrics, unDia(2026, 10, 27))
+
+	want := []string{
+		"Historias planificadas: 2",
+		"Historias completadas: 1 (50,0 %)",
+		"#1 — Registrar esfuerzo — 3 SP — completada",
+		"#2 — Registrar esfuerzo — 5 SP — no completada",
+	}
+	if got := seccion(t, report, "Historias"); !slices.Equal(got, want) {
+		t.Errorf("se esperaba la seccion Historias\n%q\nsalio\n%q", want, got)
+	}
+}
