@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-50b8977 2026-10-26 chore: la historia 11 terminada, con ESTADO.md y la trazabilidad regenerados
-203859d 2026-10-26 Merge pull request #178 from emisorato1/docs-manual-ajustes
-d728aa3 2026-10-26 Merge pull request #143 from emisorato1/historia-11-consultar-sprints-anteriores
-b7045e5 2026-10-26 docs: el manual con las dos interfaces en el mismo tono, Go y el número en la introducción, y cómo reestimar
-fb579d4 2026-10-26 chore: regenerar ESTADO.md con la historia 11 en review
-3f5979e 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-11-consultar-sprints-anteriores
-d0a6f83 2026-10-26 docs: registrar la implementacion de la historia 11
-3eccdbb 2026-10-26 Merge pull request #176 from emisorato1/trazabilidad-173
+9dc49ea 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
+25d5e96 2026-10-27 Merge pull request #188 from emisorato1/datos-demo
+83b3015 2026-10-27 Merge pull request #194 from emisorato1/defecto-190-paginas-viejas
+65abb3b 2026-10-27 Merge pull request #195 from emisorato1/defecto-191-palabra-larga
+b226499 2026-10-27 Merge pull request #198 from emisorato1/docs-documentacion-tecnica-al-dia
+2119b14 2026-10-27 docs: las firmas de Report en el contrato del dominio, como las acepto Agustin en el #181
+8ddde8c 2026-10-27 docs: el Sprint 3 de la demo va del 26 al 28/10, y el defecto #172 queda afuera
+c40d222 2026-10-27 Merge pull request #185 from emisorato1/estimacion-77-78
 ```
