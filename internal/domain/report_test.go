@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"slices"
 	"strings"
 	"testing"
@@ -503,5 +504,47 @@ func TestLasOperacionesDelReportePidenLasMetricasYNoCambianNada(t *testing.T) {
 	}
 	if string(before) != string(after) {
 		t.Errorf("se esperaba que generar los reportes no cambiara ningun dato, y cambiaron")
+	}
+}
+
+// Esquema del escenario: Pedir un reporte de algo que no existe
+// Cubre: RN-16
+//
+// El reporte del sprint lo informa el propio reporte. El del proyecto se le pide a un proyecto
+// que primero hay que buscar en el registro de la #3: si no existe, se informa ahi y no hay
+// reporte que pedir.
+func TestPedirUnReporteDeAlgoQueNoExiste(t *testing.T) {
+	cases := []struct {
+		reporte string
+		want    error
+		pedir   func(t *testing.T, registry *ProjectRegistry, project *Project) error
+	}{
+		{"el reporte del sprint 99", ErrSprintNotFound, func(t *testing.T, _ *ProjectRegistry, project *Project) error {
+			report, err := project.SprintReport(99, unDia(2026, 10, 27))
+			if len(report.Sections) != 0 {
+				t.Errorf("se esperaba no recibir ningun reporte, salio %q", report.Title)
+			}
+			return err
+		}},
+		{"el reporte del proyecto 99", ErrProjectNotFound, func(_ *testing.T, registry *ProjectRegistry, _ *Project) error {
+			_, err := registry.Get(99)
+			return err
+		}},
+	}
+	for _, c := range cases {
+		t.Run(c.reporte, func(t *testing.T) {
+			registry := NewProjectRegistry()
+			project, err := registry.Create(ProjectData{Name: "Seguimiento ICS", Start: unDia(2026, 9, 1)})
+			if err != nil {
+				t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+			}
+			unSprint(t, project)
+
+			err = c.pedir(t, registry, project)
+
+			if !errors.Is(err, c.want) {
+				t.Fatalf("se esperaba %v para %s, salio: %v", c.want, c.reporte, err)
+			}
+		})
 	}
 }
