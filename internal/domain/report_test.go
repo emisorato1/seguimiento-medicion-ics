@@ -286,3 +286,32 @@ func TestLosDefectosDelSprintSonLosDetectadosOResueltosEnEl(t *testing.T) {
 		t.Errorf("se esperaba la seccion Defectos\n%q\nsalio\n%q", want, got)
 	}
 }
+
+// Esquema del escenario: Una seccion sin datos lo dice
+// Cubre: RN-5
+func TestUnaSeccionSinDatosLoDice(t *testing.T) {
+	cases := []struct {
+		que     string
+		seccion string
+		want    []string
+	}{
+		{"historias", "Historias", []string{"Historias planificadas: 0", "Historias completadas: 0 (0,0 %)", "No hay historias en este sprint."}},
+		{"defectos", "Defectos", []string{"Defectos detectados: 0", "Defectos resueltos: 0", "No hay defectos en este sprint."}},
+	}
+	for _, c := range cases {
+		t.Run(c.que, func(t *testing.T) {
+			project := unProyecto(t)
+			sprint := unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 20), unDia(2026, 10, 25), unDia(2026, 10, 25), nil)
+			metrics, err := project.SprintMetrics(1)
+			if err != nil {
+				t.Fatalf("no se pudieron calcular las metricas del sprint 1: %v", err)
+			}
+
+			report := project.buildSprintReport(sprint, metrics, unDia(2026, 10, 27))
+
+			if got := seccion(t, report, c.seccion); !slices.Equal(got, c.want) {
+				t.Errorf("se esperaba la seccion %s\n%q\nsalio\n%q", c.seccion, c.want, got)
+			}
+		})
+	}
+}
