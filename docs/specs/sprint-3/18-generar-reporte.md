@@ -320,7 +320,7 @@ qué historias, qué defectos y qué va en el Resumen.
 |---|---|---|
 | `internal/domain/report.go` | se crea | el reporte, el armado de sus secciones y las dos operaciones |
 | `internal/domain/report_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
-| `internal/domain/format.go` y su test | se modifica | se le suma la fecha, en la tarea 4, que es la primera que la usa |
+| `internal/domain/format.go` | se modifica | se le suma la fecha, en la tarea 4, que es la primera que la usa. Su test va en `report_test.go`: `format.go` no tiene archivo de test propio, y sus números los prueba la #17 en `dashboard_test.go` |
 
 **`internal/domain/format.go` es de la #17** y ya está en `dev` (PR #204): la #18 usa sus
 números tal como están. **Las fechas no las tiene**, porque en la #17 las escribe la web.
@@ -429,7 +429,7 @@ Los trece escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario B
 - **La #16, la #8, la #10 y la #15 ya están en `dev`**: ninguna tarea espera a otra historia
   de dominio.
 - **La 3, la 4 y la 10 usan la regla de formato de `format.go`** de la #17, que ya está en
-  `dev`. La 4 le suma la fecha, con su test.
+  `dev`. La 4 le suma la fecha, con su test en `report_test.go`.
 - **La 11 prioriza el backlog con la #7**, para que el orden en que se muestra no coincida
   con el de los identificadores.
 - **La 13 usa el error de sprint no encontrado de la #8** y el de proyecto no encontrado de
