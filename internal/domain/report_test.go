@@ -232,3 +232,21 @@ func TestUnaHistoriaSinEstimarFiguraComoSinEstimar(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Las historias de un sprint abierto figuran en curso
+// Cubre: RN-10
+func TestLasHistoriasDeUnSprintAbiertoFiguranEnCurso(t *testing.T) {
+	project := unProyecto(t)
+	sprint := unSprint(t, project)
+	story := unaHistoriaEstimada(t, project, 3)
+	if err := project.AssignStory(story.ID()); err != nil {
+		t.Fatalf("no se pudo asignar la historia de prueba: %v", err)
+	}
+
+	report := project.buildSprintReport(sprint, Metrics{}, unDia(2026, 10, 27))
+
+	want := "#1 — Registrar esfuerzo — 3 SP — en curso"
+	if lines := seccion(t, report, "Historias"); !slices.Contains(lines, want) {
+		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", want, lines)
+	}
+}
