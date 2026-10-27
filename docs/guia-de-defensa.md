@@ -65,6 +65,9 @@ preguntan, son decisiones, no defectos:
   del esfuerzo con la del proyecto.
 - **Se puede cerrar un sprint con una fecha de cierre cualquiera, incluso anterior a su
   inicio:** lo decidió la #10 (RN-11: la fecha de cierre no se compara con ninguna otra).
+- **No hay un tope de horas por día sumando registros:** un registro no puede pasar las 24 h
+  (defecto #192), pero dos registros del mismo día que juntos las pasan se aceptan. Lo decidió
+  el equipo el 21/10 en la #14 (decisión 5).
 - **No hay largo máximo para los nombres y los títulos:** se acepta un nombre de proyecto de
   3000 caracteres. Lo que sí se controla es que no estén vacíos.
 
