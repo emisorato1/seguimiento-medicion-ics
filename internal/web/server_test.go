@@ -1078,7 +1078,8 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/1/historias/1/rondas/1", err: errRoundNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/historias/99/rondas", err: domain.ErrStoryNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/sprints/cerrar", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
-		{pedido: "/proyectos/1/sprints/cerrar/confirmar?cierre=2026-10-30", err: domain.ErrNoOpenSprint, volver: "/proyectos/1"},
+		// La confirmacion del cierre sin sprint abierto ya no es una pagina de "No se encontro":
+		// es una pagina vieja, y avisa en el formulario de cerrar (defecto #190).
 		{pedido: "/proyectos/99/historias/1/rondas", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/1/defectos/99", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
