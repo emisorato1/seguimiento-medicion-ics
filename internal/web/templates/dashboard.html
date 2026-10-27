@@ -12,6 +12,26 @@
   <p>Todavía no hay datos para mostrar.</p>
   <a class="boton" href="/proyectos/{{.ID}}/sprints/nuevo">Crear el primer sprint</a>
 </div>
+{{else}}
+<section id="estado-general" aria-labelledby="estado-general-titulo">
+  <h2 id="estado-general-titulo">Estado general</h2>
+  <dl class="datos">
+    {{range .Dashboard.Overview}}<dt>{{.Label}}</dt><dd>{{.Text}}</dd>
+    {{end}}
+  </dl>
+</section>
+<section id="sprint-en-curso" aria-labelledby="sprint-en-curso-titulo">
+  <h2 id="sprint-en-curso-titulo">Sprint en curso</h2>
+  {{with .Dashboard.CurrentSprint}}
+  <p><a href="/proyectos/{{$.Data.ID}}/sprints/{{.Number}}">Sprint {{.Number}}</a>: {{.Goal}} ({{fecha .Start}} al {{fecha .End}})</p>
+  <dl class="datos">
+    {{range .Figures}}<dt>{{.Label}}</dt><dd>{{.Text}}</dd>
+    {{end}}
+  </dl>
+  {{else}}
+  <p class="sin-dato">No hay ningún sprint en curso</p>
+  {{end}}
+</section>
 {{end}}
 {{end}}
 {{end}}
