@@ -381,3 +381,32 @@ func TestGenerarElReporteDelProyectoEntero(t *testing.T) {
 		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", velocity, lines)
 	}
 }
+
+// Escenario: Un proyecto sin fecha de fin
+// Cubre: RN-8
+func TestUnProyectoSinFechaDeFin(t *testing.T) {
+	project := unProyectoLlamado(t, "Seguimiento ICS")
+
+	report := project.buildProjectReport(project.ProjectMetrics(), unDia(2026, 10, 27))
+
+	if lines := seccion(t, report, "Resumen"); !slices.Contains(lines, "Fin: sin fecha de fin") {
+		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", "Fin: sin fecha de fin", lines)
+	}
+}
+
+// Escenario: Un proyecto sin sprints cerrados no muestra una velocidad de cero
+// Cubre: RN-8, RN-11
+func TestUnProyectoSinSprintsCerradosNoMuestraUnaVelocidadDeCero(t *testing.T) {
+	project := unProyectoLlamado(t, "Seguimiento ICS")
+	unSprint(t, project)
+
+	report := project.buildProjectReport(project.ProjectMetrics(), unDia(2026, 10, 27))
+
+	if lines := seccion(t, report, "Resumen"); !slices.Contains(lines, "1 sprint, 0 cerrados") {
+		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", "1 sprint, 0 cerrados", lines)
+	}
+	velocity := "Velocidad promedio: sin sprints cerrados"
+	if lines := seccion(t, report, "Estimación y esfuerzo"); !slices.Contains(lines, velocity) {
+		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", velocity, lines)
+	}
+}
