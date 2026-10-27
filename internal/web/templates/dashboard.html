@@ -1,0 +1,11 @@
+{{define "content"}}
+{{with .Data}}
+<h1>{{.Name}}</h1>
+<dl class="datos">
+  <dt>Inicio</dt>
+  <dd>{{fecha .Start}}</dd>
+  <dt>Fin</dt>
+  <dd>{{if .HasEnd}}{{fecha .End}}{{else}}<span class="sin-dato">sin fecha de fin</span>{{end}}</dd>
+</dl>
+{{end}}
+{{end}}
