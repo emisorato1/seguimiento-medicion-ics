@@ -102,7 +102,7 @@ _Al 27/10, según el tablero._
 ## Pendientes
 
 - [ ] Cerrar los números con `scripts/metricas.sh "Sprint 3"` el 28/10.
-- [ ] Las horas reales de la #78 y de la #177 (Emiliano Sorato, por el manager).
+- [ ] Las horas reales de la #78 y de la #177 (Emiliano Sorato).
 - [ ] Devolver al Product Backlog las historias no terminadas.
 - [ ] El pull request de `dev` a `main` con el incremento del Sprint 3, el 28/10 a la noche, y su
   tag `v0.3.0-sprint3`. Cada sprint tiene su incremento: el del Sprint 4 es la entrega final,
