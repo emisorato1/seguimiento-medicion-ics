@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-26 20:27. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-27 11:50. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,6 +70,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+e00873c 2026-10-26 docs: cierre de todo el 29/10, con el sprint 3 del 26 al 28 y el sprint 4 el 29
 203859d 2026-10-26 Merge pull request #178 from emisorato1/docs-manual-ajustes
 d728aa3 2026-10-26 Merge pull request #143 from emisorato1/historia-11-consultar-sprints-anteriores
 b7045e5 2026-10-26 docs: el manual con las dos interfaces en el mismo tono, Go y el número en la introducción, y cómo reestimar
@@ -77,5 +78,4 @@ fb579d4 2026-10-26 chore: regenerar ESTADO.md con la historia 11 en review
 3f5979e 2026-10-26 Merge remote-tracking branch 'origin/dev' into historia-11-consultar-sprints-anteriores
 d0a6f83 2026-10-26 docs: registrar la implementacion de la historia 11
 3eccdbb 2026-10-26 Merge pull request #176 from emisorato1/trazabilidad-173
-73a2672 2026-10-26 chore: regenerar ESTADO.md y la trazabilidad con el #173
 ```

@@ -24,8 +24,11 @@ Lo propuso Emiliano en la #147, y los cuatro contestaron **"de acuerdo"**.
 
 ## Sprint Backlog
 
-Cada responsable confirmó sus historias en la #147. El compromiso son **28 story points**: los
-36 del plan menos los 8 de la #13, que se terminó en el Sprint 2.
+Cada responsable confirmó sus historias en la #147. El compromiso son **41 story points**: los
+36 del plan menos los 8 de la #13, que se terminó en el Sprint 2 (28), más los 13 de la #78, que
+entró sin estimar y se estimó el 26/10 en el Planning Poker de esta planning. Como dice el
+[anexo de la planning del Sprint 2](sprint-2-planning.md#historias-nuevas-la-interfaz-web), una
+historia sin estimar no suma al compromiso hasta que el equipo la estima.
 
 | # | Historia | SP | Responsable | Horas estimadas | Estado al 26/10 | Lo que dijo el responsable |
 |---|---|---|---|---|---|---|
@@ -34,10 +37,11 @@ Cada responsable confirmó sus historias en la #147. El compromiso son **28 stor
 | 17 | Mostrar el dashboard | 8 | Juliana Bustos | 21,6 | En progreso | "confirmo la #17 (8 SP). Ya está en progreso: las tareas 1 a 3 de 17 están hechas en su rama" |
 | 11 | Consultar sprints anteriores | 2 | Agustín Salinas | 5,4 | Lista para implementar | "confirmo la #11 (2 SP; puertas aprobadas por Juli en el #143; 6 de sus 12 tareas esperan a la #10)" |
 | 18 | Generar el reporte | 5 | Agustín Salinas | 13,5 | Especificación SDD | "[confirmo] la #18 (5 SP; espera a la #16 y reutiliza el `format.go` de la #17 para no duplicar la regla de formato)" |
-| 78 | Operar todo desde la web | sin estimar | Emiliano Sorato | sin horas | En progreso (3 partes en `dev`, 17 de 22 escenarios con test) | "confirmo [...] la #78" |
+| 78 | Operar todo desde la web | 13 (acordado el 26/10) | Emiliano Sorato | 35,1 | En progreso (3 partes en `dev`, 17 de 22 escenarios con test) | "confirmo [...] la #78" |
 
-- **Horas estimadas de lo comprometido: 75,6** (28 SP a 2,7 h por punto). Cada uno las cargó en
-  el tablero. La #78 queda sin horas hasta que se cierre su estimación.
+- **Horas estimadas de lo comprometido: 110,7** (41 SP a 2,7 h por punto). Cada uno las cargó
+  en el tablero. Las 35,1 h de la #78 (13 × 2,7, la conversión del equipo) las cargó Emiliano
+  Sorato, su responsable, el 26/10, cuando la historia ya tenía story points.
 - **La #10 y la #16 ya están terminadas el 26/10**, el primer día del sprint. Sus horas reales
   son de Emiliano Sorato, que las hizo con asistencia de IA: 0,5 h en la #10 y 1 h en la #16.
 
@@ -90,20 +94,32 @@ Hubo diferencias, así que se explicaron los extremos:
 
 | | Agustín | Juliana | Maximiliano | Emiliano |
 |---|---|---|---|---|
-| #77 Web base | 13 | [pendiente] | 13 | 13 |
-| #78 Operaciones web | 13 | [pendiente] | 13 | 13 |
+| #77 Web base | 13 | 13 | 13 | 13 |
+| #78 Operaciones web | 13 | 13 | 13 | 13 |
 
 Maximiliano Eula mandó su ronda 2 el 26/10, por WhatsApp a Emiliano. Mantiene los votos de
 la ronda 1: "La #77 armó desde cero el servidor, el guardado en archivo y la seguridad de los
 formularios, y la #78 suma cinco pantallas, con el Planning Poker completo, sobre esa base."
 
-**Estimación acordada:** [pendiente: se cierra cuando esté el voto de Juliana].
+Juliana Bustos mandó su ronda 2 el 26/10, por WhatsApp a Emiliano. Cambió los dos votos:
+
+> "#77: 13 SP. Escuchando los argumentos de la ronda 1 y habiendo revisado el alcance real
+> (servidor HTTP, persistencia, seguridad de formularios y plantillas, que superaron las 4.900
+> líneas), reconozco que 5 SP se quedaba corto al haber mirado inicialmente solo el dominio.
+> #78: 13 SP. Viendo que solo la primera parte (PR #149) ya sumó más de 2.000 líneas en 25
+> archivos, y que aún resta conectar defectos, reportes, gráficos SVG y generación de PDF, la
+> carga de integración y operativa justifica los 13 SP."
+
+**Estimación acordada: #77 = 13 y #78 = 13.** En la ronda 2 los cuatro votaron 13 y 13: hubo
+consenso. Se cargó en el tablero el 26/10.
 
 **Si no votan a tiempo** (decisión de Emiliano Sorato, del 26/10): si Juliana y Maximiliano no
 mandan su ronda 2 antes del 28/10, queda el valor más alto. La
 [guía de Planning Poker](../guia-planning-poker.md) dice que eso se hace "después de 3 rondas".
 Aplicarlo después de la ronda 2 es una decisión de Emiliano Sorato. Con los votos que hay, eso daría 13 para la #77 y 13 para la #78.
 Todavía no es la estimación acordada.
+
+La regla no hizo falta: los cuatro votaron antes del 28/10 y coincidieron.
 
 ## Puertas y revisiones
 
@@ -123,6 +139,7 @@ Los cuatro contestaron "ok".
 
 ## Pendientes
 
-- [ ] La ronda 2 del Planning Poker de Juliana, y la estimación acordada de la #77 y la #78.
-- [ ] Las horas estimadas de la #78, cuando tenga story points.
+- [x] La ronda 2 del Planning Poker de Juliana, y la estimación acordada de la #77 y la #78:
+  13 y 13, el 26/10.
+- [x] Las horas estimadas de la #78: 35,1 h, cargadas por Emiliano Sorato el 26/10.
 - [x] Las horas reales de la #73: 3 h, cargadas por Maximiliano Eula el 26/10.
