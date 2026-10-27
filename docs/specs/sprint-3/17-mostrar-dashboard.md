@@ -463,7 +463,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
 | 9 | El largo de una barra: 100 % para el valor más grande, la parte proporcional con un decimal, sin barra para un cero y al menos 1 % para un valor mayor que cero | El largo de cada barra es proporcional al valor mas grande del grafico | RN-11, RN-12, RN-13 | hecha |
-| 10 | La página del dashboard, con el encabezado del proyecto, su fecha de inicio como día/mes/año y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-15, RN-17, RN-18 | pendiente |
+| 10 | La página del dashboard, con el encabezado del proyecto, su fecha de inicio como día/mes/año y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-15, RN-17, RN-18 | hecha |
 | 11 | Sin sprints, la página muestra el encabezado y el aviso, sin gráficos | Un proyecto sin sprints avisa que no hay datos | RN-7 | pendiente |
 | 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | pendiente |
 | 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | pendiente |
@@ -555,6 +555,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 7 | `4f8e6d1` (sin RED) | — |
 | 8 | `792ee9a` | `acc6ff5` |
 | 9 | `a176c80` | `1833a8d` |
+| 10 | `9bf4313` | `132571d` |
 
 ### Decisiones tomadas al implementar
 
@@ -595,6 +596,13 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   porcentaje con un decimal (61,5), y escribirlo con punto en el atributo (`61.5%`, D3) es de
   la tarea 13, que dibuja la barra. El test suma dos casos que el escenario no muestra: el
   redondeo a un decimal (8 de 13 da 61,5) y un gráfico todo en cero, que no divide por cero.
+- **«Dashboard» va en la barra después de Datos** (tarea 10), antes de Integrantes: es la
+  vista general del proyecto, al lado de sus datos (RN-18). La pestaña se titula «Dashboard
+  de» y el nombre del proyecto, como «Esfuerzo de»; el h1 es el nombre, con el inicio y el
+  fin debajo, escritos igual que en la página de datos.
+- **Los tests de la barra y del proyecto que no existe son propios** (tarea 10), en
+  `internal/web/dashboard_test.go` y con el nombre de su escenario, en lugar de filas en las
+  tablas de la #77 y la #78. Así toda la trazabilidad de la #17 apunta a un solo archivo.
 
 ### Desvíos respecto de la spec
 
