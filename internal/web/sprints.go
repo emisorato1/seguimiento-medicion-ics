@@ -285,6 +285,25 @@ func (s *Server) renderCloseForm(w http.ResponseWriter, r *http.Request, status 
 	})
 }
 
+// closeWithoutOpenSprint responde a confirmar o cerrar cuando ya no hay sprint abierto: es una
+// pagina vieja, porque el sprint se cerro en otra pestaña. Avisa en la pagina de cerrar con el
+// mensaje del nucleo y ofrece volver a los sprints (#190). Si el proyecto no existe, es la
+// pagina de "No se encontro".
+func (s *Server) closeWithoutOpenSprint(w http.ResponseWriter, r *http.Request, project *domain.Project, err error) {
+	if project == nil || !errors.Is(err, domain.ErrNoOpenSprint) {
+		s.notFound(w, r, project, err)
+		return
+	}
+	f := newForm()
+	f.General = err.Error()
+	s.render(w, r, http.StatusUnprocessableEntity, "sprint-cerrar.html", page{
+		Title:   "Cerrar el sprint",
+		Project: project,
+		Section: "sprints",
+		Data:    closeForm{ProjectID: project.ID(), Form: f},
+	})
+}
+
 // closeSprintForm muestra el formulario para cerrar el sprint abierto, con la fecha de hoy
 // propuesta y ninguna historia marcada (RN-10, RN-11).
 func (s *Server) closeSprintForm(w http.ResponseWriter, r *http.Request) {
@@ -361,7 +380,7 @@ func listOrNone(names []string) string {
 func (s *Server) confirmClose(w http.ResponseWriter, r *http.Request) {
 	project, sprint, err := s.openSprint(r)
 	if err != nil {
-		s.notFound(w, r, project, err)
+		s.closeWithoutOpenSprint(w, r, project, err)
 		return
 	}
 	f := readForm(r, "cierre")
@@ -384,7 +403,7 @@ func (s *Server) confirmClose(w http.ResponseWriter, r *http.Request) {
 func (s *Server) closeSprint(w http.ResponseWriter, r *http.Request) {
 	project, sprint, err := s.openSprint(r)
 	if err != nil {
-		s.notFound(w, r, project, err)
+		s.closeWithoutOpenSprint(w, r, project, err)
 		return
 	}
 	f := readForm(r, "cierre", "completadas")
