@@ -3,7 +3,7 @@
 - **Historia:** #18
 - **Sprint:** 3
 - **Responsable:** Agustín Salinas
-- **Estado:** Borrador completo — pendiente de las tres puertas
+- **Estado:** Puerta 3 aprobada — **lista para implementar**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #16 (las métricas), #8 (buscar un sprint por su número), #10 (qué se
   completó en cada sprint) y #15 (los defectos que se listan), todas en `dev`. La regla de
@@ -289,7 +289,7 @@ Esquema del escenario: Pedir un reporte de algo que no existe
    parciales: sirve para mostrar cómo viene el sprint. La alternativa era rechazarlo.
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-27 — Comentarios: aprobada en la issue #18 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/18#issuecomment-6445539317), las tres puertas juntas sobre 505bc4d, con cuatro correcciones de texto antes del código que salen de la revisión de Juliana Bustos en el PR #181. Se aplicaron el 27/10 en d3fd46b: la fecha con el formato 02/01/2006 y format.go en Archivos afectados, los textos exactos con tilde, "sin sprints cerrados" según haya algún sprint cerrado, y sin "o la #17".
 
 ## Fase 2 — Diseño
 
@@ -364,7 +364,7 @@ que hacen la #8, la #11 y el contrato del Dashboard.
   las secciones, se avisa.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-27 — Comentarios: aprobada en la issue #18 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/18#issuecomment-6445539317), las tres puertas juntas sobre 505bc4d, con cuatro correcciones de texto antes del código que salen de la revisión de Juliana Bustos en el PR #181. Se aplicaron el 27/10 en d3fd46b: la fecha con el formato 02/01/2006 y format.go en Archivos afectados, los textos exactos con tilde, "sin sprints cerrados" según haya algún sprint cerrado, y sin "o la #17".
 
 ## Fase 3 — Tareas
 
@@ -436,7 +436,7 @@ Los trece escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario B
   la #3.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
-> Aprobó: [pendiente] — Fecha: [pendiente] — Comentarios: [pendiente]
+> Aprobó: Emiliano Sorato — Fecha: 2026-10-27 — Comentarios: aprobada en la issue #18 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/18#issuecomment-6445539317), las tres puertas juntas sobre 505bc4d, con cuatro correcciones de texto antes del código que salen de la revisión de Juliana Bustos en el PR #181. Se aplicaron el 27/10 en d3fd46b: la fecha con el formato 02/01/2006 y format.go en Archivos afectados, los textos exactos con tilde, "sin sprints cerrados" según haya algún sprint cerrado, y sin "o la #17".
 
 ## Fase 4 — Implementación
 
