@@ -27,13 +27,17 @@ historia, en `docs/specs/`. Acá solo están los nombres y los datos.
 
 ## Lo que ya existe en `dev`
 
-Nada de esto se toca sin avisar: ya está implementado y con tests.
+Nada de esto se toca sin avisar: ya está implementado y con tests. Al 27/10:
 
 | Entidad | Datos | Dónde |
 |---|---|---|
-| `Project` | `ID`, `Name`, `Description`, `Start`, `End` | `project.go` |
+| `ProjectRegistry` | los proyectos y el contador de números; `r.Create`, `r.Get`, `r.Update`, `r.Projects()` | `project_registry.go` |
+| `Project` | `ID`, `Name`, `Description`, `Start`, `End`; su estado con `p.Status()` (#5) | `project.go`, `project_status.go` |
 | `Member` | `Name`, `Role` (`RoleAgileEnabler`, `RoleProductBuilder`) | `member.go` |
-| `Story` | `ID`, `Title`, `Description`, `Priority`, `State`, `StoryPoints`, `AcceptanceCriteria` | `story.go` |
+| `Story` | `ID`, `Title`, `Description`, `Priority`, `State`, `StoryPoints`, `EstimatedHours`, `AcceptanceCriteria`; `p.Backlog()` y `p.PrioritizedBacklog()` (#7) | `story.go`, `story_priority.go`, `story_estimation.go`, `story_hours.go` |
+| `Sprint` (#8 a #11), `Effort` (#14), `Defect` (#15), `Metrics` (#16) y `VotingRound` (#13, #73) | lo que dicen sus secciones de abajo, que ya están implementadas | ver cada sección |
+
+**Lo que todavía no está en `dev`:** `Report` (#18 y #19) y `Dashboard` (#17).
 
 Las operaciones cuelgan del proyecto: `p.AddStory(...)`, `p.Members()`, `p.Story(id)`.
 Lo nuevo sigue el mismo camino.
@@ -190,6 +194,16 @@ sin que la historia #16 esté implementada.
 Se pide: `p.ProjectReport(today)` y `p.SprintReport(sprintNumber, today)`: el día lo pasa quien
 llama, porque el dominio no lee el reloj.
 
+Las firmas, como las aceptó Agustín en el #181 (505bc4d). `Report` y `Section` son datos
+simples, con los campos públicos como `Metrics`, y el reporte se entrega **como un valor**, no
+como una referencia: cada pedido arma uno nuevo y nadie lo comparte.
+
+| Operación | Devuelve |
+|---|---|
+| `p.ProjectReport(today)` | `Report`; no falla: el proyecto que no existe lo informa el registro |
+| `p.SprintReport(sprintNumber, today)` | `(Report, error)`; el único error es `ErrSprintNotFound` |
+| `r.WritePDF(w)`, con `r` de tipo `Report` (no un puntero) | `error`: `ErrPDFNotGenerated` si el destino falla o lo recibe incompleto (#19) |
+
 **`Section` es del reporte.** Tiene `Heading` (texto) y `Lines` (lista de textos ya armados).
 Lo que comparten el reporte (#18) y el dashboard (#17) es **la regla de formato de los
 números** (horas con "h", el signo de la desviación, los decimales): la escribe la primera de
@@ -249,6 +263,19 @@ y `p.CurrentVotingRound(storyID)` (la última ronda de la historia, para volver 
 entre un pedido y otro de la web); para la #73, `r.Differences()`, `r.Agree(points)` y
 `p.VotingRounds(storyID)`. Las rondas entran en la conversión a JSON como toda entidad nueva.
 
+Las firmas, tal como están en `dev`:
+
+| Operación | Devuelve |
+|---|---|
+| `p.OpenVotingRound(storyID)` | `(*VotingRound, error)` |
+| `r.Vote(member, points)`, `r.Reveal()`, `r.Agree(points)` | `error` |
+| `r.Voted()`, `r.Pending()` | `[]string` |
+| `r.Votes()` | `([]Vote, error)`, cada `Vote` con `MemberName` y `Points` |
+| `r.Differences()` | `(Differences, error)`, con `HasDifferences`, `Lowest` y `Highest` |
+| `r.Agreed()` | `int`, 0 mientras no se acordó |
+| `p.CurrentVotingRound(storyID)` | `(*VotingRound, bool, error)`: el `bool` dice si la historia tiene alguna ronda |
+| `p.VotingRounds(storyID)` | `([]*VotingRound, error)` |
+
 `Agreed` vacío se guarda como 0, igual que "sin estimar" en la #12.
 
 **La regla que define la historia #13:** mientras `Revealed` sea falso, **ningún voto se
@@ -268,6 +295,9 @@ en las *Decisiones de arquitectura* de [AGENTS.md](../AGENTS.md):
    imprimir o leer del teclado.
 
 ## Qué puede empezar hoy sin esperar nada
+
+*Histórico: es la tabla del 20/10, cuando se acordó el contrato. Al 27/10, la #16 y la #73
+están en `dev`, y la #19 empezó su código sin esperar a la #18 (PR #184, en revisión).*
 
 | Historia | Depende de | Cómo arranca igual |
 |---|---|---|

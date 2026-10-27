@@ -7,7 +7,9 @@ de usuario.
 
 - **Responsable:** Agustín Salinas
 - **Estado:** en construcción. Las secciones marcadas *(en construcción)* se completan a medida
-  que las historias entran a `dev`. Última actualización: 22/10/2026, con los sprints (#8 y #9).
+  que las historias entran a `dev`. Última actualización: 27/10/2026, con lo que está en `dev`:
+  proyectos, integrantes, backlog, sprints (#8 a #11), estimación y Planning Poker (#12, #13 y
+  #73), esfuerzo (#14), defectos (#15), métricas (#16) y la web (#77 y #78, salvo el reporte).
 
 Las reglas de trabajo del equipo están en [CLAUDE.md](../CLAUDE.md) y las convenciones
 técnicas detalladas en [AGENTS.md](../AGENTS.md). Este documento no las repite: las explica y
@@ -27,7 +29,7 @@ defectos, métricas, dashboard y reportes.
 | Interfaces | consola (historia #24) y web (historias #77 y #78) |
 | Datos | en memoria en la consola; en una base SQLite en la web (#177). El archivo JSON de la #77 queda para importar y exportar |
 | Pruebas | `testing` de la biblioteca estándar, escritas con TDD |
-| Integración continua | GitHub Actions: formato, análisis estático, tests, cobertura y coherencia de las specs |
+| Integración continua | GitHub Actions: formato, análisis estático, tests, cobertura y coherencia de las specs; los tests también en Windows |
 
 ---
 
@@ -52,8 +54,8 @@ internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métr
 | `internal/domain` | todas las reglas de negocio y validaciones; arma el texto del reporte y del PDF, y los valores del dashboard ya escritos | no imprime, no lee del teclado, no toca archivos, no lee el reloj del sistema, no dibuja |
 | `internal/store` | lee y escribe la base SQLite y el archivo de datos, e importa y exporta | no valida datos: eso lo hace el dominio, con su conversión |
 | `cmd/app` | la consola: lee lo que escribe el usuario, llama al dominio y muestra el resultado | no valida nada por su cuenta: le pregunta al dominio |
-| `cmd/web` | arranca el servidor web | — |
-| `internal/web` *(en construcción, #77)* | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas; dibuja las barras del dashboard | no valida reglas: las valida el dominio |
+| `cmd/web` | lee las opciones (`-puerto`, `-datos`, `-red`), carga los datos guardados, toma el puerto avisando si está ocupado o no hay permiso, y arranca la web con la fecha de la computadora | no guarda ni valida nada: lo hacen `store` y el dominio |
+| `internal/web` (#77 y #78) | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas. Cuando entre el dashboard (#17), dibuja sus barras | no valida reglas: las valida el dominio |
 
 Las dos interfaces usan **el mismo dominio**: una regla se escribe y se testea una sola vez,
 y vale igual en la consola y en la web.
@@ -78,15 +80,18 @@ referencia a un proyecto; separar por archivo evita además que dos personas edi
 
 ## 3. Modelo de dominio
 
-**Todo cuelga del proyecto.** Un proyecto contiene sus integrantes, su Product Backlog y sus
-sprints; nada de eso existe sin él. Los proyectos los guarda el **registro de proyectos**, que
+**Todo cuelga del proyecto.** Un proyecto contiene sus integrantes, su Product Backlog, sus
+sprints, el esfuerzo registrado, sus defectos y las rondas de Planning Poker de sus historias;
+nada de eso existe sin él. Los proyectos los guarda el **registro de proyectos**, que
 es el único que les asigna número.
 
 ```
-ProjectRegistry ─── Project ─┬── Member      (integrantes, #4)
-                             ├── Story       (Product Backlog, #6; estimación, #12)
-                             ├── Sprint      (sprints, #8; Sprint Backlog, #9)
-                             └── Effort      (esfuerzo real, #14)
+ProjectRegistry ─── Project ─┬── Member       (integrantes, #4)
+                             ├── Story        (Product Backlog, #6 y #7; estimación, #12)
+                             ├── VotingRound  (Planning Poker de una historia, #13 y #73)
+                             ├── Sprint       (sprints, #8; Sprint Backlog, #9; cierre, #10)
+                             ├── Effort       (esfuerzo real, #14)
+                             └── Defect       (defectos, #15)
 ```
 
 | Entidad | Historia | Datos principales | Archivo |
@@ -95,10 +100,12 @@ ProjectRegistry ─── Project ─┬── Member      (integrantes, #4)
 | `Project` | #3, #5 | nombre, descripción, fecha de inicio y de fin; su estado (#5) | `project.go`, `project_status.go` |
 | `Member` | #4 | nombre y rol (Agile Enabler o Product Builder) | `member.go` |
 | `Story` | #6, #7, #12, #16 | título, descripción, prioridad, estado, story points, horas estimadas, criterios de aceptación; el backlog ordenado por prioridad (#7) | `story.go`, `story_priority.go`, `story_estimation.go`, `story_hours.go` |
-| `Sprint` | #8, #9 | número, Sprint Goal, fechas, estado y Sprint Backlog (las historias asignadas, en orden). El cierre (#10) y la consulta de los cerrados (#11) están *(en construcción)* | `sprint.go`, `sprint_backlog.go` |
+| `Sprint` | #8, #9, #10, #11 | número, Sprint Goal, fechas, estado y Sprint Backlog (las historias asignadas, en orden); al cerrar, la fecha de cierre, las historias completadas y los story points de cada una (#10); la consulta de los cerrados (#11) | `sprint.go`, `sprint_backlog.go`, `sprint_close.go`, `sprint_query.go` |
 | `Effort` | #14 | historia, integrante, actividad, horas y día | `effort.go` |
-| `Metrics` | #16 | las once métricas de un sprint o del proyecto, calculadas cada vez que se piden | `metrics.go` *(en construcción)* |
-| `Defect`, `Report`, `VotingRound` | #13, #15, #18, #19, #73 | — | *(en construcción)* |
+| `Metrics` | #16 | las once métricas de un sprint o del proyecto, calculadas cada vez que se piden | `metrics.go` |
+| `Defect` | #15 | título, descripción, severidad, estado, historia, sprint de detección y de resolución | `defect.go` |
+| `VotingRound` | #13, #73 | historia, número de ronda, participantes fijados al abrirla, votos ocultos hasta revelar, diferencias y estimación acordada | `voting_round.go`, `voting_round_agreement.go` |
+| `Report` | #18, #19 | — | *(en construcción)* |
 
 **Un solo sprint abierto por proyecto.** El sprint nace abierto y se cierra con la #10: no
 hay un estado "planificado". El Sprint Backlog guarda solo los números de las historias, y
@@ -206,6 +213,27 @@ y exportar los datos.
   abierta por otro sistema». El sistema operativo suelta el bloqueo al cerrar o si el programa
   se corta.
 
+### Cómo se guarda, paso a paso
+
+1. **Al abrir**, `cmd/web` abre la base con `store.OpenDatabase(ruta)`, que la crea con su
+   esquema si no existe y toma el bloqueo para que otro sistema no la abra. Si la base está
+   vacía y junto a ella hay un `datos-ics.json` de la versión anterior, lo importa una sola vez
+   (sección 10). Después lee los datos con `Load()`: si la base no se puede leer, o el dominio
+   no acepta lo que tiene, el sistema no abre: muestra el error (`ErrSavedDataInvalid`) y deja
+   la base como estaba.
+2. **Cada operación aceptada** termina en `done` (`internal/web/server.go`), que guarda el
+   registro entero, deja el mensaje que la confirma y redirige a la página del resultado.
+3. **El guardado** (`(*Database).Save` en `internal/store/database.go`) pasa el registro por la
+   conversión del dominio y, en una sola transacción, vacía las tablas y escribe todo de nuevo:
+   si algo falla, la transacción se deshace y la base queda como estaba, sin nada a medias.
+4. **Si el guardado falla**, la página avisa «No quedó guardado» y el cambio sigue en memoria:
+   el próximo guardado que funcione lo incluye (`ErrNotSaved`).
+5. **Los pedidos usan el registro de a uno**: las páginas que solo leen pueden atenderse a la
+   vez, y las que cambian algo van solas, así una operación y su guardado quedan juntos.
+6. **En los tests de la web** casi no se escribe nada: el servidor recibe un guardado falso que
+   cuenta las veces que se guardó y puede simular una falla. Solo los dos escenarios de cerrar
+   y volver a abrir guardan de verdad, con el archivo y con la base, en una carpeta temporal.
+
 ---
 
 ## 7. Pruebas y cobertura
@@ -262,11 +290,12 @@ rojo.**
 | Coherencia de las specs (`scripts/coherencia.sh`) | que cada spec, el índice y el registro de las puertas digan lo mismo, y que no queden marcas de conflicto |
 | Formato (`gofmt`) | que todo el código esté formateado igual |
 | Análisis estático (`go vet`) | errores comunes que compilan pero están mal |
-| Tests y cobertura | que todos los tests pasen, con el reporte de cobertura |
+| Tests y cobertura | que todos los tests pasen, con el reporte de cobertura en el resumen de la corrida y como archivo descargable (`cobertura`) |
+| Tests en Windows | los mismos tests en una máquina Windows. Es un chequeo aparte y no es obligatorio para mergear: existe porque parte del equipo trabaja en Windows (defecto #108) |
 
 Cuando algo entra a `main`, el CD
 ([`.github/workflows/cd.yml`](../.github/workflows/cd.yml)) vuelve a correr los tests y
-compila los binarios para Linux y macOS.
+compila los binarios para Linux (amd64) y macOS (arm64).
 
 `main` y `dev` están protegidas: no se puede pushear directo, y todo entra por pull request.
 
@@ -305,11 +334,14 @@ el de la implementación de cada tarea.
 go test ./...                  # todos los tests
 go test ./internal/domain/ -v  # los del dominio, con el nombre de cada escenario
 go test ./... -cover           # con cobertura
+go test -race ./...            # busca accesos al mismo dato desde dos pedidos a la vez
 go vet ./...                   # análisis estático
 gofmt -l .                     # archivos sin formatear (no tiene que devolver nada)
 scripts/coherencia.sh          # coherencia de las specs
 go run ./cmd/app               # la consola
 go run ./cmd/web               # la web, en http://127.0.0.1:8080, con la base datos-ics.db
+go run ./cmd/web -puerto 9090  # en otro puerto
+go run ./cmd/web -red          # acepta conexiones de la red local, por ejemplo un celular
 go run ./cmd/web -exportar copia.json            # todos los datos a un archivo
 go run ./cmd/web -datos otra.db -importar copia.json  # un archivo a una base nueva
 ```
