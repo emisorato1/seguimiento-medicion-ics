@@ -4,7 +4,7 @@ Proyecto integrador de **Ingeniería y Calidad de Software** — UTN FRSR, 2026.
 Responsable: Emiliano Sorato (Agile Enabler).
 
 > **Borrador en construcción.** Tiene cargado el Sprint 1. Los Sprints 2, 3 y 4 se completan
-> al cierre de cada uno, con su review. La versión final se entrega el 1/11.
+> al cierre de cada uno, con su review. La versión final queda lista el 29/10.
 
 ## De qué se trata
 
@@ -94,7 +94,7 @@ escritas las horas que tenía cada historia al cierre.
 
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|
-| Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
+| Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 28/10 | 29/10 |
 | SP planificados | 16 | 31 (44 con la #77) ‡ | _pendiente_ | _pendiente_ |
 | SP completados (velocidad) | **6** | 44 + 8 adelantados = **52** ‡ | _pendiente_ | _pendiente_ |
 | Historias completadas | 2 de 5 (40%) | 10 de 10 (100%) ‡ | _pendiente_ | _pendiente_ |
@@ -304,11 +304,11 @@ El recorrido de cada historia —escenario, test, código y los commits RED y GR
 
 ## Sprint 3 — funcionalidad y calidad
 
-_[Se completa el 30/10 con la review.]_
+_[Se completa el 28/10 con la review.]_
 
 ## Sprint 4 — cierre
 
-_[Se completa el 01/11 con la review.]_
+_[Se completa el 29/10 con la review.]_
 
 ## Evolución del proyecto
 
