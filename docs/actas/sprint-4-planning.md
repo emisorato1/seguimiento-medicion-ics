@@ -38,8 +38,9 @@ final, con la exportación del informe del proyecto a PDF.
 
 [pendiente: lo que vuelva del Sprint 3 sin terminar, si el equipo decide terminarlo en el 4.]
 
-- **Story points comprometidos:** [pendiente]. El plan le da 10 al Sprint 4: la #19 (5) y la #73
-  (5). La #73 ya está terminada: se adelantó al Sprint 3.
+- **Story points comprometidos:** [pendiente]. El plan le da 5 al Sprint 4, los de la #19, o 0
+  si la #19 se adelanta al Sprint 3. La #73 no cuenta acá: ya está terminada, se adelantó al
+  Sprint 3 y suma a la velocidad de ese sprint.
 - **Horas estimadas de la #19: 13,5** (5 SP a 2,7 h por punto). Las cargó en el tablero Emiliano
   Sorato, su responsable, el 27/10. [pendiente: si se adelantó al Sprint 3, salen de acá.]
 
