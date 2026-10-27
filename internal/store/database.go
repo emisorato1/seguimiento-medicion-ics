@@ -10,8 +10,13 @@ import (
 
 	// El driver de SQLite en Go puro, sin CGO: compila igual en Linux, macOS y Windows
 	// (historia #177, D1). Se registra con el nombre "sqlite".
-	_ "modernc.org/sqlite"
+	"modernc.org/sqlite"
+	sqlite3 "modernc.org/sqlite/lib"
 )
+
+// ErrDatabaseInUse: la base ya la tiene abierta otro sistema (historia #177, RN-19). Si los
+// dos la usaran, cada uno guardaria su copia entera y el ultimo pisaria al otro.
+var ErrDatabaseInUse = errors.New("la base ya está abierta por otro sistema: cerralo y volvé a abrir este")
 
 // Database es la base SQLite donde la web guarda el registro de proyectos (historia #177).
 // Leer y escribir la base es de este paquete; convertir el registro y validarlo al
@@ -23,13 +28,22 @@ type Database struct {
 
 // OpenDatabase abre la base de esa ruta, o la crea si no existe (RN-5), y le aplica las
 // migraciones que le falten (D6). Usa una sola conexion: todos los cambios ya pasan de a uno
-// por el candado de la web (D7).
+// por el candado de la web (D7). La abre con el bloqueo exclusivo de SQLite y lo toma al
+// abrir, asi otro sistema no la puede abrir mientras tanto: recibe ErrDatabaseInUse (RN-19,
+// D11). El sistema operativo suelta el bloqueo al cerrarla o si el programa se corta.
 func OpenDatabase(path string) (*Database, error) {
-	db, err := sql.Open("sqlite", path)
+	db, err := sql.Open("sqlite", path+"?_pragma=locking_mode(EXCLUSIVE)")
 	if err != nil {
 		return nil, fmt.Errorf("%w: no se pudo abrir la base %s", domain.ErrSavedDataInvalid, path)
 	}
 	db.SetMaxOpenConns(1)
+	if err := lock(db); err != nil {
+		db.Close()
+		if isBusy(err) {
+			return nil, fmt.Errorf("%w (%s)", ErrDatabaseInUse, path)
+		}
+		return nil, fmt.Errorf("%w: no se pudo abrir la base %s", domain.ErrSavedDataInvalid, path)
+	}
 	if err := migrate(db); err != nil {
 		db.Close()
 		if errors.Is(err, errNewerSchema) {
@@ -39,6 +53,22 @@ func OpenDatabase(path string) (*Database, error) {
 		return nil, fmt.Errorf("%w: no se pudo abrir la base %s", domain.ErrSavedDataInvalid, path)
 	}
 	return &Database{db: db, path: path}, nil
+}
+
+// lock toma el bloqueo exclusivo de la base: en modo EXCLUSIVE, SQLite lo conserva despues de
+// la primera escritura, y una transaccion EXCLUSIVE lo pide aunque no escriba nada.
+func lock(db *sql.DB) error {
+	if _, err := db.Exec("BEGIN EXCLUSIVE"); err != nil {
+		return err
+	}
+	_, err := db.Exec("COMMIT")
+	return err
+}
+
+// isBusy dice si el error es de una base bloqueada por otra conexion.
+func isBusy(err error) bool {
+	var sqliteErr *sqlite.Error
+	return errors.As(err, &sqliteErr) && sqliteErr.Code()&0xff == sqlite3.SQLITE_BUSY
 }
 
 // Close cierra la base. En Windows, un archivo abierto no se puede borrar ni renombrar.

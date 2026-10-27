@@ -1531,6 +1531,10 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 	}
 }
 
+// basesAbiertas es la base que tiene abierta, en cada carpeta, el ultimo sistema que se abrio
+// en los escenarios de cerrar y volver a abrir.
+var basesAbiertas = map[string]*store.Database{}
+
 // almacenes son los dos lugares donde la web puede guardar: el archivo de la #77, que queda
 // para importar y exportar, y la base de la #177, que es donde guarda desde entonces. Los
 // escenarios de cerrar y volver a abrir corren con los dos.
@@ -1549,12 +1553,18 @@ var almacenes = []struct {
 	}},
 	{"en la base", func(t *testing.T, dir string) (*domain.ProjectRegistry, Saver) {
 		t.Helper()
+		// Volver a abrir es cerrar el sistema anterior: la base abierta no la abre otro (RN-19
+		// de la #177).
+		if anterior, ok := basesAbiertas[dir]; ok {
+			anterior.Close()
+		}
 		db, err := store.OpenDatabase(filepath.Join(dir, "datos-ics.db"))
 		if err != nil {
 			t.Fatalf("no se pudo abrir la base: %v", err)
 		}
+		basesAbiertas[dir] = db
 		// en Windows una base abierta no se puede borrar, y t.TempDir la borra al final
-		t.Cleanup(func() { db.Close() })
+		t.Cleanup(func() { db.Close(); delete(basesAbiertas, dir) })
 		registry, err := db.Load()
 		if err != nil {
 			t.Fatalf("no se pudieron leer los datos guardados: %v", err)
