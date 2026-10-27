@@ -345,8 +345,8 @@ más de lo pensado y qué haríamos distinto.]_
   26/10, suma sus horas reales a las trabajadas en el sprint, pero `scripts/metricas.sh` no la
   cuenta en la desviación ni en las horas por story point, porque no tiene con qué compararlas.
   Cuando el equipo la estima, suma sus puntos al sprint donde se terminó. Si tiene story points
-  pero no horas estimadas, como la #77, el script la cuenta en la desviación con 0 h estimadas:
-  para el Sprint 2 da −51%, y el número que vale es el del acta, −52%, sin la #77.
+  pero no horas estimadas, como la #77, el script la cuenta en las horas por story point pero no
+  en la desviación: para el Sprint 2 da −52%, igual que el acta.
 - **Historias adelantadas.** `scripts/metricas.sh` las reconoce por la etiqueta `adelantada`
   de la issue: no las cuenta en lo comprometido ni en sus horas y las muestra en un bloque
   aparte. Si una no se termina y vuelve a su sprint del plan, hay que sacarle la etiqueta.
