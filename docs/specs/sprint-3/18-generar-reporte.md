@@ -7,8 +7,8 @@
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #16 (las métricas), #8 (buscar un sprint por su número), #10 (qué se
   completó en cada sprint) y #15 (los defectos que se listan), todas en `dev`. La regla de
-  formato la comparte con la #17 en `internal/domain/format.go`: la declara la primera de
-  las dos que llegue a `dev`
+  formato de los números es la de la #17, en `internal/domain/format.go`, que ya está en
+  `dev`; esta historia le suma las fechas
 - **La necesitan:** #19 (exportar el reporte a PDF)
 
 ## Fase 1 — Requisitos
@@ -154,20 +154,20 @@ Escenario: Generar el reporte de un sprint cerrado
   Cuando genero el reporte del sprint 1
   Entonces el reporte se titula "Reporte del sprint 1 — Seguimiento ICS"
   Y es un reporte de sprint, con fecha de generacion el dia de hoy
-  Y tiene las secciones "Resumen", "Historias", "Estimacion y esfuerzo" y "Defectos", en ese orden
+  Y tiene las secciones "Resumen", "Historias", "Estimación y esfuerzo" y "Defectos", en ese orden
   Y el proyecto queda como estaba
 
 Escenario: Los numeros del reporte son los de las metricas
   Dado un sprint con 13 puntos planificados, 10 completados, velocidad 10, 16 horas estimadas, 20 reales y desviacion 25
   Cuando genero el reporte del sprint
   Entonces el reporte trae esas mismas metricas
-  Y la seccion "Estimacion y esfuerzo" tiene las lineas:
+  Y la seccion "Estimación y esfuerzo" tiene las lineas:
     | Story points planificados: 13 |
     | Story points completados: 10  |
     | Velocidad: 10                 |
     | Horas estimadas: 16,0 h       |
     | Horas reales: 20,0 h          |
-    | Desviacion: 25,0 %            |
+    | Desviación: 25,0 %            |
 
 Esquema del escenario: El resumen dice en que estado esta el sprint
   Dado el sprint 1 con el goal "Tener el MVP", del 01/10/2026 al 25/10/2026, <estado>
@@ -178,7 +178,7 @@ Esquema del escenario: El resumen dice en que estado esta el sprint
   Ejemplos:
     | estado                   | linea                                                   |
     | cerrado el 25/10/2026    | "Estado: cerrado el 25/10/2026"                         |
-    | abierto                  | "Estado: abierto. Los numeros son parciales."           |
+    | abierto                  | "Estado: abierto. Los números son parciales."           |
 
 Escenario: Las historias del sprint figuran segun el cierre de ese sprint
   Dado el sprint 1 cerrado con las historias 1 y 2 comprometidas y solo la 1 completada
@@ -220,7 +220,7 @@ Escenario: Generar el reporte del proyecto entero
   Entonces el reporte se titula "Reporte del proyecto Seguimiento ICS"
   Y el resumen dice las dos fechas y "3 sprints, 2 cerrados"
   Y la seccion "Historias" lista las historias 1 a 4 con su estado actual
-  Y la seccion "Estimacion y esfuerzo" dice "Velocidad promedio"
+  Y la seccion "Estimación y esfuerzo" dice "Velocidad promedio"
   Y la seccion "Defectos" lista todos los defectos del proyecto
 
 Escenario: Un proyecto sin fecha de fin
@@ -232,7 +232,7 @@ Escenario: Un proyecto sin sprints cerrados no muestra una velocidad de cero
   Dado un proyecto con el sprint 1 abierto y ninguno cerrado
   Cuando genero el reporte del proyecto
   Entonces el resumen dice "1 sprint, 0 cerrados"
-  Y la seccion "Estimacion y esfuerzo" tiene la linea "Velocidad promedio: sin sprints cerrados"
+  Y la seccion "Estimación y esfuerzo" tiene la linea "Velocidad promedio: sin sprints cerrados"
 
 Esquema del escenario: Formato de los numeros
   Dado un sprint cuyas metricas tienen <metrica> igual a <valor>
@@ -242,9 +242,9 @@ Esquema del escenario: Formato de los numeros
   Ejemplos:
     | metrica                       | valor  | linea                                |
     | horas reales                  | 7,5    | "Horas reales: 7,5 h"                |
-    | desviacion                    | 25     | "Desviacion: 25,0 %"                 |
-    | desviacion                    | -20    | "Desviacion: -20,0 %"                |
-    | desviacion                    | 0      | "Desviacion: 0,0 %"                  |
+    | desviacion                    | 25     | "Desviación: 25,0 %"                 |
+    | desviacion                    | -20    | "Desviación: -20,0 %"                |
+    | desviacion                    | 0      | "Desviación: 0,0 %"                  |
     | porcentaje con 2 completadas  | 66,666 | "Historias completadas: 2 (66,7 %)"  |
 
 Escenario: Las historias y los defectos van ordenados por identificador
@@ -320,13 +320,13 @@ qué historias, qué defectos y qué va en el Resumen.
 |---|---|---|
 | `internal/domain/report.go` | se crea | el reporte, el armado de sus secciones y las dos operaciones |
 | `internal/domain/report_test.go` | se crea | los tests de los escenarios BDD de la Fase 1 |
+| `internal/domain/format.go` y su test | se modifica | se le suma la fecha, en la tarea 4, que es la primera que la usa |
 
-**`internal/domain/format.go` es compartido con la #17.** Lo declara la primera de las dos
-historias que llegue a `dev`, como dice el contrato, y la otra lo reutiliza. La #17 ya lo
-escribió en su rama con los números (su tarea 3): si llega antes, la #18 lo usa tal como
-está; si llega la #18 primero, lo crea con esa misma regla, coordinado con Juliana Bustos.
-**Las fechas (día/mes/año, RN-14) las suma esta historia a `format.go`** si todavía no
-están: el reporte las escribe en el dominio, y hoy solo las formatea la web.
+**`internal/domain/format.go` es de la #17** y ya está en `dev` (PR #204): la #18 usa sus
+números tal como están. **Las fechas no las tiene**, porque en la #17 las escribe la web.
+Esta historia las suma, con el mismo formato que la web (`02/01/2006`, día y mes con dos
+dígitos), para que una fecha se lea igual en la pantalla, en el reporte y en el PDF. La #17
+no cambia.
 
 No se agregan errores: se reutiliza el de sprint no encontrado (#8). **El proyecto que no
 existe lo informa el registro (#3)**, con su error de proyecto no encontrado: los dos
@@ -338,13 +338,14 @@ que hacen la #8, la #11 y el contrato del Dashboard.
 | Decisión | Alternativa descartada | Por qué |
 |---|---|---|
 | El armado recibe las métricas calculadas; las operaciones públicas se las piden a la #16 | que el armado las pida él mismo | garantiza la RN-2: el reporte no tiene con qué recalcular un número, y los tests del formato le pasan valores exactos |
-| El reporte guarda las métricas y además las líneas de texto | guardar solo las líneas | lo pide el contrato, y así un test o la #17 leen números sin interpretar texto |
+| El reporte guarda las métricas y además las líneas de texto | guardar solo las líneas | lo pide el contrato, y así un test lee números sin interpretar texto |
 | Los números se escriben como texto acá, con reglas fijas | que cada consumidor los formatee | la #19 solo arma páginas; si cada uno formateara, el PDF y la pantalla podrían mostrar números distintos |
 | Siempre las cuatro secciones, aunque estén vacías | omitir las vacías | el reporte tiene siempre la misma forma, y "no hay defectos" también es información |
 | La fecha de generación la recibe la operación como dato de quien llama | sacarla del reloj del sistema | decidido por el Agile Enabler el 20/10 y escrito en AGENTS.md: el dominio no lee el reloj, así los tests fijan la fecha que necesitan |
 | La situación de cada historia en un sprint sale del registro del cierre | del estado actual de la historia | ver el punto 2 de la puerta |
 | El formato de los números y las fechas va en `format.go`, compartido con la #17, y lo declara la primera de las dos que llegue a `dev` | que cada uno formatee a su manera, o que la #18 espere a la #17 | un número tiene que leerse igual en el dashboard, en el reporte y en el PDF; y esperar a la #17 frenaría también a la #19. Es la misma regla que se usó con `errors.go` |
 | **El reporte y sus secciones son datos simples**, con sus datos a la vista (título, día de generación, alcance, métricas y secciones; cada sección con su encabezado y sus líneas) | entregarlos detrás de operaciones de lectura | es lo que ya son `Metrics` y el Dashboard: el reporte no tiene nada que proteger, porque se arma de una vez y no se guarda (RN-15). Así la web (#78) y el PDF (#19) lo leen sin pasos extra |
+| **"Sin sprints cerrados" sale de si el proyecto tiene algún sprint cerrado** (la consulta de la #11), no de que la velocidad promedio sea cero | mirar si la velocidad es 0 | con sprints cerrados, una velocidad promedio de 0 se escribe "0": el número solo no alcanza para decidir el aviso. Se resuelve igual que la tarea 6 de la #17, coordinado con Juliana Bustos |
 | **El reporte se entrega como un valor**, y la exportación a PDF de la #19 lo recibe igual | entregar una referencia al reporte | cada pedido arma uno nuevo y nadie lo comparte, así que no hay nada que se pueda cambiar de costado. Acordado con Emiliano Sorato en el #181, para que el PDF lo lea de la misma forma |
 | **El reporte del proyecto no informa errores; el de un sprint, solo el de sprint no encontrado (#8)** | que los dos informen también el proyecto que no existe | los dos se le piden a un proyecto que ya se encontró: el proyecto que no existe lo informa el registro (#3), como en el Dashboard. Un sprint sí puede no existir dentro del proyecto (RN-16) |
 
@@ -354,7 +355,10 @@ que hacen la #8, la #11 y el contrato del Dashboard.
   cierres y los defectos con sus operaciones reales, y las tareas 2 y 3 le pasan al armado
   métricas armadas a mano para fijar valores exactos.
 - **No se calcula ninguna métrica** ni se cambia ningún dato.
-- **La regla de formato se comparte con la #17** en `format.go` (ver Archivos afectados).
+- **La regla de formato es la de la #17** en `format.go` (ver Archivos afectados), y esta
+  historia solo le suma la fecha. Hereda sus dos bordes del redondeo, anotados en la Fase 4
+  de la #17: el empate se redondea hacia afuera del cero (12,25 h da "12,3 h") y un negativo
+  que se redondea a cero va sin signo (-0,04 % da "0,0 %"). Ningún test espera otra cosa.
   Cualquier cambio se avisa a las dos historias.
 - **Lo necesita la #19**, que arma un reporte a mano en sus tests. Si cambia el formato de
   las secciones, se avisa.
@@ -424,8 +428,8 @@ Los trece escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario B
 
 - **La #16, la #8, la #10 y la #15 ya están en `dev`**: ninguna tarea espera a otra historia
   de dominio.
-- **La 3, la 4 y la 10 usan la regla de formato de `format.go`**: la de la #17 si ya está en
-  `dev`; si no, la crea la tarea 3 con esa misma regla, y la 4 le suma las fechas.
+- **La 3, la 4 y la 10 usan la regla de formato de `format.go`** de la #17, que ya está en
+  `dev`. La 4 le suma la fecha, con su test.
 - **La 11 prioriza el backlog con la #7**, para que el orden en que se muestra no coincida
   con el de los identificadores.
 - **La 13 usa el error de sprint no encontrado de la #8** y el de proyecto no encontrado de
