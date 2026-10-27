@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-27 12:07. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-27 15:52. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-ce4ff4e 2026-10-27 docs: CLAUDE.md con el calendario nuevo (Sprint 3 hasta el 28/10, Sprint 4 el 29/10)
-bc0168a 2026-10-27 chore: ESTADO.md regenerado con dev y el plan al dia
-90c14b2 2026-10-27 docs: la #73 no cuenta en el Sprint 4: ya suma en el Sprint 3, donde se adelanto
-29428ff 2026-10-27 Merge remote-tracking branch 'origin/dev' into calendario-29-10
-c40d222 2026-10-27 Merge pull request #185 from emisorato1/estimacion-77-78
-4a73714 2026-10-27 Merge pull request #183 from emisorato1/metricas-agregadas
-66a4ff2 2026-10-27 Merge pull request #184 from emisorato1/historia-19-pdf-maquetado
-e00873c 2026-10-26 docs: cierre de todo el 29/10, con el sprint 3 del 26 al 28 y el sprint 4 el 29
+9a9d324 2026-10-27 chore: trazabilidad y ESTADO.md regenerados con dev al 27/10 (la #19 y los defectos #190 y #191)
+9dc49ea 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
+25d5e96 2026-10-27 Merge pull request #188 from emisorato1/datos-demo
+83b3015 2026-10-27 Merge pull request #194 from emisorato1/defecto-190-paginas-viejas
+65abb3b 2026-10-27 Merge pull request #195 from emisorato1/defecto-191-palabra-larga
+b226499 2026-10-27 Merge pull request #198 from emisorato1/docs-documentacion-tecnica-al-dia
+2119b14 2026-10-27 docs: las firmas de Report en el contrato del dominio, como las acepto Agustin en el #181
+8ddde8c 2026-10-27 docs: el Sprint 3 de la demo va del 26 al 28/10, y el defecto #172 queda afuera
 ```
