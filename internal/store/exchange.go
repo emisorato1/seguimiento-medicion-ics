@@ -17,9 +17,17 @@ import (
 // #177, RN-10). Importar reemplazaria todo lo que hay.
 var ErrDatabaseNotEmpty = errors.New("la base ya tiene datos y no se importa sobre datos existentes")
 
+// ErrExportOverDatabase: se pidio exportar al mismo archivo de la base (historia #177, RN-16).
+// Escribir el archivo ahi reemplazaria la base por el texto.
+var ErrExportOverDatabase = errors.New("no se exporta al mismo archivo de la base: elegí otro nombre para el archivo")
+
 // Export escribe todos los datos de la base en el archivo, con el formato de la #77 (RN-7).
-// Escribe con el archivo de la #77, que no deja un archivo a medias.
+// Escribe con el archivo de la #77, que no deja un archivo a medias. Si el archivo es la base
+// misma, no escribe nada y devuelve ErrExportOverDatabase (RN-16).
 func Export(d *Database, path string) error {
+	if sameFile(path, d.path) {
+		return fmt.Errorf("%w (%s)", ErrExportOverDatabase, path)
+	}
 	registry, err := d.Load()
 	if err != nil {
 		return err
@@ -84,4 +92,16 @@ func ImportLegacy(d *Database, dir string) (bool, error) {
 		return false, fmt.Errorf("no se pudo renombrar %s a %s, así que la base quedó vacía para importarlo una sola vez: revisá que se pueda escribir en la carpeta y volvé a abrir el sistema", path, target)
 	}
 	return true, nil
+}
+
+// sameFile dice si las dos rutas llevan al mismo archivo, aunque esten escritas de otra forma.
+func sameFile(a, b string) bool {
+	infoA, errA := os.Stat(a)
+	infoB, errB := os.Stat(b)
+	if errA == nil && errB == nil {
+		return os.SameFile(infoA, infoB)
+	}
+	absA, errA := filepath.Abs(a)
+	absB, errB := filepath.Abs(b)
+	return errA == nil && errB == nil && absA == absB
 }
