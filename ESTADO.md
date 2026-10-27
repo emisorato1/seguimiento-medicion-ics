@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-27 12:32. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-27 15:52. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-9b1430f 2026-10-27 Merge remote-tracking branch 'origin/dev' into historia-18-generar-reporte
-d9de00e 2026-10-27 docs: registrar las tres puertas de la historia 18, aprobadas por Emiliano
-d3fd46b 2026-10-27 docs: aplicar las correcciones de las puertas de la historia 18
-bc41ede 2026-10-27 Merge pull request #204 from emisorato1/historia-17-dashboard
-deca9d6 2026-10-27 docs: el contrato dice que los datos del dashboard y format.go ya estan en dev (historia 17, primera parte)
-94ebf02 2026-10-27 Merge remote-tracking branch 'origin/dev' into historia-17-dashboard
-d044b48 2026-10-27 Merge pull request #197 from emisorato1/defecto-193-filtro-minusculas
+9a9d324 2026-10-27 chore: trazabilidad y ESTADO.md regenerados con dev al 27/10 (la #19 y los defectos #190 y #191)
+9dc49ea 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
 25d5e96 2026-10-27 Merge pull request #188 from emisorato1/datos-demo
+83b3015 2026-10-27 Merge pull request #194 from emisorato1/defecto-190-paginas-viejas
+65abb3b 2026-10-27 Merge pull request #195 from emisorato1/defecto-191-palabra-larga
+b226499 2026-10-27 Merge pull request #198 from emisorato1/docs-documentacion-tecnica-al-dia
+2119b14 2026-10-27 docs: las firmas de Report en el contrato del dominio, como las acepto Agustin en el #181
+8ddde8c 2026-10-27 docs: el Sprint 3 de la demo va del 26 al 28/10, y el defecto #172 queda afuera
 ```
