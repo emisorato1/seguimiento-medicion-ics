@@ -837,7 +837,7 @@ lo mismo que en las partes 1 y 2.
 
 ### Una ronda votada desde dos pestañas
 
-El 26/10, a pedido de la manager. **Test**: `TestUnaRondaVotadaDesdeDosPestanas`, con dos
+El 26/10, a pedido de Emiliano Sorato. **Test**: `TestUnaRondaVotadaDesdeDosPestanas`, con dos
 navegadores de prueba, cada uno con sus cookies. Ana y Juan votan cada uno desde su
 pestaña; ninguna ve un voto hasta revelar y cada una ve solo el mensaje de su voto; la
 pestaña con la página vieja intenta votar otra vez por Ana y el núcleo lo rechaza sin
