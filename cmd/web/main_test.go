@@ -461,3 +461,33 @@ func TestElArchivoDeLaVersionAnteriorSeImportaAlAbrir(t *testing.T) {
 		t.Errorf("la segunda vez no tenia que importar nada, salio:\n%s\n%s", out, proyectos)
 	}
 }
+
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar
+// Cubre: #177 RN-16, RN-17, RN-18
+func TestLoQueNoSePuedePedirAlExportarOImportar(t *testing.T) {
+	dir := t.TempDir()
+	base := filepath.Join(dir, "datos-ics.db")
+	registry := domain.NewProjectRegistry()
+	if _, err := registry.Create(domain.ProjectData{Name: "Sistema de métricas", Start: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)}); err != nil {
+		t.Fatalf("no se pudo preparar el proyecto: %v", err)
+	}
+	db, err := store.OpenDatabase(base)
+	if err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+	if err := db.Save(registry); err != nil {
+		t.Fatalf("no se pudo preparar la base: %v", err)
+	}
+	db.Close()
+	antes, _ := os.ReadFile(base)
+
+	var out, errOut bytes.Buffer
+	code := run([]string{"-datos", base, "-exportar", base}, &out, &errOut, noServe(t))
+
+	if code != 1 || !strings.Contains(errOut.String(), store.ErrExportOverDatabase.Error()) {
+		t.Errorf("exportar sobre la base: se esperaba el codigo 1 y el aviso, salio %d:\n%s", code, errOut.String())
+	}
+	if despues, _ := os.ReadFile(base); !bytes.Equal(despues, antes) {
+		t.Error("exportar sobre la base: la base tenia que quedar como estaba")
+	}
+}

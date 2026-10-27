@@ -178,3 +178,28 @@ func TestElArchivoViejoSeImportaUnaSolaVez(t *testing.T) {
 		}
 	})
 }
+
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar (exportar sobre la base)
+// Cubre: #177 RN-16
+func TestExportarAlMismoArchivoDeLaBaseSeRechaza(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "datos-ics.db")
+	db := abrirBase(t, path)
+	registry := unRegistroCompleto(t)
+	sinError(t, db.Save(registry))
+	antes, err := os.ReadFile(path)
+	sinError(t, err)
+
+	err = Export(db, path)
+
+	if !errors.Is(err, ErrExportOverDatabase) || !strings.Contains(err.Error(), path) {
+		t.Errorf("se esperaba ErrExportOverDatabase con la ruta, salio: %v", err)
+	}
+	if despues, _ := os.ReadFile(path); !bytes.Equal(despues, antes) {
+		t.Error("la base tenia que quedar como estaba")
+	}
+	// Tambien con otra forma de escribir la misma ruta.
+	otra := filepath.Join(filepath.Dir(path), ".", "datos-ics.db")
+	if err := Export(db, otra); !errors.Is(err, ErrExportOverDatabase) {
+		t.Errorf("con la ruta escrita de otra forma se esperaba ErrExportOverDatabase, salio: %v", err)
+	}
+}
