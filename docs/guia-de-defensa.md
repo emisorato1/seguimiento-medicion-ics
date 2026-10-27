@@ -54,6 +54,22 @@ regenerar la trazabilidad: la de `dev` todavía no tiene a la #11, que entra con
 6. En [trazabilidad.md](trazabilidad.md), buscar el test y abrir sus dos commits: primero el
    `test:`, con la salida del RED en el mensaje, y después el `feat:`.
 
+## Límites conocidos
+
+Salieron en la prueba exploratoria de la web del 26/10 y quedaron así a propósito. Si los
+preguntan, son decisiones, no defectos:
+
+- **La fecha 01/01/0001 se rechaza como "obligatoria":** es el valor cero de las fechas en Go,
+  y nadie la va a escribir de verdad.
+- **Se acepta esfuerzo de un día anterior al inicio del proyecto:** la #14 no compara la fecha
+  del esfuerzo con la del proyecto.
+- **Se puede cerrar un sprint con una fecha de cierre cualquiera, incluso anterior a su
+  inicio:** lo decidió la #10 (RN-11: la fecha de cierre no se compara con ninguna otra).
+- **No hay largo máximo para los nombres y los títulos:** se acepta un nombre de proyecto de
+  3000 caracteres. Lo que sí se controla es que no estén vacíos.
+
+Los defectos que salieron de esa misma prueba están cargados como issues: #190, #191, #192 y #193.
+
 ## Preguntas que nos pueden hacer
 
 **1. ¿Por qué Go solo con la biblioteca estándar?**
