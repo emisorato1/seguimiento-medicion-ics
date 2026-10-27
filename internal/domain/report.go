@@ -47,7 +47,7 @@ func (p *Project) buildSprintReport(sprint *Sprint, metrics Metrics, today time.
 		Sections: []Section{
 			{Heading: "Resumen", Lines: p.sprintSummaryLines(sprint)},
 			{Heading: "Historias", Lines: p.sprintStoryLines(sprint, metrics)},
-			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics, "Velocidad")},
+			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics, "Velocidad: "+formatCount(metrics.Velocity))},
 			{Heading: "Defectos", Lines: p.defectLines(metrics, "No hay defectos en este sprint.", func(d *Defect) bool {
 				// uno detectado en un sprint y resuelto en otro aparece en los dos (RN-12)
 				return d.detectedIn == sprint.number || d.resolvedIn == sprint.number
@@ -68,21 +68,40 @@ func (p *Project) buildProjectReport(metrics Metrics, today time.Time) Report {
 		Sections: []Section{
 			{Heading: "Resumen", Lines: p.projectSummaryLines()},
 			{Heading: "Historias", Lines: p.projectStoryLines(metrics)},
-			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics, "Velocidad promedio")},
+			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics, p.averageVelocityLine(metrics))},
 			{Heading: "Defectos", Lines: p.defectLines(metrics, "No hay defectos en este proyecto.", func(*Defect) bool { return true })},
 		},
 	}
 }
 
 // projectSummaryLines escribe el Resumen del reporte del proyecto: el nombre, las fechas y
-// cuantos sprints tiene y cuantos estan cerrados (RN-8).
+// cuantos sprints tiene y cuantos estan cerrados (RN-8). La fecha de fin es optativa (#3):
+// sin ella dice "sin fecha de fin".
 func (p *Project) projectSummaryLines() []string {
+	end := "sin fecha de fin"
+	if p.HasEnd() {
+		end = formatDate(p.end)
+	}
+	sprints := "sprints"
+	if len(p.sprints) == 1 {
+		sprints = "sprint"
+	}
 	return []string{
 		"Proyecto: " + p.name,
 		"Inicio: " + formatDate(p.start),
-		"Fin: " + formatDate(p.end),
-		fmt.Sprintf("%d sprints, %d cerrados", len(p.sprints), len(p.ClosedSprints())),
+		"Fin: " + end,
+		fmt.Sprintf("%d %s, %d cerrados", len(p.sprints), sprints, len(p.ClosedSprints())),
 	}
+}
+
+// averageVelocityLine escribe la velocidad promedio del proyecto. Mientras no hay ningun
+// sprint cerrado dice "sin sprints cerrados", como el dashboard, y no 0: un cero haria
+// parecer que el equipo no hizo nada (RN-11).
+func (p *Project) averageVelocityLine(metrics Metrics) string {
+	if len(p.ClosedSprints()) == 0 {
+		return "Velocidad promedio: sin sprints cerrados"
+	}
+	return "Velocidad promedio: " + formatCount(metrics.Velocity)
 }
 
 // projectStoryLines escribe la seccion Historias del reporte del proyecto: los totales y una
@@ -191,13 +210,14 @@ func (p *Project) defectLines(metrics Metrics, empty string, include func(*Defec
 }
 
 // effortLines escribe la seccion Estimacion y esfuerzo con los numeros de las metricas, sin
-// calcular ninguno (RN-2, RN-11), y con la regla de formato de format.go (RN-14). La
-// velocidad se llama "Velocidad" en un sprint y "Velocidad promedio" en el proyecto.
+// calcular ninguno (RN-2, RN-11), y con la regla de formato de format.go (RN-14). La linea
+// de la velocidad la escribe cada reporte: "Velocidad" en un sprint y "Velocidad promedio"
+// en el proyecto, que sin sprints cerrados no tiene un numero que mostrar.
 func effortLines(m Metrics, velocity string) []string {
 	return []string{
 		"Story points planificados: " + formatCount(m.PlannedPoints),
 		"Story points completados: " + formatCount(m.CompletedPoints),
-		velocity + ": " + formatCount(m.Velocity),
+		velocity,
 		"Horas estimadas: " + formatHours(m.EstimatedHours),
 		"Horas reales: " + formatHours(m.ActualHours),
 		"Desviación: " + formatPercent(m.HoursDeviation),
