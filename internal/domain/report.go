@@ -44,13 +44,30 @@ func (p *Project) buildSprintReport(sprint *Sprint, metrics Metrics, today time.
 		Scope:       ScopeSprint,
 		Metrics:     metrics,
 		Sections: []Section{
-			{Heading: "Resumen"},
+			{Heading: "Resumen", Lines: p.sprintSummaryLines(sprint)},
 			{Heading: "Historias", Lines: []string{
 				fmt.Sprintf("Historias completadas: %s (%s)", formatCount(metrics.StoriesCompleted), formatPercent(metrics.CompletionRate)),
 			}},
 			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics)},
 			{Heading: "Defectos"},
 		},
+	}
+}
+
+// sprintSummaryLines escribe el Resumen del reporte de un sprint: el proyecto, el Sprint Goal,
+// las fechas y el estado (RN-6). Mientras el sprint esta abierto avisa que los numeros son
+// parciales (RN-7).
+func (p *Project) sprintSummaryLines(sprint *Sprint) []string {
+	state := "Estado: abierto. Los números son parciales."
+	if sprint.state == SprintClosed {
+		state = "Estado: cerrado el " + formatDate(sprint.closedOn)
+	}
+	return []string{
+		"Proyecto: " + p.name,
+		"Sprint Goal: " + sprint.goal,
+		"Inicio: " + formatDate(sprint.start),
+		"Fin: " + formatDate(sprint.end),
+		state,
 	}
 }
 
