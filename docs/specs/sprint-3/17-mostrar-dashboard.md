@@ -455,7 +455,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 4 | El sprint en curso trae el sprint abierto y lo que lleva registrado, sin completados ni velocidad; sin sprint abierto, no trae nada | El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-5, RN-6 | hecha |
 | 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | hecha |
 | 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso, y la velocidad del estado general escrita como «sin sprints cerrados» | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-4, RN-8, RN-9 | hecha |
-| 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | pendiente |
+| 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | hecha |
 | 8 | El dashboard se pide al proyecto y usa las métricas que calcula la #16 | — (conexión con la #16) | RN-2 | pendiente |
 
 **Web** (`internal/web/dashboard_test.go`), con los datos del dashboard armados a mano:
@@ -552,6 +552,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 4 | `6330fb4` | `e84abc3` |
 | 5 | `ef5ab19` | `fc0c221` |
 | 6 | `1be2d30` | `2e28197` |
+| 7 | `4f8e6d1` (sin RED) | — |
 
 ### Decisiones tomadas al implementar
 
@@ -589,6 +590,13 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   dashboard se llama `TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCursoEnElDashboard`,
   con el escenario exacto en su comentario. Además pasaría sin código nuevo, porque hasta esta
   tarea el sprint en curso venía siempre vacío; el RED lo dio el otro test de la tarea.
+- **Tarea 7, sin RED:** el test de "Abrir el dashboard no cambia el proyecto" pasó al
+  escribirlo, como anticipaba la Fase 3, porque el armado nunca escribe. No tiene commit de
+  implementación. Para saber que sirve se rompió el armado a propósito dos veces —que
+  cerrara el sprint abierto y que le vaciara las historias— y falló las dos; después se
+  volvió atrás (el detalle está en el mensaje del commit). El backlog el armado no lo puede
+  tocar, porque solo recibe los sprints: esa mitad del test cuida la operación de la
+  tarea 8.
 
 ## Trazabilidad
 
