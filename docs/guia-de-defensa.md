@@ -169,8 +169,9 @@ en el navegador. La consola quedó con proyectos, integrantes, backlog y estimac
 se hace desde la web.
 
 **14. ¿Cómo se revisa un PR y quién lo mergea?**
-Nadie pushea directo: todo entra por PR. A `dev` hace falta el CI en verde, y cada PR recibe una
-revisión escrita de otro integrante. A `main` hace falta además una aprobación. Solo se mergea
+Nadie pushea directo: todo entra por PR. A `dev` hace falta el CI en verde, con una revisión
+escrita de cada PR y, desde el 26/10, la firma de un compañero. A `main` hace falta además una
+aprobación. Solo se mergea
 con merge commit, así queda el historial del TDD.
 
 **15. ¿Por qué algunas historias tienen ciclos de TDD en pocos minutos?**
