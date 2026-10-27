@@ -74,7 +74,8 @@ func (p *Project) sprintSummaryLines(sprint *Sprint) []string {
 // metricas y una linea por historia comprometida (RN-9). Que se completo sale de lo que
 // registro el cierre de ese sprint, y no del estado actual de la historia, que pudo
 // terminarse despues en otro sprint (RN-10, punto 2 de la puerta). Los puntos tambien son
-// los que tenia al cerrar (#10).
+// los que tenia al cerrar (#10). Mientras el sprint esta abierto no hay cierre: cada
+// historia va con sus puntos actuales y "en curso".
 func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
 	lines := []string{
 		"Historias planificadas: " + formatCount(metrics.StoriesPlanned),
@@ -82,11 +83,14 @@ func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
 	}
 	for _, id := range sprint.stories {
 		story, _ := p.Story(id)
-		situation := "no completada"
-		if slices.Contains(sprint.completedStories, id) {
-			situation = "completada"
+		points, situation := story.storyPoints, "en curso"
+		if sprint.state == SprintClosed {
+			points, situation = sprint.pointsAtClose[id], "no completada"
+			if slices.Contains(sprint.completedStories, id) {
+				situation = "completada"
+			}
 		}
-		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", id, story.title, pointsText(sprint.pointsAtClose[id]), situation))
+		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", id, story.title, pointsText(points), situation))
 	}
 	return lines
 }
