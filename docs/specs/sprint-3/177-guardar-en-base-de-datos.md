@@ -3,7 +3,7 @@
 - **Historia:** #177
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 1, Puerta 2 y Puerta 3 aprobadas por el responsable el 2026-10-26 en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), como excepción — **pendientes de que un compañero las ratifique**; ningún PR de la historia entra a `dev` antes de eso. Implementación en la rama `historia-177-implementacion`
+- **Estado:** Puerta 1, Puerta 2 y Puerta 3 aprobadas por el responsable el 2026-10-26 en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), como excepción, y **ratificadas por Maximiliano Eula el 26/10** en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043), desde su cuenta. Implementación en la rama `historia-177-implementacion` (PR #186)
 - **Depende de:** #77 (guardar los datos de la web), y de que cada historia de dominio ya
   haya sumado sus datos a lo que se guarda (#8 a #15, #13, #73)
 - **La necesitan:** nadie todavía
@@ -11,8 +11,9 @@
   reglas de `AGENTS.md` (la de cómo se guardan los datos y la de no usar dependencias
   externas); el cambio lo aplica Emiliano Sorato en un commit aparte, antes del merge de la
   implementación.
-- **Acuerdo del equipo para la dependencia:** Maximiliano Eula dio el ok en persona a
-  Emiliano el 26/10 (según lo que registró Emiliano).
+- **Acuerdo del equipo para la dependencia:** Maximiliano Eula dio el ok el 26/10, y Juliana
+  Bustos y Agustín Salinas estuvieron de acuerdo, según confirmó Maximiliano Eula en su
+  ratificación (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043).
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de las decisiones
   de Emiliano y de la spec de la #77. El responsable lo revisa, lo corrige si hace falta y lo
   presenta a las puertas.
@@ -98,9 +99,9 @@ otra, para cargar los datos de demo y para traer lo guardado con la versión ant
     Si la importación falla, el archivo no se toca, la base queda vacía y el sistema avisa
     qué pasó y no abre (RN-9). **Decidido por Emiliano Sorato el 26/10.**
 
-Las cuatro reglas que siguen se **agregaron el 27/10 por la prueba exploratoria** (hallazgos
-QA-1, QA-2, QA-5 y QA-6), después de las puertas: las decidió la manager con el permiso de
-Emiliano Sorato.
+Las cuatro reglas que siguen se **agregaron después de las puertas**: las decidió Emiliano
+Sorato el 27/10, a partir de la prueba exploratoria (hallazgos QA-1, QA-2, QA-5 y QA-6), y las
+aprobó Maximiliano Eula en el #186 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/186#issuecomment-6444819113).
 
 16. **[RN-16]** Si se pide exportar al mismo archivo de la base, el sistema debe rechazarlo y
     avisar, sin tocar la base (QA-2).
@@ -110,7 +111,18 @@ Emiliano Sorato.
     datos para exportar, sin crear la base ni el archivo (QA-6).
 19. **[RN-19]** Mientras el sistema tiene una base abierta, otro sistema que intente abrir la
     misma base debe avisar que ya está abierta por otro sistema y no abrir, sin tocarla (QA-1:
-    si no, cada uno guardaba su copia entera y el último pisaba al otro).
+    si no, cada uno guardaba su copia entera y el último pisaba al otro). Si lo que se pidió
+    es exportar, el aviso debe decir que se cierre la web y se vuelva a exportar (observación
+    de Maximiliano Eula en el #186, agregada el 27/10).
+
+La regla que sigue la propuso Maximiliano Eula al ratificar las puertas (punto 1) y la pidió
+en su revisión del #186, para quien abre el sistema como antes de esta historia; la agregó
+Emiliano Sorato el 27/10, con la primera de las dos opciones de esa revisión.
+**Aprobó: [pendiente]**, alguien que no la escribió, en el #186.
+
+20. **[RN-20]** Si se abre el sistema indicando como base un archivo `.json`, el sistema debe
+    avisar que la base es un archivo `.db` y que un archivo `.json` se trae con la opción de
+    importar, sin crear ni tocar nada.
 
 ### Casos límite
 
@@ -156,6 +168,8 @@ Emiliano Sorato.
 | Se pide importar y exportar a la vez | avisa que no se pueden usar juntas y no hace ninguna (RN-17) |
 | Se pide exportar y la base no existe | avisa que no hay datos para exportar y no crea nada (RN-18) |
 | La base ya está abierta por otro sistema | avisa que ya está abierta por otro sistema y no abre, sin tocarla (RN-19) |
+| Se pide exportar con la web abierta sobre la misma base | avisa que se cierre la web y se vuelva a exportar, sin tocar la base (RN-19) |
+| Se abre con un archivo `.json` como base | avisa que la base es el `.db` y que el `.json` se trae con importar, sin crear nada (RN-20) |
 
 ### Criterios de aceptación
 
@@ -282,11 +296,13 @@ Esquema del escenario: Lo que no se puede pedir al exportar o importar
     | una base con datos    | exportar al mismo archivo de la base     | que no se exporta sobre la base           |
     | una base con datos    | importar un archivo y exportar a la vez  | que no se pueden usar juntas              |
     | que no hay ninguna base | exportar                               | que no hay datos para exportar            |
+    | un archivo "demo.json", o ninguno | abrir con "demo.json" como base | que la base es el .db y que el .json se trae con importar |
 
 Escenario: Una base abierta no la abre otro sistema
   Dado el sistema abierto con la base "datos-ics.db"
   Cuando abro otro sistema con la misma base
   Entonces el segundo avisa que la base ya está abierta por otro sistema y no abre
+  Y si lo que pido es exportar, el aviso dice que cierre la web y vuelva a exportar
   Y cuando cierro el primero, la base se abre normalmente
 ```
 
@@ -305,7 +321,7 @@ Emiliano Sorato decidió el 26/10 los puntos que el borrador dejaba abiertos:
 
 > **Puerta 1** — ¿los requisitos son correctos, completos y sin decisiones técnicas metidas?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-26 — Comentarios: aprobada en un comentario de la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), sobre el commit `4d74453`. La aprueba el responsable de la historia: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #177, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
-> Ratificó: [pendiente]
+> Ratificó: Maximiliano Eula — 26/10 — en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043), desde su cuenta
 
 ## Fase 2 — Diseño
 
@@ -362,8 +378,8 @@ escribir ese archivo con lo que ya existe.
 ### Dependencias y restricciones
 
 - **La dependencia está acordada con el equipo** (AGENTS.md: "agregar una dependencia se
-  acuerda con el equipo"): Maximiliano Eula dio el ok en persona a Emiliano el 26/10 (según lo
-  que registró Emiliano). El cambio de `AGENTS.md` lo aplica Emiliano Sorato en un commit
+  acuerda con el equipo"): Maximiliano Eula dio el ok el 26/10, y Juliana Bustos y Agustín
+  Salinas estuvieron de acuerdo, según confirmó Maximiliano Eula en su ratificación (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043). El cambio de `AGENTS.md` lo aplica Emiliano Sorato en un commit
   aparte, antes del merge de la implementación.
 - **No se toca** `internal/domain` (decisión de Emiliano), `internal/web` (los handlers ya
   guardan a través de algo que sabe guardar) ni `cmd/app` (la consola sigue en memoria).
@@ -378,7 +394,7 @@ escribir ese archivo con lo que ya existe.
 
 > **Puerta 2** — ¿el diseño es viable y coherente con el resto del proyecto?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-26 — Comentarios: aprobada en un comentario de la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), sobre el commit `4d74453`. La aprueba el responsable de la historia: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #177, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
-> Ratificó: [pendiente]
+> Ratificó: Maximiliano Eula — 26/10 — en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043), desde su cuenta
 
 ## Fase 3 — Tareas
 
@@ -405,13 +421,15 @@ implementación en el siguiente.
 | 16 | Importar y exportar a la vez se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-17 | hecha |
 | 17 | Exportar sin base avisa y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-18 | hecha |
 | 18 | Una base abierta no la abre otro sistema (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | hecha |
+| 19 | Abrir con un archivo `.json` como base avisa que se use importar y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-20 | pendiente |
+| 20 | Exportar con la web abierta avisa que se cierre la web y se vuelva a exportar; el manual lo suma (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | pendiente |
 
 Los tests corren en los dos sistemas del CI, Linux y Windows (RN-12): ninguno depende de
 permisos de Unix ni de rutas con `/`.
 
 > **Puerta 3** — ¿las tareas cubren todos los criterios de aceptación?
 > Aprobó: Emiliano Sorato — Fecha: 2026-10-26 — Comentarios: aprobada en un comentario de la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), sobre el commit `4d74453`. La aprueba el responsable de la historia: es una excepción a la regla de que aprueba otra persona, y queda para que un compañero la ratifique con un comentario en la issue #177, desde su propia cuenta. Ningún PR de la historia entra a `dev` antes de esa ratificación.
-> Ratificó: [pendiente]
+> Ratificó: Maximiliano Eula — 26/10 — en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043), desde su cuenta
 
 ## Fase 4 — Implementación
 
@@ -469,9 +487,9 @@ el código a propósito, falló, y se volvió atrás).
   errores del driver al leer una fila o al ejecutar una consulta, que no se pueden provocar
   sin inyectar fallas. `cmd/web` queda en 88,0%: los errores al exportar. El total es 95,3%.
 
-- **Las reglas RN-16 a RN-19 y las tareas 15 a 18 se agregaron el 27/10 por la prueba
-  exploratoria** (hallazgos QA-1, QA-2, QA-5 y QA-6), después de las puertas: las decidió la
-  manager con el permiso de Emiliano Sorato. Los otros hallazgos de esa prueba van en los
+- **Las reglas RN-16 a RN-19 y las tareas 15 a 18 se agregaron después de las puertas**:
+  las decidió Emiliano Sorato el 27/10, a partir de la prueba exploratoria (hallazgos QA-1,
+  QA-2, QA-5 y QA-6), y las aprobó Maximiliano Eula en el #186 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/186#issuecomment-6444819113). Los otros hallazgos de esa prueba van en los
   defectos #190 a #193 o quedan como límites conocidos.
 - **El nombre de la base va sin el prefijo `file:`** al abrirla con el bloqueo (D11): con ese
   prefijo el driver lo lee como una URI, y una ruta con `%20` no abría y una con `#` creaba la
