@@ -33,14 +33,15 @@ final, con la exportación del informe del proyecto a PDF.
 | — | Manual breve de usuario | — | Maximiliano Eula | `docs/manual-de-usuario.md` en `dev` |
 | — | Documentación técnica | — | Agustín Salinas | `docs/documentacion-tecnica.md` en `dev`; falta la persistencia en SQLite |
 | — | Presentación final | — | Juliana Bustos arma, los cuatro revisan | [pendiente] |
-| — | Pull request de `dev` a `main` con el incremento final y su tag | — | Emiliano Sorato | [pendiente] |
+| — | Pull request de `dev` a `main` con el incremento final, la entrega, y su tag `v1.0.0` | — | Emiliano Sorato | el 29/10 (el del Sprint 3 va el 28/10 con `v0.3.0-sprint3`) |
 | — | Actas de review y retrospectiva del Sprint 4 | — | Emiliano Sorato | [pendiente] |
 
 [pendiente: lo que vuelva del Sprint 3 sin terminar, si el equipo decide terminarlo en el 4.]
 
 - **Story points comprometidos:** [pendiente]. El plan le da 10 al Sprint 4: la #19 (5) y la #73
   (5). La #73 ya está terminada: se adelantó al Sprint 3.
-- **Horas estimadas:** [pendiente]. La #19 no tiene horas estimadas cargadas al 27/10.
+- **Horas estimadas de la #19: 13,5** (5 SP a 2,7 h por punto). Las cargó en el tablero Emiliano
+  Sorato, su responsable, el 27/10. [pendiente: si se adelantó al Sprint 3, salen de acá.]
 
 ## Confirmación de cada responsable
 
@@ -53,4 +54,4 @@ final, con la exportación del informe del proyecto a PDF.
 
 - [ ] El Sprint Goal confirmado.
 - [ ] Lo que vuelve del Sprint 3.
-- [ ] Las horas estimadas de la #19.
+- [x] Las horas estimadas de la #19: 13,5 h, el 27/10.
