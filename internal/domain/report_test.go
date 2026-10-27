@@ -197,3 +197,38 @@ func TestLasHistoriasDelSprintFiguranSegunElCierreDeEseSprint(t *testing.T) {
 		t.Errorf("se esperaba la seccion Historias\n%q\nsalio\n%q", want, got)
 	}
 }
+
+// Escenario: Una historia sin estimar figura como sin estimar
+// Cubre: RN-9
+//
+// La historia 3 entra al sprint estimada (la #9 no asigna historias sin estimar) y se le quita
+// la estimacion mientras esta En curso, que la #12 permite; al cerrar, la #10 le registra 0
+// puntos. La historia 1, estimada, sigue mostrando sus puntos.
+func TestUnaHistoriaSinEstimarFiguraComoSinEstimar(t *testing.T) {
+	project := unProyecto(t)
+	sprint := unSprint(t, project)
+	for _, points := range []int{3, 5, 8} {
+		story := unaHistoriaEstimada(t, project, points)
+		if err := project.AssignStory(story.ID()); err != nil {
+			t.Fatalf("no se pudo asignar la historia de prueba %d: %v", story.ID(), err)
+		}
+	}
+	if err := project.RemoveStoryEstimate(3); err != nil {
+		t.Fatalf("no se pudo quitar la estimacion de la historia 3: %v", err)
+	}
+	if err := project.CloseSprint(nil, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+	}
+
+	report := project.buildSprintReport(sprint, Metrics{}, unDia(2026, 10, 31))
+
+	lines := seccion(t, report, "Historias")
+	for _, want := range []string{
+		"#1 — Registrar esfuerzo — 3 SP — no completada",
+		"#3 — Registrar esfuerzo — sin estimar — no completada",
+	} {
+		if !slices.Contains(lines, want) {
+			t.Errorf("se esperaba la linea %q, y no esta en:\n%q", want, lines)
+		}
+	}
+}
