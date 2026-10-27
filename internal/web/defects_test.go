@@ -308,3 +308,23 @@ func TestResolverEnUnSprintQueNoExisteAvisaAntesDePreguntar(t *testing.T) {
 		t.Errorf("se esperaba el mensaje %q junto al sprint:\n%s", domain.ErrSprintNotFound, html)
 	}
 }
+
+// Defecto #193: un filtro escrito en minusculas en la direccion filtra bien y ademas queda
+// elegido en su lista, escrito como lo muestra la lista.
+// Cubre: #78 RN-13, D7
+func TestUnFiltroEnMinusculasQuedaElegido(t *testing.T) {
+	registry, project := defectRegistry(t)
+	addDefect(t, project, 1)
+	server := newTestServer(t, registry)
+
+	for direccion, elegido := range map[string]string{
+		"/proyectos/1/defectos?estado=abierto":  `<option value="Abierto" selected>`,
+		"/proyectos/1/defectos?estado=EN+CURSO": `<option value="En curso" selected>`,
+		"/proyectos/1/defectos?severidad=mayor": `<option value="Mayor" selected>`,
+	} {
+		html := get(t, server, direccion).Body.String()
+		if !strings.Contains(html, elegido) {
+			t.Errorf("%s: se esperaba %s en la lista, y no esta en:\n%s", direccion, elegido, between(html, "<main", "</main>"))
+		}
+	}
+}
