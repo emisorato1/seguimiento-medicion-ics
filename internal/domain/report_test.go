@@ -250,3 +250,39 @@ func TestLasHistoriasDeUnSprintAbiertoFiguranEnCurso(t *testing.T) {
 		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", want, lines)
 	}
 }
+
+// Escenario: Los defectos del sprint son los detectados o resueltos en el
+// Cubre: RN-12
+func TestLosDefectosDelSprintSonLosDetectadosOResueltosEnEl(t *testing.T) {
+	project := unProyectoConDefectos(t, 3)
+	for _, detectedIn := range []int{1, 2, 3} {
+		data := unDefecto()
+		data.DetectedIn = detectedIn
+		if _, err := project.AddDefect(data); err != nil {
+			t.Fatalf("no se pudo registrar el defecto detectado en el sprint %d: %v", detectedIn, err)
+		}
+	}
+	if err := project.ResolveDefect(1, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto 1 en el sprint 2: %v", err)
+	}
+	sprint, err := project.Sprint(2)
+	if err != nil {
+		t.Fatalf("no se encontro el sprint 2: %v", err)
+	}
+	metrics, err := project.SprintMetrics(2)
+	if err != nil {
+		t.Fatalf("no se pudieron calcular las metricas del sprint 2: %v", err)
+	}
+
+	report := project.buildSprintReport(sprint, metrics, unDia(2026, 10, 27))
+
+	want := []string{
+		"Defectos detectados: 1",
+		"Defectos resueltos: 1",
+		"#1 — La velocidad sale en cero — Mayor — Resuelto en el sprint 2",
+		"#2 — La velocidad sale en cero — Mayor — Abierto",
+	}
+	if got := seccion(t, report, "Defectos"); !slices.Equal(got, want) {
+		t.Errorf("se esperaba la seccion Defectos\n%q\nsalio\n%q", want, got)
+	}
+}
