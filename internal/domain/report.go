@@ -48,7 +48,7 @@ func (p *Project) buildSprintReport(sprint *Sprint, metrics Metrics, today time.
 			{Heading: "Resumen", Lines: p.sprintSummaryLines(sprint)},
 			{Heading: "Historias", Lines: p.sprintStoryLines(sprint, metrics)},
 			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics)},
-			{Heading: "Defectos"},
+			{Heading: "Defectos", Lines: p.sprintDefectLines(sprint, metrics)},
 		},
 	}
 }
@@ -102,6 +102,28 @@ func pointsText(points int) string {
 		return "sin estimar"
 	}
 	return formatCount(points) + " SP"
+}
+
+// sprintDefectLines escribe la seccion Defectos del reporte de un sprint: los totales de las
+// metricas y una linea por defecto detectado o resuelto en ese sprint, con su severidad, su
+// estado y, si esta resuelto, el sprint en que se resolvio (RN-12). Uno detectado en un
+// sprint y resuelto en otro aparece en los dos.
+func (p *Project) sprintDefectLines(sprint *Sprint, metrics Metrics) []string {
+	lines := []string{
+		"Defectos detectados: " + formatCount(metrics.DefectsDetected),
+		"Defectos resueltos: " + formatCount(metrics.DefectsResolved),
+	}
+	for _, defect := range p.defects {
+		if defect.detectedIn != sprint.number && defect.resolvedIn != sprint.number {
+			continue
+		}
+		state := defect.state.String()
+		if defect.state == DefectResolved {
+			state = fmt.Sprintf("%s en el sprint %d", state, defect.resolvedIn)
+		}
+		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", defect.id, defect.title, defect.severity, state))
+	}
+	return lines
 }
 
 // effortLines escribe la seccion Estimacion y esfuerzo con los numeros de las metricas, sin
