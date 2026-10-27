@@ -212,6 +212,71 @@ func TestDashboardDeUnProyectoConUnSprintEnCurso(t *testing.T) {
 	}
 }
 
+// Escenario: El grafico de velocidad tiene una barra por sprint cerrado
+// Cubre: RN-8, RN-9
+// Cuánto mide cada barra (61,5 %, 100 % y 76,9 %) es de la web, en la tarea 13.
+func TestElGraficoDeVelocidadTieneUnaBarraPorSprintCerrado(t *testing.T) {
+	project := unProyecto(t)
+	sprintMetrics := map[int]Metrics{}
+	for _, velocity := range []int{8, 13, 10} {
+		sprint := dashboardSprint(t, project, true)
+		sprintMetrics[sprint.Number()] = Metrics{Velocity: velocity}
+	}
+
+	dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), sprintMetrics: sprintMetrics})
+
+	want := Chart{Title: "Velocidad", Bars: []Bar{
+		{Label: "Sprint 1", Value: 8, Text: "8"},
+		{Label: "Sprint 2", Value: 13, Text: "13"},
+		{Label: "Sprint 3", Value: 10, Text: "10"},
+	}}
+	if len(dashboard.Charts) != 4 {
+		t.Fatalf("se esperaban 4 graficos, salieron %d: %+v", len(dashboard.Charts), dashboard.Charts)
+	}
+	if got := dashboard.Charts[3]; !reflect.DeepEqual(got, want) {
+		t.Fatalf("se esperaba el grafico de velocidad %+v, salio %+v", want, got)
+	}
+}
+
+// Escenario: Todavia no hay sprints cerrados para el grafico de velocidad
+// Cubre: RN-4, RN-9
+func TestTodaviaNoHaySprintsCerradosParaElGraficoDeVelocidad(t *testing.T) {
+	project := unProyecto(t)
+	open := dashboardSprint(t, project, false)
+	// El sprint abierto trae velocidad, para ver que no aparece como barra.
+	sprintMetrics := map[int]Metrics{open.Number(): {Velocity: 5}}
+
+	dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), sprintMetrics: sprintMetrics})
+
+	if len(dashboard.Charts) != 4 {
+		t.Fatalf("se esperaban 4 graficos, salieron %d: %+v", len(dashboard.Charts), dashboard.Charts)
+	}
+	velocity := dashboard.Charts[3]
+	if velocity.Title != "Velocidad" || len(velocity.Bars) != 0 || velocity.Empty != "Todavía no hay sprints cerrados" {
+		t.Fatalf("se esperaba el grafico de velocidad sin barras y con el aviso, salio %+v", velocity)
+	}
+	if got, _ := figureText(dashboard.Overview, "Velocidad"); got != "sin sprints cerrados" {
+		t.Fatalf("se esperaba la velocidad del estado general como %q, salio %q", "sin sprints cerrados", got)
+	}
+
+	// Un caso límite que el escenario no muestra: con sprints cerrados, una velocidad promedio
+	// de cero se escribe "0" y no el aviso. El aviso depende de que no haya sprints cerrados,
+	// no de que el valor sea cero (RN-4).
+	t.Run("con sprints cerrados y velocidad cero", func(t *testing.T) {
+		project := unProyecto(t)
+		dashboardSprint(t, project, true)
+
+		dashboard := buildDashboard(dashboardSource{sprints: project.Sprints()})
+
+		if got, _ := figureText(dashboard.Overview, "Velocidad"); got != "0" {
+			t.Fatalf("se esperaba la velocidad del estado general como %q, salio %q", "0", got)
+		}
+		if len(dashboard.Charts) != 4 || dashboard.Charts[3].Empty != "" {
+			t.Fatalf("se esperaba el grafico de velocidad sin el aviso, salio %+v", dashboard.Charts)
+		}
+	})
+}
+
 // figureText devuelve el valor escrito del número con ese rótulo, y si está.
 func figureText(figures []Figure, label string) (string, bool) {
 	for _, figure := range figures {
