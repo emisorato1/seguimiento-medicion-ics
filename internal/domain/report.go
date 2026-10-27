@@ -86,9 +86,18 @@ func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
 		if slices.Contains(sprint.completedStories, id) {
 			situation = "completada"
 		}
-		lines = append(lines, fmt.Sprintf("#%d — %s — %s SP — %s", id, story.title, formatCount(sprint.pointsAtClose[id]), situation))
+		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", id, story.title, pointsText(sprint.pointsAtClose[id]), situation))
 	}
 	return lines
+}
+
+// pointsText escribe los story points de una historia, o "sin estimar" si no tiene: la
+// escala no tiene el 0, asi que 0 es siempre una historia sin estimar (RN-9).
+func pointsText(points int) string {
+	if points == 0 {
+		return "sin estimar"
+	}
+	return formatCount(points) + " SP"
 }
 
 // effortLines escribe la seccion Estimacion y esfuerzo con los numeros de las metricas, sin
