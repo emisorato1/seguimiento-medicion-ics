@@ -67,12 +67,45 @@ func buildDashboard(source dashboardSource) Dashboard {
 	if len(source.sprints) == 0 {
 		return Dashboard{}
 	}
+	closed := closedSprints(source.sprints)
 	return Dashboard{
 		HasSprints:    true,
-		Overview:      overview(source.projectMetrics),
+		Overview:      overview(source.projectMetrics, len(closed) > 0),
 		CurrentSprint: currentSprint(source),
-		Charts:        charts(source.projectMetrics),
+		Charts:        append(charts(source.projectMetrics), velocityChart(closed, source.sprintMetrics)),
 	}
+}
+
+// closedSprints devuelve los sprints cerrados, en el orden en que llegan, que es el de su
+// número.
+func closedSprints(sprints []*Sprint) []*Sprint {
+	var closed []*Sprint
+	for _, sprint := range sprints {
+		if sprint.State() == SprintClosed {
+			closed = append(closed, sprint)
+		}
+	}
+	return closed
+}
+
+// velocityChart arma el cuarto gráfico: una barra por sprint cerrado, con la velocidad de sus
+// métricas, del más viejo al más nuevo. El sprint abierto no va, porque su velocidad se
+// registra recién al cerrarlo. Sin sprints cerrados no tiene barras y trae el aviso (RN-9).
+func velocityChart(closed []*Sprint, sprintMetrics map[int]Metrics) Chart {
+	chart := Chart{Title: "Velocidad"}
+	if len(closed) == 0 {
+		chart.Empty = "Todavía no hay sprints cerrados"
+		return chart
+	}
+	for _, sprint := range closed {
+		velocity := sprintMetrics[sprint.Number()].Velocity
+		chart.Bars = append(chart.Bars, Bar{
+			Label: "Sprint " + formatCount(sprint.Number()),
+			Value: float64(velocity),
+			Text:  formatCount(velocity),
+		})
+	}
+	return chart
 }
 
 // charts arma los gráficos del proyecto entero en el orden de la RN-8: story points, horas
@@ -120,8 +153,14 @@ func currentSprint(source dashboardSource) *CurrentSprint {
 }
 
 // overview arma el estado general con las métricas del proyecto entero, en el orden de la
-// RN-4, tal como llegaron: no vuelve a calcular ninguna (RN-2).
-func overview(m Metrics) []Figure {
+// RN-4, tal como llegaron: no vuelve a calcular ninguna (RN-2). Sin sprints cerrados, la
+// velocidad dice «sin sprints cerrados» en lugar de un cero, que haría parecer que el equipo
+// no hizo nada; con sprints cerrados, un cero se escribe como cero (RN-4).
+func overview(m Metrics, hasClosed bool) []Figure {
+	velocity := "sin sprints cerrados"
+	if hasClosed {
+		velocity = formatCount(m.Velocity)
+	}
 	return []Figure{
 		{Label: "Story points planificados", Text: formatCount(m.PlannedPoints)},
 		{Label: "Story points completados", Text: formatCount(m.CompletedPoints)},
@@ -133,6 +172,6 @@ func overview(m Metrics) []Figure {
 		{Label: "Desviación de horas", Text: formatPercent(m.HoursDeviation)},
 		{Label: "Defectos detectados", Text: formatCount(m.DefectsDetected)},
 		{Label: "Defectos resueltos", Text: formatCount(m.DefectsResolved)},
-		{Label: "Velocidad", Text: formatCount(m.Velocity)},
+		{Label: "Velocidad", Text: velocity},
 	}
 }
