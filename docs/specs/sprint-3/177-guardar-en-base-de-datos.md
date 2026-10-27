@@ -356,8 +356,8 @@ escribir ese archivo con lo que ya existe.
 | **D7** Una sola conexión abierta, y el guardado sigue usando el candado de la web | varias conexiones | todos los cambios ya pasan de a uno por el candado (#77); con una conexión no hay bloqueos entre conexiones del propio sistema |
 | **D8** La base por defecto es `datos-ics.db` en la carpeta desde donde se abre, y la opción para elegir otra es la de hoy (`-datos`). Importar y exportar son dos opciones nuevas del arranque. El archivo de la versión anterior se busca con su nombre de siempre, `datos-ics.json`, en la misma carpeta que la base, y se renombra en esa carpeta (RN-14, RN-15) | elegir el formato según la extensión del archivo | el JSON queda solo para importar y exportar (decisión de Emiliano); una sola forma de guardar es más simple de probar y de explicar. Buscarlo junto a la base es donde lo dejaba la versión anterior |
 | **D9** Para probar que la transacción no deja datos a medias, el test hace fallar la base a mitad del guardado con una regla de la propia base (un disparador que rechaza una inserción) | agregarle al código un punto para inyectar fallas | no agrega código que solo usan los tests, y prueba la transacción real |
-| **D11** Para que otro sistema no abra la misma base (RN-19), la base se abre con el bloqueo exclusivo de SQLite (`locking_mode=EXCLUSIVE`) y toma el bloqueo al abrir; el segundo recibe "base bloqueada" y avisa. El sistema operativo suelta el bloqueo cuando el primero se cierra o se corta. **Agregada el 27/10** | un archivo de bloqueo propio; solo documentarlo como límite | el bloqueo de SQLite ya existe y funciona igual en los tres sistemas; un archivo propio queda colgado si el programa se corta |
 | **D10** El orden al importar solo el archivo viejo es: importar y guardar en la base, después renombrar el archivo. Si el renombre falla, se vacía la base otra vez antes de avisar | renombrar primero y después importar | renombrando primero, una importación que falla dejaría el archivo renombrado y no se volvería a intentar (RN-15). Vaciar la base si el renombre falla mantiene la promesa de importar una sola vez |
+| **D11** Para que otro sistema no abra la misma base (RN-19), la base se abre con el bloqueo exclusivo de SQLite (`locking_mode=EXCLUSIVE`) y toma el bloqueo al abrir; el segundo recibe "base bloqueada" y avisa. El sistema operativo suelta el bloqueo cuando el primero se cierra o se corta. **Agregada el 27/10** | un archivo de bloqueo propio; solo documentarlo como límite | el bloqueo de SQLite ya existe y funciona igual en los tres sistemas; un archivo propio queda colgado si el programa se corta |
 
 ### Dependencias y restricciones
 
@@ -401,10 +401,10 @@ implementación en el siguiente.
 | 12 | El archivo de la versión anterior se importa solo con la base vacía, se renombra y se avisa; no vuelve aunque se borre todo; uno inválido no se toca y no abre; un renombre que no se puede hacer no abre | Lo guardado con la versión anterior se importa solo / Lo de la versión anterior no vuelve aunque se borre todo / Si lo de la versión anterior no se puede importar, no se toca | RN-14, RN-15, RN-9 | hecha |
 | 13 | La web guarda en la base: el escenario de la #77 y la #78 de cerrar y volver a abrir, con la base | Los datos siguen al cerrar y volver a abrir | RN-1, RN-3 | hecha |
 | 14 | El manual de usuario y la documentación técnica | — | — | hecha |
-| 15 | Exportar al mismo archivo de la base se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-16 | pendiente |
-| 16 | Importar y exportar a la vez se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-17 | pendiente |
-| 17 | Exportar sin base avisa y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-18 | pendiente |
-| 18 | Una base abierta no la abre otro sistema (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | pendiente |
+| 15 | Exportar al mismo archivo de la base se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-16 | hecha |
+| 16 | Importar y exportar a la vez se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-17 | hecha |
+| 17 | Exportar sin base avisa y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-18 | hecha |
+| 18 | Una base abierta no la abre otro sistema (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | hecha |
 
 Los tests corren en los dos sistemas del CI, Linux y Windows (RN-12): ninguno depende de
 permisos de Unix ni de rutas con `/`.
@@ -439,6 +439,10 @@ el código a propósito, falló, y se volvió atrás).
 | 13. La web, con la base, al cerrar y volver a abrir | `f5b86b3` | — (sin RED) |
 | 14. Manual y documentación técnica | — | `fae70af` |
 | La falla en cualquier tabla y las filas que apuntan a nada (cobertura) | `e3863eb` | — (sin RED) |
+| 15. Exportar al mismo archivo de la base se rechaza (agregada el 27/10) | `088e9d2` | `acd91b6` |
+| 16 y 17. Importar y exportar a la vez, y exportar sin base (agregadas el 27/10) | `f77f4e0` | `498b921` |
+| 18. Una base abierta no la abre otro sistema (agregada el 27/10) | `02e7135` | `f6ec463` |
+| Una ruta con ? se rechaza (hallazgo de la tarea 18) | `ece4fe9` | `20aec82` |
 
 ### Desvíos
 
@@ -464,6 +468,20 @@ el código a propósito, falló, y se volvió atrás).
 - **Cobertura**: `internal/store` queda en 86,8% (antes 96,0%): lo que no se recorre son los
   errores del driver al leer una fila o al ejecutar una consulta, que no se pueden provocar
   sin inyectar fallas. `cmd/web` queda en 88,0%: los errores al exportar. El total es 95,3%.
+
+- **Las reglas RN-16 a RN-19 y las tareas 15 a 18 se agregaron el 27/10 por la prueba
+  exploratoria** (hallazgos QA-1, QA-2, QA-5 y QA-6), después de las puertas: las decidió la
+  manager con el permiso de Emiliano Sorato. Los otros hallazgos de esa prueba van en los
+  defectos #190 a #193 o quedan como límites conocidos.
+- **El nombre de la base va sin el prefijo `file:`** al abrirla con el bloqueo (D11): con ese
+  prefijo el driver lo lee como una URI, y una ruta con `%20` no abría y una con `#` creaba la
+  base en otro lugar. **Una ruta con `?` se rechaza**, porque el driver corta el nombre ahí;
+  Windows ya no permite ese signo en los nombres.
+- **Con el bloqueo, junto a la base queda un archivo `datos-ics.db-journal`**, también después
+  de cortar el programa con `Ctrl+C`. Es del propio SQLite, que lo usa al volver a abrir: la
+  base abre normalmente (se probó con el binario).
+- **Los dos escenarios de la web que cierran y vuelven a abrir** cierran ahora la base anterior
+  antes de abrirla otra vez, porque con el bloqueo una base abierta no se abre dos veces.
 
 ### Verificación
 

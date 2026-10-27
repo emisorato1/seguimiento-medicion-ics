@@ -41,6 +41,9 @@ navegador. No hace falta internet. Para cerrarlo, volvé a la terminal y apretá
   vacía: si ya tiene datos, el sistema avisa y no cambia nada.
 - **Para llevarse todos los datos a un archivo**, como copia o para otra computadora:
   `go run ./cmd/web -exportar copia.json`. Escribe el archivo y termina, sin abrir la página.
+  `-importar` y `-exportar` no se usan juntas, y no se exporta al mismo archivo de la base.
+- **Una base la usa un solo sistema por vez.** Si se abre un segundo sistema con la misma
+  base, avisa que ya está abierta y no arranca: así no se pisan los cambios.
 - **Si la base de datos está dañada**, el sistema avisa y no arranca, y no la toca. Se puede
   arrancar con otra base usando `-datos`, e importar ahí una copia exportada.
 - **Para abrirlo desde un celular** en la misma red, agregá `-red`: el sistema muestra
@@ -203,6 +206,8 @@ cada una.
 | Al abrir, «los datos guardados no se pueden leer» | arrancar con otra base usando `-datos` e importar ahí una copia exportada |
 | Al abrir, «es de una versión más nueva del sistema» | abrir esa base con la versión nueva del sistema |
 | Al importar, «la base ya tiene datos y no se importa sobre datos existentes» | importar en una base nueva, con otro nombre en `-datos` |
+| Al abrir, «la base ya está abierta por otro sistema» | cerrar el otro sistema (`Ctrl+C` en su terminal) y volver a abrir |
+| Al exportar, «no hay datos para exportar» | revisar el nombre de la base en `-datos`: esa base no existe |
 
 ## Desde la consola
 

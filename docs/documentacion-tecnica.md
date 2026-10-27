@@ -201,6 +201,10 @@ y exportar los datos.
   la base y el archivo se pueden leer y no se rompen si se reordenan las constantes.
 - La base guarda en `PRAGMA user_version` el número de la última migración aplicada. Una base
   con un número mayor que el que conoce el sistema no se abre.
+- **Una base la usa un solo sistema por vez**: se abre con el bloqueo exclusivo de SQLite
+  (`locking_mode=EXCLUSIVE`), y otro sistema que la quiera abrir recibe «la base ya está
+  abierta por otro sistema». El sistema operativo suelta el bloqueo al cerrar o si el programa
+  se corta.
 
 ---|---|---|
 | Conversión a JSON y desde JSON | `internal/domain/registry_json.go` | vive en el dominio porque es lo único que puede leer los datos ocultos sin exportarlos |
