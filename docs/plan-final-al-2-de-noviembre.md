@@ -49,7 +49,7 @@ ritmo. Si alguien no puede, se dice ahora y se recorta con tiempo, no el 31 a la
 |---|---|---|---|---|
 | **Sprint 2** | mar 20 → dom 25/10 | 6 | 31 | Sprints, esfuerzo, defectos y consola |
 | **Sprint 3** | lun 26 → mié 28/10 | 3 | 36 | Métricas, dashboard, Planning Poker y reportes |
-| **Sprint 4** | jue 29/10 | 1 | 10 | PDF, informe, manual y presentación |
+| **Sprint 4** | jue 29/10 | 1 | 5 (0 si la #19 se adelanta) | PDF, informe, manual y presentación |
 | **Presentación** | lun 2/11 | — | — | Defensa |
 
 Cada sprint cierra con review y retrospectiva **el último día**, no al día siguiente.
@@ -119,12 +119,12 @@ espere una puerta. Es el cuello de botella que mató al Sprint 1.
 
 Es el sprint más cargado y el que decide la presentación.
 
-### Sprint 4 — jueves 29 de octubre (10 SP)
+### Sprint 4 — jueves 29 de octubre (5 SP, o 0 si la #19 se adelanta al Sprint 3)
 
 | Quién | Historias | SP |
 |---|---|---|
 | Emiliano | #19 Exportar el reporte a PDF (5), si no se adelantó; informe de métricas y pull request de `dev` a `main` con tag | 5 |
-| Maximiliano | #73 Resolver diferencias y acordar (5): **ya terminada**, se adelantó al Sprint 3; manual de usuario | 5 |
+| Maximiliano | #73 Resolver diferencias y acordar (5): **ya terminada**, se adelantó al Sprint 3 y suma a su velocidad; manual de usuario | — |
 | Agustín | documentación técnica | — |
 | Juliana | presentación final | — |
 
