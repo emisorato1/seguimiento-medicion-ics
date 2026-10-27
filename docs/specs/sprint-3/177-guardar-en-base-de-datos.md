@@ -98,6 +98,20 @@ otra, para cargar los datos de demo y para traer lo guardado con la versión ant
     Si la importación falla, el archivo no se toca, la base queda vacía y el sistema avisa
     qué pasó y no abre (RN-9). **Decidido por Emiliano Sorato el 26/10.**
 
+Las cuatro reglas que siguen se **agregaron el 27/10 por la prueba exploratoria** (hallazgos
+QA-1, QA-2, QA-5 y QA-6), después de las puertas: las decidió la manager con el permiso de
+Emiliano Sorato.
+
+16. **[RN-16]** Si se pide exportar al mismo archivo de la base, el sistema debe rechazarlo y
+    avisar, sin tocar la base (QA-2).
+17. **[RN-17]** Si se pide importar y exportar a la vez, el sistema debe rechazarlo y avisar
+    que no se pueden usar juntas, sin hacer ninguna de las dos (QA-5).
+18. **[RN-18]** Si se pide exportar y la base no existe, el sistema debe avisar que no hay
+    datos para exportar, sin crear la base ni el archivo (QA-6).
+19. **[RN-19]** Mientras el sistema tiene una base abierta, otro sistema que intente abrir la
+    misma base debe avisar que ya está abierta por otro sistema y no abrir, sin tocarla (QA-1:
+    si no, cada uno guardaba su copia entera y el último pisaba al otro).
+
 ### Casos límite
 
 - La base nueva, sin ningún proyecto: el sistema abre vacío, como la primera vez.
@@ -138,6 +152,10 @@ otra, para cargar los datos de demo y para traer lo guardado con la versión ant
 | El archivo de la versión anterior, importado solo al abrir, no cumple las reglas | avisa qué dato está mal y no abre; la base queda vacía y el archivo, sin tocar |
 | El archivo de la versión anterior se importó, pero no se puede renombrar (por ejemplo, ya existe un `datos-ics.json.importado`) | avisa en castellano y no abre, y la base queda vacía, para que al resolverlo se importe una sola vez |
 | El archivo para exportar no se puede escribir | avisa en castellano y termina sin escribir nada a medias |
+| Se pide exportar al mismo archivo de la base | avisa y no toca la base (RN-16) |
+| Se pide importar y exportar a la vez | avisa que no se pueden usar juntas y no hace ninguna (RN-17) |
+| Se pide exportar y la base no existe | avisa que no hay datos para exportar y no crea nada (RN-18) |
+| La base ya está abierta por otro sistema | avisa que ya está abierta por otro sistema y no abre, sin tocarla (RN-19) |
 
 ### Criterios de aceptación
 
@@ -252,6 +270,24 @@ Escenario: Una base de una versión más nueva no se abre
   Cuando abro el sistema
   Entonces veo un aviso que dice que no la puede abrir
   Y la base queda como estaba
+
+Esquema del escenario: Lo que no se puede pedir al exportar o importar
+  Dado <situación>
+  Cuando abro el sistema pidiendo <pedido>
+  Entonces veo el aviso <aviso>
+  Y no cambia nada
+
+  Ejemplos:
+    | situación             | pedido                                   | aviso                                     |
+    | una base con datos    | exportar al mismo archivo de la base     | que no se exporta sobre la base           |
+    | una base con datos    | importar un archivo y exportar a la vez  | que no se pueden usar juntas              |
+    | que no hay ninguna base | exportar                               | que no hay datos para exportar            |
+
+Escenario: Una base abierta no la abre otro sistema
+  Dado el sistema abierto con la base "datos-ics.db"
+  Cuando abro otro sistema con la misma base
+  Entonces el segundo avisa que la base ya está abierta por otro sistema y no abre
+  Y cuando cierro el primero, la base se abre normalmente
 ```
 
 ### Decidido antes de la puerta
@@ -320,6 +356,7 @@ escribir ese archivo con lo que ya existe.
 | **D7** Una sola conexión abierta, y el guardado sigue usando el candado de la web | varias conexiones | todos los cambios ya pasan de a uno por el candado (#77); con una conexión no hay bloqueos entre conexiones del propio sistema |
 | **D8** La base por defecto es `datos-ics.db` en la carpeta desde donde se abre, y la opción para elegir otra es la de hoy (`-datos`). Importar y exportar son dos opciones nuevas del arranque. El archivo de la versión anterior se busca con su nombre de siempre, `datos-ics.json`, en la misma carpeta que la base, y se renombra en esa carpeta (RN-14, RN-15) | elegir el formato según la extensión del archivo | el JSON queda solo para importar y exportar (decisión de Emiliano); una sola forma de guardar es más simple de probar y de explicar. Buscarlo junto a la base es donde lo dejaba la versión anterior |
 | **D9** Para probar que la transacción no deja datos a medias, el test hace fallar la base a mitad del guardado con una regla de la propia base (un disparador que rechaza una inserción) | agregarle al código un punto para inyectar fallas | no agrega código que solo usan los tests, y prueba la transacción real |
+| **D11** Para que otro sistema no abra la misma base (RN-19), la base se abre con el bloqueo exclusivo de SQLite (`locking_mode=EXCLUSIVE`) y toma el bloqueo al abrir; el segundo recibe "base bloqueada" y avisa. El sistema operativo suelta el bloqueo cuando el primero se cierra o se corta. **Agregada el 27/10** | un archivo de bloqueo propio; solo documentarlo como límite | el bloqueo de SQLite ya existe y funciona igual en los tres sistemas; un archivo propio queda colgado si el programa se corta |
 | **D10** El orden al importar solo el archivo viejo es: importar y guardar en la base, después renombrar el archivo. Si el renombre falla, se vacía la base otra vez antes de avisar | renombrar primero y después importar | renombrando primero, una importación que falla dejaría el archivo renombrado y no se volvería a intentar (RN-15). Vaciar la base si el renombre falla mantiene la promesa de importar una sola vez |
 
 ### Dependencias y restricciones
@@ -364,6 +401,10 @@ implementación en el siguiente.
 | 12 | El archivo de la versión anterior se importa solo con la base vacía, se renombra y se avisa; no vuelve aunque se borre todo; uno inválido no se toca y no abre; un renombre que no se puede hacer no abre | Lo guardado con la versión anterior se importa solo / Lo de la versión anterior no vuelve aunque se borre todo / Si lo de la versión anterior no se puede importar, no se toca | RN-14, RN-15, RN-9 | hecha |
 | 13 | La web guarda en la base: el escenario de la #77 y la #78 de cerrar y volver a abrir, con la base | Los datos siguen al cerrar y volver a abrir | RN-1, RN-3 | hecha |
 | 14 | El manual de usuario y la documentación técnica | — | — | hecha |
+| 15 | Exportar al mismo archivo de la base se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-16 | pendiente |
+| 16 | Importar y exportar a la vez se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-17 | pendiente |
+| 17 | Exportar sin base avisa y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-18 | pendiente |
+| 18 | Una base abierta no la abre otro sistema (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | pendiente |
 
 Los tests corren en los dos sistemas del CI, Linux y Windows (RN-12): ninguno depende de
 permisos de Unix ni de rutas con `/`.
