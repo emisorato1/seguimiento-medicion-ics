@@ -1,10 +1,12 @@
 // Command web abre el sistema en el navegador: carga los datos guardados, arma la web y
 // muestra la direccion donde se usa (RN-2).
 //
-//	go run ./cmd/web                  en http://127.0.0.1:8080, con datos-ics.json
-//	go run ./cmd/web -puerto 9090     en otro puerto
-//	go run ./cmd/web -datos otro.json con otro archivo de datos
-//	go run ./cmd/web -red             acepta conexiones de la red local, para un celular
+//	go run ./cmd/web                          en http://127.0.0.1:8080, con la base datos-ics.db
+//	go run ./cmd/web -puerto 9090             en otro puerto
+//	go run ./cmd/web -datos otra.db           con otra base
+//	go run ./cmd/web -red                     acepta conexiones de la red local, para un celular
+//	go run ./cmd/web -importar datos.json     trae el archivo a una base vacía y abre
+//	go run ./cmd/web -exportar copia.json     escribe todos los datos en el archivo y termina
 package main
 
 import (

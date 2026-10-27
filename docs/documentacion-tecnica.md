@@ -133,7 +133,7 @@ importantes, en una línea:
 | **Crear y modificar comparten la misma validación** (por ejemplo `prepare` en `project.go`) | las reglas no se pueden desincronizar entre las dos operaciones |
 | **El pedido de modificación distingue "no tocar", "cambiar" y "quitar"** (`ProjectChanges`, `OptionalChange`) | "no mandé el dato" y "quiero borrarlo" no se confunden, y un pedido contradictorio no se puede escribir |
 | **El dominio no lee el reloj del sistema**: la fecha de hoy la recibe de quien llama | los tests no dependen del día en que se corren |
-| **Sin dependencias externas** | el proyecto es chico y se evalúa el código propio |
+| **Una sola dependencia externa, acordada con el equipo**: el driver de SQLite en Go puro (`modernc.org/sqlite`), sin CGO | así compila igual en Windows, Linux y macOS; fuera de eso, solo la biblioteca estándar, porque el proyecto es chico y se evalúa el código propio |
 
 Las decisiones propias de cada funcionalidad están en la Fase 2 (Diseño) de su spec, en
 [docs/specs/](specs/README.md).
@@ -154,7 +154,7 @@ ErrProjectNameRequired = errors.New("el nombre del proyecto es obligatorio")
 | **Se devuelven, nunca `panic`** | un error de validación es parte normal del uso, no una falla del programa |
 | **Se comparan con `errors.Is`**, nunca por el texto | el mensaje se puede corregir (pasó con las tildes, defecto #60) sin romper ningún test ni ninguna interfaz |
 | **El nombre va en inglés y el mensaje en español** | el mensaje lo lee el usuario: la consola y la web lo muestran tal cual |
-| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más. Por ejemplo, cuando el archivo de datos no se puede abrir o escribir, el error dice cuál es el archivo (`internal/store/file.go`); y crear un sprint habiendo otro abierto responde *"ya hay un sprint abierto en el proyecto: el sprint 1"* (`AddSprint` en `sprint.go`) |
+| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más. Por ejemplo, cuando la base ya está abierta por otro sistema, el error dice cuál es la base (`ErrDatabaseInUse` en `internal/store/database.go`); y crear un sprint habiendo otro abierto responde *"ya hay un sprint abierto en el proyecto: el sprint 1"* (`AddSprint` en `sprint.go`) |
 | **Cada error tiene un comentario con la historia y la regla que lo originan** | se puede rastrear de dónde sale sin buscar |
 | **Lo que no es un error no se informa como error** | un backlog vacío o un proyecto sin sprint abierto son situaciones normales y devuelven una lista vacía o un "no hay", no un error |
 
@@ -175,7 +175,7 @@ y exportar los datos.
 | La base | `internal/store/database.go` | guarda y carga el registro, en una transacción |
 | El esquema | `internal/store/migrations/` | las migraciones, numeradas y embebidas en el binario |
 | El puente entre las dos | `internal/store/rows.go` | la forma del archivo, como tipos propios del store |
-| Importar y exportar | `internal/store/exchange.go` | el archivo JSON, y el de la versión anterior |
+| Importar y exportar | `internal/store/exchange.go` y `internal/store/file.go` | el archivo JSON y el de la versión anterior; `file.go` lee y escribe el archivo sin dejarlo a medias |
 
 - **El dominio no sabe de la base.** Al guardar, el registro se convierte con la conversión
   del dominio, se desarma en filas y se escribe **en una transacción** que vacía las tablas y
@@ -205,22 +205,6 @@ y exportar los datos.
   (`locking_mode=EXCLUSIVE`), y otro sistema que la quiera abrir recibe «la base ya está
   abierta por otro sistema». El sistema operativo suelta el bloqueo al cerrar o si el programa
   se corta.
-
----|---|---|
-| Conversión a JSON y desde JSON | `internal/domain/registry_json.go` | vive en el dominio porque es lo único que puede leer los datos ocultos sin exportarlos |
-| Leer y escribir el archivo | `internal/store/file.go` | solo mueve bytes: no valida nada |
-
-- **Al cargar, cada entidad pasa por las mismas validaciones que al crearla**: un archivo
-  dañado o editado a mano no puede meter datos inválidos.
-- **Y además se controla lo que solo un archivo puede traer mal**, porque usando el sistema
-  nunca pasaría. Por ejemplo, en los sprints: números repetidos o que el contador no alcanza,
-  más de un sprint abierto, y en el Sprint Backlog una historia que no existe o que aparece
-  dos veces.
-- **Toda historia que agrega una entidad o un dato lo suma a la conversión**, con su caso en
-  el test de ida y vuelta (`registry_json_test.go`). Si no, el dato se perdería al cerrar sin
-  que ningún test lo note.
-- Las fechas se guardan como `AAAA-MM-DD`, y las prioridades, estados y roles con su nombre:
-  el archivo se puede leer y no se rompe si se reordenan las constantes.
 
 ---
 
@@ -329,6 +313,10 @@ go run ./cmd/web               # la web, en http://127.0.0.1:8080, con la base d
 go run ./cmd/web -exportar copia.json            # todos los datos a un archivo
 go run ./cmd/web -datos otra.db -importar copia.json  # un archivo a una base nueva
 ```
+
+Si en la carpeta de la base está el `datos-ics.json` de la versión anterior y la base está
+vacía, la web lo importa sola al abrir, una sola vez: después lo renombra a
+`datos-ics.json.importado` y lo avisa.
 
 Antes de abrir un pull request: los tests en verde, `gofmt -l .` vacío y `dev` traído a la
 rama. El flujo completo de ramas y pull requests está en [CLAUDE.md](../CLAUDE.md).
