@@ -105,7 +105,7 @@ ProjectRegistry ─── Project ─┬── Member       (integrantes, #4)
 | `Metrics` | #16 | las once métricas de un sprint o del proyecto, calculadas cada vez que se piden | `metrics.go` |
 | `Defect` | #15 | título, descripción, severidad, estado, historia, sprint de detección y de resolución | `defect.go` |
 | `VotingRound` | #13, #73 | historia, número de ronda, participantes fijados al abrirla, votos ocultos hasta revelar, diferencias y estimación acordada | `voting_round.go`, `voting_round_agreement.go` |
-| `Report` | #18, #19 | — | *(en construcción)* |
+| `Report` | #18, #19 | título, día de generación, alcance (proyecto o sprint), las métricas de la #16 y cuatro secciones con el texto ya escrito: Resumen, Historias, Estimación y esfuerzo, Defectos. Se arma cada vez que se pide y no se guarda; la exportación a PDF (#19) está en construcción | `report.go`, `format.go` |
 
 **Un solo sprint abierto por proyecto.** El sprint nace abierto y se cierra con la #10: no
 hay un estado "planificado". El Sprint Backlog guarda solo los números de las historias, y

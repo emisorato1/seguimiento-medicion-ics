@@ -3,7 +3,7 @@
 - **Historia:** #18
 - **Sprint:** 3
 - **Responsable:** Agustín Salinas
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #16 (las métricas), #8 (buscar un sprint por su número), #10 (qué se
   completó en cada sprint) y #15 (los defectos que se listan), todas en `dev`. La regla de
@@ -382,20 +382,20 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Armar el reporte de un sprint: título, alcance, día de generación y las cuatro secciones en orden | Generar el reporte de un sprint cerrado | RN-1, RN-3, RN-4 | pendiente |
-| 2 | La sección Estimación y esfuerzo copia los números de las métricas recibidas | Los numeros del reporte son los de las metricas | RN-2, RN-11 | pendiente |
-| 3 | Formato de horas, desviación y porcentajes | Formato de los numeros | RN-14 | pendiente |
-| 4 | Resumen de un sprint, cerrado o abierto con su aviso | El resumen dice en que estado esta el sprint | RN-6, RN-7 | pendiente |
-| 5 | Historias del sprint: totales y una línea por historia, con la situación del cierre | Las historias del sprint figuran segun el cierre de ese sprint | RN-9, RN-10 | pendiente |
-| 6 | Una historia sin estimar figura como "sin estimar" | Una historia sin estimar figura como sin estimar | RN-9 | pendiente |
-| 7 | Defectos del sprint: los detectados o resueltos en él, con su severidad y su estado | Los defectos del sprint son los detectados o resueltos en el | RN-12 | pendiente |
-| 8 | Una sección sin nada que listar lo dice, con sus totales en cero | Una seccion sin datos lo dice | RN-5 | pendiente |
-| 9 | Reporte del proyecto: título, resumen, todas las historias con su estado, todos los defectos y velocidad promedio | Generar el reporte del proyecto entero | RN-1, RN-3, RN-8, RN-10, RN-11, RN-12 | pendiente |
-| 10 | Un proyecto sin fecha de fin lo dice en el resumen, y sin sprints cerrados la velocidad promedio lo dice | Un proyecto sin fecha de fin / Un proyecto sin sprints cerrados no muestra una velocidad de cero | RN-8, RN-11 | pendiente |
-| 11 | Historias y defectos ordenados por identificador | Las historias y los defectos van ordenados por identificador | RN-13 | pendiente |
-| 12 | Las operaciones del contrato piden las métricas a la #16: los números coinciden y ningún dato cambia | Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las metricas | RN-2, RN-15 | pendiente |
-| 13 | Un sprint inexistente lo informa el reporte; un proyecto inexistente, el registro | Pedir un reporte de algo que no existe | RN-16 | pendiente |
-| 14 | Las historias de un sprint abierto figuran con sus puntos actuales y "en curso" | Las historias de un sprint abierto figuran en curso | RN-10 | pendiente |
+| 1 | Armar el reporte de un sprint: título, alcance, día de generación y las cuatro secciones en orden | Generar el reporte de un sprint cerrado | RN-1, RN-3, RN-4 | hecha |
+| 2 | La sección Estimación y esfuerzo copia los números de las métricas recibidas | Los numeros del reporte son los de las metricas | RN-2, RN-11 | hecha |
+| 3 | Formato de horas, desviación y porcentajes | Formato de los numeros | RN-14 | hecha |
+| 4 | Resumen de un sprint, cerrado o abierto con su aviso | El resumen dice en que estado esta el sprint | RN-6, RN-7 | hecha |
+| 5 | Historias del sprint: totales y una línea por historia, con la situación del cierre | Las historias del sprint figuran segun el cierre de ese sprint | RN-9, RN-10 | hecha |
+| 6 | Una historia sin estimar figura como "sin estimar" | Una historia sin estimar figura como sin estimar | RN-9 | hecha |
+| 7 | Defectos del sprint: los detectados o resueltos en él, con su severidad y su estado | Los defectos del sprint son los detectados o resueltos en el | RN-12 | hecha |
+| 8 | Una sección sin nada que listar lo dice, con sus totales en cero | Una seccion sin datos lo dice | RN-5 | hecha |
+| 9 | Reporte del proyecto: título, resumen, todas las historias con su estado, todos los defectos y velocidad promedio | Generar el reporte del proyecto entero | RN-1, RN-3, RN-8, RN-10, RN-11, RN-12 | hecha |
+| 10 | Un proyecto sin fecha de fin lo dice en el resumen, y sin sprints cerrados la velocidad promedio lo dice | Un proyecto sin fecha de fin / Un proyecto sin sprints cerrados no muestra una velocidad de cero | RN-8, RN-11 | hecha |
+| 11 | Historias y defectos ordenados por identificador | Las historias y los defectos van ordenados por identificador | RN-13 | hecha |
+| 12 | Las operaciones del contrato piden las métricas a la #16: los números coinciden y ningún dato cambia | Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las metricas | RN-2, RN-15 | hecha |
+| 13 | Un sprint inexistente lo informa el reporte; un proyecto inexistente, el registro | Pedir un reporte de algo que no existe | RN-16 | hecha |
+| 14 | Las historias de un sprint abierto figuran con sus puntos actuales y "en curso" | Las historias de un sprint abierto figuran en curso | RN-10 | hecha |
 
 ### Por qué este orden
 
@@ -447,7 +447,53 @@ Los catorce escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.** Las
+tareas siguieron el orden de la Fase 3, salvo la 14, que se sumó durante la implementación y
+se hizo después de la 6 (ver abajo).
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `c6723df` | `74ee04d` |
+| 2 | `7ac4da6` | `ec5f0d8` |
+| 3 | `d0ed15b` | `f56067d` |
+| 4 | `bdf773f` | `26b23ff` |
+| 5 | `1771942` | `f92d2de` |
+| 6 | `56f50dd` | `e9e8980` |
+| 14 | `6bf634c` | `e8739ff` |
+| 7 | `0a9ac30` | `abf261b` |
+| 8 | `a955296` | `8c31622` |
+| 9 | `6387269` | `41f9ffd` |
+| 10 | `d747ae2` | `4b5d2eb` |
+| 11 | `745dff2` | — (sin RED, ver abajo) |
+| 12 | `9b8b67e` | `d989b1b` |
+| 13 | `61299e0` | — (sin RED) |
+
+La cobertura del paquete `domain` quedó en 100%.
+
+### Desvíos respecto de la spec
+
+- **Se sumó la tarea 14: las historias de un sprint abierto.** Al escribir la tarea 6 se vio
+  que la RN-10 solo decía qué pasa con un sprint cerrado, y un sprint abierto no tiene
+  registro del cierre del que sacar los puntos ni la situación. Se decidió que cada historia
+  figure con sus puntos actuales y "en curso"; se agregó a la RN-10, con su escenario, en
+  `4f04785`, antes del código, y se avisó en el PR #181.
+- **Dos tareas sin RED.** Pasaron en verde al escribirlas:
+  - **la 11**, porque el reporte recorre el backlog y los defectos tal como se guardan, que
+    es por identificador, y no el backlog priorizado de la #7;
+  - **la 13**, porque la operación de la tarea 12 ya devolvía el error de sprint no
+    encontrado de las métricas.
+
+  Cada commit lleva "sin RED" en el asunto. **En las dos se comprobó que el test sirve**: se
+  rompió el código a propósito un momento (recorriendo el backlog priorizado, los defectos
+  al revés, y devolviendo el reporte sin el error), el test falló y se volvió atrás. Las
+  salidas están en los commits.
+- **Las piezas compartidas salieron en la tarea 9**, al llegar el reporte del proyecto: los
+  totales de historias, la línea de cada historia, la sección de defectos, la de esfuerzo y
+  el aviso de sección vacía. Es lo que pedía la Fase 2; hasta la 8 el reporte del sprint las
+  tenía adentro. En la 10, la sección de esfuerzo pasó a recibir la línea de la velocidad
+  entera, porque la del proyecto puede no tener número ("sin sprints cerrados").
+- **`SprintReport` pide primero las métricas a la #16** y después el sprint: las métricas ya
+  informan el sprint no encontrado, así que el error sale de un solo lugar.
 
 ## Trazabilidad
 
