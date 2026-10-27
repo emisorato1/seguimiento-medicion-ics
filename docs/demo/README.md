@@ -78,7 +78,7 @@ el Sprint 3, y acá figuran Pendientes.
 
 | Qué | Por qué |
 |---|---|
-| **El defecto #156** | se detectó en el Sprint 3, después de esta foto |
+| **Los defectos #156 y #172** | se detectaron en el Sprint 3, después de esta foto |
 | **Rondas de Planning Poker de los Sprints 1 y 2** | no hay votos registrados: el Sprint 1 se estimó por afinidad y el Sprint 2 mantuvo esas estimaciones (actas de planning) |
 | **El Sprint 3** | estaba en curso al momento de esta foto |
 | **El reparto de horas por persona del Sprint 2** | la review lo tiene pendiente; las horas van a nombre del responsable de cada historia |

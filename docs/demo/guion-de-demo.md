@@ -70,12 +70,12 @@ se completan cuando esas historias entren a `dev`.
     y la #4: 6 story points, que fue nuestra velocidad. Las otras volvieron al backlog y se
     terminaron en el Sprint 2."
 - **Crear el Sprint 3** como figura en su acta: *Nuevo sprint*, con el goal «Que el sistema
-  mida el proyecto y lo muestre: métricas, dashboard y reporte.», del 26/10 al 30/10.
+  mida el proyecto y lo muestre: métricas, dashboard y reporte.», del 26/10 al 28/10.
   Asignarle la #10, la #16, la #17, la #11, la #18 y la #78.
   ([13](capturas/13-sprint-3-abierto.png))
 - **Cerrar el sprint:** *Cerrar el sprint* propone la fecha de hoy y una casilla por historia.
   ([14](capturas/14-cerrar-sprint.png))
-  - Como el Sprint 3 terminó el 30/10, se marcan **solo las historias que de verdad se
+  - Como el Sprint 3 terminó el 28/10, se marcan **solo las historias que de verdad se
     terminaron** (mirar el tablero antes de presentar) y se confirma.
   - **Contar:** "Antes de cerrar, el sistema dice cuáles quedan completadas y cuáles vuelven
     al Product Backlog. Un sprint cerrado no se puede volver a abrir."
