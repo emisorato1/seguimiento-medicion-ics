@@ -525,3 +525,46 @@ func TestImportarYExportarJuntosOSinBase(t *testing.T) {
 		}
 	})
 }
+
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar (un archivo .json
+// como base). Con la #177, -datos es la base: quien lo usa como antes, con el archivo de
+// datos, recibe el aviso de que ese archivo se trae con -importar.
+// Cubre: #177 RN-20
+func TestUnArchivoJSONComoBaseSeRechaza(t *testing.T) {
+	aviso := "-datos es la base de datos (.db); para traer un archivo .json usá -importar"
+	casos := []struct {
+		nombre string
+		existe bool
+	}{
+		{"demo.json", true},
+		{"nuevo.json", false},
+		{"DEMO.JSON", false},
+	}
+	for _, c := range casos {
+		t.Run(c.nombre, func(t *testing.T) {
+			dir := t.TempDir()
+			ruta := filepath.Join(dir, c.nombre)
+			contenido := []byte(`{"next_id": 1, "projects": []}`)
+			if c.existe {
+				if err := os.WriteFile(ruta, contenido, 0o644); err != nil {
+					t.Fatalf("no se pudo preparar el archivo: %v", err)
+				}
+			}
+
+			var out, errOut bytes.Buffer
+			code := run([]string{"-datos", ruta, "-puerto", "0"}, &out, &errOut, noServe(t))
+
+			if code != 2 || !strings.Contains(errOut.String(), aviso) {
+				t.Errorf("se esperaba el codigo 2 y el aviso, salio %d:\n%s", code, errOut.String())
+			}
+			entries, _ := os.ReadDir(dir)
+			if c.existe {
+				if despues, _ := os.ReadFile(ruta); len(entries) != 1 || !bytes.Equal(despues, contenido) {
+					t.Errorf("el archivo tenia que quedar como estaba y solo, y en la carpeta hay %d archivos", len(entries))
+				}
+			} else if len(entries) != 0 {
+				t.Errorf("no tenia que crear nada, y en la carpeta hay %d archivos", len(entries))
+			}
+		})
+	}
+}
