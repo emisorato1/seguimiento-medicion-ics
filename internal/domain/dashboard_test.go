@@ -304,6 +304,52 @@ func TestAbrirElDashboardNoCambiaElProyecto(t *testing.T) {
 	}
 }
 
+// Tarea 8: el dashboard se pide al proyecto y usa las métricas que calcula la #16
+// Cubre: RN-2
+// A diferencia de los demás, este test arma el proyecto con las operaciones de verdad: los
+// números esperados son los que da la #16 con estos datos.
+func TestElDashboardSePideAlProyectoYUsaLasMetricasDeLa16(t *testing.T) {
+	project := unProyecto(t)
+	historiasEstimadas(t, project, 3, 5)
+	unSprint(t, project)
+	if err := project.AssignStory(1); err != nil {
+		t.Fatalf("no se pudo asignar la historia 1: %v", err)
+	}
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1: %v", err)
+	}
+	unSprint(t, project)
+	if err := project.AssignStory(2); err != nil {
+		t.Fatalf("no se pudo asignar la historia 2: %v", err)
+	}
+
+	dashboard := project.Dashboard()
+
+	// Del proyecto entero: 8 planificados, 3 completados en el sprint 1, y la velocidad es el
+	// promedio de un único sprint cerrado.
+	for label, want := range map[string]string{
+		"Story points planificados": "8",
+		"Story points completados":  "3",
+		"Velocidad":                 "3",
+	} {
+		if got, _ := figureText(dashboard.Overview, label); got != want {
+			t.Errorf("se esperaba %q en %q, salio %q", want, label, got)
+		}
+	}
+	// Del sprint abierto: los 5 puntos de la historia 2.
+	if dashboard.CurrentSprint == nil || dashboard.CurrentSprint.Number != 2 {
+		t.Fatalf("se esperaba el sprint 2 en curso, salio %+v", dashboard.CurrentSprint)
+	}
+	if got, _ := figureText(dashboard.CurrentSprint.Figures, "Story points planificados"); got != "5" {
+		t.Errorf("se esperaban 5 story points planificados en el sprint en curso, salio %q", got)
+	}
+	// Del sprint cerrado: su velocidad, en el gráfico.
+	wantVelocity := Chart{Title: "Velocidad", Bars: []Bar{{Label: "Sprint 1", Value: 3, Text: "3"}}}
+	if len(dashboard.Charts) != 4 || !reflect.DeepEqual(dashboard.Charts[3], wantVelocity) {
+		t.Errorf("se esperaba el grafico de velocidad %+v, salio %+v", wantVelocity, dashboard.Charts)
+	}
+}
+
 // backlogSnapshot copia lo que se ve de cada historia del backlog: su número, su estado y sus
 // story points. Es una copia, así que sirve para comparar antes y después.
 func backlogSnapshot(project *Project) []string {
