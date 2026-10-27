@@ -7,5 +7,11 @@
   <dt>Fin</dt>
   <dd>{{if .HasEnd}}{{fecha .End}}{{else}}<span class="sin-dato">sin fecha de fin</span>{{end}}</dd>
 </dl>
+{{if not .Dashboard.HasSprints}}
+<div class="vacio">
+  <p>Todavía no hay datos para mostrar.</p>
+  <a class="boton" href="/proyectos/{{.ID}}/sprints/nuevo">Crear el primer sprint</a>
+</div>
+{{end}}
 {{end}}
 {{end}}
