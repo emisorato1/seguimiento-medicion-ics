@@ -207,7 +207,9 @@ cada una.
 | Al abrir, «es de una versión más nueva del sistema» | abrir esa base con la versión nueva del sistema |
 | Al importar, «la base ya tiene datos y no se importa sobre datos existentes» | importar en una base nueva, con otro nombre en `-datos` |
 | Al abrir, «la base ya está abierta por otro sistema» | cerrar el otro sistema (`Ctrl+C` en su terminal) y volver a abrir |
+| Al abrir, «-datos es la base de datos (.db); para traer un archivo .json usá -importar» | en `-datos` va la base, que termina en `.db`; el archivo `.json` se trae con `-importar` |
 | Al exportar, «no hay datos para exportar» | revisar el nombre de la base en `-datos`: esa base no existe |
+| Al exportar, «ya está abierta por la web. Cerrá la web y volvé a exportar.» | cerrar la web (`Ctrl+C` en su terminal) y volver a exportar |
 
 ## Desde la consola
 

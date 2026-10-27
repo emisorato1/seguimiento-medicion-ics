@@ -50,14 +50,16 @@ go run ./cmd/web              # abrir el sistema en el navegador
 **http://127.0.0.1:8080**. Funciona sin internet: las páginas y los estilos van adentro del
 programa.
 
-Los datos se guardan solos después de cada operación, en `datos-ics.json`, en la carpeta
-desde donde se corre el comando. Al volver a abrirlo está todo como quedó. Ese archivo no se
-versiona; borrarlo es empezar de cero.
+Los datos se guardan solos después de cada operación, en la base de datos `datos-ics.db`, en
+la carpeta desde donde se corre el comando. Al volver a abrirlo está todo como quedó. Esa base
+no se versiona; borrarla es empezar de cero.
 
 | Opción | Para qué |
 |---|---|
 | `-puerto 9090` | usar otro puerto si el 8080 está ocupado |
-| `-datos otro.json` | usar otro archivo de datos, por ejemplo uno para la demo |
+| `-datos otra.db` | usar otra base, por ejemplo una para la demo. La base termina en `.db`: un archivo `.json` se trae con `-importar` |
+| `-importar datos.json` | traer los datos de un archivo a una base vacía y abrir |
+| `-exportar copia.json` | escribir todos los datos en un archivo y terminar, sin abrir la web |
 | `-red` | aceptar conexiones de otras computadoras de la red, para abrirlo desde un celular. No hay usuarios ni contraseñas: usarlo solo en una red de confianza |
 
 ### Qué funciona hoy

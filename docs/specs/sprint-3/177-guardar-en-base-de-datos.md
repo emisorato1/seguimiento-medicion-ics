@@ -421,8 +421,8 @@ implementación en el siguiente.
 | 16 | Importar y exportar a la vez se rechaza (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-17 | hecha |
 | 17 | Exportar sin base avisa y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-18 | hecha |
 | 18 | Una base abierta no la abre otro sistema (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | hecha |
-| 19 | Abrir con un archivo `.json` como base avisa que se use importar y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-20 | pendiente |
-| 20 | Exportar con la web abierta avisa que se cierre la web y se vuelva a exportar; el manual lo suma (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | pendiente |
+| 19 | Abrir con un archivo `.json` como base avisa que se use importar y no crea nada (agregada el 27/10) | Lo que no se puede pedir al exportar o importar | RN-20 | hecha |
+| 20 | Exportar con la web abierta avisa que se cierre la web y se vuelva a exportar; el manual lo suma (agregada el 27/10) | Una base abierta no la abre otro sistema | RN-19 | hecha |
 
 Los tests corren en los dos sistemas del CI, Linux y Windows (RN-12): ninguno depende de
 permisos de Unix ni de rutas con `/`.
@@ -461,6 +461,8 @@ el código a propósito, falló, y se volvió atrás).
 | 16 y 17. Importar y exportar a la vez, y exportar sin base (agregadas el 27/10) | `f77f4e0` | `498b921` |
 | 18. Una base abierta no la abre otro sistema (agregada el 27/10) | `02e7135` | `f6ec463` |
 | Una ruta con ? se rechaza (hallazgo de la tarea 18) | `ece4fe9` | `20aec82` |
+| 19. Abrir con un archivo `.json` como base avisa que se use importar (agregada el 27/10) | `dd4dc73` | `82fcd5f` |
+| 20. Exportar con la web abierta avisa que se cierre la web (agregada el 27/10) | `0c662ab` | `cd2ee78` |
 
 ### Desvíos
 
@@ -500,6 +502,13 @@ el código a propósito, falló, y se volvió atrás).
   base abre normalmente (se probó con el binario).
 - **Los dos escenarios de la web que cierran y vuelven a abrir** cierran ahora la base anterior
   antes de abrirla otra vez, porque con el bloqueo una base abierta no se abre dos veces.
+- **Las tareas 19 y 20 salen de la revisión de Maximiliano Eula en el #186** (27/10): la 19
+  es la RN-20, y la 20, su observación sobre el aviso al exportar. Con la RN-20, el test de la
+  #77 que probaba `-datos` con `otros.json` pasa a `otros.db`.
+- **El `README.md` decía `-datos otro.json`** y que los datos se guardaban en `datos-ics.json`:
+  se corrigió con la base y las opciones nuevas. Y **`.gitignore` suma la base**
+  (`datos-ics.db` y su `-journal`) y el `datos-ics.json.importado`, para que no se versionen
+  si alguien abre la web en la carpeta del repositorio.
 
 ### Verificación
 
@@ -511,6 +520,9 @@ el código a propósito, falló, y se volvió atrás).
   Firefox 153 y WebKit 26.5: 135 controles bien, entre ellos los datos después de matar el
   proceso y volver a abrirlo. Falló solo el control del puerto 8080 ocupado, porque ese día
   Docker no estaba corriendo.
+- **Con el binario, las tareas 19 y 20** (27/10): `-datos demo.json` y `-datos nuevo.json`
+  avisan con el código 2 y la carpeta queda igual; `-exportar` con la web abierta sobre la
+  misma base avisa que se cierre la web, con el código 1, y no escribe el archivo.
 - **Windows**: lo prueba el CI en el pull request.
 
 ## Trazabilidad
