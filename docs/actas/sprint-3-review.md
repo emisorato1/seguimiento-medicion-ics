@@ -27,7 +27,7 @@ a `dev`.
 | 16 | Calcular las métricas | 8 | **Hecho** | Emiliano Sorato (con asistencia de IA) | PRs #81, #140 y #151 |
 | 11 | Consultar sprints anteriores | 2 | **Hecho** | Agustín Salinas | PR #143, 26/10 |
 | 17 | Mostrar el dashboard | 8 | En progreso | Juliana Bustos | rama `historia-17-dashboard`, sin PR al 27/10 |
-| 18 | Generar el reporte | 5 | Especificación SDD | Agustín Salinas | spec en el PR #181, con las puertas pedidas |
+| 18 | Generar el reporte | 5 | En progreso | Agustín Salinas | spec en el PR #181, con las tres puertas aprobadas el 27/10 por Emiliano Sorato. [pendiente: el cierre, cuando entre a `dev`] |
 | 78 | Operar todo desde la web | 13 | En progreso | Emiliano Sorato (con asistencia de IA) | PRs #149, #163, #165 y #170 en `dev`; 17 de 22 escenarios con test |
 
 - **Story points comprometidos:** 41. Son los 28 de la planning más los 13 de la #78, que se

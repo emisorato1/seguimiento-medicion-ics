@@ -28,7 +28,7 @@ final, con la exportación del informe del proyecto a PDF.
 
 | # | Qué | SP | Responsable | Estado al 27/10 |
 |---|---|---|---|---|
-| 19 | Exportar el reporte a PDF | 5 | Emiliano Sorato (con asistencia de IA) | PR #184 abierto; depende de la #18. [pendiente: si se adelantó al Sprint 3, sale de esta tabla] |
+| 19 | Exportar el reporte a PDF | 5 | Emiliano Sorato (con asistencia de IA) | las tareas 1 a 12 entraron a `dev` el 27/10 (PR #184); lo que falta depende de la #18. [pendiente: si se adelantó al Sprint 3, sale de esta tabla] |
 | — | Informe de métricas y cobertura, y el informe final en PDF | — | Emiliano Sorato | `docs/informe-de-metricas.md` en `dev`; el informe final en una rama |
 | — | Manual breve de usuario | — | Maximiliano Eula | `docs/manual-de-usuario.md` en `dev` |
 | — | Documentación técnica | — | Agustín Salinas | `docs/documentacion-tecnica.md` en `dev`; falta la persistencia en SQLite |
