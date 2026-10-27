@@ -171,8 +171,8 @@ Plan de la cátedra, con las fechas que fijó el equipo el 20/10 para llegar al 
 | 0 | preparación: repositorio, tablero, backlog inicial | cerrado | — |
 | 1 | MVP | cerrado | 16 (velocidad 6) |
 | 2 | interfaz usable: sprints, esfuerzo, defectos y consola | mar 20 → dom 25/10 | 31 (26 + la #6, ya terminada) |
-| 3 | funcionalidad y calidad: métricas, dashboard, Planning Poker y reportes | lun 26 → vie 30/10 | 36 |
-| 4 | cierre, informe en PDF y review final | sáb 31/10 → dom 1/11 | 10 |
+| 3 | funcionalidad y calidad: métricas, dashboard, Planning Poker y reportes | lun 26 → mié 28/10 | 41 |
+| 4 | cierre, informe en PDF y review final | jue 29/10 | 5 (la #19, si no se adelanta) |
 
 La presentación es el **lunes 2 de noviembre**. Cada sprint cierra con review y
 retrospectiva **el último día**, no al día siguiente.
