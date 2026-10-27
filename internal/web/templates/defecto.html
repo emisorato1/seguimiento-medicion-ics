@@ -21,9 +21,11 @@
   <dd>{{if .ResolvedIn}}Sprint {{.ResolvedIn}}{{else}}<span class="sin-dato">sin resolver</span>{{end}}</dd>
 </dl>
 {{end}}
+{{/* El rechazo que no es de ningun campo va antes de los formularios: con una pagina vieja
+   de un defecto ya resuelto, los formularios no estan y el mensaje igual se ve (#190). */}}
+{{template "error-formulario" .Form.General}}
 {{if not .Resolved}}
 <h2>Cambiar el estado</h2>
-{{template "error-formulario" .Form.General}}
 <form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/defectos/{{.Defect.ID}}/estado" novalidate>
   {{with .Form.Field "estado"}}
   <div class="campo">

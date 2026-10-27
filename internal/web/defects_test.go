@@ -2,6 +2,7 @@ package web
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"slices"
 	"strings"
@@ -264,5 +265,46 @@ func TestResolverSinElegirElSprint(t *testing.T) {
 	html := res.Body.String()
 	if !strings.Contains(html, `id="sprint-error">`+errInvalidSprint.Error()) || strings.Contains(html, "¿Resolver") {
 		t.Errorf("se esperaba el error junto al sprint y ninguna pregunta para confirmar:\n%s", html)
+	}
+}
+
+// Defecto #190 (QA-3): con una pagina vieja de un defecto que ya se resolvio en otra pestaña,
+// cambiarle el estado o resolverlo otra vez muestra el mensaje del nucleo, aunque la pagina ya
+// no tenga esos formularios.
+// Cubre: #78 RN-2; #15 RN-14
+func TestUnDefectoYaResueltoDesdeUnaPaginaViejaMuestraElMensaje(t *testing.T) {
+	registry, project := defectRegistry(t)
+	addDefect(t, project, 1)
+	if err := project.ResolveDefect(1, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto: %v", err)
+	}
+	navegador := newBrowser(t, newTestServer(t, registry))
+
+	for pedido, res := range map[string]*httptest.ResponseRecorder{
+		"cambiar el estado": navegador.post("/proyectos/1/defectos/1/estado", url.Values{"estado": {"En curso"}}),
+		"resolver":          navegador.post("/proyectos/1/defectos/1/resolver", url.Values{"sprint": {"2"}}),
+	} {
+		if res.Code != http.StatusUnprocessableEntity || !strings.Contains(res.Body.String(), domain.ErrDefectAlreadyResolved.Error()) {
+			t.Errorf("%s: se esperaba el estado %d y el mensaje %q, salio %d:\n%s", pedido, http.StatusUnprocessableEntity, domain.ErrDefectAlreadyResolved, res.Code, res.Body.String())
+		}
+	}
+}
+
+// Defecto #190 (QA-10): pedir resolver en un sprint que no existe avisa antes de preguntar,
+// junto al sprint, en la pagina del defecto.
+// Cubre: #78 RN-2, RN-9; #15 RN-12
+func TestResolverEnUnSprintQueNoExisteAvisaAntesDePreguntar(t *testing.T) {
+	registry, project := defectRegistry(t)
+	addDefect(t, project, 1)
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/defectos/1/resolver?sprint=99")
+
+	html := res.Body.String()
+	if res.Code != http.StatusUnprocessableEntity || strings.Contains(html, "¿Resolver") {
+		t.Errorf("se esperaba el estado %d y ninguna pregunta para confirmar, salio %d:\n%s", http.StatusUnprocessableEntity, res.Code, html)
+	}
+	if !strings.Contains(html, `id="sprint-error">`+domain.ErrSprintNotFound.Error()) {
+		t.Errorf("se esperaba el mensaje %q junto al sprint:\n%s", domain.ErrSprintNotFound, html)
 	}
 }

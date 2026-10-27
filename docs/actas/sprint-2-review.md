@@ -54,6 +54,21 @@ siguiente cuenta en el siguiente.
 La #77 no suma story points ni horas mientras el equipo no la estime (ver el
 [anexo de la planning](sprint-2-planning.md#historias-nuevas-la-interfaz-web)).
 
+**La #77 estimada después del cierre (26/10).** En la
+[planning del Sprint 3](sprint-3-planning.md#planning-poker-de-la-77-y-la-78) el equipo la estimó
+en **13 story points**, por consenso en la ronda 2. Ya estimada, suma sus puntos al sprint donde
+se terminó, que es este:
+
+- **Story points del sprint:** 44, todos terminados: los 31 comprometidos más los 13 de la #77.
+- **Velocidad del Sprint 2:** **52 = 44 + 8 adelantados** (la #13).
+- **Historias completadas:** 10 de 10 (100%).
+- **Horas por story point completado:** 1,0 (53,25 h ÷ 52 SP). Sin las cuatro hechas con
+  asistencia de IA (la #5, la #14, la #15 y la #77), sigue en 1,8.
+- **La desviación no cambia (−52%):** la #77 no tiene horas estimadas con qué comparar sus 1,5 h
+  reales.
+
+Los números de arriba son los del cierre, como se escribieron el 24/10.
+
 Las historias no terminadas al cierre **vuelven al Product Backlog**, no se arrastran en
 silencio.
 
