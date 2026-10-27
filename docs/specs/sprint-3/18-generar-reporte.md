@@ -75,8 +75,9 @@ encabezado y sus líneas:
    —o "sin estimar"— y su situación.
 10. **[RN-10]** En el reporte de un sprint, el sistema debe listar las historias comprometidas
     en él, con la situación "completada" o "no completada" según lo registrado al cerrarlo, y
-    no según su estado actual. En el del proyecto, debe listar todas las historias del
-    backlog con su estado actual.
+    no según su estado actual. Mientras el sprint esté abierto, como todavía no tiene cierre,
+    cada historia figura con sus story points actuales y la situación "en curso". En el del
+    proyecto, debe listar todas las historias del backlog con su estado actual.
 11. **[RN-11]** La sección Estimación y esfuerzo debe tener los story points planificados y
     completados, la velocidad —"velocidad promedio" en el reporte del proyecto—, las horas
     estimadas, las horas reales y la desviación. Mientras el proyecto no tenga ningún sprint
@@ -192,6 +193,11 @@ Escenario: Una historia sin estimar figura como sin estimar
   Dado el sprint 1 con la historia 3 comprometida y sin story points
   Cuando genero el reporte del sprint 1
   Entonces la linea de la historia 3 dice "sin estimar" en lugar de los puntos
+
+Escenario: Las historias de un sprint abierto figuran en curso
+  Dado el sprint 1 abierto con la historia 1 estimada en 3 story points
+  Cuando genero el reporte del sprint 1
+  Entonces la linea de la historia 1 dice "3 SP" y "en curso"
 
 Esquema del escenario: Una seccion sin datos lo dice
   Dado el sprint 1 sin <que>
@@ -389,6 +395,7 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 | 11 | Historias y defectos ordenados por identificador | Las historias y los defectos van ordenados por identificador | RN-13 | pendiente |
 | 12 | Las operaciones del contrato piden las métricas a la #16: los números coinciden y ningún dato cambia | Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las metricas | RN-2, RN-15 | pendiente |
 | 13 | Un sprint inexistente lo informa el reporte; un proyecto inexistente, el registro | Pedir un reporte de algo que no existe | RN-16 | pendiente |
+| 14 | Las historias de un sprint abierto figuran con sus puntos actuales y "en curso" | Las historias de un sprint abierto figuran en curso | RN-10 | pendiente |
 
 ### Por qué este orden
 
@@ -404,7 +411,7 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 ### Cobertura
 
 Las dieciséis reglas quedan cubiertas: RN-1 (1, 9), RN-2 (2, 12), RN-3 (1, 9), RN-4 (1),
-RN-5 (8), RN-6 (4), RN-7 (4), RN-8 (9, 10), RN-9 (5, 6), RN-10 (5, 9), RN-11 (2, 9, 10),
+RN-5 (8), RN-6 (4), RN-7 (4), RN-8 (9, 10), RN-9 (5, 6), RN-10 (5, 9, 14), RN-11 (2, 9, 10),
 RN-12 (7, 9), RN-13 (11), RN-14 (3), RN-15 (12), RN-16 (13).
 
 | Criterio de aceptación | Tareas |
@@ -415,14 +422,14 @@ RN-12 (7, 9), RN-13 (11), RN-14 (3), RN-15 (12), RN-16 (13).
 | Resumen de un sprint, con aviso si está abierto | 4 |
 | Resumen del proyecto | 9, 10 |
 | Historias planificadas y completadas, con puntos o "sin estimar" | 5, 6 |
-| Situación de cada historia según el cierre del sprint | 5 |
+| Situación de cada historia según el cierre del sprint, o en curso si sigue abierto | 5, 14 |
 | Estimaciones y esfuerzo registrado | 2 |
 | Defectos del período, con severidad y estado | 7, 9 |
 | Formato de horas, porcentajes, desviación, velocidad y fechas | 3, 4, 10 |
 | Generar no cambia ningún dato | 12 |
 | Sprint o proyecto inexistentes | 13 |
 
-Los trece escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los catorce escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
