@@ -485,9 +485,10 @@ el código a propósito, falló, y se volvió atrás).
   archivo y con la base.
 - **Al abrir, un error de la carga suma en qué base está** («… (en la base …)»), y al importar,
   en qué archivo; los mensajes del dominio no cambian.
-- **Cobertura**: `internal/store` queda en 86,8% (antes 96,0%): lo que no se recorre son los
-  errores del driver al leer una fila o al ejecutar una consulta, que no se pueden provocar
-  sin inyectar fallas. `cmd/web` queda en 88,0%: los errores al exportar. El total es 95,3%.
+- **Cobertura** (27/10, con las tareas 19 y 20): `internal/store` queda en 87,1% (antes
+  96,0%): lo que no se recorre son los errores del driver al leer una fila o al ejecutar una
+  consulta, que no se pueden provocar sin inyectar fallas. `cmd/web` queda en 91,1%: los
+  errores al exportar. El total es 95,3%.
 
 - **Las reglas RN-16 a RN-19 y las tareas 15 a 18 se agregaron después de las puertas**:
   las decidió Emiliano Sorato el 27/10, a partir de la prueba exploratoria (hallazgos QA-1,
