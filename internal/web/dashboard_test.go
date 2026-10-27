@@ -73,6 +73,33 @@ func TestEncabezadoDeUnProyectoSinFechaDeFinalizacion(t *testing.T) {
 	}
 }
 
+// Escenario: Un proyecto sin sprints avisa que no hay datos
+// Cubre: RN-7
+// El test del dominio tiene el mismo nombre, en su paquete (Fase 3).
+func TestUnProyectoSinSprintsAvisaQueNoHayDatos(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	addProject(t, registry, "Sistema de metricas")
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/dashboard")
+
+	// No es un error: la página se muestra con su encabezado.
+	if res.Code != http.StatusOK {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+	}
+	contenido := between(res.Body.String(), "<main", "</main>")
+	if !strings.Contains(contenido, "<h1>Sistema de metricas</h1>") {
+		t.Errorf("se esperaba el encabezado del proyecto, y no esta en:\n%s", contenido)
+	}
+	aviso := between(contenido, `<div class="vacio">`, "</div>")
+	if !strings.Contains(aviso, "Todavía no hay datos para mostrar.") || !strings.Contains(aviso, `href="/proyectos/1/sprints/nuevo"`) {
+		t.Errorf("se esperaba el aviso de que no hay datos, con el acceso a crear el primer sprint, y no esta en:\n%s", contenido)
+	}
+	if strings.Contains(contenido, "<svg") || strings.Contains(contenido, "<figure") {
+		t.Errorf("no se esperaba ningun grafico, y hay en:\n%s", contenido)
+	}
+}
+
 // Escenario: Pedir el dashboard de un proyecto que no existe
 // Cubre: RN-17
 func TestPedirElDashboardDeUnProyectoQueNoExiste(t *testing.T) {
