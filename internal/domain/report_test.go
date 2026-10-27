@@ -457,3 +457,51 @@ func TestLasHistoriasYLosDefectosVanOrdenadosPorIdentificador(t *testing.T) {
 		}
 	}
 }
+
+// Escenarios: Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las
+// metricas, pedidos por las dos operaciones del contrato
+// Cubre: RN-2, RN-15
+//
+// Los tests de arriba le pasan las metricas al armado; este pide los reportes como los pide la
+// web y mira que las metricas sean las de la #16 y que generarlos no cambie ningun dato.
+func TestLasOperacionesDelReportePidenLasMetricasYNoCambianNada(t *testing.T) {
+	registry := NewProjectRegistry()
+	project, err := registry.Create(ProjectData{Name: "Seguimiento ICS", Start: unDia(2026, 9, 1)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+	}
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 20), unDia(2026, 10, 25), unDia(2026, 10, 25), []int{1}, 3, 5)
+	if _, err := project.AddMember("Juliana Bustos", RoleProductBuilder); err != nil {
+		t.Fatalf("no se pudo registrar el integrante de prueba: %v", err)
+	}
+	cargar(t, project, 1, "Juliana Bustos", 5)
+	before, err := registry.ToJSON()
+	if err != nil {
+		t.Fatalf("no se pudieron convertir los datos: %v", err)
+	}
+	today := unDia(2026, 10, 27)
+
+	sprintReport, err := project.SprintReport(1, today)
+	if err != nil {
+		t.Fatalf("se esperaba generar el reporte del sprint 1 sin error, salio: %v", err)
+	}
+	projectReport := project.ProjectReport(today)
+
+	sprintMetrics, _ := project.SprintMetrics(1)
+	if sprintReport.Metrics != sprintMetrics {
+		t.Errorf("se esperaban las metricas del sprint 1 %+v, salieron %+v", sprintMetrics, sprintReport.Metrics)
+	}
+	if projectReport.Metrics != project.ProjectMetrics() {
+		t.Errorf("se esperaban las metricas del proyecto %+v, salieron %+v", project.ProjectMetrics(), projectReport.Metrics)
+	}
+	if sprintReport.Title != "Reporte del sprint 1 — Seguimiento ICS" || projectReport.Title != "Reporte del proyecto Seguimiento ICS" {
+		t.Errorf("se esperaban los reportes del sprint 1 y del proyecto, salieron %q y %q", sprintReport.Title, projectReport.Title)
+	}
+	after, err := registry.ToJSON()
+	if err != nil {
+		t.Fatalf("no se pudieron convertir los datos: %v", err)
+	}
+	if string(before) != string(after) {
+		t.Errorf("se esperaba que generar los reportes no cambiara ningun dato, y cambiaron")
+	}
+}
