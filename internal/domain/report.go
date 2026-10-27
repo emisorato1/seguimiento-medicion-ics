@@ -35,6 +35,27 @@ type Section struct {
 	Lines   []string
 }
 
+// SprintReport genera el reporte del sprint con ese numero, con los datos de este momento,
+// sin guardarlo y sin cambiar nada (RN-15). Le pide las metricas del sprint a la #16 y se
+// las pasa al armado (RN-2). Si el proyecto no tiene ese sprint, informa que no se encontro
+// (RN-16). El dia de generacion lo indica quien lo pide.
+func (p *Project) SprintReport(number int, today time.Time) (Report, error) {
+	metrics, err := p.SprintMetrics(number)
+	if err != nil {
+		return Report{}, err
+	}
+	// si las metricas salieron, el sprint existe
+	sprint, _ := p.Sprint(number)
+	return p.buildSprintReport(sprint, metrics, today), nil
+}
+
+// ProjectReport genera el reporte del proyecto entero con las metricas del proyecto de la
+// #16, igual que SprintReport (RN-2, RN-15). No informa errores: se le pide a un proyecto
+// que ya se encontro, y el que no existe lo informa el registro (#3).
+func (p *Project) ProjectReport(today time.Time) Report {
+	return p.buildProjectReport(p.ProjectMetrics(), today)
+}
+
 // buildSprintReport arma el reporte del sprint con las metricas que recibe, sin pedirlas
 // ni calcular ninguna (RN-2), y con el dia que le pasa quien lo pide: el dominio no lee el
 // reloj. Tiene siempre las cuatro secciones, en el orden de la RN-4.
