@@ -47,10 +47,52 @@ func (p *Project) buildSprintReport(sprint *Sprint, metrics Metrics, today time.
 		Sections: []Section{
 			{Heading: "Resumen", Lines: p.sprintSummaryLines(sprint)},
 			{Heading: "Historias", Lines: p.sprintStoryLines(sprint, metrics)},
-			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics)},
-			{Heading: "Defectos", Lines: p.sprintDefectLines(sprint, metrics)},
+			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics, "Velocidad")},
+			{Heading: "Defectos", Lines: p.defectLines(metrics, "No hay defectos en este sprint.", func(d *Defect) bool {
+				// uno detectado en un sprint y resuelto en otro aparece en los dos (RN-12)
+				return d.detectedIn == sprint.number || d.resolvedIn == sprint.number
+			})},
 		},
 	}
+}
+
+// buildProjectReport arma el reporte del proyecto entero con las metricas del proyecto que
+// recibe, igual que el de un sprint: las mismas cuatro secciones y las mismas piezas, con lo
+// que cambia el alcance (RN-1, RN-8, RN-10, RN-11, RN-12).
+func (p *Project) buildProjectReport(metrics Metrics, today time.Time) Report {
+	return Report{
+		Title:       "Reporte del proyecto " + p.name,
+		GeneratedOn: today,
+		Scope:       ScopeProject,
+		Metrics:     metrics,
+		Sections: []Section{
+			{Heading: "Resumen", Lines: p.projectSummaryLines()},
+			{Heading: "Historias", Lines: p.projectStoryLines(metrics)},
+			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics, "Velocidad promedio")},
+			{Heading: "Defectos", Lines: p.defectLines(metrics, "No hay defectos en este proyecto.", func(*Defect) bool { return true })},
+		},
+	}
+}
+
+// projectSummaryLines escribe el Resumen del reporte del proyecto: el nombre, las fechas y
+// cuantos sprints tiene y cuantos estan cerrados (RN-8).
+func (p *Project) projectSummaryLines() []string {
+	return []string{
+		"Proyecto: " + p.name,
+		"Inicio: " + formatDate(p.start),
+		"Fin: " + formatDate(p.end),
+		fmt.Sprintf("%d sprints, %d cerrados", len(p.sprints), len(p.ClosedSprints())),
+	}
+}
+
+// projectStoryLines escribe la seccion Historias del reporte del proyecto: los totales y una
+// linea por historia del backlog, con su estado actual (RN-10).
+func (p *Project) projectStoryLines(metrics Metrics) []string {
+	lines := storyTotals(metrics)
+	for _, story := range p.backlog {
+		lines = append(lines, storyLine(story, story.storyPoints, story.state.String()))
+	}
+	return withEmptyNotice(lines, len(p.backlog), "No hay historias en este proyecto.")
 }
 
 // sprintSummaryLines escribe el Resumen del reporte de un sprint: el proyecto, el Sprint Goal,
@@ -77,10 +119,7 @@ func (p *Project) sprintSummaryLines(sprint *Sprint) []string {
 // los que tenia al cerrar (#10). Mientras el sprint esta abierto no hay cierre: cada
 // historia va con sus puntos actuales y "en curso".
 func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
-	lines := []string{
-		"Historias planificadas: " + formatCount(metrics.StoriesPlanned),
-		fmt.Sprintf("Historias completadas: %s (%s)", formatCount(metrics.StoriesCompleted), formatPercent(metrics.CompletionRate)),
-	}
+	lines := storyTotals(metrics)
 	for _, id := range sprint.stories {
 		story, _ := p.Story(id)
 		points, situation := story.storyPoints, "en curso"
@@ -90,11 +129,31 @@ func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
 				situation = "completada"
 			}
 		}
-		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", id, story.title, pointsText(points), situation))
+		lines = append(lines, storyLine(story, points, situation))
 	}
-	// una seccion sin nada que listar lo dice, en lugar de quedar solo con los totales (RN-5)
-	if len(sprint.stories) == 0 {
-		lines = append(lines, "No hay historias en este sprint.")
+	return withEmptyNotice(lines, len(sprint.stories), "No hay historias en este sprint.")
+}
+
+// storyTotals son las dos primeras lineas de la seccion Historias: las planificadas y las
+// completadas con su porcentaje, tal como vienen en las metricas (RN-2, RN-9).
+func storyTotals(metrics Metrics) []string {
+	return []string{
+		"Historias planificadas: " + formatCount(metrics.StoriesPlanned),
+		fmt.Sprintf("Historias completadas: %s (%s)", formatCount(metrics.StoriesCompleted), formatPercent(metrics.CompletionRate)),
+	}
+}
+
+// storyLine escribe la linea de una historia: su numero, su titulo, sus puntos y su situacion
+// (RN-9).
+func storyLine(story *Story, points int, situation string) string {
+	return fmt.Sprintf("#%d — %s — %s — %s", story.id, story.title, pointsText(points), situation)
+}
+
+// withEmptyNotice agrega el aviso de que no hay nada que listar cuando la seccion quedo solo
+// con sus totales (RN-5).
+func withEmptyNotice(lines []string, listed int, notice string) []string {
+	if listed == 0 {
+		lines = append(lines, notice)
 	}
 	return lines
 }
@@ -108,18 +167,17 @@ func pointsText(points int) string {
 	return formatCount(points) + " SP"
 }
 
-// sprintDefectLines escribe la seccion Defectos del reporte de un sprint: los totales de las
-// metricas y una linea por defecto detectado o resuelto en ese sprint, con su severidad, su
-// estado y, si esta resuelto, el sprint en que se resolvio (RN-12). Uno detectado en un
-// sprint y resuelto en otro aparece en los dos.
-func (p *Project) sprintDefectLines(sprint *Sprint, metrics Metrics) []string {
+// defectLines escribe la seccion Defectos: los totales de las metricas y una linea por cada
+// defecto que entra en el reporte, con su severidad, su estado y, si esta resuelto, el sprint
+// en que se resolvio (RN-12). Que defectos entran lo decide cada reporte.
+func (p *Project) defectLines(metrics Metrics, empty string, include func(*Defect) bool) []string {
 	lines := []string{
 		"Defectos detectados: " + formatCount(metrics.DefectsDetected),
 		"Defectos resueltos: " + formatCount(metrics.DefectsResolved),
 	}
 	listed := 0
 	for _, defect := range p.defects {
-		if defect.detectedIn != sprint.number && defect.resolvedIn != sprint.number {
+		if !include(defect) {
 			continue
 		}
 		state := defect.state.String()
@@ -129,20 +187,17 @@ func (p *Project) sprintDefectLines(sprint *Sprint, metrics Metrics) []string {
 		lines = append(lines, fmt.Sprintf("#%d — %s — %s — %s", defect.id, defect.title, defect.severity, state))
 		listed++
 	}
-	// una seccion sin nada que listar lo dice, en lugar de quedar solo con los totales (RN-5)
-	if listed == 0 {
-		lines = append(lines, "No hay defectos en este sprint.")
-	}
-	return lines
+	return withEmptyNotice(lines, listed, empty)
 }
 
 // effortLines escribe la seccion Estimacion y esfuerzo con los numeros de las metricas, sin
-// calcular ninguno (RN-2, RN-11), y con la regla de formato de format.go (RN-14).
-func effortLines(m Metrics) []string {
+// calcular ninguno (RN-2, RN-11), y con la regla de formato de format.go (RN-14). La
+// velocidad se llama "Velocidad" en un sprint y "Velocidad promedio" en el proyecto.
+func effortLines(m Metrics, velocity string) []string {
 	return []string{
 		"Story points planificados: " + formatCount(m.PlannedPoints),
 		"Story points completados: " + formatCount(m.CompletedPoints),
-		"Velocidad: " + formatCount(m.Velocity),
+		velocity + ": " + formatCount(m.Velocity),
 		"Horas estimadas: " + formatHours(m.EstimatedHours),
 		"Horas reales: " + formatHours(m.ActualHours),
 		"Desviación: " + formatPercent(m.HoursDeviation),
