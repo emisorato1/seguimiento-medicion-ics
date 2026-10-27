@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 
@@ -32,6 +33,11 @@ type Database struct {
 // abrir, asi otro sistema no la puede abrir mientras tanto: recibe ErrDatabaseInUse (RN-19,
 // D11). El sistema operativo suelta el bloqueo al cerrarla o si el programa se corta.
 func OpenDatabase(path string) (*Database, error) {
+	// El driver corta el nombre en el primer "?", donde empiezan sus opciones: una ruta con
+	// ese signo abriria otro archivo sin avisar.
+	if strings.Contains(path, "?") {
+		return nil, fmt.Errorf("%w: la ruta de la base %s no puede tener el signo ?", domain.ErrSavedDataInvalid, path)
+	}
 	db, err := sql.Open("sqlite", path+"?_pragma=locking_mode(EXCLUSIVE)")
 	if err != nil {
 		return nil, fmt.Errorf("%w: no se pudo abrir la base %s", domain.ErrSavedDataInvalid, path)
