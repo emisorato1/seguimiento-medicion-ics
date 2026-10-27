@@ -46,8 +46,21 @@ func (p *Project) buildSprintReport(sprint *Sprint, metrics Metrics, today time.
 		Sections: []Section{
 			{Heading: "Resumen"},
 			{Heading: "Historias"},
-			{Heading: "Estimación y esfuerzo"},
+			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics)},
 			{Heading: "Defectos"},
 		},
+	}
+}
+
+// effortLines escribe la seccion Estimacion y esfuerzo con los numeros de las metricas, sin
+// calcular ninguno (RN-2, RN-11), y con la regla de formato de format.go (RN-14).
+func effortLines(m Metrics) []string {
+	return []string{
+		"Story points planificados: " + formatCount(m.PlannedPoints),
+		"Story points completados: " + formatCount(m.CompletedPoints),
+		"Velocidad: " + formatCount(m.Velocity),
+		"Horas estimadas: " + formatHours(m.EstimatedHours),
+		"Horas reales: " + formatHours(m.ActualHours),
+		"Desviación: " + formatPercent(m.HoursDeviation),
 	}
 }
