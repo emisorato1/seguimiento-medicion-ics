@@ -130,6 +130,7 @@ var fieldErrors = []struct {
 	{domain.ErrEffortDayRequired, "dia"},
 	{domain.ErrEffortDayInFuture, "dia"},
 	{domain.ErrEffortHoursInvalid, "horas"},
+	{domain.ErrEffortHoursOverDay, "horas"},
 	{domain.ErrEffortActivityRequired, "actividad"},
 	{domain.ErrEstimatedHoursInvalid, "horas"},
 	{domain.ErrDefectTitleRequired, "titulo"},

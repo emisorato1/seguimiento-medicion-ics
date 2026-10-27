@@ -70,6 +70,9 @@ var (
 	// número (historia #14, RN-3). Van aca y no al final, para no chocar con los errores que
 	// agregan otras historias al mismo tiempo.
 	ErrEffortHoursInvalid = errors.New("las horas tienen que ser mayores que cero")
+	// ErrEffortHoursOverDay: un registro de mas de 24 horas (historia #14, RN-20, agregada
+	// por el defecto #192). Un registro es de un solo dia.
+	ErrEffortHoursOverDay = errors.New("un registro es de un solo día y no puede tener más de 24 horas")
 	// ErrEffortDayInFuture: registrar horas de un día posterior al de hoy (historia #14, RN-4).
 	ErrEffortDayInFuture = errors.New("no se pueden cargar horas de un día que todavía no pasó")
 	// ErrEffortDayRequired: registrar horas sin indicar el día (historia #14, RN-5).
