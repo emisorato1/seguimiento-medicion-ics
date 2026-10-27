@@ -60,6 +60,25 @@ type dashboardSource struct {
 	sprintMetrics  map[int]Metrics
 }
 
+// Dashboard arma el dashboard del proyecto con las métricas que calcula la #16: las del
+// proyecto entero y las de cada sprint. No falla: el proyecto que no existe lo informa el
+// registro (contrato del dominio). Solo lee, así que no cambia nada (RN-16).
+func (p *Project) Dashboard() Dashboard {
+	sprints := p.Sprints()
+	sprintMetrics := make(map[int]Metrics, len(sprints))
+	for _, sprint := range sprints {
+		// SprintMetrics solo falla con un sprint que no existe, y el número sale de los
+		// sprints del propio proyecto: el error no puede darse.
+		m, _ := p.SprintMetrics(sprint.Number())
+		sprintMetrics[sprint.Number()] = m
+	}
+	return buildDashboard(dashboardSource{
+		sprints:        sprints,
+		projectMetrics: p.ProjectMetrics(),
+		sprintMetrics:  sprintMetrics,
+	})
+}
+
 // buildDashboard arma los datos del dashboard a partir de lo que trae source, sin cambiar
 // nada. Un proyecto sin sprints no tiene estado general, sprint en curso ni gráficos, y eso
 // no es un error (RN-7).
