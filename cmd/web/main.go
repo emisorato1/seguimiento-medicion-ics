@@ -161,6 +161,12 @@ func export(o options, out, errOut io.Writer) int {
 		return 1
 	}
 	db, err := store.OpenDatabase(o.dataPath)
+	// Con la web abierta sobre la misma base, lo que hay que hacer es cerrarla y volver a
+	// exportar, no "volver a abrir este" (RN-19).
+	if errors.Is(err, store.ErrDatabaseInUse) {
+		fmt.Fprintf(errOut, "No se pudieron exportar los datos: la base %s ya está abierta por la web. Cerrá la web y volvé a exportar.\n", o.dataPath)
+		return 1
+	}
 	if err != nil {
 		fmt.Fprintf(errOut, "No se pudieron exportar los datos: %v\nLa base %s quedó como estaba.\n", err, o.dataPath)
 		return 1
