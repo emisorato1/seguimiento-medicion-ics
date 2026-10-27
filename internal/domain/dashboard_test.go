@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -275,6 +276,42 @@ func TestTodaviaNoHaySprintsCerradosParaElGraficoDeVelocidad(t *testing.T) {
 			t.Fatalf("se esperaba el grafico de velocidad sin el aviso, salio %+v", dashboard.Charts)
 		}
 	})
+}
+
+// Escenario: Abrir el dashboard no cambia el proyecto
+// Cubre: RN-16
+// Pasa sin código nuevo, porque el armado nunca escribe (Fase 3, "Un test pasa solo").
+func TestAbrirElDashboardNoCambiaElProyecto(t *testing.T) {
+	project := unProyecto(t)
+	dashboardSprint(t, project, false)
+	historiasEstimadas(t, project, 3, 5, 8)
+	for id := 1; id <= 3; id++ {
+		if err := project.AssignStory(id); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d: %v", id, err)
+		}
+	}
+	before := backlogSnapshot(project)
+	sprintMetrics := map[int]Metrics{1: {PlannedPoints: 16}}
+
+	buildDashboard(dashboardSource{sprints: project.Sprints(), projectMetrics: Metrics{PlannedPoints: 16}, sprintMetrics: sprintMetrics})
+
+	sprint, ok := project.OpenSprint()
+	if !ok || sprint.Number() != 1 || !reflect.DeepEqual(sprint.Stories(), []int{1, 2, 3}) {
+		t.Fatalf("el sprint 1 tenia que seguir abierto con las historias 1, 2 y 3, quedo: %v %+v", ok, sprint)
+	}
+	if after := backlogSnapshot(project); !reflect.DeepEqual(after, before) {
+		t.Fatalf("el backlog tenia que seguir igual: era %v, quedo %v", before, after)
+	}
+}
+
+// backlogSnapshot copia lo que se ve de cada historia del backlog: su número, su estado y sus
+// story points. Es una copia, así que sirve para comparar antes y después.
+func backlogSnapshot(project *Project) []string {
+	var snapshot []string
+	for _, story := range project.Backlog() {
+		snapshot = append(snapshot, fmt.Sprintf("%d %v %d", story.ID(), story.State(), story.StoryPoints()))
+	}
+	return snapshot
 }
 
 // figureText devuelve el valor escrito del número con ese rótulo, y si está.
