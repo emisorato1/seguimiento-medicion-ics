@@ -109,8 +109,8 @@ escritas las horas que tenía cada historia al cierre.
 
 _* Sprint 2 al 24/10: se revisa al cierre, el domingo 25._
 
-_† En el Sprint 2 la #5, la #14 y la #15 se implementaron con asistencia de IA, que la consigna
-permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
+_† En el Sprint 2 la #5, la #14 y la #15 las implementó Emiliano Sorato con asistencia de IA, que
+la consigna permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
 desviación da muy negativa (ver el [Sprint 2](#sprint-2--interfaz-usable))._
 
 _‡ La #77 se terminó en el Sprint 2 sin story points y el equipo la estimó en 13 el 26/10, en la
@@ -267,9 +267,9 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
   (53,25) menos las 22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
 - Historias terminadas, medidas enteras: **108,3 h estimadas contra 51,75 reales (−52%)**, 1,3 h
   por story point. Entran la #13 (21,6 h contra 6; Maxi corrigió sus horas de 3 a 6) y la #15 (13,5 h contra 0,5).
-- **La #5, la #14, la #15 y la #77 se implementaron con asistencia de IA**, que la consigna
-  permite. Sus horas reales son el tiempo humano de dirección y revisión, todas de Emiliano
-  Sorato: 0,5 h en la #5, en la #14 y en la #15, y 1,5 h en la #77. Por eso la desviación da muy negativa.
+- **La #5, la #14, la #15 y la #77 las implementó Emiliano Sorato con asistencia de IA**, que la
+  consigna permite. Sus horas reales son su tiempo de dirección y revisión: 0,5 h en la #5, en
+  la #14 y en la #15, y 1,5 h en la #77. Por eso la desviación da muy negativa.
   Sin la #5, la #14 y la #15, las otras siete terminadas dan **−36%** (78,6 h contra 50,25) y
   1,8 h por story point.
 - **Cuánto cuesta un punto en el Sprint 2.** La #6, la #12 y la #24 se trabajaron casi todas
@@ -277,8 +277,8 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
   Agustín Salinas), dan **27 h estimadas contra 20 reales (−26%)**, 2 h por story point.
 - La #77 no entra en la desviación porque no tiene horas estimadas con qué comparar su 1,5 h.
   Desde que tiene story points (13, desde el 26/10), sí entra en las horas por story point: el
-  sprint da **1,0** (53,25 h ÷ 52 SP). Sin las cuatro hechas con asistencia de IA (la #5, la #14,
-  la #15 y la #77), sigue en 1,8. También cuenta en las horas trabajadas.
+  sprint da **1,0** (53,25 h ÷ 52 SP). Sin las cuatro que implementó Emiliano con asistencia de IA
+  (la #5, la #14, la #15 y la #77), sigue en 1,8. También cuenta en las horas trabajadas.
 
 ### Defectos
 
