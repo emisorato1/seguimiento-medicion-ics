@@ -45,7 +45,9 @@ func (p *Project) buildSprintReport(sprint *Sprint, metrics Metrics, today time.
 		Metrics:     metrics,
 		Sections: []Section{
 			{Heading: "Resumen"},
-			{Heading: "Historias"},
+			{Heading: "Historias", Lines: []string{
+				fmt.Sprintf("Historias completadas: %s (%s)", formatCount(metrics.StoriesCompleted), formatPercent(metrics.CompletionRate)),
+			}},
 			{Heading: "Estimación y esfuerzo", Lines: effortLines(metrics)},
 			{Heading: "Defectos"},
 		},
