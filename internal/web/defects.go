@@ -77,6 +77,8 @@ func (s *Server) listDefects(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		data.Defects = project.DefectsByState(state)
+		// la lista marca el estado que reconocio el filtro, escrito como en sus opciones (#193)
+		data.State = state.String()
 	case data.Severity != "":
 		severity, err := domain.ParseSeverity(data.Severity)
 		if err != nil {
@@ -84,6 +86,7 @@ func (s *Server) listDefects(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		data.Defects = project.DefectsBySeverity(severity)
+		data.Severity = severity.String()
 	}
 	s.render(w, r, http.StatusOK, "defectos.html", page{
 		Title:   "Defectos de " + project.Name(),

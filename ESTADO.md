@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-27 12:10. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-27 15:52. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,6 +70,7 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+9a9d324 2026-10-27 chore: trazabilidad y ESTADO.md regenerados con dev al 27/10 (la #19 y los defectos #190 y #191)
 9dc49ea 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
 25d5e96 2026-10-27 Merge pull request #188 from emisorato1/datos-demo
 83b3015 2026-10-27 Merge pull request #194 from emisorato1/defecto-190-paginas-viejas
@@ -77,5 +78,4 @@ _No hay historias en este estado._
 b226499 2026-10-27 Merge pull request #198 from emisorato1/docs-documentacion-tecnica-al-dia
 2119b14 2026-10-27 docs: las firmas de Report en el contrato del dominio, como las acepto Agustin en el #181
 8ddde8c 2026-10-27 docs: el Sprint 3 de la demo va del 26 al 28/10, y el defecto #172 queda afuera
-c40d222 2026-10-27 Merge pull request #185 from emisorato1/estimacion-77-78
 ```
