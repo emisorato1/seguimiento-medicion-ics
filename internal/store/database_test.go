@@ -488,3 +488,37 @@ func TestUnaFilaQueApuntaANadaNoSeCarga(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Una base abierta no la abre otro sistema
+// Cubre: #177 RN-19, D11
+func TestUnaBaseAbiertaNoLaAbreOtroSistema(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "datos-ics.db")
+	primero, err := OpenDatabase(path)
+	sinError(t, err)
+	sinError(t, primero.Save(unRegistroCompleto(t)))
+	antes, err := os.ReadFile(path)
+	sinError(t, err)
+
+	segundo, err := OpenDatabase(path)
+
+	if err == nil {
+		segundo.Close()
+		primero.Close()
+		t.Fatal("el segundo sistema no tenia que poder abrir una base abierta")
+	}
+	if !errors.Is(err, ErrDatabaseInUse) || !strings.Contains(err.Error(), path) {
+		t.Errorf("se esperaba ErrDatabaseInUse con la ruta de la base, salio: %v", err)
+	}
+	if despues, _ := os.ReadFile(path); !bytes.Equal(despues, antes) {
+		t.Error("la base tenia que quedar como estaba")
+	}
+
+	// Cuando el primero se cierra, la base se abre normalmente y tiene sus datos.
+	sinError(t, primero.Close())
+	otro := abrirBase(t, path)
+	cargado, err := otro.Load()
+	sinError(t, err)
+	if len(cargado.Projects()) != 2 {
+		t.Errorf("se esperaban los dos proyectos guardados, hay %d", len(cargado.Projects()))
+	}
+}
