@@ -39,15 +39,15 @@ func TestAbrirElSistemaConUnSoloComandoYSinInternet(t *testing.T) {
 	})
 
 	t.Run("respeta -puerto, -datos y -red", func(t *testing.T) {
-		opts, err := parseOptions([]string{"-puerto", "9090", "-datos", "otros.json", "-red"})
+		opts, err := parseOptions([]string{"-puerto", "9090", "-datos", "otros.db", "-red"})
 		if err != nil {
 			t.Fatalf("no se esperaba error, salio: %v", err)
 		}
 		if opts.addr() != ":9090" {
 			t.Errorf("con -red se esperaba escuchar en toda la red en el 9090, salio %q", opts.addr())
 		}
-		if opts.dataPath != "otros.json" {
-			t.Errorf("se esperaban los datos en otros.json, salio %q", opts.dataPath)
+		if opts.dataPath != "otros.db" {
+			t.Errorf("se esperaban los datos en otros.db, salio %q", opts.dataPath)
 		}
 	})
 

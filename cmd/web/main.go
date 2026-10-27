@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -67,6 +68,11 @@ func parseOptions(args []string) (options, error) {
 	// Juntas, no queda claro que se quiere hacer primero: se rechaza sin hacer ninguna (RN-17).
 	if opts.importPath != "" && opts.exportPath != "" {
 		return options{}, errors.New("opciones: -importar y -exportar no se pueden usar juntas: importá primero y exportá después")
+	}
+	// Antes de la #177, -datos era el archivo .json. Usado asi, SQLite fallaba con el archivo
+	// o creaba en silencio una base con ese nombre: se avisa sin crear nada (RN-20).
+	if strings.EqualFold(filepath.Ext(opts.dataPath), ".json") {
+		return options{}, errors.New("opciones: -datos es la base de datos (.db); para traer un archivo .json usá -importar")
 	}
 	return opts, nil
 }
