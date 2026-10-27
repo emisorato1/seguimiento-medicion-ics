@@ -315,3 +315,69 @@ func TestUnaSeccionSinDatosLoDice(t *testing.T) {
 		})
 	}
 }
+
+// Escenario: Generar el reporte del proyecto entero
+// Cubre: RN-1, RN-3, RN-8, RN-10, RN-11, RN-12
+func TestGenerarElReporteDelProyectoEntero(t *testing.T) {
+	project, err := NewProjectRegistry().Create(ProjectData{Name: "Seguimiento ICS", Start: unDia(2026, 9, 1), End: unDia(2026, 11, 2)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto de prueba: %v", err)
+	}
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 5), unDia(2026, 10, 11), unDia(2026, 10, 11), []int{1}, 3)
+	unSprintCerrado(t, project, "Tener los sprints", unDia(2026, 10, 12), unDia(2026, 10, 18), unDia(2026, 10, 18), []int{2}, 5, 2)
+	unSprint(t, project)
+	unaHistoriaEstimada(t, project, 8)
+	data := unDefecto()
+	if _, err := project.AddDefect(data); err != nil {
+		t.Fatalf("no se pudo registrar el defecto 1: %v", err)
+	}
+	data.DetectedIn = 2
+	if _, err := project.AddDefect(data); err != nil {
+		t.Fatalf("no se pudo registrar el defecto 2: %v", err)
+	}
+	if err := project.ResolveDefect(1, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto 1: %v", err)
+	}
+	metrics := project.ProjectMetrics()
+	today := unDia(2026, 10, 27)
+
+	report := project.buildProjectReport(metrics, today)
+
+	if report.Title != "Reporte del proyecto Seguimiento ICS" || report.Scope != ScopeProject || !report.GeneratedOn.Equal(today) {
+		t.Errorf("se esperaba el reporte del proyecto Seguimiento ICS del %v, salio %q, alcance %v, del %v", today, report.Title, report.Scope, report.GeneratedOn)
+	}
+	if report.Metrics != metrics {
+		t.Errorf("se esperaban las metricas del proyecto %+v, salieron %+v", metrics, report.Metrics)
+	}
+	want := map[string][]string{
+		"Resumen": {
+			"Proyecto: Seguimiento ICS",
+			"Inicio: 01/09/2026",
+			"Fin: 02/11/2026",
+			"3 sprints, 2 cerrados",
+		},
+		"Historias": {
+			"Historias planificadas: " + formatCount(metrics.StoriesPlanned),
+			"Historias completadas: " + formatCount(metrics.StoriesCompleted) + " (" + formatPercent(metrics.CompletionRate) + ")",
+			"#1 — Registrar esfuerzo — 3 SP — Terminada",
+			"#2 — Registrar esfuerzo — 5 SP — Terminada",
+			"#3 — Registrar esfuerzo — 2 SP — Pendiente",
+			"#4 — Registrar esfuerzo — 8 SP — Pendiente",
+		},
+		"Defectos": {
+			"Defectos detectados: 2",
+			"Defectos resueltos: 1",
+			"#1 — La velocidad sale en cero — Mayor — Resuelto en el sprint 2",
+			"#2 — La velocidad sale en cero — Mayor — Abierto",
+		},
+	}
+	for _, heading := range []string{"Resumen", "Historias", "Defectos"} {
+		if got := seccion(t, report, heading); !slices.Equal(got, want[heading]) {
+			t.Errorf("se esperaba la seccion %s\n%q\nsalio\n%q", heading, want[heading], got)
+		}
+	}
+	velocity := "Velocidad promedio: " + formatCount(metrics.Velocity)
+	if lines := seccion(t, report, "Estimación y esfuerzo"); !slices.Contains(lines, velocity) {
+		t.Errorf("se esperaba la linea %q, y no esta en:\n%q", velocity, lines)
+	}
+}
