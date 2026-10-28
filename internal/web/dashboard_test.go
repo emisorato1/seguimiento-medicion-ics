@@ -475,3 +475,61 @@ func TestDashboardDeUnProyectoConUnSprintEnCurso(t *testing.T) {
 		}
 	}
 }
+
+// Escenario: Cada grafico tiene su texto alternativo y su tabla
+// Cubre: RN-19, RN-20
+//
+// El texto alternativo va en el SVG, que es una imagen para el lector de pantalla (D4), y
+// dice qué compara el gráfico y cada rótulo con su valor. La tabla va en el desplegable «Ver
+// los valores», con cada rótulo como encabezado de su fila.
+func TestCadaGraficoTieneSuTextoAlternativoYSuTabla(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	sprintCerradoConPuntos(t, registry, []int{21, 8, 1, 8, 2}, []int{1, 2, 3})
+	server := newTestServer(t, registry)
+
+	html := get(t, server, "/proyectos/1/dashboard").Body.String()
+
+	chart, _ := barrasDelGrafico(t, html, "Story points")
+	alt := `<svg role="img" aria-label="Story points planificados contra completados. Planificados: 40, Completados: 30."`
+	if !strings.Contains(chart, alt) {
+		t.Errorf("se esperaba el texto alternativo %q, y no esta en:\n%s", alt, chart)
+	}
+	tabla := between(chart, "<details>", "</details>")
+	if !strings.Contains(tabla, "<summary>Ver los valores</summary>") {
+		t.Fatalf("se esperaba el desplegable «Ver los valores», y no esta en:\n%s", chart)
+	}
+	for _, fila := range []string{
+		`<th scope="col">Barra</th><th scope="col">Valor</th>`,
+		`<th scope="row">Planificados</th><td>40</td>`,
+		`<th scope="row">Completados</th><td>30</td>`,
+	} {
+		if !strings.Contains(tabla, fila) {
+			t.Errorf("se esperaba %q en la tabla, y no esta en:\n%s", fila, tabla)
+		}
+	}
+
+	// Cada gráfico dice qué compara; el de velocidad, sin sprints cerrados (no es este caso),
+	// solo tiene el aviso.
+	for _, want := range []string{
+		`aria-label="Horas estimadas contra reales. Estimadas: 0,0 h, Reales: 0,0 h."`,
+		`aria-label="Defectos detectados contra resueltos. Detectados: 0, Resueltos: 0."`,
+		`aria-label="Velocidad de cada sprint cerrado. Sprint 1: 30."`,
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("se esperaba el texto alternativo %s, y no esta en la pagina", want)
+		}
+	}
+
+	t.Run("velocidad sin sprints cerrados", func(t *testing.T) {
+		registry := domain.NewProjectRegistry()
+		addProject(t, registry, "Sistema de metricas")
+		addSprint(t, registry, 1)
+		server := newTestServer(t, registry)
+
+		chart, _ := barrasDelGrafico(t, get(t, server, "/proyectos/1/dashboard").Body.String(), "Velocidad")
+
+		if strings.Contains(chart, "<svg") || strings.Contains(chart, "<details>") {
+			t.Errorf("se esperaba solo el aviso, sin dibujo ni tabla, y salio:\n%s", chart)
+		}
+	})
+}
