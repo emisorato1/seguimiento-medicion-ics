@@ -460,3 +460,50 @@ button:hover {
     text-align: center;
   }
 }
+
+/* Los graficos del dashboard (#17): barras horizontales en SVG, cada grafico en su tarjeta.
+   La paleta la eligio Juliana Bustos el 27/10 y es solo del dashboard: los colores de :root
+   no cambian. Cada barra tiene al menos 3 a 1 de contraste con el fondo de la tarjeta (RN-20):
+   Siena 4,58; Salvia y Oro, oscurecidos para llegar, 3,94 y 4,12. El color ayuda, pero cada
+   barra lleva su rotulo (D6). */
+.grafico {
+  --grafico-fondo: #f5e6d3;
+  --grafico-planificado: #a0522d;
+  --grafico-real: #5e7a47;
+  --grafico-velocidad: #8a6a1e;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  background: var(--grafico-fondo);
+  border-radius: var(--radio);
+}
+
+.grafico figcaption {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
+.grafico p {
+  margin: 0;
+}
+
+.grafico svg {
+  display: block;
+  overflow: visible;
+}
+
+.grafico text {
+  fill: var(--texto);
+  font-size: 0.875rem;
+}
+
+.barra-planificada {
+  fill: var(--grafico-planificado);
+}
+
+.barra-real {
+  fill: var(--grafico-real);
+}
+
+.barra-velocidad {
+  fill: var(--grafico-velocidad);
+}

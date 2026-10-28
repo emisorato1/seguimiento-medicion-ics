@@ -32,6 +32,21 @@
   <p class="sin-dato">No hay ningún sprint en curso</p>
   {{end}}
 </section>
+<section id="graficos" aria-labelledby="graficos-titulo">
+  <h2 id="graficos-titulo">Gráficos</h2>
+  {{range .Charts}}
+  <figure class="grafico">
+    <figcaption>{{.Title}}</figcaption>
+    {{if .Empty}}<p class="sin-dato">{{.Empty}}</p>{{else}}
+    <svg width="100%" height="{{.Height}}">
+      {{range .Bars}}<text x="0" y="{{.TextY}}">{{.Label}}</text>
+      <text x="100%" y="{{.TextY}}" text-anchor="end">{{.Text}}</text>
+      {{if .Width}}<rect class="{{.Class}}" y="{{.RectY}}" width="{{.Width}}" height="16" rx="3"/>{{end}}
+      {{end}}
+    </svg>{{end}}
+  </figure>
+  {{end}}
+</section>
 {{end}}
 {{end}}
 {{end}}
