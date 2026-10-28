@@ -691,6 +691,30 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   rompió la conexión dos veces en `p.Dashboard()` —el estado general con las métricas del
   sprint abierto, y el sprint en curso con las del proyecto— y falló las dos.
 
+### Verificación manual
+
+El 28/10, con los datos de demo (`docs/demo/datos-demo.json` importados a una base nueva) y
+el navegador del panel de Claude Code (Chromium), sin script:
+
+- **Contraste (RN-20 y RN-19 de la #77)**, con la fórmula de la WCAG sobre los colores que
+  pinta la página: las barras sobre la tarjeta alabastro dan 4,58 a 1 (Siena), 3,94 (Salvia
+  oscurecido) y 4,12 (Oro oscurecido), todas sobre el 3 a 1. El texto da 12,90 sobre la
+  tarjeta; los rótulos y el aviso en gris, 5,22; el título y los enlaces en Siena, 5,24
+  sobre el fondo y 4,58 sobre la tarjeta; el botón, 5,62 (7,55 al pasar el mouse); la
+  tabla, 6,39 y 15,80. Todo sobre el 4,5 a 1 del texto.
+- **A 360 de ancho (RN-21)**: la página no se desplaza de costado (ancho del documento 360).
+  Cada gráfico mide 292 px, cada tarjeta termina en el borde con su margen, y las cuatro
+  tablas abiertas entran en su recuadro sin desplazarse.
+- **Sin pedir nada de afuera (RN-21)**: el único recurso que pide la página es
+  `/static/app.css`, que sale del programa.
+- **Texto alternativo (RN-19)**: en el árbol de accesibilidad, cada gráfico es una imagen
+  con su nombre completo, por ejemplo «Story points planificados contra completados.
+  Planificados: 109, Completados: 58.».
+
+**Lo que queda para hacer a mano antes del PR:** escuchar un gráfico con un lector de
+pantalla de verdad (NVDA o Narrador) y abrir la página con la red desconectada. Lo de arriba
+lo anticipa, pero no lo reemplaza.
+
 ## Trazabilidad
 
 | Eslabón | Dónde está |
