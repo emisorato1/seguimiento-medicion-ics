@@ -337,8 +337,10 @@ func TestLaWebGuardaEnLaBase(t *testing.T) {
 	}
 }
 
-// Escenarios: Exportar e importar da los mismos datos / Traer los datos de la versión
-// anterior (con un archivo de prueba propio, no los datos de demo: Dependencias de la spec)
+// Escenario: Exportar e importar da los mismos datos (desde el comando)
+// Escenario: Traer los datos de la versión anterior (con un archivo de prueba propio)
+// Con un archivo propio y no los datos de demo, como dicen las Dependencias de la spec; con
+// los datos de demo lo prueba TestTraerLosDatosDeDemo.
 // Cubre: #177 RN-7, RN-8
 func TestExportarEImportarDesdeElComando(t *testing.T) {
 	dir := t.TempDir()
@@ -492,8 +494,7 @@ func TestLoQueNoSePuedePedirAlExportarOImportar(t *testing.T) {
 	}
 }
 
-// Esquema del escenario: Lo que no se puede pedir al exportar o importar (las dos juntas, y
-// exportar sin base)
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar (las dos juntas y sin base)
 // Cubre: #177 RN-17, RN-18
 func TestImportarYExportarJuntosOSinBase(t *testing.T) {
 	t.Run("importar y exportar a la vez se rechaza", func(t *testing.T) {
@@ -526,9 +527,9 @@ func TestImportarYExportarJuntosOSinBase(t *testing.T) {
 	})
 }
 
-// Esquema del escenario: Lo que no se puede pedir al exportar o importar (un archivo .json
-// como base). Con la #177, -datos es la base: quien lo usa como antes, con el archivo de
-// datos, recibe el aviso de que ese archivo se trae con -importar.
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar (un .json como base)
+// Con la #177, -datos es la base: quien lo usa como antes, con el archivo de datos, recibe el
+// aviso de que ese archivo se trae con -importar.
 // Cubre: #177 RN-20
 func TestUnArchivoJSONComoBaseSeRechaza(t *testing.T) {
 	aviso := "-datos es la base de datos (.db); para traer un archivo .json usá -importar"
@@ -569,8 +570,8 @@ func TestUnArchivoJSONComoBaseSeRechaza(t *testing.T) {
 	}
 }
 
-// Escenario: Una base abierta no la abre otro sistema (exportar con la web abierta). Lo que
-// hay que hacer es cerrar la web y volver a exportar, no "volver a abrir este".
+// Escenario: Una base abierta no la abre otro sistema (exportar con la web abierta)
+// Lo que hay que hacer es cerrar la web y volver a exportar, no "volver a abrir este".
 // Cubre: #177 RN-19
 func TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb(t *testing.T) {
 	dir := t.TempDir()
@@ -597,5 +598,55 @@ func TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb(t *testing.T) {
 	}
 	if _, err := os.Stat(destino); !errors.Is(err, os.ErrNotExist) {
 		t.Errorf("no tenia que escribir el archivo, y Stat dio: %v", err)
+	}
+}
+
+// Escenario: Traer los datos de la versión anterior
+// Con los datos de demo de verdad (docs/demo/datos-demo.json), que ya están en dev. El
+// proyecto se busca por su fila en la lista, porque su nombre es también el del sistema, que
+// está en todas las páginas.
+// Cubre: #177 RN-8
+func TestTraerLosDatosDeDemo(t *testing.T) {
+	demo := filepath.Join("..", "..", "docs", "demo", "datos-demo.json")
+	base := filepath.Join(t.TempDir(), "demo.db")
+	fila := `<a href="/proyectos/1">Seguimiento y Medición ICS</a>`
+	abrir := func(args ...string) (string, string) {
+		var out, errOut bytes.Buffer
+		var proyectos string
+		serve := func(listener net.Listener, handler http.Handler) error {
+			listener.Close()
+			res := httptest.NewRecorder()
+			handler.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/proyectos", nil))
+			proyectos = res.Body.String()
+			return http.ErrServerClosed
+		}
+		run(append([]string{"-puerto", "0", "-datos", base}, args...), &out, &errOut, serve)
+		return out.String() + errOut.String(), proyectos
+	}
+
+	salida, proyectos := abrir("-importar", demo)
+
+	if !strings.Contains(salida, "Se importaron los datos de "+demo) || !strings.Contains(proyectos, fila) {
+		t.Fatalf("se esperaba importar los datos de demo y ver el proyecto en la lista, salio:\n%s\n%s", salida, proyectos)
+	}
+
+	// Al cerrar y volver a abrir, sin pedir importar, siguen ahi.
+	salida, proyectos = abrir()
+
+	if strings.Contains(salida, "Se importaron") || strings.Count(proyectos, fila) != 1 {
+		t.Fatalf("al volver a abrir tenia que seguir el proyecto, sin importar nada, salio:\n%s\n%s", salida, proyectos)
+	}
+	db, err := store.OpenDatabase(base)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la base: %v", err)
+	}
+	registry, err := db.Load()
+	db.Close()
+	if err != nil || len(registry.Projects()) != 1 {
+		t.Fatalf("se esperaba la base con un proyecto, salio %v", err)
+	}
+	proyecto := registry.Projects()[0]
+	if len(proyecto.Backlog()) != 21 || len(proyecto.Sprints()) != 2 {
+		t.Errorf("se esperaban 21 historias y 2 sprints, hay %d y %d", len(proyecto.Backlog()), len(proyecto.Sprints()))
 	}
 }
