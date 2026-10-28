@@ -463,6 +463,8 @@ el código a propósito, falló, y se volvió atrás).
 | Una ruta con ? se rechaza (hallazgo de la tarea 18) | `ece4fe9` | `20aec82` |
 | 19. Abrir con un archivo `.json` como base avisa que se use importar (agregada el 27/10) | `dd4dc73` | `82fcd5f` |
 | 20. Exportar con la web abierta avisa que se cierre la web (agregada el 27/10) | `0c662ab` | `cd2ee78` |
+| Cada test cita su escenario con el título exacto (28/10, para la trazabilidad) | `474cef0` | — (solo comentarios) |
+| "Traer los datos de la versión anterior" con los datos de demo (28/10) | `d5c5689` | — (sin RED) |
 
 ### Desvíos
 
@@ -503,6 +505,11 @@ el código a propósito, falló, y se volvió atrás).
   base abre normalmente (se probó con el binario).
 - **Los dos escenarios de la web que cierran y vuelven a abrir** cierran ahora la base anterior
   antes de abrirla otra vez, porque con el bloqueo una base abierta no se abre dos veces.
+- **La trazabilidad daba 9 de 14 escenarios con test** (28/10): los tests estaban, pero
+  algunos comentarios juntaban varios escenarios en una línea o cortaban la aclaración en el
+  renglón de abajo, y `scripts/trazabilidad.sh` no los leía. Se corrigieron los comentarios
+  (`474cef0`) y da 14 de 14. Con los datos de demo ya en `dev`, "Traer los datos de la
+  versión anterior" se prueba además con ellos, como decían las Dependencias (`d5c5689`).
 - **Las tareas 19 y 20 salen de la revisión de Maximiliano Eula en el #186** (27/10): la 19
   es la RN-20, y la 20, su observación sobre el aviso al exportar. Con la RN-20, el test de la
   #77 que probaba `-datos` con `otros.json` pasa a `otros.db`.
