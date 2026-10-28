@@ -437,6 +437,8 @@ func TestRegistrarEsfuerzoEnUnProyectoQueNoExiste(t *testing.T) {
 
 // Defecto #192: un registro es de un solo dia, asi que no puede tener mas de 24 horas. El
 // tope por dia sumando registros sigue afuera (decision 5 de la spec).
+// Esquema del escenario: Un registro no puede tener mas de 24 horas
+// Escenario: Dos registros del mismo dia que juntos pasan de 24 horas se aceptan
 // Cubre: RN-20
 func TestUnRegistroNoPuedeTenerMasDe24Horas(t *testing.T) {
 	for _, horas := range []float64{24.5, 25, 1000} {
@@ -467,6 +469,7 @@ func TestUnRegistroNoPuedeTenerMasDe24Horas(t *testing.T) {
 
 // Defecto #192: un registro de mas de 24 horas que se guardo antes de la regla se sigue
 // cargando, igual que uno de un dia futuro (la carga no rechaza lo que el uso produjo).
+// Escenario: Un registro de mas de 24 horas que ya estaba guardado se sigue cargando
 // Cubre: RN-20
 func TestUnRegistroDeMasDe24HorasYaGuardadoSeCarga(t *testing.T) {
 	data := []byte(`{"next_id": 2, "projects": [{"id": 1, "name": "Sistema", "start": "2026-10-01", "next_story_id": 2,

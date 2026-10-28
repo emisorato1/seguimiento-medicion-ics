@@ -307,6 +307,28 @@ Escenario: Registrar esfuerzo en un proyecto que no existe
   Dado que no existe ningun proyecto con identificador 99
   Cuando intento registrar 2 horas en el proyecto 99
   Entonces se informa que no se encontro el proyecto
+
+Esquema del escenario: Un registro no puede tener mas de 24 horas
+  Dado un proyecto con la integrante "Juliana Bustos" y la historia 1
+  Cuando registro <horas> horas en un solo registro
+  Entonces <resultado>
+
+  Ejemplos:
+    | horas | resultado                                                                     |
+    | 24    | el registro queda guardado                                                    |
+    | 24,5  | se informa que un registro es de un solo dia y no puede tener mas de 24 horas |
+
+Escenario: Dos registros del mismo dia que juntos pasan de 24 horas se aceptan
+  Dado un proyecto con la integrante "Juliana Bustos" y la historia 1
+  Y un registro de 24 horas de "Juliana Bustos" el dia de hoy
+  Cuando registro otras 3 horas de ella el mismo dia
+  Entonces los dos registros quedan guardados
+
+Escenario: Un registro de mas de 24 horas que ya estaba guardado se sigue cargando
+  Dado que los datos se guardaron antes de esta regla, con un registro de 25 horas en la historia 1
+  Cuando se cargan los datos
+  Entonces se cargan sin error
+  Y la historia 1 tiene 25 horas
 ```
 
 **Para decidir en la puerta:**
@@ -582,7 +604,8 @@ Ninguno de comportamiento. Los de proceso:
   proyecto.
 - **RN-20 (máximo de 24 horas por registro) se agregó el 27/10 por el defecto #192**, después
   de la historia: con su test y su arreglo en el PR del defecto. La carga no la controla, como
-  el día futuro.
+  el día futuro. Sus tres escenarios se sumaron a la Fase 1 el 28/10, a pedido de la revisión
+  de Juliana Bustos.
 
 ## Trazabilidad
 
