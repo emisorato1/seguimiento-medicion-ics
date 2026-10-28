@@ -90,9 +90,9 @@ func existe(path string) bool {
 	return err == nil
 }
 
-// Escenarios: Lo guardado con la versión anterior se importa solo / Lo de la versión
-// anterior no vuelve aunque se borre todo / Si lo de la versión anterior no se puede
-// importar, no se toca
+// Escenario: Lo guardado con la versión anterior se importa solo
+// Escenario: Lo de la versión anterior no vuelve aunque se borre todo
+// Escenario: Si lo de la versión anterior no se puede importar, no se toca
 // Cubre: #177 RN-14, RN-15, RN-9, D10
 func TestElArchivoViejoSeImportaUnaSolaVez(t *testing.T) {
 	viejo := unProyecto(t, func(p *domain.Project) {})
@@ -122,11 +122,29 @@ func TestElArchivoViejoSeImportaUnaSolaVez(t *testing.T) {
 		if imported, err := ImportLegacy(db, dir); imported || err != nil {
 			t.Errorf("la segunda vez no tenia que importar nada, salio importado=%v, %v", imported, err)
 		}
+	})
 
-		// Aunque despues se borre todo, no se vuelve a importar.
+	t.Run("aunque se borre todo, al cerrar y volver a abrir no se vuelve a importar", func(t *testing.T) {
+		dir, db := preparar(t, viejo)
+		if imported, err := ImportLegacy(db, dir); !imported || err != nil {
+			t.Fatalf("la primera vez se esperaba importarlo, salio importado=%v, %v", imported, err)
+		}
+
+		// Se quitan todos los datos y se cierra el sistema.
 		sinError(t, db.Save(domain.NewProjectRegistry()))
-		if imported, err := ImportLegacy(db, dir); imported || err != nil {
-			t.Errorf("con la base vaciada despues no tenia que volver a importar, salio importado=%v, %v", imported, err)
+		db.Close()
+
+		// Se vuelve a abrir: la base esta vacia, como cuando se importo.
+		reabierta := abrirBase(t, filepath.Join(dir, "datos-ics.db"))
+		imported, err := ImportLegacy(reabierta, dir)
+
+		if imported || err != nil {
+			t.Errorf("al volver a abrir no tenia que importar nada, salio importado=%v, %v", imported, err)
+		}
+		cargado, err := reabierta.Load()
+		sinError(t, err)
+		if len(cargado.Projects()) != 0 {
+			t.Errorf("la lista de proyectos tenia que quedar vacia, tiene %d", len(cargado.Projects()))
 		}
 	})
 
@@ -145,16 +163,21 @@ func TestElArchivoViejoSeImportaUnaSolaVez(t *testing.T) {
 		}
 	})
 
-	t.Run("un archivo viejo que no cumple las reglas no se toca y la base queda vacia", func(t *testing.T) {
+	t.Run("un archivo viejo con una historia de 4 story points no se toca y la base queda vacia", func(t *testing.T) {
 		dir, db := preparar(t, nil)
 		path := filepath.Join(dir, LegacyFile)
-		invalido := []byte(`{"next_id": 2, "projects": [{"id": 1, "name": "", "start": "2026-10-01", "next_story_id": 1, "members": [], "stories": [], "efforts": []}]}`)
+		invalido := []byte(`{"next_id": 2, "projects": [{"id": 1, "name": "Sistema de metricas", "start": "2026-10-01", "next_story_id": 2, "members": [],
+			"stories": [{"id": 1, "title": "Crear proyectos", "description": "Cargar un proyecto", "priority": "Alta", "state": "Pendiente", "story_points": 4, "acceptance_criteria": ["Se crea con su nombre"]}],
+			"efforts": []}]}`)
 		sinError(t, os.WriteFile(path, invalido, 0o644))
 
 		imported, err := ImportLegacy(db, dir)
 
 		if imported || !errors.Is(err, domain.ErrSavedDataInvalid) || !strings.Contains(err.Error(), path) {
 			t.Errorf("se esperaba ErrSavedDataInvalid con la ruta del archivo, salio importado=%v, %v", imported, err)
+		}
+		if err == nil || !strings.Contains(err.Error(), domain.ErrStoryPointsInvalid.Error()) {
+			t.Errorf("el aviso tenia que decir que dato esta mal (los story points), salio: %v", err)
 		}
 		if quedo, _ := os.ReadFile(path); !bytes.Equal(quedo, invalido) || existe(path+".importado") {
 			t.Error("el archivo viejo tenia que quedar como estaba, sin renombrar")

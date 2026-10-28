@@ -35,14 +35,14 @@ test traen la salida del RED.
 | #73 | Resolver diferencias y acordar la estimacion | [73-resolver-diferencias-y-acordar.md](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L167): Acordar la estimacion de una ronda revelada (esquema del escenario) | `TestAcordarLaEstimacionDeUnaRondaRevelada` [voting_round_agreement_test.go:142](../internal/domain/voting_round_agreement_test.go#L142) | `(*VotingRound).Agree` [voting_round_agreement.go:67](../internal/domain/voting_round_agreement.go#L67) |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | [77-interfaz-web-base.md](specs/sprint-2/77-interfaz-web-base.md?plain=1#L156): Crear un proyecto desde la web | `TestCrearUnProyectoDesdeLaWeb` [projects_test.go:15](../internal/web/projects_test.go#L15) | `(*Server).createProject` [projects.go:77](../internal/web/projects.go#L77) (ruta `POST /proyectos/nuevo` en `internal/web/server.go:74`) |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | [78-interfaz-web-operaciones.md](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L224): Crear un sprint desde la web | `TestCrearUnSprintDesdeLaWeb` [sprints_test.go:60](../internal/web/sprints_test.go#L60) | `(*Server).createSprint` [sprints.go:60](../internal/web/sprints.go#L60) (ruta `POST /proyectos/{id}/sprints/nuevo` en `internal/web/server.go:95`) |
-| #177 | Guardar los datos en una base de datos | [pendiente: la spec está en el PR #180] | [pendiente] | [pendiente] |
+| #177 | Guardar los datos en una base de datos | [177-guardar-en-base-de-datos.md](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L192): Los datos siguen al cerrar y volver a abrir | `TestUnRegistroCompletoVuelveIgual` [database_test.go:209](../internal/store/database_test.go#L209) | `(*Database).Save` [database.go:93](../internal/store/database.go#L93), y lo vuelve a leer `(*Database).Load` [database.go:233](../internal/store/database.go#L233) |
 
-Sacado de `dev` en `203859d` (26/10), con cada línea verificada. Las historias web (#77 y #78)
-entran por una ruta HTTP: la función es el handler, y el handler llama al dominio. La #24 entra
-por la consola: `createProject` llama a `(*ProjectRegistry).Create`, la misma función de la #3.
-La #12 y la #73 tienen un *Esquema del escenario*, con una tabla de ejemplos que el test recorre
-con subtests. [pendiente: completar la #17, la #18, la #19 y la #177 cuando se mergeen, y
-regenerar la trazabilidad: la de `dev` todavía no tiene a la #11, que entra con el PR #182.]
+Sacado de `dev` en `203859d` (26/10), y la #177 en `59bef23` (28/10), con cada línea
+verificada. Las historias web (#77 y #78) entran por una ruta HTTP: la función es el handler, y
+el handler llama al dominio. La #24 entra por la consola: `createProject` llama a
+`(*ProjectRegistry).Create`, la misma función de la #3. La #12 y la #73 tienen un *Esquema del
+escenario*, con una tabla de ejemplos que el test recorre con subtests. [pendiente: completar
+la #17, la #18 y la #19 cuando se mergeen.]
 
 ## Cómo mostrarlo en vivo
 
@@ -86,7 +86,7 @@ La base es un solo archivo, así que no hay que instalar un servidor para usar e
 driver (`modernc.org/sqlite`) está escrito en Go puro, sin C, así que compila igual en el CI,
 que prueba en Linux y en Windows, y en las dos plataformas para las que el CD arma los binarios
 (Linux amd64 y macOS arm64). El archivo JSON de antes quedó para importar y
-exportar. [pendiente: la #177 está en implementación; se confirma cuando se mergee.]
+exportar, y lo guardado con la versión anterior se importa solo al abrir con la base vacía.
 
 **3. ¿Cómo se ve el TDD en el historial?**
 Cada test entra en un commit `test:` que trae en el mensaje la salida del RED (el `--- FAIL` o
@@ -158,9 +158,10 @@ tests y marca con ⚠️ los escenarios que no tienen test. El CI corre `scripts
 que controla que las specs, el índice y las puertas digan lo mismo.
 
 **12. ¿Qué cobertura tienen?**
-Al 26/10, 96,9% en total y 100% en el dominio (`internal/domain`), que es donde están las
-reglas de negocio. El CI la mide en cada PR con `go test ./... -coverprofile`. El detalle por
-sprint está en el [informe de métricas](informe-de-metricas.md).
+Al 28/10 (`dev` en `59bef23`, ya con la #177), 95,6% en total y 100% en el dominio
+(`internal/domain`), que es donde están las reglas de negocio. La más baja es `internal/store`,
+el guardado en la base, con 87,1%. El CI la mide en cada PR con `go test ./... -coverprofile`.
+El detalle por sprint está en el [informe de métricas](informe-de-metricas.md).
 
 **13. ¿Por qué hay consola y web?**
 La consola (#24) fue la primera interfaz. El 20/10 decidimos sumar una web (#77 y #78), porque
