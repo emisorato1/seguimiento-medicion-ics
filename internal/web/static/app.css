@@ -3,8 +3,9 @@
 
    La identidad en Verde Salvia la propuso Juliana Bustos el 28/10. Contraste, con la
    formula de la WCAG: el texto 13,26 a 1 sobre el fondo y 14,42 sobre las tarjetas; el
-   secundario 4,88 y 5,30; la barra 9,74 y su pestana activa 5,38; los botones 6,16 (8,81 al
-   pasar el mouse); los enlaces 5,66. Las barras de los graficos, sobre blanco: Siena 5,62,
+   secundario 4,88 y 5,30; la barra lateral 9,74, el rotulo del proyecto en ella 5,38 y la
+   seccion abierta, blanco sobre salvia, 6,16; los botones 6,16 (8,81 al pasar el mouse); los
+   enlaces 5,66. Las barras de los graficos, sobre blanco: Siena 5,62,
    Salvia vivo 4,86 y Oro oscurecido 5,05; la Vara de Oro original (#d4a437) da 2,29 y no
    llega al 3 a 1. Las fuentes son las que tenga la computadora: no se descarga ninguna (D3). */
 
@@ -79,7 +80,7 @@ textarea:focus {
   outline-offset: 2px;
 }
 
-.barra :focus-visible {
+.sidebar :focus-visible {
   outline-color: var(--foco-barra);
 }
 
@@ -112,65 +113,86 @@ textarea:focus {
   top: 0.5rem;
 }
 
-/* La barra queda fija arriba al desplazarse (RN-4). */
-.barra {
+/* La navegacion va en una barra lateral a la izquierda, fija mientras se desplaza la pagina
+   (RN-4), y el contenido ocupa el resto. En un celular la barra pasa arriba (ver al final). */
+.app-layout {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
   position: sticky;
   top: 0;
   z-index: 5;
+  height: 100vh;
+  overflow-y: auto;
   background: var(--bg-header);
   color: var(--text-header);
 }
 
-.barra nav {
+.sidebar nav {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 1.5rem;
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 0.75rem;
 }
 
-.barra a {
-  color: var(--text-header);
-  text-decoration: none;
-}
-
-.barra a:hover,
-.barra a[aria-current="page"] {
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-}
-
-/* La pestana activa cambia de color y queda subrayada: no se distingue solo por el color. */
-.barra a[aria-current="page"] {
-  color: var(--text-active-nav);
-}
-
-.barra .marca {
-  font-weight: 700;
-}
-
-/* El proyecto en el que se esta, siempre a la vista (RN-4). */
-.barra .proyecto-actual {
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.barra ul {
+.sidebar ul {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
+  flex-direction: column;
+  gap: 0.25rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* Una sola columna que se ensancha hasta un maximo en pantallas grandes (D22). */
-main {
+.sidebar a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-header);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* La seccion abierta es una pildora salvia, en negrita: no se distingue solo por el color. */
+.sidebar a[aria-current="page"] {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+}
+
+.sidebar .marca {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* El proyecto en el que se esta, siempre a la vista (RN-4). */
+.sidebar .proyecto-actual {
+  margin: 0.5rem 0 0;
+  padding: 0 0.75rem;
+  color: var(--text-active-nav);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.sidebar .proyecto-actual strong {
+  display: block;
+  color: var(--text-header);
+}
+
+/* El contenido, en una columna que se ensancha hasta un maximo en pantallas grandes (D22). */
+.main-content {
+  width: 100%;
   max-width: 64rem;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 2rem 1.5rem 3rem;
 }
 
 main:focus {
@@ -478,15 +500,6 @@ button:hover {
 
 /* En un celular los botones ocupan el ancho y la tabla de datos va en una columna. */
 @media (max-width: 40rem) {
-  /* En un celular la barra queda fija pero baja: el nombre del proyecto va en un renglon y,
-     si no entra, se corta con puntos suspensivos. Completo esta en el titulo de la pagina. */
-  .barra .proyecto-actual {
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .datos {
     grid-template-columns: 1fr;
     gap: 0.1rem;
@@ -500,5 +513,65 @@ button:hover {
   .acciones button {
     width: 100%;
     text-align: center;
+  }
+}
+
+/* En una tableta o un celular la barra lateral pasa arriba y queda fija al desplazarse
+   (RN-4). Las secciones van en una fila que se recorre de costado dentro de la barra, asi la
+   pagina no se desplaza (RN-18). El nombre del proyecto va en un renglon y, si no entra, se
+   corta con puntos suspensivos: completo esta en el titulo de la pagina. */
+@media (max-width: 48rem) {
+  .app-layout {
+    display: block;
+  }
+
+  .sidebar {
+    height: auto;
+    overflow: visible;
+  }
+
+  /* El nombre del sistema y «Proyectos» comparten el primer renglon; el proyecto y sus
+     secciones van debajo, cada uno en el suyo. */
+  .sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .sidebar .proyecto-actual,
+  .sidebar ul[aria-label] {
+    flex-basis: 100%;
+  }
+
+  .sidebar ul {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .sidebar a {
+    padding: 0.3rem 0.65rem;
+    white-space: nowrap;
+  }
+
+  .sidebar .marca {
+    padding-left: 0;
+  }
+
+  .sidebar .proyecto-actual {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar .proyecto-actual strong {
+    display: inline;
+  }
+
+  .main-content {
+    padding: 1.5rem 1rem 3rem;
   }
 }
