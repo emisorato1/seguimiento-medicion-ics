@@ -465,6 +465,8 @@ el código a propósito, falló, y se volvió atrás).
 | 20. Exportar con la web abierta avisa que se cierre la web (agregada el 27/10) | `0c662ab` | `cd2ee78` |
 | Cada test cita su escenario con el título exacto (28/10, para la trazabilidad) | `474cef0` | — (solo comentarios) |
 | "Traer los datos de la versión anterior" con los datos de demo (28/10) | `d5c5689` | — (sin RED) |
+| "Si lo de la versión anterior no se puede importar, no se toca" con una historia de 4 SP, como el escenario (revisión del #207) | `6457085` | — (sin RED) |
+| "Lo de la versión anterior no vuelve aunque se borre todo" cerrando y volviendo a abrir la base, como el escenario (revisión del #207) | `9bf0b73` | — (sin RED) |
 
 ### Desvíos
 
