@@ -438,3 +438,40 @@ func TestTodaviaNoHaySprintsCerradosParaElGraficoDeVelocidad(t *testing.T) {
 		t.Errorf("se esperaba el grafico sin barras y sin el sprint 1, y salio:\n%s", chart)
 	}
 }
+
+// Escenario: Dashboard de un proyecto con un sprint en curso
+// Cubre: RN-1, RN-8
+func TestDashboardDeUnProyectoConUnSprintEnCurso(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := dashboardProject(t, registry, 3, 5)
+	if _, err := project.AddSprint(domain.SprintData{
+		Goal:  "Tener el dashboard",
+		Start: time.Date(2026, 10, 31, 0, 0, 0, 0, time.UTC),
+		End:   time.Date(2026, 11, 6, 0, 0, 0, 0, time.UTC),
+	}); err != nil {
+		t.Fatalf("no se pudo crear el sprint 2: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/dashboard")
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+	}
+	html := res.Body.String()
+	// Las cuatro partes, en este orden: el encabezado, el estado general, el sprint en curso y
+	// los gráficos. Y los gráficos, en el orden de la RN-8.
+	for _, orden := range [][]string{
+		{"<h1>Sistema de metricas</h1>", `<section id="estado-general"`, `<section id="sprint-en-curso"`, `<section id="graficos"`},
+		{"<figcaption>Story points</figcaption>", "<figcaption>Horas</figcaption>", "<figcaption>Defectos</figcaption>", "<figcaption>Velocidad</figcaption>"},
+	} {
+		last := -1
+		for _, parte := range orden {
+			i := strings.Index(html, parte)
+			if i <= last {
+				t.Fatalf("se esperaba %q despues de la parte anterior (en este orden: %q), y no esta asi en:\n%s", parte, orden, html)
+			}
+			last = i
+		}
+	}
+}
