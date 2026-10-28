@@ -461,19 +461,66 @@ button:hover {
   }
 }
 
-/* Los graficos del dashboard (#17): barras horizontales en SVG, cada grafico en su tarjeta.
-   La paleta la eligio Juliana Bustos el 27/10 y es solo del dashboard: los colores de :root
-   no cambian. Cada barra tiene al menos 3 a 1 de contraste con el fondo de la tarjeta (RN-20):
-   Siena 4,58; Salvia y Oro, oscurecidos para llegar, 3,94 y 4,12. El color ayuda, pero cada
-   barra lleva su rotulo (D6). */
+/* El dashboard (#17) con la paleta que eligio Juliana Bustos el 27/10: es el foco de toda la
+   pagina del dashboard, y solo de esa pagina. Los colores de :root, del resto de la web
+   (#77), no cambian. Contraste sobre la tarjeta alabastro: Siena 4,58 a 1, que alcanza para
+   texto (RN-19 de la #77); Salvia y Oro, oscurecidos para llegar al 3 a 1 de las barras
+   (RN-20), 3,94 y 4,12. El Rosa Polvoriento solo decora lineas, sin texto encima. */
+.dashboard {
+  --dash-alabastro: #f5e6d3;
+  --dash-siena: #a0522d;
+  --dash-siena-oscuro: #84421f;
+  --dash-salvia: #5e7a47;
+  --dash-oro: #8a6a1e;
+  --dash-rosa: #c47a6d;
+}
+
+.dashboard h1 {
+  color: var(--dash-siena);
+}
+
+.dashboard h2 {
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--dash-rosa);
+}
+
+.dashboard a {
+  color: var(--dash-siena);
+}
+
+.dashboard .datos,
+.dashboard .vacio {
+  background: var(--dash-alabastro);
+  border-color: var(--dash-alabastro);
+  border-left: 4px solid var(--dash-siena);
+}
+
+#sprint-en-curso .datos {
+  border-left-color: var(--dash-salvia);
+}
+
+.dashboard .vacio {
+  border-style: solid;
+}
+
+.dashboard a.boton {
+  background: var(--dash-siena);
+  border-color: var(--dash-siena);
+  color: #ffffff;
+}
+
+.dashboard a.boton:hover {
+  background: var(--dash-siena-oscuro);
+  border-color: var(--dash-siena-oscuro);
+}
+
+/* Los graficos: barras horizontales en SVG, cada grafico en su tarjeta. El color ayuda, pero
+   cada barra lleva su rotulo (D6). */
 .grafico {
-  --grafico-fondo: #f5e6d3;
-  --grafico-planificado: #a0522d;
-  --grafico-real: #5e7a47;
-  --grafico-velocidad: #8a6a1e;
   margin: 0 0 1rem;
   padding: 1rem;
-  background: var(--grafico-fondo);
+  background: var(--dash-alabastro);
+  border-left: 4px solid var(--dash-oro);
   border-radius: var(--radio);
 }
 
@@ -497,13 +544,13 @@ button:hover {
 }
 
 .barra-planificada {
-  fill: var(--grafico-planificado);
+  fill: var(--dash-siena);
 }
 
 .barra-real {
-  fill: var(--grafico-real);
+  fill: var(--dash-salvia);
 }
 
 .barra-velocidad {
-  fill: var(--grafico-velocidad);
+  fill: var(--dash-oro);
 }
