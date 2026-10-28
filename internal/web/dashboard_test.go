@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -261,5 +262,179 @@ func TestElLargoDeCadaBarraEsProporcionalAlValorMasGrandeDelGrafico(t *testing.T
 				t.Fatalf("se esperaba que %v de %v midiera %v %%, salio %v %%", c.value, c.max, c.want, got)
 			}
 		})
+	}
+}
+
+// barrasDelGrafico devuelve el gráfico con ese título tal como sale en la página, y el ancho
+// de cada barra que dibuja, en orden. Un valor sin barra no suma ancho.
+func barrasDelGrafico(t *testing.T, html, title string) (string, []string) {
+	t.Helper()
+	chart := between(html, "<figcaption>"+title+"</figcaption>", "</figure>")
+	if chart == "" {
+		t.Fatalf("se esperaba el grafico %q, y no esta en:\n%s", title, html)
+	}
+	widths := []string{}
+	for _, m := range regexp.MustCompile(`<rect[^>]* width="([^"]*)"`).FindAllStringSubmatch(chart, -1) {
+		widths = append(widths, m[1])
+	}
+	return chart, widths
+}
+
+// sprintCerradoConPuntos arma un proyecto con un sprint cerrado que comprometió historias con
+// esos puntos y completó las de los números que se le pasan.
+func sprintCerradoConPuntos(t *testing.T, registry *domain.ProjectRegistry, points []int, completed []int) *domain.Project {
+	t.Helper()
+	project := addProject(t, registry, "Sistema de metricas")
+	addSprint(t, registry, project.ID())
+	for i, p := range points {
+		story := addStory(t, project, fmt.Sprintf("Historia %d", i+1), domain.PriorityHigh)
+		if err := project.EstimateStory(story.ID(), p); err != nil {
+			t.Fatalf("no se pudo estimar la historia %d: %v", story.ID(), err)
+		}
+		if err := project.AssignStory(story.ID()); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d: %v", story.ID(), err)
+		}
+	}
+	if err := project.CloseSprint(completed, time.Date(2026, 10, 30, 0, 0, 0, 0, time.UTC)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1: %v", err)
+	}
+	return project
+}
+
+// Esquema del escenario: Las barras de un grafico se miden contra su valor mas grande
+// Cubre: RN-10, RN-11, RN-12, RN-14, D3
+//
+// Con datos reales lo completado nunca supera a lo comprometido, así que el caso "mas de lo
+// planificado" se prueba con el gráfico de horas: 20 h estimadas y 25 h reales (Fase 4).
+func TestLasBarrasDeUnGraficoSeMidenContraSuValorMasGrande(t *testing.T) {
+	cases := []struct {
+		caso      string
+		points    []int
+		completed []int
+		want      []string // el ancho de cada barra dibujada; un valor en cero no tiene
+		texts     []string
+	}{
+		{"normal", []int{21, 8, 1, 8, 2}, []int{1, 2, 3}, []string{"100%", "75%"}, []string{"40", "30"}},
+		{"valores iguales", []int{21, 13, 5, 1}, []int{1, 2, 3, 4}, []string{"100%", "100%"}, []string{"40", "40"}},
+		{"un valor en cero", []int{3}, nil, []string{"100%"}, []string{"3", "0"}},
+		{"todo el grafico en cero", nil, nil, []string{}, []string{"0", "0"}},
+	}
+	for _, c := range cases {
+		t.Run(c.caso, func(t *testing.T) {
+			registry := domain.NewProjectRegistry()
+			sprintCerradoConPuntos(t, registry, c.points, c.completed)
+			server := newTestServer(t, registry)
+
+			res := get(t, server, "/proyectos/1/dashboard")
+
+			if res.Code != http.StatusOK {
+				t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+			}
+			chart, widths := barrasDelGrafico(t, res.Body.String(), "Story points")
+			if strings.Join(widths, " ") != strings.Join(c.want, " ") {
+				t.Errorf("se esperaban las barras %q, salieron %q en:\n%s", c.want, widths, chart)
+			}
+			// Cada barra muestra su rótulo y su valor, aunque el valor sea cero.
+			for i, label := range []string{"Planificados", "Completados"} {
+				for _, text := range []string{">" + label + "</text>", ">" + c.texts[i] + "</text>"} {
+					if !strings.Contains(chart, text) {
+						t.Errorf("se esperaba %q en el grafico, y no esta en:\n%s", text, chart)
+					}
+				}
+			}
+		})
+	}
+
+	t.Run("mas de lo planificado", func(t *testing.T) {
+		registry := domain.NewProjectRegistry()
+		project := addProject(t, registry, "Sistema de metricas")
+		addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+		addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+		addSprint(t, registry, project.ID())
+		if err := project.EstimateHours(1, 20); err != nil {
+			t.Fatalf("no se pudieron estimar las horas: %v", err)
+		}
+		for _, day := range []int{26, 27} {
+			if _, err := project.LogEffort(domain.EffortData{StoryID: 1, MemberName: "Ana Perez", Activity: "Escribir tests",
+				Hours: 12.5, Day: time.Date(2026, 10, day, 0, 0, 0, 0, time.UTC)}, testToday()); err != nil {
+				t.Fatalf("no se pudo registrar el esfuerzo: %v", err)
+			}
+		}
+		server := newTestServer(t, registry)
+
+		chart, widths := barrasDelGrafico(t, get(t, server, "/proyectos/1/dashboard").Body.String(), "Horas")
+
+		if want := []string{"80%", "100%"}; strings.Join(widths, " ") != strings.Join(want, " ") {
+			t.Errorf("se esperaban las barras %q, salieron %q en:\n%s", want, widths, chart)
+		}
+		for _, text := range []string{">Estimadas</text>", ">20,0 h</text>", ">Reales</text>", ">25,0 h</text>"} {
+			if !strings.Contains(chart, text) {
+				t.Errorf("se esperaba %q en el grafico, y no esta en:\n%s", text, chart)
+			}
+		}
+	})
+}
+
+// Escenario: El grafico de velocidad tiene una barra por sprint cerrado
+// Cubre: RN-9, RN-11, D3
+//
+// El ancho va con punto en el atributo del SVG (61.5%), y el valor que se lee con la regla de
+// formato.
+func TestElGraficoDeVelocidadTieneUnaBarraPorSprintCerrado(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project := addProject(t, registry, "Sistema de metricas")
+	// Velocidades 8, 13 y 10: el 10 no está en la escala, así que el sprint 3 completa 8 y 2.
+	for i, points := range [][]int{{8}, {13}, {8, 2}} {
+		start := time.Date(2026, 10, 1+7*i, 0, 0, 0, 0, time.UTC)
+		if _, err := project.AddSprint(domain.SprintData{Goal: "Avanzar", Start: start, End: start.AddDate(0, 0, 6)}); err != nil {
+			t.Fatalf("no se pudo crear el sprint %d: %v", i+1, err)
+		}
+		completed := []int{}
+		for _, p := range points {
+			story := addStory(t, project, fmt.Sprintf("Historia de %d puntos", p), domain.PriorityHigh)
+			if err := project.EstimateStory(story.ID(), p); err != nil {
+				t.Fatalf("no se pudo estimar la historia %d: %v", story.ID(), err)
+			}
+			if err := project.AssignStory(story.ID()); err != nil {
+				t.Fatalf("no se pudo asignar la historia %d: %v", story.ID(), err)
+			}
+			completed = append(completed, story.ID())
+		}
+		if err := project.CloseSprint(completed, start.AddDate(0, 0, 6)); err != nil {
+			t.Fatalf("no se pudo cerrar el sprint %d: %v", i+1, err)
+		}
+	}
+	server := newTestServer(t, registry)
+
+	chart, widths := barrasDelGrafico(t, get(t, server, "/proyectos/1/dashboard").Body.String(), "Velocidad")
+
+	if want := []string{"61.5%", "100%", "76.9%"}; strings.Join(widths, " ") != strings.Join(want, " ") {
+		t.Errorf("se esperaban las barras %q, salieron %q en:\n%s", want, widths, chart)
+	}
+	last := 0
+	for _, text := range []string{">Sprint 1</text>", ">8</text>", ">Sprint 2</text>", ">13</text>", ">Sprint 3</text>", ">10</text>"} {
+		i := strings.Index(chart, text)
+		if i < last {
+			t.Fatalf("se esperaba %q en el grafico, despues del anterior, y no esta asi en:\n%s", text, chart)
+		}
+		last = i
+	}
+}
+
+// Escenario: Todavia no hay sprints cerrados para el grafico de velocidad
+// Cubre: RN-9
+func TestTodaviaNoHaySprintsCerradosParaElGraficoDeVelocidad(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	addProject(t, registry, "Sistema de metricas")
+	addSprint(t, registry, 1)
+	server := newTestServer(t, registry)
+
+	chart, widths := barrasDelGrafico(t, get(t, server, "/proyectos/1/dashboard").Body.String(), "Velocidad")
+
+	if !strings.Contains(chart, "Todavía no hay sprints cerrados") {
+		t.Errorf("se esperaba el aviso de que no hay sprints cerrados, y no esta en:\n%s", chart)
+	}
+	if len(widths) != 0 || strings.Contains(chart, "Sprint 1") {
+		t.Errorf("se esperaba el grafico sin barras y sin el sprint 1, y salio:\n%s", chart)
 	}
 }
