@@ -25,13 +25,13 @@ func formatHours(hours float64) string {
 	return strings.Replace(strconv.FormatFloat(hours, 'f', -1, 64), ".", ",", 1)
 }
 
-// hours lee unas horas escritas con coma o con punto (D11). Si no son un numero, marca el
-// campo y devuelve cero, sin llamar al dominio. NaN e Inf tampoco son un numero que alguien
 // decimalHours es la forma de unas horas: un numero, con decimales opcionales despues de una
 // coma o de un punto. El signo menos se deja pasar para que el dominio diga que tienen que ser
 // mayores que cero.
 var decimalHours = regexp.MustCompile(`^-?[0-9]+([.,][0-9]+)?$`)
 
+// hours lee unas horas escritas con coma o con punto (D11). Si no son un numero, marca el
+// campo y devuelve cero, sin llamar al dominio. NaN e Inf tampoco son un numero que alguien
 // escriba como horas, aunque la conversion de Go los acepte.
 func (f *form) hours(name string) float64 {
 	text := strings.TrimSpace(f.Values[name])
