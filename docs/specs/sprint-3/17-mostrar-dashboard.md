@@ -466,7 +466,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 10 | La página del dashboard, con el encabezado del proyecto, su fecha de inicio como día/mes/año y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-15, RN-17, RN-18 | hecha |
 | 11 | Sin sprints, la página muestra el encabezado y el aviso, sin gráficos | Un proyecto sin sprints avisa que no hay datos | RN-7 | hecha |
 | 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | hecha |
-| 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | pendiente |
+| 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | hecha |
 | 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | pendiente |
 | 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | pendiente |
 | 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | pendiente |
@@ -558,6 +558,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 10 | `9bf4313` | `132571d` |
 | 11 | `9c4e01e` | `4a9caae` |
 | 12 | `71ccebe` | `6f8bd5a` |
+| 13 | `210f45d` | `cc37e50` |
 
 ### Decisiones tomadas al implementar
 
@@ -612,6 +613,19 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   (tarea 12): cada número en una lista de rótulo y valor, el sprint en curso con su enlace,
   su goal y sus fechas («Sprint 2: … (26/10/2026 al 30/10/2026)»), y sin sprint abierto el
   mismo texto, «No hay ningún sprint en curso».
+- **Cada gráfico es un solo SVG** (tarea 13), con los rótulos, los valores y las barras
+  adentro, y no un SVG chico por barra: así la tarea 15 le pone el `role="img"` y el texto
+  alternativo a un solo dibujo, como pide la D4. Lo eligió Juliana. Los gráficos van en una
+  parte «Gráficos», debajo del sprint en curso, cada uno en su tarjeta con el título arriba.
+- **El color de cada barra sale de su posición** (tarea 13), sin cambiar el contrato del
+  dominio: en los tres gráficos que comparan, la primera barra es lo planificado y la segunda
+  lo real; en el de velocidad, todas del mismo color. Lo eligió Juliana.
+- **La paleta es la que eligió Juliana el 27/10** (tarea 13, D6), solo para el dashboard y en
+  `app.css`, sin tocar los colores de la #77: cada gráfico en una tarjeta Alabastro Cálido
+  (`#F5E6D3`), lo planificado en Siena Tostado (`#A0522D`, 4,58 a 1), lo real en Verde
+  Salvia oscurecido (`#5E7A47`, 3,94 a 1) y la velocidad en Vara de Oro oscurecida
+  (`#8A6A1E`, 4,12 a 1). Los originales de la paleta, `#87A96B` y `#D4A437`, no llegaban al
+  3 a 1 de la RN-20 sobre ese fondo. Las fuentes de la web no cambian.
 
 ### Desvíos respecto de la spec
 
@@ -633,6 +647,11 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   recibirlo. Juliana eligió el 27/10 que los tests armen el proyecto con las operaciones de
   verdad (historias estimadas, sprints, asignación y cierre), sin tocar el servidor. Cada
   test fija igual los números que da la #16 con sus datos.
+- **Tarea 13, el caso «más de lo planificado» va con el gráfico de horas:** el escenario lo
+  pide con 20 story points planificados y 25 completados, pero con datos reales lo
+  completado sale de lo comprometido y nunca lo supera. Juliana eligió probarlo con 20 h
+  estimadas y 25 h reales, que da lo mismo (80 % y 100 %). Los otros cuatro casos van con
+  story points como dice el escenario.
 
 ## Trazabilidad
 
