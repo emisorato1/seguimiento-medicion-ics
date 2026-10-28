@@ -304,7 +304,8 @@ func TestAbrirElDashboardNoCambiaElProyecto(t *testing.T) {
 	}
 }
 
-// Tarea 8: el dashboard se pide al proyecto y usa las métricas que calcula la #16
+// Sin escenario: tarea 8 de la #17, el dashboard se pide al proyecto y usa las métricas que
+// calcula la #16 (es la conexión con la #16, que la Fase 3 deja sin escenario)
 // Cubre: RN-2
 // A diferencia de los demás, este test arma el proyecto con las operaciones de verdad: los
 // números esperados son los que da la #16 con estos datos.

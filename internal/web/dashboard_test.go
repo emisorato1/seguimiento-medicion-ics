@@ -586,8 +586,9 @@ func TestUsarElDashboardEnUnCelularYSinInternet(t *testing.T) {
 	}
 }
 
-// De punta a punta (tarea 17): un proyecto con todo, armado con las operaciones de verdad, y
-// la página muestra los números que calcula la #16, sin calcular ninguno (RN-2).
+// Sin escenario: tarea 17 de la #17, de punta a punta (la Fase 3 la deja sin escenario). Un
+// proyecto con todo, armado con las operaciones de verdad, y la página muestra los números
+// que calcula la #16, sin calcular ninguno (RN-2).
 // Cubre: RN-2
 //
 // Las historias 1 (5 SP, 10 h), 2 (3 SP, 6 h), 3 (8 SP, 12 h) y 4 (2 SP, sin horas, nunca
