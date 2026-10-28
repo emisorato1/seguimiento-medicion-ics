@@ -585,3 +585,122 @@ func TestUsarElDashboardEnUnCelularYSinInternet(t *testing.T) {
 		}
 	}
 }
+
+// De punta a punta (tarea 17): un proyecto con todo, armado con las operaciones de verdad, y
+// la página muestra los números que calcula la #16, sin calcular ninguno (RN-2).
+// Cubre: RN-2
+//
+// Las historias 1 (5 SP, 10 h), 2 (3 SP, 6 h), 3 (8 SP, 12 h) y 4 (2 SP, sin horas, nunca
+// entra a un sprint). El sprint 1 cierra con la 1 completada y la 2 sin completar; el 2 está
+// abierto con la 2 y la 3. Ana registra 4 h y 8 h en la 1, 2,5 h en la 2 y 5 h en la 3. Un
+// defecto detectado en el sprint 1 y resuelto en el 2, y otro detectado en el 2, abierto.
+//
+// Con eso la #16 da, para el proyecto: 18 SP planificados y 5 completados, 4 historias y 1
+// completada (25 %), 28 h estimadas y 19,5 h reales (desviación de -30,357… %), 2 defectos y
+// 1 resuelto, y velocidad 5. Para el sprint 2, abierto: 11 SP, 7,5 h reales y 1 defecto.
+func TestElDashboardMuestraLosNumerosQueCalculaLaHistoria16(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	project, err := registry.Create(domain.ProjectData{Name: "Sistema de metricas", Start: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)})
+	if err != nil {
+		t.Fatalf("no se pudo crear el proyecto: %v", err)
+	}
+	addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+	for i, story := range []struct {
+		points int
+		hours  float64
+	}{{5, 10}, {3, 6}, {8, 12}, {2, 0}} {
+		addStory(t, project, fmt.Sprintf("Historia %d", i+1), domain.PriorityHigh)
+		if err := project.EstimateStory(i+1, story.points); err != nil {
+			t.Fatalf("no se pudo estimar la historia %d: %v", i+1, err)
+		}
+		if story.hours > 0 {
+			if err := project.EstimateHours(i+1, story.hours); err != nil {
+				t.Fatalf("no se pudieron estimar las horas de la historia %d: %v", i+1, err)
+			}
+		}
+	}
+	dia := func(d int) time.Time { return time.Date(2026, 10, d, 0, 0, 0, 0, time.UTC) }
+	sprint := func(goal string, start, end time.Time, stories ...int) {
+		if _, err := project.AddSprint(domain.SprintData{Goal: goal, Start: start, End: end}); err != nil {
+			t.Fatalf("no se pudo crear el sprint %q: %v", goal, err)
+		}
+		for _, id := range stories {
+			if err := project.AssignStory(id); err != nil {
+				t.Fatalf("no se pudo asignar la historia %d: %v", id, err)
+			}
+		}
+	}
+	sprint("Tener el MVP", dia(1), dia(7), 1, 2)
+	if err := project.CloseSprint([]int{1}, dia(7)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1: %v", err)
+	}
+	sprint("Tener el dashboard", dia(8), time.Date(2026, 11, 6, 0, 0, 0, 0, time.UTC), 2, 3)
+	for _, e := range []struct {
+		story int
+		hours float64
+		day   int
+	}{{1, 4, 3}, {1, 8, 6}, {2, 2.5, 9}, {3, 5, 20}} {
+		if _, err := project.LogEffort(domain.EffortData{StoryID: e.story, MemberName: "Ana Perez", Activity: "Escribir tests",
+			Hours: e.hours, Day: dia(e.day)}, testToday()); err != nil {
+			t.Fatalf("no se pudo registrar el esfuerzo en la historia %d: %v", e.story, err)
+		}
+	}
+	addDefect(t, project, 1)
+	addDefect(t, project, 2)
+	if err := project.ResolveDefect(1, 2); err != nil {
+		t.Fatalf("no se pudo resolver el defecto 1: %v", err)
+	}
+	server := newTestServer(t, registry)
+
+	html := get(t, server, "/proyectos/1/dashboard").Body.String()
+
+	estado := between(html, `<section id="estado-general"`, "</section>")
+	for _, fila := range [][2]string{
+		{"Story points planificados", "18"},
+		{"Story points completados", "5"},
+		{"Historias planificadas", "4"},
+		{"Historias completadas", "1"},
+		{"Porcentaje de historias completas", "25,0 %"},
+		{"Horas estimadas", "28,0 h"},
+		{"Horas reales", "19,5 h"},
+		{"Desviación de horas", "-30,4 %"},
+		{"Defectos detectados", "2"},
+		{"Defectos resueltos", "1"},
+		{"Velocidad", "5"},
+	} {
+		if want := "<dt>" + fila[0] + "</dt><dd>" + fila[1] + "</dd>"; !strings.Contains(estado, want) {
+			t.Errorf("se esperaba %q en el estado general, y no esta en:\n%s", want, estado)
+		}
+	}
+	enCurso := between(html, `<section id="sprint-en-curso"`, "</section>")
+	for _, want := range []string{
+		"Sprint 2</a>: Tener el dashboard (08/10/2026 al 06/11/2026)",
+		"<dt>Story points planificados</dt><dd>11</dd>",
+		"<dt>Horas reales</dt><dd>7,5 h</dd>",
+		"<dt>Defectos detectados</dt><dd>1</dd>",
+	} {
+		if !strings.Contains(enCurso, want) {
+			t.Errorf("se esperaba %q en el sprint en curso, y no esta en:\n%s", want, enCurso)
+		}
+	}
+	for _, grafico := range []struct {
+		title  string
+		texts  []string
+		widths []string
+	}{
+		{"Story points", []string{">18</text>", ">5</text>"}, []string{"100%", "27.8%"}},
+		{"Horas", []string{">28,0 h</text>", ">19,5 h</text>"}, []string{"100%", "69.6%"}},
+		{"Defectos", []string{">2</text>", ">1</text>"}, []string{"100%", "50%"}},
+		{"Velocidad", []string{">Sprint 1</text>", ">5</text>"}, []string{"100%"}},
+	} {
+		chart, widths := barrasDelGrafico(t, html, grafico.title)
+		if strings.Join(widths, " ") != strings.Join(grafico.widths, " ") {
+			t.Errorf("en %s se esperaban las barras %q, salieron %q", grafico.title, grafico.widths, widths)
+		}
+		for _, text := range grafico.texts {
+			if !strings.Contains(chart, text) {
+				t.Errorf("se esperaba %q en el grafico %s, y no esta en:\n%s", text, grafico.title, chart)
+			}
+		}
+	}
+}
