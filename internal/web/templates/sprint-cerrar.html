@@ -1,5 +1,13 @@
 {{define "content"}}
 {{with .Data}}
+{{if not .Sprint}}
+{{/* Una pagina vieja: el sprint ya se cerro en otra pestaña (#190). */}}
+<h1>Cerrar el sprint</h1>
+{{template "error-formulario" .Form.General}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/sprints">Ver los sprints</a>
+</div>
+{{else}}
 <h1>Cerrar el sprint {{.Sprint.Number}}</h1>
 {{template "error-formulario" .Form.General}}
 <form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/sprints/cerrar/confirmar" novalidate>
@@ -28,5 +36,6 @@
     <a class="boton boton-secundario" href="/proyectos/{{.ProjectID}}/sprints/{{.Sprint.Number}}">Cancelar</a>
   </div>
 </form>
+{{end}}
 {{end}}
 {{end}}

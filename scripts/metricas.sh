@@ -37,8 +37,8 @@ command -v jq >/dev/null || { echo "Falta jq. Instalar: brew install jq"; exit 1
 case "$SPRINT" in
   "Sprint 1") DESDE="2026-09-28"; HASTA="2026-10-16" ;;
   "Sprint 2") DESDE="2026-10-17"; HASTA="2026-10-25" ;;
-  "Sprint 3") DESDE="2026-10-26"; HASTA="2026-10-30" ;;
-  "Sprint 4") DESDE="2026-10-31"; HASTA="2026-11-01" ;;
+  "Sprint 3") DESDE="2026-10-26"; HASTA="2026-10-28" ;;
+  "Sprint 4") DESDE="2026-10-29"; HASTA="2026-10-29" ;;
   *)          DESDE="0000-00-00"; HASTA="9999-99-99" ;;
 esac
 
@@ -50,60 +50,74 @@ ITEMS=$(gh project item-list "$PROYECTO" --owner "$OWNER" --limit 200 --format j
 # y vuelve a su sprint del plan, hay que sacarle la etiqueta.
 ADELANTADAS=$(gh issue list --repo "$REPO" --label adelantada --state all --limit 100 --json number --jq '[.[].number]')
 
+# Las historias con la etiqueta "agregada" entraron al sprint ya empezado, sin estar en la
+# planning (como la #177 en el Sprint 3). Se cuentan igual que las adelantadas: no suman a lo
+# comprometido, se muestran aparte y, si se terminan, suman a la velocidad.
+AGREGADAS=$(gh issue list --repo "$REPO" --label agregada --state all --limit 100 --json number --jq '[.[].number]')
+
 echo "# Metricas del $SPRINT"
 echo
 echo "_Calculadas el $(date '+%Y-%m-%d %H:%M') con scripts/metricas.sh._"
 echo
 echo "## Historias"
 echo
-echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" '
+echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" --argjson agr "$AGREGADAS" '
   [.items[] | select(.sprint == $s)]
   | (["| # | Historia | SP | Estado | Horas est. | Horas reales |", "|---|---|---|---|---|---|"]
      + (sort_by(.content.number) | map(
          "| #\(.content.number) | \(.title) | \(.["story Points"] // 0) | \(.status // "-")"
-         + "\(if (.content.number | IN($adel[])) then " (adelantada)" else "" end) "
+         + "\(if (.content.number | IN($adel[])) then " (adelantada)" elif (.content.number | IN($agr[])) then " (agregada)" else "" end) "
          + "| \(.["horas estimadas"] // "-") | \(.["horas reales"] // "-") |")))
   | join("\n")'
 
 echo
 echo "## Resumen"
 echo
-echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" '
+echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" --argjson agr "$AGREGADAS" '
   # Redondea al entero mas cercano (o a "decimales" decimales). floor no sirve: con
   # numeros negativos redondea para abajo y una desviacion de -12,1% salia -13%.
   def redondear: round;
   def redondear(decimales): (. * pow(10; decimales) | round) / pow(10; decimales);
   [.items[] | select(.sprint == $s)] as $del_sprint
-  | [$del_sprint[] | select((.content.number | IN($adel[])) | not)] as $todas
+  | [$del_sprint[] | select((.content.number | IN($adel[] , $agr[])) | not)] as $todas
   | [$del_sprint[] | select(.content.number | IN($adel[]))] as $adelantadas
+  | [$del_sprint[] | select(.content.number | IN($agr[]))] as $agregadas
   | [$todas[] | select(.status == "Hecho")] as $hechas
   | [$adelantadas[] | select(.status == "Hecho")] as $adelantadas_hechas
-  # Una historia sin estimar (sin story points, como la #77) no tiene contra que comparar
-  # sus horas reales: no entra en la desviacion ni en las horas por story point. Una
-  # adelantada terminada si entra, igual que en la velocidad.
-  | [($hechas + $adelantadas_hechas)[] | select((.["story Points"] // 0) > 0)] as $hechas_estimadas
+  | [$agregadas[] | select(.status == "Hecho")] as $agregadas_hechas
+  # Una historia sin story points no entra en las horas por story point. Una adelantada o
+  # agregada terminada si entra, igual que en la velocidad.
+  | [($hechas + $adelantadas_hechas + $agregadas_hechas)[] | select((.["story Points"] // 0) > 0)] as $hechas_estimadas
+  # Una historia sin horas estimadas (como la #77, que se estimo cuando ya estaba terminada)
+  # no tiene contra que comparar sus horas reales: no entra en la desviacion.
+  | [$hechas_estimadas[] | select((.["horas estimadas"] // 0) > 0)] as $hechas_con_horas
   | ([$adelantadas[] | .["story Points"] // 0] | add // 0) as $adelantados
   | ([$adelantadas_hechas[] | .["story Points"] // 0] | add // 0) as $adelantados_hechos
+  | ([$agregadas[] | .["story Points"] // 0] | add // 0) as $agregados
+  | ([$agregadas_hechas[] | .["story Points"] // 0] | add // 0) as $agregados_hechos
   | ([$todas[] | .["story Points"] // 0] | add // 0) as $planificados
   | ([$hechas[] | .["story Points"] // 0] | add // 0) as $completados
   | ([$todas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) as $estimadas
   | ([$todas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) as $reales
-  | ([$hechas_estimadas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) as $estimadas_hechas
-  | ([$hechas_estimadas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) as $reales_hechas
+  | ([$hechas_con_horas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) as $estimadas_hechas
+  | ([$hechas_con_horas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) as $reales_hechas
+  | ([$hechas_estimadas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) as $reales_por_punto
+  | ($completados + $adelantados_hechos + $agregados_hechos) as $velocidad
   | "| Metrica | Valor |\n|---|---|"
   + "\n| Story points planificados | \($planificados) |"
   + "\n| Story points completados | \($completados) |"
-  + "\n| **Velocidad del sprint** | **\($completados + $adelantados_hechos)** (\($completados) + \($adelantados_hechos) adelantados) |"
+  + "\n| **Velocidad del sprint** | **\($completados + $adelantados_hechos + $agregados_hechos)** (\($completados) + \($adelantados_hechos) adelantados\(if ($agregadas | length) > 0 then " + \($agregados_hechos) agregados" else "" end)) |"
   + "\n| Historias planificadas | \($todas | length) |"
   + "\n| Historias completadas | \($hechas | length) |"
   + "\n| Porcentaje de historias completadas | \(if ($todas|length) > 0 then (($hechas|length) * 100 / ($todas|length) | redondear) else 0 end)% |"
   + "\n| Horas estimadas, todas las historias | \($estimadas) |"
   + "\n| Horas reales, todas las historias | \($reales) |"
   + "\n| Horas reales, contando las adelantadas | \($reales + ([$adelantadas[] | .["horas reales"] // 0] | add // 0) | redondear(2)) |"
+  + (if ($agregadas | length) > 0 then "\n| Horas reales, contando las adelantadas y las agregadas | \($reales + ([($adelantadas + $agregadas)[] | .["horas reales"] // 0] | add // 0) | redondear(2)) |" else "" end)
   + "\n| Horas estimadas, historias terminadas | \($estimadas_hechas) |"
-  + "\n| Horas reales, historias terminadas | \($reales_hechas) |"
-  + "\n| Desviacion de esfuerzo, historias terminadas | \($reales_hechas - $estimadas_hechas | redondear(2)) h (\(if $estimadas_hechas > 0 then (($reales_hechas - $estimadas_hechas) * 100 / $estimadas_hechas | redondear) else 0 end)%) |"
-  + "\n| Horas por story point completado | \(if ($completados + $adelantados_hechos) > 0 then ($reales_hechas / ($completados + $adelantados_hechos) | redondear(1)) else "sin datos" end) |"
+  + "\n| Horas reales, historias terminadas con horas estimadas | \($reales_hechas) |"
+  + "\n| Desviacion de esfuerzo, historias terminadas con horas estimadas | \($reales_hechas - $estimadas_hechas | redondear(2)) h (\(if $estimadas_hechas > 0 then (($reales_hechas - $estimadas_hechas) * 100 / $estimadas_hechas | redondear) else 0 end)%) |"
+  + "\n| Horas por story point completado | \(if $velocidad > 0 then "\($reales_por_punto / $velocidad | redondear(1)) (\($reales_por_punto) h / \($velocidad) SP)" else "sin datos" end) |"
   + "\n\n**Adelantadas** (decision 11 del plan: no suman a lo comprometido)\n"
   + "\n| Metrica | Valor |\n|---|---|"
   + "\n| Historias adelantadas | \($adelantadas | length)\(if ($adelantadas | length) > 0 then " (" + ($adelantadas | map("#\(.content.number)") | join(", ")) + ")" else "" end) |"
@@ -111,7 +125,17 @@ echo "$ITEMS" | jq -r --arg s "$SPRINT" --argjson adel "$ADELANTADAS" '
   + "\n| Historias adelantadas completadas | \($adelantadas_hechas | length) |"
   + "\n| Story points adelantados completados | \($adelantados_hechos) |"
   + "\n| Horas estimadas de las adelantadas | \([$adelantadas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) |"
-  + "\n| Horas reales de las adelantadas | \([$adelantadas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) |"'
+  + "\n| Horas reales de las adelantadas | \([$adelantadas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) |"
+  + (if ($agregadas | length) > 0 then
+      "\n\n**Agregadas durante el sprint** (no estaban en la planning: no suman a lo comprometido)\n"
+      + "\n| Metrica | Valor |\n|---|---|"
+      + "\n| Historias agregadas | \($agregadas | length) (\($agregadas | map("#\(.content.number)") | join(", "))) |"
+      + "\n| Story points agregados | \($agregados) |"
+      + "\n| Historias agregadas completadas | \($agregadas_hechas | length) |"
+      + "\n| Story points agregados completados | \($agregados_hechos) |"
+      + "\n| Horas estimadas de las agregadas | \([$agregadas[] | .["horas estimadas"] // 0] | add // 0 | redondear(2)) |"
+      + "\n| Horas reales de las agregadas | \([$agregadas[] | .["horas reales"] // 0] | add // 0 | redondear(2)) |"
+    else "" end)'
 
 echo
 echo "## Defectos"
@@ -132,7 +156,8 @@ echo "$DEFECTOS" | jq -r --arg desde "$DESDE" --arg hasta "$HASTA" '
   + "\n| Defectos detectados en el sprint | \($detectados | length) |"
   + "\n| Defectos resueltos en el sprint | \($resueltos | length) |"
   + "\n| Defectos abiertos al cierre | \($abiertos | length) |\n"
-  + ($todos | sort_by(.number) | map("\n- #\(.number) detectado \(.detectado), "
+  # Se listan solo los del sprint: detectados, resueltos o abiertos al cierre.
+  + (($detectados + $resueltos + $abiertos) | unique_by(.number) | map("\n- #\(.number) detectado \(.detectado), "
       + "\(if .resuelto == null then "abierto" else "resuelto \(.resuelto)" end): \(.title)") | join(""))'
 
 echo
@@ -142,5 +167,7 @@ echo "sprint cerrado vale su acta de review: este script usa el Sprint que cada 
 echo "Las horas de una historia que viene de un sprint anterior se suman enteras: lo que ya se"
 echo "conto en ese sprint hay que restarlo a mano. Una historia terminada sin story points"
 echo "suma sus horas reales al total, pero no a la desviacion ni a las horas por story point."
+echo "Una terminada sin horas estimadas suma a las horas por story point, pero no a la desviacion."
 echo "Las adelantadas no suman a lo comprometido ni a sus horas; si se terminan, suman a la"
-echo "velocidad, a la desviacion y a las horas por story point._"
+echo "velocidad, a la desviacion y a las horas por story point. Las agregadas durante el sprint"
+echo "(etiqueta agregada) se cuentan igual que las adelantadas._"
