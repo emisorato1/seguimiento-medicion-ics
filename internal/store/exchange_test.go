@@ -122,11 +122,29 @@ func TestElArchivoViejoSeImportaUnaSolaVez(t *testing.T) {
 		if imported, err := ImportLegacy(db, dir); imported || err != nil {
 			t.Errorf("la segunda vez no tenia que importar nada, salio importado=%v, %v", imported, err)
 		}
+	})
 
-		// Aunque despues se borre todo, no se vuelve a importar.
+	t.Run("aunque se borre todo, al cerrar y volver a abrir no se vuelve a importar", func(t *testing.T) {
+		dir, db := preparar(t, viejo)
+		if imported, err := ImportLegacy(db, dir); !imported || err != nil {
+			t.Fatalf("la primera vez se esperaba importarlo, salio importado=%v, %v", imported, err)
+		}
+
+		// Se quitan todos los datos y se cierra el sistema.
 		sinError(t, db.Save(domain.NewProjectRegistry()))
-		if imported, err := ImportLegacy(db, dir); imported || err != nil {
-			t.Errorf("con la base vaciada despues no tenia que volver a importar, salio importado=%v, %v", imported, err)
+		db.Close()
+
+		// Se vuelve a abrir: la base esta vacia, como cuando se importo.
+		reabierta := abrirBase(t, filepath.Join(dir, "datos-ics.db"))
+		imported, err := ImportLegacy(reabierta, dir)
+
+		if imported || err != nil {
+			t.Errorf("al volver a abrir no tenia que importar nada, salio importado=%v, %v", imported, err)
+		}
+		cargado, err := reabierta.Load()
+		sinError(t, err)
+		if len(cargado.Projects()) != 0 {
+			t.Errorf("la lista de proyectos tenia que quedar vacia, tiene %d", len(cargado.Projects()))
 		}
 	})
 
