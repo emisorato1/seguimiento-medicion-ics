@@ -118,7 +118,7 @@ aprobó Maximiliano Eula en el #186 (https://github.com/emisorato1/seguimiento-m
 La regla que sigue la propuso Maximiliano Eula al ratificar las puertas (punto 1) y la pidió
 en su revisión del #186, para quien abre el sistema como antes de esta historia; la agregó
 Emiliano Sorato el 27/10, con la primera de las dos opciones de esa revisión.
-**Aprobó: [pendiente]**, alguien que no la escribió, en el #186.
+**Aprobó:** Maximiliano Eula, 27/10, en el #186 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/186#issuecomment-6450784460) y Agustín Salinas, 27/10, en el #186 (https://github.com/emisorato1/seguimiento-medicion-ics/pull/186#issuecomment-6451914322).
 
 20. **[RN-20]** Si se abre el sistema indicando como base un archivo `.json`, el sistema debe
     avisar que la base es un archivo `.db` y que un archivo `.json` se trae con la opción de
