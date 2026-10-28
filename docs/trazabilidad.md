@@ -34,12 +34,14 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#9 Asignar historias a un sprint](#9-asignar-historias-a-un-sprint) | 14 | 14 | 0 | 0 |
 | [#14 Registrar el esfuerzo real](#14-registrar-el-esfuerzo-real) | 19 | 19 | 0 | 2 |
 | [#15 Gestionar defectos](#15-gestionar-defectos) | 20 | 20 | 0 | 3 |
-| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 12 |
+| [#77 Interfaz web: proyectos, integrantes y backlog](#77-interfaz-web-proyectos-integrantes-y-backlog) | 15 | 15 | 0 | 11 |
 | [#10 Cerrar un sprint](#10-cerrar-un-sprint) | 14 | 14 | 0 | 0 |
 | [#11 Consultar sprints anteriores](#11-consultar-sprints-anteriores) | 12 | 12 | 0 | 0 |
 | [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
 | [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 16 | 0 | 2 |
-| [#78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](#78-interfaz-web-sprints-esfuerzo-defectos-planning-poker-y-reportes) | 22 | 17 | 5 | 3 |
+| [#17 Mostrar el dashboard](#17-mostrar-el-dashboard) | 16 | 6 | 10 | 0 |
+| [#177 Guardar los datos en una base de datos](#177-guardar-los-datos-en-una-base-de-datos) | 14 | 9 | 5 | 11 |
+| [#78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](#78-interfaz-web-sprints-esfuerzo-defectos-planning-poker-y-reportes) | 22 | 17 | 5 | 5 |
 | [#19 Exportar el reporte a PDF](#19-exportar-el-reporte-a-pdf) | 13 | 13 | 0 | 3 |
 | [#73 Resolver diferencias y acordar la estimación](#73-resolver-diferencias-y-acordar-la-estimación) | 13 | 13 | 0 | 0 |
 
@@ -50,9 +52,9 @@ cinco casos posibles:
 
 | Marca | Qué quiere decir | Tests |
 |---|---|---|
-| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 252 |
+| `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 295 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 55 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 63 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 13 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
@@ -632,12 +634,12 @@ cinco casos posibles:
 | ″ | `TestLasListasVaciasDicenQueHacer` [server_test.go:311](../internal/web/server_test.go#L311) | [projects.go](../internal/web/projects.go), [proyectos.html](../internal/web/templates/proyectos.html) | `e9570b7` → `650752f` |
 | [Pedir algo que no existe](specs/sprint-2/77-interfaz-web-base.md?plain=1#L237) | `TestPedirAlgoQueNoExiste` [server_test.go:1045](../internal/web/server_test.go#L1045) | el que ya estaba | `15a8336` (sin RED: ya pasaba) |
 | [Un texto con signos se muestra tal cual](specs/sprint-2/77-interfaz-web-base.md?plain=1#L249) | `TestUnTextoConSignosSeMuestraTalCual` [projects_test.go:105](../internal/web/projects_test.go#L105) | el que ya estaba | `413660d` (sin RED: ya pasaba) |
-| [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [main_test.go:22](../cmd/web/main_test.go#L22) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
+| [Abrir el sistema con un solo comando y sin internet](specs/sprint-2/77-interfaz-web-base.md?plain=1#L253) | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [main_test.go:26](../cmd/web/main_test.go#L26) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
 | ″ | `TestAbrirElSistemaConUnSoloComandoYSinInternet` [server_test.go:228](../internal/web/server_test.go#L228) | [projects.go](../internal/web/projects.go), [server.go](../internal/web/server.go), [app.css](../internal/web/static/app.css), [layout.html](../internal/web/templates/layout.html), [proyectos.html](../internal/web/templates/proyectos.html) | `11939e0` → `6669ec3` |
 | [Los datos siguen al cerrar y volver a abrir](specs/sprint-2/77-interfaz-web-base.md?plain=1#L259) | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [registry_json_test.go:291](../internal/domain/registry_json_test.go#L291) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | ″ | `TestLoGuardadoSeVuelveALeerIgual` [file_test.go:69](../internal/store/file_test.go#L69) | [file.go](../internal/store/file.go) | `9e9ec91` → `fc414fb` |
-| ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1537](../internal/web/server_test.go#L1537) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
-| [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:251](../cmd/web/main_test.go#L251) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
+| ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1579](../internal/web/server_test.go#L1579) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
+| [Los datos guardados estan danados](specs/sprint-2/77-interfaz-web-base.md?plain=1#L265) | `TestLosDatosGuardadosEstanDanados` [main_test.go:257](../cmd/web/main_test.go#L257) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
 | ″ | `TestLosDatosGuardadosEstanDanados` [registry_json_test.go:386](../internal/domain/registry_json_test.go#L386) | [registry_json.go](../internal/domain/registry_json.go) | `ff7d24f` → `2ecdfad` |
 | ″ | `TestUnArchivoDanadoQuedaComoEstaba` [file_test.go:160](../internal/store/file_test.go#L160) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
 | [Un cambio que no se pudo guardar se avisa](specs/sprint-2/77-interfaz-web-base.md?plain=1#L271) | `TestUnCambioQueNoSePudoGuardarSeAvisa` [file_test.go:202](../internal/store/file_test.go#L202) | [file.go](../internal/store/file.go) | `6d73f7a` → `a83bfc5` |
@@ -645,7 +647,7 @@ cinco casos posibles:
 | [Dos pestanas a la vez](specs/sprint-2/77-interfaz-web-base.md?plain=1#L276) | `TestDosPestanasALaVez` [server_test.go:1307](../internal/web/server_test.go#L1307) | [server.go](../internal/web/server.go) | `4c925e3` → `1e7a4b1` |
 | [Usar la pagina en un celular y con el teclado](specs/sprint-2/77-interfaz-web-base.md?plain=1#L281) | `TestUsarLaPaginaEnUnCelularYConElTeclado` [server_test.go:1368](../internal/web/server_test.go#L1368) | [historia-form.html](../internal/web/templates/historia-form.html) | `4ab0d49` → `add6a34` |
 
-**Tests que no citan un escenario de la Fase 1 (12).**
+**Tests que no citan un escenario de la Fase 1 (11).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
@@ -657,8 +659,7 @@ cinco casos posibles:
 | `TestElMensajeDeUnArchivoQueNoSePuedeLeerEstaEnCastellano` [file_test.go:234](../internal/store/file_test.go#L234) | #77 RN-24 | [registry_json.go](../internal/domain/registry_json.go), [file.go](../internal/store/file.go) | `ff2b683` → `d0f0a49` |
 | `TestElMensajeDeUnCambioQueNoSePudoGuardarEstaEnCastellano` [file_test.go:251](../internal/store/file_test.go#L251) | #77 RN-25 | [file.go](../internal/store/file.go) | `6f761d9` → `3854359` |
 | `TestResolverSinElegirElSprint` [defects_test.go:255](../internal/web/defects_test.go#L255) | RN-2, RN-9 | el que ya estaba | `8847aa0` (sin RED: ya pasaba) |
-| `TestUnaRondaVotadaDesdeDosPestanas` [poker_test.go:310](../internal/web/poker_test.go#L310) | RN-4, RN-5, RN-7, RN-8; RN-20 de la #77 | el que ya estaba | `70d8529` (sin RED: ya pasaba) |
-| `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1659](../internal/web/server_test.go#L1659) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
+| `TestUnPedidoDeOtroSitioSeRechaza` [server_test.go:1700](../internal/web/server_test.go#L1700) | #77, D20 (sin usuarios ni contraseñas) | [server.go](../internal/web/server.go), [rechazado.html](../internal/web/templates/rechazado.html) | `7e4fdb9` → `d2fa1e9` |
 | `TestQuitarDelSprintUnaHistoriaQueNoEstaAsignada` [sprints_test.go:189](../internal/web/sprints_test.go#L189) | RN-2 | el que ya estaba | `b7523ca` (sin RED: ya pasaba) |
 | `TestCerrarConUnaFechaQueNoEsFecha` [sprints_test.go:367](../internal/web/sprints_test.go#L367) | RN-2, RN-9 | el que ya estaba | `09d23fa` (sin RED: ya pasaba) |
 
@@ -835,6 +836,111 @@ cinco casos posibles:
 | `TestRechazarHorasEstimadasQueNoSonUnNumero` [story_hours_test.go:105](../internal/domain/story_hours_test.go#L105) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `4708708` → `9dd7309` |
 | `TestRechazarHorasEstimadasInfinitas` [story_hours_test.go:132](../internal/domain/story_hours_test.go#L132) | RN-18 | [story_hours.go](../internal/domain/story_hours.go) | `f0ee9fb` → `1a60943` |
 
+## #17 Mostrar el dashboard
+
+- **Historia:** issue #17
+- **Spec:** [docs/specs/sprint-3/17-mostrar-dashboard.md](specs/sprint-3/17-mostrar-dashboard.md)
+- **Código según la spec:** `internal/domain/dashboard.go`, `internal/web/dashboard.go`, `internal/web/templates/dashboard.html`
+
+<details><summary>Criterios de aceptación (19)</summary>
+
+- El dashboard tiene cuatro partes en orden: encabezado, estado general, sprint en curso y gráficos.
+- El encabezado muestra el nombre y las fechas, o «sin fecha de fin».
+- El estado general muestra los mismos números que entregó el cálculo de métricas.
+- El estado general muestra la velocidad promedio del equipo, o «sin sprints cerrados» si todavía no se cerró ninguno.
+- Con un sprint abierto se ven su número, su goal, sus fechas, sus story points planificados, sus horas reales y sus defectos, y no se ven completados ni velocidad.
+- Sin sprint abierto, se informa que no hay sprint en curso y el resto se ve igual.
+- Un proyecto sin sprints muestra el encabezado y el aviso, sin gráficos y sin error.
+- Se muestran cuatro gráficos: story points, horas, defectos y velocidad.
+- El de velocidad tiene una barra por sprint cerrado, ordenadas por número, sin el abierto.
+- Cada barra tiene su rótulo y su valor.
+- La barra del valor más grande ocupa todo el ancho del gráfico, y las demás son proporcionales.
+- Un valor cero no tiene barra; uno mayor que cero ocupa al menos el 1 % del ancho; un gráfico con todos sus valores en cero se muestra sin barras y sin error.
+- Porcentajes y horas van con un decimal y coma; la desviación negativa, con su signo; las fechas, como día/mes/año.
+- Cada gráfico tiene su texto alternativo con sus valores, y se pueden ver como tabla.
+- Las barras no se distinguen solo por el color y tienen contraste con el fondo.
+- El dashboard se abre desde la barra de navegación del proyecto.
+- Se ve sin internet y en un celular, sin desplazar la página de costado.
+- Abrir el dashboard no cambia nada del proyecto.
+- Pedir el dashboard de un proyecto que no existe informa que no se encontró.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Dashboard de un proyecto con un sprint en curso](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L167) | `TestDashboardDeUnProyectoConUnSprintEnCurso` [dashboard_test.go:176](../internal/domain/dashboard_test.go#L176) | [dashboard.go](../internal/domain/dashboard.go) | `ef5ab19` → `fc0c221` |
+| ⚠️ [Abrir el dashboard desde la barra de navegacion](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L174) | **sin test** | | |
+| ⚠️ [Encabezado de un proyecto sin fecha de finalizacion](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L179) | **sin test** | | |
+| [El estado general muestra las metricas tal como se calcularon](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L185) | `TestElEstadoGeneralMuestraLasMetricasTalComoSeCalcularon` [dashboard_test.go:48](../internal/domain/dashboard_test.go#L48) | [dashboard.go](../internal/domain/dashboard.go), [format.go](../internal/domain/format.go) | `5941e21` → `a3487f5` |
+| [Porcentajes, horas y enteros se muestran con su formato](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L194) | `TestPorcentajesHorasYEnterosSeMuestranConSuFormato` [dashboard_test.go:82](../internal/domain/dashboard_test.go#L82) | [format.go](../internal/domain/format.go) | `92c6a8b` → `b66feed` |
+| [El sprint en curso muestra su meta y lo que lleva registrado](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L211) | `TestElSprintEnCursoMuestraSuMetaYLoQueLlevaRegistrado` [dashboard_test.go:126](../internal/domain/dashboard_test.go#L126) | [dashboard.go](../internal/domain/dashboard.go) | `6330fb4` → `e84abc3` |
+| [Un proyecto con todos sus sprints cerrados no tiene sprint en curso](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L218) | `TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCursoEnElDashboard` [dashboard_test.go:158](../internal/domain/dashboard_test.go#L158) | [dashboard.go](../internal/domain/dashboard.go) | `6330fb4` → `e84abc3` |
+| [Un proyecto sin sprints avisa que no hay datos](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L224) | `TestUnProyectoSinSprintsAvisaQueNoHayDatos` [dashboard_test.go:27](../internal/domain/dashboard_test.go#L27) | [dashboard.go](../internal/domain/dashboard.go) | `6367a0e` → `1b11f92` |
+| ⚠️ [El largo de cada barra es proporcional al valor mas grande del grafico](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L232) | **sin test** | | |
+| ⚠️ [Las barras de un grafico se miden contra su valor mas grande](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L246) | **sin test** | | |
+| ⚠️ [El grafico de velocidad tiene una barra por sprint cerrado](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L262) | **sin test** | | |
+| ⚠️ [Todavia no hay sprints cerrados para el grafico de velocidad](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L268) | **sin test** | | |
+| ⚠️ [Cada grafico tiene su texto alternativo y su tabla](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L275) | **sin test** | | |
+| ⚠️ [Abrir el dashboard no cambia el proyecto](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L281) | **sin test** | | |
+| ⚠️ [Pedir el dashboard de un proyecto que no existe](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L287) | **sin test** | | |
+| ⚠️ [Usar el dashboard en un celular y sin internet](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L293) | **sin test** | | |
+
+## #177 Guardar los datos en una base de datos
+
+- **Historia:** issue #177
+- **Spec:** [docs/specs/sprint-3/177-guardar-en-base-de-datos.md](specs/sprint-3/177-guardar-en-base-de-datos.md)
+- **Código según la spec:** `internal/store/database.go`, `rows.go`, `exchange.go`, `migrations.go`, `migrations/0001_inicial.sql`, `cmd/web/main.go`
+
+<details><summary>Criterios de aceptación (7)</summary>
+
+- Todo lo que se carga desde la web sigue igual al cerrar y volver a abrir el sistema.
+- Un cambio que no se pudo guardar no deja ninguna parte guardada: la base queda como estaba, y el cambio entra con el próximo guardado que funcione.
+- Al abrir, cada dato pasa por las mismas reglas que al cargarlo desde la web; uno que no las cumple se avisa y el sistema no abre.
+- Exportar a un archivo e importarlo en una base nueva da exactamente los mismos datos.
+- Los datos de demo y lo guardado con la versión anterior se pueden importar; lo de la versión anterior se importa solo al abrir con la base vacía, y se avisa.
+- Importar un archivo con datos que no cumplen las reglas, o sobre una base con datos, no cambia nada y se avisa.
+- Funciona en Linux, en macOS y en Windows sin instalar nada aparte, y los tests pasan en los dos sistemas del CI.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Los datos siguen al cerrar y volver a abrir](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L196) | `TestUnRegistroCompletoVuelveIgual` [database_test.go:209](../internal/store/database_test.go#L209) | [database.go](../internal/store/database.go) | `b305866` → `487bac5` |
+| ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1579](../internal/web/server_test.go#L1579) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
+| [Un cambio que no se pudo guardar no deja nada a medias](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L203) | `TestUnGuardadoQueFallaNoDejaNadaAMedias` [database_test.go:323](../internal/store/database_test.go#L323) | el que ya estaba | `b8e6140` (sin RED: ya pasaba) |
+| ⚠️ [Un dato guardado que no cumple las reglas no se carga](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L212) | **sin test** | | |
+| [Los datos difíciles vuelven iguales](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L219) | `TestLosDatosDificilesVuelvenIguales` [database_test.go:247](../internal/store/database_test.go#L247) | el que ya estaba | `582d427` (sin RED: ya pasaba) |
+| [Exportar e importar da los mismos datos](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L232) | `TestExportarEImportarDaLoMismo` [exchange_test.go:16](../internal/store/exchange_test.go#L16) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `61d92a4` → `50cc4c3` |
+| ⚠️ [Traer los datos de la versión anterior](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L238) | **sin test** | | |
+| [Importar algo que no se puede no cambia nada](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L244) | `TestImportarSobreUnaBaseConDatosSeRechaza` [main_test.go:398](../cmd/web/main_test.go#L398) | [database.go](../internal/store/database.go), [exchange.go](../internal/store/exchange.go) | `e2f87d9` → `beca251` |
+| ″ | `TestImportarAlgoQueNoSePuedeNoCambiaNada` [exchange_test.go:42](../internal/store/exchange_test.go#L42) | [database.go](../internal/store/database.go), [exchange.go](../internal/store/exchange.go) | `e2f87d9` → `beca251` |
+| [Lo guardado con la versión anterior se importa solo](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L256) | `TestElArchivoDeLaVersionAnteriorSeImportaAlAbrir` [main_test.go:428](../cmd/web/main_test.go#L428) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
+| ⚠️ [Lo de la versión anterior no vuelve aunque se borre todo](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L266) | **sin test** | | |
+| ⚠️ [Si lo de la versión anterior no se puede importar, no se toca](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L271) | **sin test** | | |
+| [Abrir por primera vez](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L280) | `TestLaWebGuardaEnLaBase` [main_test.go:300](../cmd/web/main_test.go#L300) | [main.go](../cmd/web/main.go) | `c218f64` → `f210ae8` |
+| ″ | `TestAbrirUnaBaseNuevaCreaElEsquema` [database_test.go:41](../internal/store/database_test.go#L41) | [database.go](../internal/store/database.go), [migrations.go](../internal/store/migrations.go) | `5c1b0be` → `46f6516` |
+| ″ | `TestGuardarYCargarUnRegistro` [database_test.go:99](../internal/store/database_test.go#L99) | [database.go](../internal/store/database.go), [rows.go](../internal/store/rows.go) | `5ea2432` → `5ad0f3b` |
+| ⚠️ [Una base de una versión más nueva no se abre](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L286) | **sin test** | | |
+| [Lo que no se puede pedir al exportar o importar](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L292) | `TestLoQueNoSePuedePedirAlExportarOImportar` [main_test.go:467](../cmd/web/main_test.go#L467) | [exchange.go](../internal/store/exchange.go) | `088e9d2` → `acd91b6` |
+| ″ | `TestExportarAlMismoArchivoDeLaBaseSeRechaza` [exchange_test.go:184](../internal/store/exchange_test.go#L184) | [exchange.go](../internal/store/exchange.go) | `088e9d2` → `acd91b6` |
+| [Una base abierta no la abre otro sistema](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L305) | `TestUnaBaseAbiertaNoLaAbreOtroSistema` [database_test.go:495](../internal/store/database_test.go#L495) | [database.go](../internal/store/database.go) | `02e7135` → `f6ec463` |
+
+**Tests que no citan un escenario de la Fase 1 (11).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestExportarEImportarDesdeElComando` [main_test.go:343](../cmd/web/main_test.go#L343) ⚠️ no dice que no tiene escenario | #177 RN-7, RN-8 | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `61d92a4` → `50cc4c3` |
+| `TestImportarYExportarJuntosOSinBase` [main_test.go:498](../cmd/web/main_test.go#L498) ⚠️ cita «Lo que no se puede pedir al exportar o importar (las dos juntas, y», que no es un escenario de la spec | #177 RN-17, RN-18 | [main.go](../cmd/web/main.go) | `f77f4e0` → `498b921` |
+| `TestUnArchivoJSONComoBaseSeRechaza` [main_test.go:533](../cmd/web/main_test.go#L533) ⚠️ cita «Lo que no se puede pedir al exportar o importar (un archivo .json», que no es un escenario de la spec | #177 RN-20 | [main.go](../cmd/web/main.go) | `dd4dc73` → `82fcd5f` |
+| `TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb` [main_test.go:575](../cmd/web/main_test.go#L575) ⚠️ cita «Una base abierta no la abre otro sistema (exportar con la web abierta). Lo que», que no es un escenario de la spec | #177 RN-19 | [main.go](../cmd/web/main.go) | `0c662ab` → `cd2ee78` |
+| `TestLoQueNoSePuedeAbrirSeAvisaYNoSeToca` [database_test.go:364](../internal/store/database_test.go#L364) ⚠️ no dice que no tiene escenario | #177 RN-4, RN-13 | [database.go](../internal/store/database.go) | `d23737e` → `f6ffce5` |
+| `TestUnaBaseQueNoSePuedeCrearSeAvisa` [database_test.go:421](../internal/store/database_test.go#L421) | #177 RN-2, RN-4 | el que ya estaba | `9a1c02c` (sin RED: ya pasaba) |
+| `TestUnGuardadoQueFallaEnCualquierTablaNoDejaNada` [database_test.go:438](../internal/store/database_test.go#L438) ⚠️ cita «Un cambio que no se pudo guardar no deja nada a medias, con la falla en cada», que no es un escenario de la spec | #177 RN-2, D4, D9 | el que ya estaba | `e3863eb` (sin RED: ya pasaba) |
+| `TestUnaFilaQueApuntaANadaNoSeCarga` [database_test.go:465](../internal/store/database_test.go#L465) | #177 RN-4 | el que ya estaba | `e3863eb` (sin RED: ya pasaba) |
+| `TestLaBaseSeAbreEnLaRutaQueSeIndica` [database_test.go:531](../internal/store/database_test.go#L531) | #177 RN-5 | [database.go](../internal/store/database.go) | `ece4fe9` → `20aec82` |
+| `TestElArchivoViejoSeImportaUnaSolaVez` [exchange_test.go:97](../internal/store/exchange_test.go#L97) ⚠️ no dice que no tiene escenario | #177 RN-14, RN-15, RN-9, D10 | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
+| `TestUnDatoQueLaBaseNoConoceNoSeGuarda` [rows_test.go:11](../internal/store/rows_test.go#L11) | #177 D5, RN-2 | el que ya estaba | `b36baae` (sin RED: ya pasaba) |
+
 ## #78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes
 
 - **Historia:** issue #78
@@ -883,15 +989,17 @@ cinco casos posibles:
 | ⚠️ [Las listas vacias dicen que hacer](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L379) | **sin test** | | |
 | ⚠️ [Pedir algo que no existe](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L392) | **sin test** | | |
 | [El proyecto muestra su resumen](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L404) | `TestElProyectoMuestraSuResumen` [projects_test.go:127](../internal/web/projects_test.go#L127) | [projects.go](../internal/web/projects.go), [proyecto.html](../internal/web/templates/proyecto.html) | `e10078c` → `b951ba3` |
-| [Los datos nuevos siguen al cerrar y volver a abrir](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L409) | `TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir` [server_test.go:1592](../internal/web/server_test.go#L1592) | el que ya estaba | `97ef3a2` (sin RED: ya pasaba) |
+| [Los datos nuevos siguen al cerrar y volver a abrir](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L409) | `TestLosDatosNuevosSiguenAlCerrarYVolverAAbrir` [server_test.go:1633](../internal/web/server_test.go#L1633) | el que ya estaba | `97ef3a2` (sin RED: ya pasaba) |
 
-**Tests que no citan un escenario de la Fase 1 (3).**
+**Tests que no citan un escenario de la Fase 1 (5).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnDefectoYaResueltoDesdeUnaPaginaViejaMuestraElMensaje` [defects_test.go:275](../internal/web/defects_test.go#L275) ⚠️ no dice que no tiene escenario | #78 RN-2; #15 RN-14 | ⚠️ no se encontró el commit del test | — |
-| `TestResolverEnUnSprintQueNoExisteAvisaAntesDePreguntar` [defects_test.go:296](../internal/web/defects_test.go#L296) ⚠️ no dice que no tiene escenario | #78 RN-2, RN-9; #15 RN-12 | ⚠️ no se encontró el commit del test | — |
-| `TestCerrarDesdeUnaPaginaViejaAvisaEnElFormulario` [sprints_test.go:389](../internal/web/sprints_test.go#L389) ⚠️ no dice que no tiene escenario | #78 RN-2 (RN-13 de la #77); #10 RN-6 | ⚠️ no se encontró el commit del test | — |
+| `TestUnDefectoYaResueltoDesdeUnaPaginaViejaMuestraElMensaje` [defects_test.go:275](../internal/web/defects_test.go#L275) ⚠️ no dice que no tiene escenario | #78 RN-2; #15 RN-14 | [defects.go](../internal/web/defects.go), [sprints.go](../internal/web/sprints.go), [defecto.html](../internal/web/templates/defecto.html), [sprint-cerrar.html](../internal/web/templates/sprint-cerrar.html) | `e3343b2` → `32033f9` |
+| `TestResolverEnUnSprintQueNoExisteAvisaAntesDePreguntar` [defects_test.go:296](../internal/web/defects_test.go#L296) ⚠️ no dice que no tiene escenario | #78 RN-2, RN-9; #15 RN-12 | [defects.go](../internal/web/defects.go), [sprints.go](../internal/web/sprints.go), [defecto.html](../internal/web/templates/defecto.html), [sprint-cerrar.html](../internal/web/templates/sprint-cerrar.html) | `e3343b2` → `32033f9` |
+| `TestUnFiltroEnMinusculasQuedaElegido` [defects_test.go:315](../internal/web/defects_test.go#L315) ⚠️ no dice que no tiene escenario | #78 RN-13, D7 | [defects.go](../internal/web/defects.go) | `ae34a7c` → `fd6228b` |
+| `TestUnaRondaVotadaDesdeDosPestanas` [poker_test.go:310](../internal/web/poker_test.go#L310) | #78 RN-4, RN-5, RN-7, RN-8; RN-20 de la #77 | el que ya estaba | `70d8529` (sin RED: ya pasaba) |
+| `TestCerrarDesdeUnaPaginaViejaAvisaEnElFormulario` [sprints_test.go:389](../internal/web/sprints_test.go#L389) ⚠️ no dice que no tiene escenario | #78 RN-2 (RN-13 de la #77); #10 RN-6 | [defects.go](../internal/web/defects.go), [sprints.go](../internal/web/sprints.go), [defecto.html](../internal/web/templates/defecto.html), [sprint-cerrar.html](../internal/web/templates/sprint-cerrar.html) | `e3343b2` → `32033f9` |
 
 ## #19 Exportar el reporte a PDF
 
@@ -916,28 +1024,28 @@ cinco casos posibles:
 
 | Escenario BDD | Test | Código | RED → GREEN |
 |---|---|---|---|
-| [Exportar el reporte de un sprint a PDF](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L128) | `TestExportarElReporteDeUnSprintAPDF` [report_pdf_test.go:33](../internal/domain/report_pdf_test.go#L33) | ⚠️ no se encontró el commit del test | — |
-| ″ | `TestExportarElReporteDeUnSprintAPDFTextoYLetras` [report_pdf_test.go:412](../internal/domain/report_pdf_test.go#L412) | ⚠️ no se encontró el commit del test | — |
-| [El archivo se abre en un lector de PDF](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L135) | `TestElArchivoSeAbreEnUnLectorDePDF` [report_pdf_test.go:336](../internal/domain/report_pdf_test.go#L336) | ⚠️ no se encontró el commit del test | — |
-| [El PDF no agrega ni quita nada del reporte](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L141) | `TestElPDFNoAgregaNiQuitaNadaDelReporte` [report_pdf_test.go:545](../internal/domain/report_pdf_test.go#L545) | ⚠️ no se encontró el commit del test | — |
-| [Una linea larga sigue en el renglon siguiente](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L152) | `TestUnaLineaLargaSigueEnElRenglonSiguiente` [report_pdf_test.go:122](../internal/domain/report_pdf_test.go#L122) | ⚠️ no se encontró el commit del test | — |
-| [Una palabra mas larga que el renglon se corta en el margen](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L158) | `TestUnaPalabraMasLargaQueElRenglonSeCortaEnElMargen` [report_pdf_test.go:176](../internal/domain/report_pdf_test.go#L176) | ⚠️ no se encontró el commit del test | — |
-| [Un reporte largo ocupa varias paginas numeradas](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L163) | `TestUnReporteLargoOcupaVariasPaginasNumeradas` [report_pdf_test.go:223](../internal/domain/report_pdf_test.go#L223) | ⚠️ no se encontró el commit del test | — |
-| [Un titulo largo sigue en varios renglones con su letra](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L175) | `TestUnTituloLargoSigueEnVariosRenglonesConSuLetra` [report_pdf_test.go:152](../internal/domain/report_pdf_test.go#L152) | ⚠️ no se encontró el commit del test | — |
-| [Una linea vacia queda como renglon en blanco](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L181) | `TestUnaLineaVaciaQuedaComoRenglonEnBlanco` [report_pdf_test.go:59](../internal/domain/report_pdf_test.go#L59) | ⚠️ no se encontró el commit del test | — |
-| [Exportar dos veces el mismo reporte da el mismo archivo](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L186) | `TestExportarDosVecesElMismoReporteDaElMismoArchivo` [report_pdf_test.go:574](../internal/domain/report_pdf_test.go#L574) | ⚠️ no se encontró el commit del test | — |
-| [Un encabezado nunca queda solo al pie de una pagina](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L191) | `TestUnEncabezadoNuncaQuedaSoloAlPieDeUnaPagina` [report_pdf_test.go:262](../internal/domain/report_pdf_test.go#L262) | ⚠️ no se encontró el commit del test | — |
-| [Letras del castellano y caracteres que no se pueden representar](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L196) | `TestLetrasDelCastellanoYCaracteresQueNoSePuedenRepresentar` [report_pdf_test.go:466](../internal/domain/report_pdf_test.go#L466) | ⚠️ no se encontró el commit del test | — |
-| [Los parentesis y las barras no rompen el archivo](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L208) | `TestLosParentesisYLasBarrasNoRompenElArchivo` [report_pdf_test.go:445](../internal/domain/report_pdf_test.go#L445) | ⚠️ no se encontró el commit del test | — |
-| [Un PDF que no se puede entregar se informa](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L213) | `TestUnPDFQueNoSePuedeEntregarSeInforma` [report_pdf_test.go:506](../internal/domain/report_pdf_test.go#L506) | ⚠️ no se encontró el commit del test | — |
+| [Exportar el reporte de un sprint a PDF](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L128) | `TestExportarElReporteDeUnSprintAPDF` [report_pdf_test.go:33](../internal/domain/report_pdf_test.go#L33) | [report_pdf.go](../internal/domain/report_pdf.go) | `15d3634` → `b77dfb3` |
+| ″ | `TestExportarElReporteDeUnSprintAPDFTextoYLetras` [report_pdf_test.go:412](../internal/domain/report_pdf_test.go#L412) | [report_pdf.go](../internal/domain/report_pdf.go) | `15f3415` → `87f84a8` |
+| [El archivo se abre en un lector de PDF](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L135) | `TestElArchivoSeAbreEnUnLectorDePDF` [report_pdf_test.go:336](../internal/domain/report_pdf_test.go#L336) | [report_pdf.go](../internal/domain/report_pdf.go) | `625c17b` → `6b90bf1` |
+| [El PDF no agrega ni quita nada del reporte](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L141) | `TestElPDFNoAgregaNiQuitaNadaDelReporte` [report_pdf_test.go:545](../internal/domain/report_pdf_test.go#L545) | el que ya estaba | `9711eb6` (sin RED: ya pasaba) |
+| [Una linea larga sigue en el renglon siguiente](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L152) | `TestUnaLineaLargaSigueEnElRenglonSiguiente` [report_pdf_test.go:122](../internal/domain/report_pdf_test.go#L122) | [report_pdf.go](../internal/domain/report_pdf.go) | `48a0757` → `a781f46` |
+| [Una palabra mas larga que el renglon se corta en el margen](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L158) | `TestUnaPalabraMasLargaQueElRenglonSeCortaEnElMargen` [report_pdf_test.go:176](../internal/domain/report_pdf_test.go#L176) | [report_pdf.go](../internal/domain/report_pdf.go) | `e083a2d` → `fa863dc` |
+| [Un reporte largo ocupa varias paginas numeradas](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L163) | `TestUnReporteLargoOcupaVariasPaginasNumeradas` [report_pdf_test.go:223](../internal/domain/report_pdf_test.go#L223) | [report_pdf.go](../internal/domain/report_pdf.go) | `b87ac8a` → `cae1730` |
+| [Un titulo largo sigue en varios renglones con su letra](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L175) | `TestUnTituloLargoSigueEnVariosRenglonesConSuLetra` [report_pdf_test.go:152](../internal/domain/report_pdf_test.go#L152) | [report_pdf.go](../internal/domain/report_pdf.go) | `48a0757` → `a781f46` |
+| [Una linea vacia queda como renglon en blanco](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L181) | `TestUnaLineaVaciaQuedaComoRenglonEnBlanco` [report_pdf_test.go:59](../internal/domain/report_pdf_test.go#L59) | [report_pdf.go](../internal/domain/report_pdf.go) | `15d3634` → `b77dfb3` |
+| [Exportar dos veces el mismo reporte da el mismo archivo](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L186) | `TestExportarDosVecesElMismoReporteDaElMismoArchivo` [report_pdf_test.go:574](../internal/domain/report_pdf_test.go#L574) | el que ya estaba | `916d3cb` (sin RED: ya pasaba) |
+| [Un encabezado nunca queda solo al pie de una pagina](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L191) | `TestUnEncabezadoNuncaQuedaSoloAlPieDeUnaPagina` [report_pdf_test.go:262](../internal/domain/report_pdf_test.go#L262) | [report_pdf.go](../internal/domain/report_pdf.go) | `cce7625` → `b919c4e` |
+| [Letras del castellano y caracteres que no se pueden representar](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L196) | `TestLetrasDelCastellanoYCaracteresQueNoSePuedenRepresentar` [report_pdf_test.go:466](../internal/domain/report_pdf_test.go#L466) | [report_pdf.go](../internal/domain/report_pdf.go) | `7a46cb9` → `109e222` |
+| [Los parentesis y las barras no rompen el archivo](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L208) | `TestLosParentesisYLasBarrasNoRompenElArchivo` [report_pdf_test.go:445](../internal/domain/report_pdf_test.go#L445) | [report_pdf.go](../internal/domain/report_pdf.go) | `7cab343` → `745621b` |
+| [Un PDF que no se puede entregar se informa](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L213) | `TestUnPDFQueNoSePuedeEntregarSeInforma` [report_pdf_test.go:506](../internal/domain/report_pdf_test.go#L506) | [errors.go](../internal/domain/errors.go), [report_pdf.go](../internal/domain/report_pdf.go) | `05d3a80` → `81215d9` |
 
 **Tests que no citan un escenario de la Fase 1 (3).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestUnReporteSinSeccionesTieneUnaPagina` [report_pdf_test.go:76](../internal/domain/report_pdf_test.go#L76) | RN-3 | ⚠️ no se encontró el commit del test | — |
-| `TestAnchosDeHelvetica` [report_pdf_test.go:90](../internal/domain/report_pdf_test.go#L90) | RN-4 | ⚠️ no se encontró el commit del test | — |
-| `TestUnEncabezadoSinLineasAlFinalNoAgregaPaginaVacia` [report_pdf_test.go:285](../internal/domain/report_pdf_test.go#L285) | RN-7 | ⚠️ no se encontró el commit del test | — |
+| `TestUnReporteSinSeccionesTieneUnaPagina` [report_pdf_test.go:76](../internal/domain/report_pdf_test.go#L76) | RN-3 | [report_pdf.go](../internal/domain/report_pdf.go) | `15d3634` → `b77dfb3` |
+| `TestAnchosDeHelvetica` [report_pdf_test.go:90](../internal/domain/report_pdf_test.go#L90) | RN-4 | [report_pdf.go](../internal/domain/report_pdf.go) | `48a0757` → `a781f46` |
+| `TestUnEncabezadoSinLineasAlFinalNoAgregaPaginaVacia` [report_pdf_test.go:285](../internal/domain/report_pdf_test.go#L285) | RN-7 | [report_pdf.go](../internal/domain/report_pdf.go) | `cce7625` → `b919c4e` |
 
 ## #73 Resolver diferencias y acordar la estimación
 

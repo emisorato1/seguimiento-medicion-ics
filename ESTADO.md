@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-27 15:52. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-28 09:18. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,20 +10,20 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 24
 - Sin estimar: 3
 - Story points cargados: 109
-- Terminadas: 19
+- Terminadas: 20
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
-| #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 13 | Alta | Sprint 3 |
-| #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
 
 ## Lista para implementar
 
@@ -66,16 +66,17 @@ _No hay historias en este estado._
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | 13 | Alta | Sprint 2 |
+| #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
 
 ## Ultimos commits
 
 ```
-9a9d324 2026-10-27 chore: trazabilidad y ESTADO.md regenerados con dev al 27/10 (la #19 y los defectos #190 y #191)
-9dc49ea 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
-25d5e96 2026-10-27 Merge pull request #188 from emisorato1/datos-demo
-83b3015 2026-10-27 Merge pull request #194 from emisorato1/defecto-190-paginas-viejas
-65abb3b 2026-10-27 Merge pull request #195 from emisorato1/defecto-191-palabra-larga
-b226499 2026-10-27 Merge pull request #198 from emisorato1/docs-documentacion-tecnica-al-dia
-2119b14 2026-10-27 docs: las firmas de Report en el contrato del dominio, como las acepto Agustin en el #181
-8ddde8c 2026-10-27 docs: el Sprint 3 de la demo va del 26 al 28/10, y el defecto #172 queda afuera
+59bef23 2026-10-28 Merge pull request #186 from emisorato1/historia-177-implementacion
+84f6ff5 2026-10-28 docs: la RN-20 de la historia 177, aprobada por Maxi y Agustín en el #186
+7bf515d 2026-10-27 Merge pull request #182 from emisorato1/cierre-historia-11
+58e54a1 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
+4280b60 2026-10-27 Merge pull request #189 from emisorato1/guia-de-defensa
+ebf1102 2026-10-27 Merge pull request #187 from emisorato1/calendario-29-10
+1cdc1f1 2026-10-27 Merge pull request #203 from emisorato1/informe-metricas-ia-emiliano
+81cdaf4 2026-10-27 Merge pull request #202 from emisorato1/desviacion-con-horas-estimadas
 ```
