@@ -49,9 +49,9 @@ silencio.
 
 ### Historias agregadas durante el sprint
 
-| # | Historia | SP | Estado al 27/10 | Responsable | Evidencia |
+| # | Historia | SP | Estado al 28/10 | Responsable | Evidencia |
 |---|---|---|---|---|---|
-| 177 | Guardar los datos en una base de datos (SQLite) | [pendiente: Planning Poker] | En progreso | Emiliano Sorato (con asistencia de IA) | spec en el PR #180 e implementación en el PR #186 |
+| 177 | Guardar los datos en una base de datos (SQLite) | sin estimar | **Hecho** | Emiliano Sorato (con asistencia de IA) | spec en el PR #180 e implementación en el PR #186 (merge `59bef23`, 28/10) |
 
 ## Esfuerzo
 
@@ -70,6 +70,10 @@ _Al 27/10, según el tablero._
 - **La #10 y la #16 se hicieron con asistencia de IA.** Sus horas reales son el tiempo de
   Emiliano Sorato para dirigir y revisar, y por eso la desviación da muy negativa. Sin esas
   dos, la #11 y la #73 dan −60% (18,9 h estimadas contra 7,5 reales).
+- **La #78 y la #177: 1,5 h reales cada una**, dadas por Emiliano Sorato el 28/10. También son
+  su tiempo de dirección y revisión con asistencia de IA. La #78 sigue en progreso, con 35,1 h
+  estimadas. La #177 se terminó sin story points: sus horas suman al total, pero no entran en la
+  desviación ni en las horas por story point.
 - **Horas por integrante:** [pendiente: cada uno las completa en la review].
 - **Horas por story point completado:** [pendiente: al cierre].
 
@@ -102,7 +106,8 @@ _Al 27/10, según el tablero._
 ## Pendientes
 
 - [ ] Cerrar los números con `scripts/metricas.sh "Sprint 3"` el 28/10.
-- [ ] Las horas reales de la #78 y de la #177 (Emiliano Sorato).
+- [x] Las horas reales de la #78 y de la #177: 1,5 h cada una, dadas por Emiliano Sorato el 28/10
+  y cargadas en el tablero.
 - [ ] Devolver al Product Backlog las historias no terminadas.
 - [ ] El pull request de `dev` a `main` con el incremento del Sprint 3, el 28/10 a la noche, y su
   tag `v0.3.0-sprint3`. Cada sprint tiene su incremento: el del Sprint 4 es la entrega final,
