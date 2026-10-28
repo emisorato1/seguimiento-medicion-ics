@@ -26,9 +26,8 @@ Maximiliano Eula (legajo 8665).
   estado. Fuente: el Product Backlog del tablero y `docs/specs/README.md`.
 - Cómo se usa: consola y web. Fuente: `docs/manual-de-usuario.md`.
 - Arquitectura en un diagrama: dominio en Go, consola y web, y el guardado de los datos en una
-  base de datos SQLite (#177), con el archivo JSON para importar y exportar. [pendiente: la #177
-  está en implementación; se confirma cuando se mergee a `dev`.] Fuente:
-  `docs/documentacion-tecnica.md` y `docs/diseno-dominio.md`.
+  base de datos SQLite (#177, en `dev` desde el 28/10 con el PR #186), con el archivo JSON
+  para importar y exportar. Fuente: `docs/documentacion-tecnica.md` y `docs/diseno-dominio.md`.
 
 ![Arquitectura: los paquetes de Go y los archivos de datos](graficos/arquitectura.png)
 
