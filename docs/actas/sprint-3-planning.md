@@ -68,7 +68,10 @@ tablero y lo dejó dicho el 26/10 [en el PR #169](https://github.com/emisorato1/
 La agregó Emiliano Sorato el 26/10, ya empezado el sprint, y no estaba en el compromiso de los
 28 story points. Sus story points salen del Planning Poker: Emiliano votó 8, y los demás todavía
 no votaron [pendiente]. Hasta que tenga story points no tiene horas estimadas. Trae una
-dependencia nueva para el proyecto: Maximiliano Eula dio el ok en persona a Emiliano el 26/10.
+dependencia nueva para el proyecto. La historia y la dependencia las acordó el equipo:
+Maximiliano Eula dio el ok el 26/10, y Juliana Bustos y Agustín Salinas estuvieron de acuerdo,
+como confirmaron Maximiliano en la [#177](https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043) y Agustín en el
+[#179](https://github.com/emisorato1/seguimiento-medicion-ics/pull/179#issuecomment-6451913739) el 27/10 a las 19:45 UTC.
 
 ## Planning Poker de la #77 y la #78
 
