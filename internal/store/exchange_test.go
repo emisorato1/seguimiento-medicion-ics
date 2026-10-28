@@ -90,9 +90,9 @@ func existe(path string) bool {
 	return err == nil
 }
 
-// Escenarios: Lo guardado con la versión anterior se importa solo / Lo de la versión
-// anterior no vuelve aunque se borre todo / Si lo de la versión anterior no se puede
-// importar, no se toca
+// Escenario: Lo guardado con la versión anterior se importa solo
+// Escenario: Lo de la versión anterior no vuelve aunque se borre todo
+// Escenario: Si lo de la versión anterior no se puede importar, no se toca
 // Cubre: #177 RN-14, RN-15, RN-9, D10
 func TestElArchivoViejoSeImportaUnaSolaVez(t *testing.T) {
 	viejo := unProyecto(t, func(p *domain.Project) {})

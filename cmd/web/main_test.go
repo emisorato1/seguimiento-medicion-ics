@@ -337,8 +337,10 @@ func TestLaWebGuardaEnLaBase(t *testing.T) {
 	}
 }
 
-// Escenarios: Exportar e importar da los mismos datos / Traer los datos de la versión
-// anterior (con un archivo de prueba propio, no los datos de demo: Dependencias de la spec)
+// Escenario: Exportar e importar da los mismos datos (desde el comando)
+// Escenario: Traer los datos de la versión anterior (con un archivo de prueba propio)
+// Con un archivo propio y no los datos de demo, como dicen las Dependencias de la spec; con
+// los datos de demo lo prueba TestTraerLosDatosDeDemo.
 // Cubre: #177 RN-7, RN-8
 func TestExportarEImportarDesdeElComando(t *testing.T) {
 	dir := t.TempDir()
@@ -492,8 +494,7 @@ func TestLoQueNoSePuedePedirAlExportarOImportar(t *testing.T) {
 	}
 }
 
-// Esquema del escenario: Lo que no se puede pedir al exportar o importar (las dos juntas, y
-// exportar sin base)
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar (las dos juntas y sin base)
 // Cubre: #177 RN-17, RN-18
 func TestImportarYExportarJuntosOSinBase(t *testing.T) {
 	t.Run("importar y exportar a la vez se rechaza", func(t *testing.T) {
@@ -526,9 +527,9 @@ func TestImportarYExportarJuntosOSinBase(t *testing.T) {
 	})
 }
 
-// Esquema del escenario: Lo que no se puede pedir al exportar o importar (un archivo .json
-// como base). Con la #177, -datos es la base: quien lo usa como antes, con el archivo de
-// datos, recibe el aviso de que ese archivo se trae con -importar.
+// Esquema del escenario: Lo que no se puede pedir al exportar o importar (un .json como base)
+// Con la #177, -datos es la base: quien lo usa como antes, con el archivo de datos, recibe el
+// aviso de que ese archivo se trae con -importar.
 // Cubre: #177 RN-20
 func TestUnArchivoJSONComoBaseSeRechaza(t *testing.T) {
 	aviso := "-datos es la base de datos (.db); para traer un archivo .json usá -importar"
@@ -569,8 +570,8 @@ func TestUnArchivoJSONComoBaseSeRechaza(t *testing.T) {
 	}
 }
 
-// Escenario: Una base abierta no la abre otro sistema (exportar con la web abierta). Lo que
-// hay que hacer es cerrar la web y volver a exportar, no "volver a abrir este".
+// Escenario: Una base abierta no la abre otro sistema (exportar con la web abierta)
+// Lo que hay que hacer es cerrar la web y volver a exportar, no "volver a abrir este".
 // Cubre: #177 RN-19
 func TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb(t *testing.T) {
 	dir := t.TempDir()
