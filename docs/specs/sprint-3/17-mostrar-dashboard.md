@@ -467,7 +467,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 11 | Sin sprints, la página muestra el encabezado y el aviso, sin gráficos | Un proyecto sin sprints avisa que no hay datos | RN-7 | hecha |
 | 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | hecha |
 | 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | hecha |
-| 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | pendiente |
+| 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | hecha |
 | 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | pendiente |
 | 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | pendiente |
 | 17 | De punta a punta: con el dominio real, la página muestra los números que calcula la #16 | — (conexión de las dos mitades) | RN-2 | pendiente |
@@ -559,6 +559,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 11 | `9c4e01e` | `4a9caae` |
 | 12 | `71ccebe` | `6f8bd5a` |
 | 13 | `210f45d` | `cc37e50` (y el estilo de toda la página, `0ee0fc3`) |
+| 14 | `3721850` (sin RED) | — |
 
 ### Decisiones tomadas al implementar
 
@@ -655,6 +656,12 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   completado sale de lo comprometido y nunca lo supera. Juliana eligió probarlo con 20 h
   estimadas y 25 h reales, que da lo mismo (80 % y 100 %). Los otros cuatro casos van con
   story points como dice el escenario.
+- **Tarea 14, sin RED:** el test de "Dashboard de un proyecto con un sprint en curso" pasó al
+  escribirlo, porque las tareas 12 y 13 ya dejaron las cuatro partes y los gráficos en orden.
+  No tiene commit de implementación. Para saber que sirve se rompió el orden dos veces —el
+  sprint en curso antes del estado general, en la plantilla, y Horas antes que Story points,
+  al armar los gráficos— y falló las dos; después se volvió atrás. Lo eligió Juliana, como
+  en la tarea 7.
 
 ## Trazabilidad
 
