@@ -533,3 +533,55 @@ func TestCadaGraficoTieneSuTextoAlternativoYSuTabla(t *testing.T) {
 		}
 	})
 }
+
+// Escenario: Usar el dashboard en un celular y sin internet
+// Cubre: RN-21
+//
+// Revisa lo mismo que la #77 revisa en cada página (en castellano, adaptada al ancho, con sus
+// estilos y la barra, sin pedir nada de afuera, y cada tabla dentro de su recuadro), y además
+// que cada gráfico mida todo el ancho. Que la página no se desplace de costado a 360 de ancho
+// se verifica a mano, como en la #77.
+func TestUsarElDashboardEnUnCelularYSinInternet(t *testing.T) {
+	registry := domain.NewProjectRegistry()
+	dashboardProject(t, registry, 3, 5)
+	server := newTestServer(t, registry)
+
+	res := get(t, server, "/proyectos/1/dashboard")
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("se esperaba el estado %d, salio %d", http.StatusOK, res.Code)
+	}
+	html := res.Body.String()
+	debeTener := map[string]string{
+		"en castellano":     `<html lang="es">`,
+		"adaptada al ancho": `<meta name="viewport" content="width=device-width, initial-scale=1">`,
+		"con los estilos":   `<link rel="stylesheet" href="/static/app.css">`,
+		"con la barra":      `<nav aria-label="Navegación principal">`,
+	}
+	for que, texto := range debeTener {
+		if !strings.Contains(html, texto) {
+			t.Errorf("se esperaba la pagina %s (%s), y no esta en:\n%s", que, texto, html)
+		}
+	}
+	for _, afuera := range []string{"http://", "https://", `="//`} {
+		if strings.Contains(html, afuera) {
+			t.Errorf("la pagina no deberia pedir nada de afuera, y tiene %q", afuera)
+		}
+	}
+
+	// Cada tabla de valores, dentro de su recuadro: si no entra, se desplaza ella y no la página.
+	tablas := strings.Count(html, "<table")
+	if tablas != 4 || len(tableStart.FindAllString(html, -1)) != tablas {
+		t.Errorf("se esperaban las 4 tablas de valores, cada una dentro de su recuadro, y la pagina es:\n%s", html)
+	}
+	// Cada gráfico mide todo el ancho de la pantalla, sea cual sea.
+	dibujos := regexp.MustCompile(`<svg\b[^>]*>`).FindAllString(html, -1)
+	if len(dibujos) != 4 {
+		t.Fatalf("se esperaban los 4 graficos, salieron %d en:\n%s", len(dibujos), html)
+	}
+	for _, svg := range dibujos {
+		if ancho, _ := attribute(svg, "width"); ancho != "100%" {
+			t.Errorf("se esperaba el grafico con todo el ancho, y es %s", svg)
+		}
+	}
+}
