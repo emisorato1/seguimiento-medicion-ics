@@ -3,11 +3,7 @@
 - **Historia:** #177
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** Terminada en el Sprint 3 — **mergeada a `dev`** el 28/10 (PR #186; la spec, con el
-  PR #180), como historia agregada, sin story points. Puerta 1, Puerta 2 y Puerta 3 aprobadas por el
-  responsable el 2026-10-26 en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256),
-  como excepción, y **ratificadas por Maximiliano Eula el 26/10** en la issue #177
-  (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043)
+- **Estado:** Terminada en el Sprint 3 — **mergeada a `dev`** el 28/10 (PR #186; la spec, con el PR #180), como historia agregada, sin story points. Puerta 1, Puerta 2 y Puerta 3 aprobadas por el responsable el 2026-10-26 en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429388256), como excepción, y **ratificadas por Maximiliano Eula el 26/10** en la issue #177 (https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043), desde su cuenta
 - **Depende de:** #77 (guardar los datos de la web), y de que cada historia de dominio ya
   haya sumado sus datos a lo que se guarda (#8 a #15, #13, #73)
 - **La necesitan:** nadie todavía
