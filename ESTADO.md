@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-28 09:18. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-28 12:19. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -71,12 +71,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+f330065 2026-10-28 Merge remote-tracking branch 'origin/dev' into cierre-historia-177
+93e2e49 2026-10-28 Merge pull request #196 from emisorato1/defecto-192-horas
+38735b0 2026-10-28 refactor: decimalHours arriba del comentario de hours (defecto #192)
+2747e71 2026-10-28 docs: los escenarios de la RN-20 de la #14 y el escenario de cada test (defecto #192)
+7506004 2026-10-28 docs: el estado de la spec de la #177 en una línea, para no correr los escenarios
+ee31de5 2026-10-28 chore: trazabilidad y ESTADO.md regenerados con la #177 en dev
+fa76041 2026-10-28 docs: la #177 terminada, en su spec y en el índice
 59bef23 2026-10-28 Merge pull request #186 from emisorato1/historia-177-implementacion
-84f6ff5 2026-10-28 docs: la RN-20 de la historia 177, aprobada por Maxi y Agustín en el #186
-7bf515d 2026-10-27 Merge pull request #182 from emisorato1/cierre-historia-11
-58e54a1 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
-4280b60 2026-10-27 Merge pull request #189 from emisorato1/guia-de-defensa
-ebf1102 2026-10-27 Merge pull request #187 from emisorato1/calendario-29-10
-1cdc1f1 2026-10-27 Merge pull request #203 from emisorato1/informe-metricas-ia-emiliano
-81cdaf4 2026-10-27 Merge pull request #202 from emisorato1/desviacion-con-horas-estimadas
 ```
