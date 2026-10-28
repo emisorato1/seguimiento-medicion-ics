@@ -145,16 +145,21 @@ func TestElArchivoViejoSeImportaUnaSolaVez(t *testing.T) {
 		}
 	})
 
-	t.Run("un archivo viejo que no cumple las reglas no se toca y la base queda vacia", func(t *testing.T) {
+	t.Run("un archivo viejo con una historia de 4 story points no se toca y la base queda vacia", func(t *testing.T) {
 		dir, db := preparar(t, nil)
 		path := filepath.Join(dir, LegacyFile)
-		invalido := []byte(`{"next_id": 2, "projects": [{"id": 1, "name": "", "start": "2026-10-01", "next_story_id": 1, "members": [], "stories": [], "efforts": []}]}`)
+		invalido := []byte(`{"next_id": 2, "projects": [{"id": 1, "name": "Sistema de metricas", "start": "2026-10-01", "next_story_id": 2, "members": [],
+			"stories": [{"id": 1, "title": "Crear proyectos", "description": "Cargar un proyecto", "priority": "Alta", "state": "Pendiente", "story_points": 4, "acceptance_criteria": ["Se crea con su nombre"]}],
+			"efforts": []}]}`)
 		sinError(t, os.WriteFile(path, invalido, 0o644))
 
 		imported, err := ImportLegacy(db, dir)
 
 		if imported || !errors.Is(err, domain.ErrSavedDataInvalid) || !strings.Contains(err.Error(), path) {
 			t.Errorf("se esperaba ErrSavedDataInvalid con la ruta del archivo, salio importado=%v, %v", imported, err)
+		}
+		if err == nil || !strings.Contains(err.Error(), domain.ErrStoryPointsInvalid.Error()) {
+			t.Errorf("el aviso tenia que decir que dato esta mal (los story points), salio: %v", err)
 		}
 		if quedo, _ := os.ReadFile(path); !bytes.Equal(quedo, invalido) || existe(path+".importado") {
 			t.Error("el archivo viejo tenia que quedar como estaba, sin renombrar")
