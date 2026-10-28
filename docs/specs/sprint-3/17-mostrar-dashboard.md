@@ -470,7 +470,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | hecha |
 | 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | hecha |
 | 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | hecha |
-| 17 | De punta a punta: con el dominio real, la página muestra los números que calcula la #16 | — (conexión de las dos mitades) | RN-2 | pendiente |
+| 17 | De punta a punta: con el dominio real, la página muestra los números que calcula la #16 | — (conexión de las dos mitades) | RN-2 | hecha |
 
 **Verificación manual**, antes de abrir el PR y anotada en la Fase 4, como en la #77: el
 contraste de las barras con un verificador (RN-20), el modo celular del navegador a 360 de
@@ -562,6 +562,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 14 | `3721850` (sin RED) | — |
 | 15 | `fae9c92` | `d7803df` |
 | 16 | `ad3b799` (sin RED) | — |
+| 17 | `13048ad` (sin RED) | — |
 
 ### Decisiones tomadas al implementar
 
@@ -681,6 +682,14 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   usa el layout y el recuadro de tablas de la #77; se rompió dos veces —la tabla sin su
   recuadro y los gráficos con 600 px fijos— y falló las dos. Que la página no se desplace de
   costado a 360 de ancho queda para la verificación manual.
+- **Tarea 17, sin RED:** el test de punta a punta iba a ser el que conectara la web con el
+  dominio real, porque la D10 armaba los datos a mano. Como desde la tarea 12 los tests ya
+  usan el dominio real, Juliana eligió igual un test completo, `TestElDashboardMuestraLosNumerosQueCalculaLaHistoria16`:
+  un proyecto con historias, un sprint cerrado y otro abierto, esfuerzo y defectos, y cada
+  número de la página (estado general, sprint en curso y cada barra) fijado con lo que da la
+  #16 para esos datos. Es el recorrido de la RN-2 para la defensa. Pasó al escribirlo; se
+  rompió la conexión dos veces en `p.Dashboard()` —el estado general con las métricas del
+  sprint abierto, y el sprint en curso con las del proyecto— y falló las dos.
 
 ## Trazabilidad
 
