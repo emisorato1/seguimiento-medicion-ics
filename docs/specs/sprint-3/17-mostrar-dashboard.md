@@ -469,7 +469,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | hecha |
 | 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | hecha |
 | 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | hecha |
-| 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | pendiente |
+| 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | hecha |
 | 17 | De punta a punta: con el dominio real, la página muestra los números que calcula la #16 | — (conexión de las dos mitades) | RN-2 | pendiente |
 
 **Verificación manual**, antes de abrir el PR y anotada en la Fase 4, como en la #77: el
@@ -561,6 +561,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 13 | `210f45d` | `cc37e50` (y el estilo de toda la página, `0ee0fc3`) |
 | 14 | `3721850` (sin RED) | — |
 | 15 | `fae9c92` | `d7803df` |
+| 16 | `ad3b799` (sin RED) | — |
 
 ### Decisiones tomadas al implementar
 
@@ -672,6 +673,14 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   sprint en curso antes del estado general, en la plantilla, y Horas antes que Story points,
   al armar los gráficos— y falló las dos; después se volvió atrás. Lo eligió Juliana, como
   en la tarea 7.
+- **Tarea 16, un test propio y sin RED:** la tarea decía sumar el dashboard a los tests de la
+  #77 en `server_test.go`. Juliana eligió un test propio del escenario en
+  `internal/web/dashboard_test.go`, con un proyecto con sprints, por la misma razón que en la
+  tarea 10: toda la trazabilidad de la #17 en un archivo. Revisa lo mismo que la #77 y,
+  además, que cada gráfico mida todo el ancho. Pasó al escribirlo, porque el dashboard ya
+  usa el layout y el recuadro de tablas de la #77; se rompió dos veces —la tabla sin su
+  recuadro y los gráficos con 600 px fijos— y falló las dos. Que la página no se desplace de
+  costado a 360 de ancho queda para la verificación manual.
 
 ## Trazabilidad
 
