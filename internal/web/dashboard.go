@@ -4,6 +4,7 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/emisorato1/seguimiento-medicion-ics/internal/domain"
 )
@@ -20,10 +21,12 @@ type dashboardPage struct {
 }
 
 // chartView es un gráfico listo para dibujar en SVG: su título, el aviso si no tiene datos
-// (el de velocidad sin sprints cerrados, RN-9), el alto del dibujo y sus barras.
+// (el de velocidad sin sprints cerrados, RN-9), su texto alternativo, el alto del dibujo y
+// sus barras.
 type chartView struct {
 	Title  string
 	Empty  string
+	Alt    string
 	Height int
 	Bars   []barView
 }
@@ -37,6 +40,15 @@ type barView struct {
 	Class string
 	TextY int
 	RectY int
+}
+
+// chartSubjects dicen qué compara cada gráfico, en el orden de la RN-8, para empezar su texto
+// alternativo (RN-19).
+var chartSubjects = []string{
+	"Story points planificados contra completados",
+	"Horas estimadas contra reales",
+	"Defectos detectados contra resueltos",
+	"Velocidad de cada sprint cerrado",
 }
 
 // Cada barra ocupa una fila del SVG: arriba el rótulo y el valor, debajo la barra (D5).
@@ -76,7 +88,7 @@ func chartViews(charts []domain.Chart) []chartView {
 		for _, bar := range chart.Bars {
 			max = math.Max(max, bar.Value)
 		}
-		view := chartView{Title: chart.Title, Empty: chart.Empty, Height: len(chart.Bars) * chartRow}
+		view := chartView{Title: chart.Title, Empty: chart.Empty, Alt: chartAlt(i, chart), Height: len(chart.Bars) * chartRow}
 		for j, bar := range chart.Bars {
 			class := "barra-planificada"
 			switch {
@@ -95,6 +107,20 @@ func chartViews(charts []domain.Chart) []chartView {
 		views = append(views, view)
 	}
 	return views
+}
+
+// chartAlt es el texto alternativo de un gráfico, para quien no lo ve: qué compara y cada
+// rótulo con su valor, tal como se lee en la barra (RN-19).
+func chartAlt(i int, chart domain.Chart) string {
+	subject := chart.Title
+	if i < len(chartSubjects) {
+		subject = chartSubjects[i]
+	}
+	values := make([]string, 0, len(chart.Bars))
+	for _, bar := range chart.Bars {
+		values = append(values, bar.Label+": "+bar.Text)
+	}
+	return subject + ". " + strings.Join(values, ", ") + "."
 }
 
 // barWidth devuelve el largo de la barra de un valor, como porcentaje del ancho del gráfico
