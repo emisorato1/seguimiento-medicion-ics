@@ -558,7 +558,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 10 | `9bf4313` | `132571d` |
 | 11 | `9c4e01e` | `4a9caae` |
 | 12 | `71ccebe` | `6f8bd5a` |
-| 13 | `210f45d` | `cc37e50` |
+| 13 | `210f45d` | `cc37e50` (y el estilo de toda la página, `0ee0fc3`) |
 
 ### Decisiones tomadas al implementar
 
@@ -620,8 +620,11 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
 - **El color de cada barra sale de su posición** (tarea 13), sin cambiar el contrato del
   dominio: en los tres gráficos que comparan, la primera barra es lo planificado y la segunda
   lo real; en el de velocidad, todas del mismo color. Lo eligió Juliana.
-- **La paleta es la que eligió Juliana el 27/10** (tarea 13, D6), solo para el dashboard y en
-  `app.css`, sin tocar los colores de la #77: cada gráfico en una tarjeta Alabastro Cálido
+- **La paleta es la que eligió Juliana el 27/10** (tarea 13, D6), y es el foco de toda la
+  página del dashboard, no solo de los gráficos, como pidió después: el nombre del proyecto
+  en Siena, los títulos subrayados en Rosa Polvoriento, las tarjetas en alabastro con un
+  borde de color, y los enlaces y el botón en Siena. Va en `app.css`, solo para esta página,
+  sin tocar los colores de la #77 ni el resto de la web: cada gráfico en una tarjeta Alabastro Cálido
   (`#F5E6D3`), lo planificado en Siena Tostado (`#A0522D`, 4,58 a 1), lo real en Verde
   Salvia oscurecido (`#5E7A47`, 3,94 a 1) y la velocidad en Vara de Oro oscurecida
   (`#8A6A1E`, 4,12 a 1). Los originales de la paleta, `#87A96B` y `#D4A437`, no llegaban al
