@@ -25,9 +25,9 @@ defectos, métricas, dashboard y reportes.
 
 | | |
 |---|---|
-| Lenguaje | Go 1.27, **solo la biblioteca estándar**: sin dependencias externas |
+| Lenguaje | Go 1.27, con la biblioteca estándar y **una sola dependencia externa**, acordada con el equipo: el driver de SQLite `modernc.org/sqlite`, en Go puro y sin CGO (#177) |
 | Interfaces | consola (historia #24) y web (historias #77 y #78) |
-| Datos | en memoria en la consola; en un archivo JSON en la web |
+| Datos | en memoria en la consola; en una base SQLite en la web (#177). El archivo JSON de la #77 queda para importar y exportar |
 | Pruebas | `testing` de la biblioteca estándar, escritas con TDD |
 | Integración continua | GitHub Actions: formato, análisis estático, tests, cobertura y coherencia de las specs; los tests también en Windows |
 
@@ -40,10 +40,10 @@ siempre hacia el dominio**, y el dominio no depende de nadie.
 
 ```
 cmd/app                        cmd/web + internal/web
-consola (#24), en memoria      web (#77), con los datos en un archivo
+consola (#24), en memoria      web (#77), con los datos en una base SQLite
         │                              │
         │                              ▼
-        │                      internal/store     lee y escribe el archivo de datos
+        │                      internal/store     lee y escribe la base y el archivo de datos
         │                              │
         ▼                              ▼
 internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métricas, errores
@@ -52,7 +52,7 @@ internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métr
 | Paquete | Qué hace | Qué **no** hace |
 |---|---|---|
 | `internal/domain` | todas las reglas de negocio y validaciones; arma el texto del reporte y del PDF, y los valores del dashboard ya escritos | no imprime, no lee del teclado, no toca archivos, no lee el reloj del sistema, no dibuja |
-| `internal/store` | lee y escribe el archivo de datos | no convierte ni valida datos: eso lo hace el dominio |
+| `internal/store` | lee y escribe la base SQLite y el archivo de datos, e importa y exporta | no valida datos: eso lo hace el dominio, con su conversión |
 | `cmd/app` | la consola: lee lo que escribe el usuario, llama al dominio y muestra el resultado | no valida nada por su cuenta: le pregunta al dominio |
 | `cmd/web` | lee las opciones (`-puerto`, `-datos`, `-red`), carga los datos guardados, toma el puerto avisando si está ocupado o no hay permiso, y arranca la web con la fecha de la computadora | no guarda ni valida nada: lo hacen `store` y el dominio |
 | `internal/web` (#77 y #78) | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas. Cuando entre el dashboard (#17), dibuja sus barras | no valida reglas: las valida el dominio |
@@ -140,7 +140,7 @@ importantes, en una línea:
 | **Crear y modificar comparten la misma validación** (por ejemplo `prepare` en `project.go`) | las reglas no se pueden desincronizar entre las dos operaciones |
 | **El pedido de modificación distingue "no tocar", "cambiar" y "quitar"** (`ProjectChanges`, `OptionalChange`) | "no mandé el dato" y "quiero borrarlo" no se confunden, y un pedido contradictorio no se puede escribir |
 | **El dominio no lee el reloj del sistema**: la fecha de hoy la recibe de quien llama | los tests no dependen del día en que se corren |
-| **Sin dependencias externas** | el proyecto es chico y se evalúa el código propio |
+| **Una sola dependencia externa, acordada con el equipo**: el driver de SQLite en Go puro (`modernc.org/sqlite`), sin CGO | así compila igual en Windows, Linux y macOS; fuera de eso, solo la biblioteca estándar, porque el proyecto es chico y se evalúa el código propio |
 
 Las decisiones propias de cada funcionalidad están en la Fase 2 (Diseño) de su spec, en
 [docs/specs/](specs/README.md).
@@ -161,7 +161,7 @@ ErrProjectNameRequired = errors.New("el nombre del proyecto es obligatorio")
 | **Se devuelven, nunca `panic`** | un error de validación es parte normal del uso, no una falla del programa |
 | **Se comparan con `errors.Is`**, nunca por el texto | el mensaje se puede corregir (pasó con las tildes, defecto #60) sin romper ningún test ni ninguna interfaz |
 | **El nombre va en inglés y el mensaje en español** | el mensaje lo lee el usuario: la consola y la web lo muestran tal cual |
-| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más. Por ejemplo, cuando el archivo de datos no se puede abrir o escribir, el error dice cuál es el archivo (`internal/store/file.go`); y crear un sprint habiendo otro abierto responde *"ya hay un sprint abierto en el proyecto: el sprint 1"* (`AddSprint` en `sprint.go`) |
+| **Un error puede llevar un dato extra envolviéndolo** con `fmt.Errorf("%w: …")` | sigue cumpliendo `errors.Is` y el mensaje dice más. Por ejemplo, cuando la base ya está abierta por otro sistema, el error dice cuál es la base (`ErrDatabaseInUse` en `internal/store/database.go`); y crear un sprint habiendo otro abierto responde *"ya hay un sprint abierto en el proyecto: el sprint 1"* (`AddSprint` en `sprint.go`) |
 | **Cada error tiene un comentario con la historia y la regla que lo originan** | se puede rastrear de dónde sale sin buscar |
 | **Lo que no es un error no se informa como error** | un backlog vacío o un proyecto sin sprint abierto son situaciones normales y devuelven una lista vacía o un "no hay", no un error |
 
@@ -170,45 +170,69 @@ medio cambiar**.
 
 ---
 
-## 6. Persistencia *(en construcción)*
+## 6. Persistencia
 
-La consola trabaja en memoria. La web guarda todo en **un archivo JSON** que se reescribe
-entero después de cada operación aceptada (historia #77).
+La consola trabaja en memoria. La web guarda todo en **una base SQLite**, `datos-ics.db`
+(historia #177). Hasta la #177 lo guardaba en un archivo JSON, que ahora sirve para importar
+y exportar los datos.
 
 | Parte | Dónde | Qué hace |
 |---|---|---|
-| Conversión a JSON y desde JSON | `internal/domain/registry_json.go` | vive en el dominio porque es lo único que puede leer los datos ocultos sin exportarlos |
-| Leer y escribir el archivo | `internal/store/file.go` | solo mueve bytes: no valida nada |
+| Conversión a JSON y desde JSON | `internal/domain/registry_json.go` | vive en el dominio porque es lo único que puede leer los datos ocultos sin exportarlos; al cargar, valida cada entidad |
+| La base | `internal/store/database.go` | guarda y carga el registro, en una transacción |
+| El esquema | `internal/store/migrations/` | las migraciones, numeradas y embebidas en el binario |
+| El puente entre las dos | `internal/store/rows.go` | la forma del archivo, como tipos propios del store |
+| Importar y exportar | `internal/store/exchange.go` y `internal/store/file.go` | el archivo JSON y el de la versión anterior; `file.go` lee y escribe el archivo sin dejarlo a medias |
 
-- **Al cargar, cada entidad pasa por las mismas validaciones que al crearla**: un archivo
-  dañado o editado a mano no puede meter datos inválidos.
-- **Y además se controla lo que solo un archivo puede traer mal**, porque usando el sistema
-  nunca pasaría. Por ejemplo, en los sprints: números repetidos o que el contador no alcanza,
-  más de un sprint abierto, y en el Sprint Backlog una historia que no existe o que aparece
-  dos veces.
+- **El dominio no sabe de la base.** Al guardar, el registro se convierte con la conversión
+  del dominio, se desarma en filas y se escribe **en una transacción** que vacía las tablas y
+  las vuelve a llenar: si algo falla, la base queda como estaba. Al cargar, las filas se
+  rearman en el mismo formato y se le pasan a la conversión del dominio. El texto nunca se
+  guarda en una columna: **hay una tabla por entidad**, y tablas aparte para lo que una
+  entidad tiene varias veces (criterios, historias de un sprint, participantes y votos).
+- **Al cargar, cada entidad pasa por las mismas validaciones que al crearla**: una base
+  editada a mano no puede meter datos inválidos.
+- **Y además se controla lo que solo los datos guardados pueden traer mal**, porque usando el
+  sistema nunca pasaría. Por ejemplo, en los sprints: números repetidos o que el contador no
+  alcanza, más de un sprint abierto, y en el Sprint Backlog una historia que no existe o que
+  aparece dos veces.
+- **Los contadores de la numeración se guardan como vienen** (en `registry` y en
+  `projects`), nunca se deducen del número más alto: así no se reutiliza el número de algo
+  que se quitó.
 - **Toda historia que agrega una entidad o un dato lo suma a la conversión**, con su caso en
-  el test de ida y vuelta (`registry_json_test.go`). Si no, el dato se perdería al cerrar sin
-  que ningún test lo note.
+  el test de ida y vuelta (`registry_json_test.go`), **y a la base**: a los tipos de
+  `rows.go`, a una tabla con **una migración nueva** (`0002_…sql`; nunca se edita una que ya
+  se usó), y al test `TestUnRegistroCompletoVuelveIgual`. Si se suma a la conversión y no a
+  la base, el guardado falla con «No quedó guardado» en vez de perder el dato en silencio.
 - Las fechas se guardan como `AAAA-MM-DD`, y las prioridades, estados y roles con su nombre:
-  el archivo se puede leer y no se rompe si se reordenan las constantes.
+  la base y el archivo se pueden leer y no se rompen si se reordenan las constantes.
+- La base guarda en `PRAGMA user_version` el número de la última migración aplicada. Una base
+  con un número mayor que el que conoce el sistema no se abre.
+- **Una base la usa un solo sistema por vez**: se abre con el bloqueo exclusivo de SQLite
+  (`locking_mode=EXCLUSIVE`), y otro sistema que la quiera abrir recibe «la base ya está
+  abierta por otro sistema». El sistema operativo suelta el bloqueo al cerrar o si el programa
+  se corta.
 
 ### Cómo se guarda, paso a paso
 
-1. **Al abrir**, `cmd/web` lee el archivo con `store.NewFile(ruta).Load()`. Si no existe, como
-   la primera vez, arranca con un registro vacío. Si existe pero no se puede leer, o el dominio
+1. **Al abrir**, `cmd/web` abre la base con `store.OpenDatabase(ruta)`, que la crea con su
+   esquema si no existe y toma el bloqueo para que otro sistema no la abra. Si la base está
+   vacía y junto a ella hay un `datos-ics.json` de la versión anterior, lo importa una sola vez
+   (sección 10). Después lee los datos con `Load()`: si la base no se puede leer, o el dominio
    no acepta lo que tiene, el sistema no abre: muestra el error (`ErrSavedDataInvalid`) y deja
-   el archivo como estaba.
+   la base como estaba.
 2. **Cada operación aceptada** termina en `done` (`internal/web/server.go`), que guarda el
    registro entero, deja el mensaje que la confirma y redirige a la página del resultado.
-3. **El guardado** (`Save` en `internal/store/file.go`) escribe primero un archivo temporal en
-   la misma carpeta y después lo renombra: renombrar reemplaza el archivo de una sola vez, así
-   un corte a mitad de la escritura deja el archivo anterior entero y no uno roto.
+3. **El guardado** (`(*Database).Save` en `internal/store/database.go`) pasa el registro por la
+   conversión del dominio y, en una sola transacción, vacía las tablas y escribe todo de nuevo:
+   si algo falla, la transacción se deshace y la base queda como estaba, sin nada a medias.
 4. **Si el guardado falla**, la página avisa «No quedó guardado» y el cambio sigue en memoria:
    el próximo guardado que funcione lo incluye (`ErrNotSaved`).
 5. **Los pedidos usan el registro de a uno**: las páginas que solo leen pueden atenderse a la
    vez, y las que cambian algo van solas, así una operación y su guardado quedan juntos.
-6. **En los tests de la web** no se escribe ningún archivo: el servidor recibe un guardado
-   falso que cuenta las veces que se guardó y puede simular una falla.
+6. **En los tests de la web** casi no se escribe nada: el servidor recibe un guardado falso que
+   cuenta las veces que se guardó y puede simular una falla. Solo los dos escenarios de cerrar
+   y volver a abrir guardan de verdad, con el archivo y con la base, en una carpeta temporal.
 
 ---
 
@@ -315,11 +339,16 @@ go vet ./...                   # análisis estático
 gofmt -l .                     # archivos sin formatear (no tiene que devolver nada)
 scripts/coherencia.sh          # coherencia de las specs
 go run ./cmd/app               # la consola
-go run ./cmd/web               # la web, en http://127.0.0.1:8080, con los datos en datos-ics.json
+go run ./cmd/web               # la web, en http://127.0.0.1:8080, con la base datos-ics.db
 go run ./cmd/web -puerto 9090  # en otro puerto
-go run ./cmd/web -datos otro.json  # con otro archivo de datos
 go run ./cmd/web -red          # acepta conexiones de la red local, por ejemplo un celular
+go run ./cmd/web -exportar copia.json            # todos los datos a un archivo
+go run ./cmd/web -datos otra.db -importar copia.json  # un archivo a una base nueva
 ```
+
+Si en la carpeta de la base está el `datos-ics.json` de la versión anterior y la base está
+vacía, la web lo importa sola al abrir, una sola vez: después lo renombra a
+`datos-ics.json.importado` y lo avisa.
 
 Antes de abrir un pull request: los tests en verde, `gofmt -l .` vacío y `dev` traído a la
 rama. El flujo completo de ramas y pull requests está en [CLAUDE.md](../CLAUDE.md).
