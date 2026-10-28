@@ -600,3 +600,53 @@ func TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb(t *testing.T) {
 		t.Errorf("no tenia que escribir el archivo, y Stat dio: %v", err)
 	}
 }
+
+// Escenario: Traer los datos de la versión anterior
+// Con los datos de demo de verdad (docs/demo/datos-demo.json), que ya están en dev. El
+// proyecto se busca por su fila en la lista, porque su nombre es también el del sistema, que
+// está en todas las páginas.
+// Cubre: #177 RN-8
+func TestTraerLosDatosDeDemo(t *testing.T) {
+	demo := filepath.Join("..", "..", "docs", "demo", "datos-demo.json")
+	base := filepath.Join(t.TempDir(), "demo.db")
+	fila := `<a href="/proyectos/1">Seguimiento y Medición ICS</a>`
+	abrir := func(args ...string) (string, string) {
+		var out, errOut bytes.Buffer
+		var proyectos string
+		serve := func(listener net.Listener, handler http.Handler) error {
+			listener.Close()
+			res := httptest.NewRecorder()
+			handler.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/proyectos", nil))
+			proyectos = res.Body.String()
+			return http.ErrServerClosed
+		}
+		run(append([]string{"-puerto", "0", "-datos", base}, args...), &out, &errOut, serve)
+		return out.String() + errOut.String(), proyectos
+	}
+
+	salida, proyectos := abrir("-importar", demo)
+
+	if !strings.Contains(salida, "Se importaron los datos de "+demo) || !strings.Contains(proyectos, fila) {
+		t.Fatalf("se esperaba importar los datos de demo y ver el proyecto en la lista, salio:\n%s\n%s", salida, proyectos)
+	}
+
+	// Al cerrar y volver a abrir, sin pedir importar, siguen ahi.
+	salida, proyectos = abrir()
+
+	if strings.Contains(salida, "Se importaron") || strings.Count(proyectos, fila) != 1 {
+		t.Fatalf("al volver a abrir tenia que seguir el proyecto, sin importar nada, salio:\n%s\n%s", salida, proyectos)
+	}
+	db, err := store.OpenDatabase(base)
+	if err != nil {
+		t.Fatalf("no se pudo abrir la base: %v", err)
+	}
+	registry, err := db.Load()
+	db.Close()
+	if err != nil || len(registry.Projects()) != 1 {
+		t.Fatalf("se esperaba la base con un proyecto, salio %v", err)
+	}
+	proyecto := registry.Projects()[0]
+	if len(proyecto.Backlog()) != 21 || len(proyecto.Sprints()) != 2 {
+		t.Errorf("se esperaban 21 historias y 2 sprints, hay %d y %d", len(proyecto.Backlog()), len(proyecto.Sprints()))
+	}
+}
