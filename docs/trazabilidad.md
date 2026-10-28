@@ -40,7 +40,7 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#13 Votar en secreto en una ronda de Planning Poker](#13-votar-en-secreto-en-una-ronda-de-planning-poker) | 16 | 16 | 0 | 0 |
 | [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-métricas-del-proyecto-y-de-cada-sprint) | 16 | 16 | 0 | 2 |
 | [#17 Mostrar el dashboard](#17-mostrar-el-dashboard) | 16 | 6 | 10 | 0 |
-| [#177 Guardar los datos en una base de datos](#177-guardar-los-datos-en-una-base-de-datos) | 14 | 9 | 5 | 11 |
+| [#177 Guardar los datos en una base de datos](#177-guardar-los-datos-en-una-base-de-datos) | 14 | 14 | 0 | 2 |
 | [#78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](#78-interfaz-web-sprints-esfuerzo-defectos-planning-poker-y-reportes) | 22 | 17 | 5 | 5 |
 | [#19 Exportar el reporte a PDF](#19-exportar-el-reporte-a-pdf) | 13 | 13 | 0 | 3 |
 | [#73 Resolver diferencias y acordar la estimación](#73-resolver-diferencias-y-acordar-la-estimación) | 13 | 13 | 0 | 0 |
@@ -54,7 +54,7 @@ cinco casos posibles:
 |---|---|---|
 | `abc1234` → `def5678` | El ciclo completo: el test entró en un commit y el código que lo hizo pasar, en el siguiente. | 297 |
 | `abc1234` → `def5678` (el test trae lo justo para compilar) | También es el ciclo completo. El commit del test agrega lo mínimo para que compile (una constante, una firma) y falla; la implementación viene en el commit siguiente. | 3 |
-| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 63 |
+| `abc1234` (sin RED: ya pasaba) | El test pasó con el código que ya estaba, y quien lo escribió lo dejó dicho en el mensaje del commit. | 64 |
 | `abc1234` → ⚠️ sin GREEN | Después del test no hay un commit de código en su rama: pasó con lo que ya estaba. Puede ser que una tarea anterior ya cubriera el caso o que el código se haya escrito antes que el test; el historial no alcanza para saber cuál de las dos. | 13 |
 | `abc1234` ⚠️ test y código en el mismo commit | El test y el código entraron juntos, así que el historial no muestra la fase en rojo. Es un desvío del TDD. | 1 |
 
@@ -911,37 +911,37 @@ cinco casos posibles:
 | [Los datos siguen al cerrar y volver a abrir](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L192) | `TestUnRegistroCompletoVuelveIgual` [database_test.go:209](../internal/store/database_test.go#L209) | [database.go](../internal/store/database.go) | `b305866` → `487bac5` |
 | ″ | `TestLosDatosSiguenAlCerrarYVolverAAbrir` [server_test.go:1616](../internal/web/server_test.go#L1616) | [errors.go](../internal/domain/errors.go), [registry_json.go](../internal/domain/registry_json.go) | `1a885f0` → `61077ba` |
 | [Un cambio que no se pudo guardar no deja nada a medias](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L199) | `TestUnGuardadoQueFallaNoDejaNadaAMedias` [database_test.go:323](../internal/store/database_test.go#L323) | el que ya estaba | `b8e6140` (sin RED: ya pasaba) |
-| ⚠️ [Un dato guardado que no cumple las reglas no se carga](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L208) | **sin test** | | |
+| ″ | `TestUnGuardadoQueFallaEnCualquierTablaNoDejaNada` [database_test.go:439](../internal/store/database_test.go#L439) | el que ya estaba | `e3863eb` (sin RED: ya pasaba) |
+| [Un dato guardado que no cumple las reglas no se carga](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L208) | `TestLoQueNoSePuedeAbrirSeAvisaYNoSeToca` [database_test.go:364](../internal/store/database_test.go#L364) | [database.go](../internal/store/database.go) | `d23737e` → `f6ffce5` |
+| ″ | `TestUnaFilaQueApuntaANadaNoSeCarga` [database_test.go:467](../internal/store/database_test.go#L467) | el que ya estaba | `e3863eb` (sin RED: ya pasaba) |
 | [Los datos difíciles vuelven iguales](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L215) | `TestLosDatosDificilesVuelvenIguales` [database_test.go:247](../internal/store/database_test.go#L247) | el que ya estaba | `582d427` (sin RED: ya pasaba) |
-| [Exportar e importar da los mismos datos](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L228) | `TestExportarEImportarDaLoMismo` [exchange_test.go:16](../internal/store/exchange_test.go#L16) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `61d92a4` → `50cc4c3` |
-| ⚠️ [Traer los datos de la versión anterior](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L234) | **sin test** | | |
-| [Importar algo que no se puede no cambia nada](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L240) | `TestImportarSobreUnaBaseConDatosSeRechaza` [main_test.go:398](../cmd/web/main_test.go#L398) | [database.go](../internal/store/database.go), [exchange.go](../internal/store/exchange.go) | `e2f87d9` → `beca251` |
+| [Exportar e importar da los mismos datos](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L228) | `TestExportarEImportarDesdeElComando` [main_test.go:345](../cmd/web/main_test.go#L345) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `61d92a4` → `50cc4c3` |
+| ″ | `TestExportarEImportarDaLoMismo` [exchange_test.go:16](../internal/store/exchange_test.go#L16) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `61d92a4` → `50cc4c3` |
+| [Traer los datos de la versión anterior](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L234) | `TestExportarEImportarDesdeElComando` [main_test.go:345](../cmd/web/main_test.go#L345) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `61d92a4` → `50cc4c3` |
+| ″ | `TestTraerLosDatosDeDemo` [main_test.go:609](../cmd/web/main_test.go#L609) | el que ya estaba | `d5c5689` (sin RED: ya pasaba) |
+| [Importar algo que no se puede no cambia nada](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L240) | `TestImportarSobreUnaBaseConDatosSeRechaza` [main_test.go:400](../cmd/web/main_test.go#L400) | [database.go](../internal/store/database.go), [exchange.go](../internal/store/exchange.go) | `e2f87d9` → `beca251` |
 | ″ | `TestImportarAlgoQueNoSePuedeNoCambiaNada` [exchange_test.go:42](../internal/store/exchange_test.go#L42) | [database.go](../internal/store/database.go), [exchange.go](../internal/store/exchange.go) | `e2f87d9` → `beca251` |
-| [Lo guardado con la versión anterior se importa solo](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L252) | `TestElArchivoDeLaVersionAnteriorSeImportaAlAbrir` [main_test.go:428](../cmd/web/main_test.go#L428) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
-| ⚠️ [Lo de la versión anterior no vuelve aunque se borre todo](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L262) | **sin test** | | |
-| ⚠️ [Si lo de la versión anterior no se puede importar, no se toca](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L267) | **sin test** | | |
+| [Lo guardado con la versión anterior se importa solo](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L252) | `TestElArchivoDeLaVersionAnteriorSeImportaAlAbrir` [main_test.go:430](../cmd/web/main_test.go#L430) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
+| ″ | `TestElArchivoViejoSeImportaUnaSolaVez` [exchange_test.go:97](../internal/store/exchange_test.go#L97) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
+| [Lo de la versión anterior no vuelve aunque se borre todo](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L262) | `TestElArchivoViejoSeImportaUnaSolaVez` [exchange_test.go:97](../internal/store/exchange_test.go#L97) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
+| [Si lo de la versión anterior no se puede importar, no se toca](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L267) | `TestElArchivoViejoSeImportaUnaSolaVez` [exchange_test.go:97](../internal/store/exchange_test.go#L97) | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
 | [Abrir por primera vez](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L276) | `TestLaWebGuardaEnLaBase` [main_test.go:300](../cmd/web/main_test.go#L300) | [main.go](../cmd/web/main.go) | `c218f64` → `f210ae8` |
 | ″ | `TestAbrirUnaBaseNuevaCreaElEsquema` [database_test.go:41](../internal/store/database_test.go#L41) | [database.go](../internal/store/database.go), [migrations.go](../internal/store/migrations.go) | `5c1b0be` → `46f6516` |
 | ″ | `TestGuardarYCargarUnRegistro` [database_test.go:99](../internal/store/database_test.go#L99) | [database.go](../internal/store/database.go), [rows.go](../internal/store/rows.go) | `5ea2432` → `5ad0f3b` |
-| ⚠️ [Una base de una versión más nueva no se abre](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L282) | **sin test** | | |
-| [Lo que no se puede pedir al exportar o importar](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L288) | `TestLoQueNoSePuedePedirAlExportarOImportar` [main_test.go:467](../cmd/web/main_test.go#L467) | [exchange.go](../internal/store/exchange.go) | `088e9d2` → `acd91b6` |
-| ″ | `TestExportarAlMismoArchivoDeLaBaseSeRechaza` [exchange_test.go:184](../internal/store/exchange_test.go#L184) | [exchange.go](../internal/store/exchange.go) | `088e9d2` → `acd91b6` |
-| [Una base abierta no la abre otro sistema](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L301) | `TestUnaBaseAbiertaNoLaAbreOtroSistema` [database_test.go:495](../internal/store/database_test.go#L495) | [database.go](../internal/store/database.go) | `02e7135` → `f6ec463` |
+| ″ | `TestLaBaseSeAbreEnLaRutaQueSeIndica` [database_test.go:534](../internal/store/database_test.go#L534) | [database.go](../internal/store/database.go) | `ece4fe9` → `20aec82` |
+| [Una base de una versión más nueva no se abre](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L282) | `TestLoQueNoSePuedeAbrirSeAvisaYNoSeToca` [database_test.go:364](../internal/store/database_test.go#L364) | [database.go](../internal/store/database.go) | `d23737e` → `f6ffce5` |
+| [Lo que no se puede pedir al exportar o importar](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L288) | `TestLoQueNoSePuedePedirAlExportarOImportar` [main_test.go:469](../cmd/web/main_test.go#L469) | [exchange.go](../internal/store/exchange.go) | `088e9d2` → `acd91b6` |
+| ″ | `TestImportarYExportarJuntosOSinBase` [main_test.go:499](../cmd/web/main_test.go#L499) | [main.go](../cmd/web/main.go) | `f77f4e0` → `498b921` |
+| ″ | `TestUnArchivoJSONComoBaseSeRechaza` [main_test.go:534](../cmd/web/main_test.go#L534) | [main.go](../cmd/web/main.go) | `dd4dc73` → `82fcd5f` |
+| ″ | `TestExportarAlMismoArchivoDeLaBaseSeRechaza` [exchange_test.go:207](../internal/store/exchange_test.go#L207) | [exchange.go](../internal/store/exchange.go) | `088e9d2` → `acd91b6` |
+| [Una base abierta no la abre otro sistema](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L301) | `TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb` [main_test.go:576](../cmd/web/main_test.go#L576) | [main.go](../cmd/web/main.go) | `0c662ab` → `cd2ee78` |
+| ″ | `TestUnaBaseAbiertaNoLaAbreOtroSistema` [database_test.go:497](../internal/store/database_test.go#L497) | [database.go](../internal/store/database.go) | `02e7135` → `f6ec463` |
 
-**Tests que no citan un escenario de la Fase 1 (11).**
+**Tests que no citan un escenario de la Fase 1 (2).**
 
 | Test | Cubre | Código | RED → GREEN |
 |---|---|---|---|
-| `TestExportarEImportarDesdeElComando` [main_test.go:343](../cmd/web/main_test.go#L343) ⚠️ no dice que no tiene escenario | #177 RN-7, RN-8 | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `61d92a4` → `50cc4c3` |
-| `TestImportarYExportarJuntosOSinBase` [main_test.go:498](../cmd/web/main_test.go#L498) ⚠️ cita «Lo que no se puede pedir al exportar o importar (las dos juntas, y», que no es un escenario de la spec | #177 RN-17, RN-18 | [main.go](../cmd/web/main.go) | `f77f4e0` → `498b921` |
-| `TestUnArchivoJSONComoBaseSeRechaza` [main_test.go:533](../cmd/web/main_test.go#L533) ⚠️ cita «Lo que no se puede pedir al exportar o importar (un archivo .json», que no es un escenario de la spec | #177 RN-20 | [main.go](../cmd/web/main.go) | `dd4dc73` → `82fcd5f` |
-| `TestExportarConLaWebAbiertaAvisaQueSeCierreLaWeb` [main_test.go:575](../cmd/web/main_test.go#L575) ⚠️ cita «Una base abierta no la abre otro sistema (exportar con la web abierta). Lo que», que no es un escenario de la spec | #177 RN-19 | [main.go](../cmd/web/main.go) | `0c662ab` → `cd2ee78` |
-| `TestLoQueNoSePuedeAbrirSeAvisaYNoSeToca` [database_test.go:364](../internal/store/database_test.go#L364) ⚠️ no dice que no tiene escenario | #177 RN-4, RN-13 | [database.go](../internal/store/database.go) | `d23737e` → `f6ffce5` |
 | `TestUnaBaseQueNoSePuedeCrearSeAvisa` [database_test.go:421](../internal/store/database_test.go#L421) | #177 RN-2, RN-4 | el que ya estaba | `9a1c02c` (sin RED: ya pasaba) |
-| `TestUnGuardadoQueFallaEnCualquierTablaNoDejaNada` [database_test.go:438](../internal/store/database_test.go#L438) ⚠️ cita «Un cambio que no se pudo guardar no deja nada a medias, con la falla en cada», que no es un escenario de la spec | #177 RN-2, D4, D9 | el que ya estaba | `e3863eb` (sin RED: ya pasaba) |
-| `TestUnaFilaQueApuntaANadaNoSeCarga` [database_test.go:465](../internal/store/database_test.go#L465) | #177 RN-4 | el que ya estaba | `e3863eb` (sin RED: ya pasaba) |
-| `TestLaBaseSeAbreEnLaRutaQueSeIndica` [database_test.go:531](../internal/store/database_test.go#L531) | #177 RN-5 | [database.go](../internal/store/database.go) | `ece4fe9` → `20aec82` |
-| `TestElArchivoViejoSeImportaUnaSolaVez` [exchange_test.go:97](../internal/store/exchange_test.go#L97) ⚠️ no dice que no tiene escenario | #177 RN-14, RN-15, RN-9, D10 | [main.go](../cmd/web/main.go), [exchange.go](../internal/store/exchange.go) | `df065cc` → `641e723` |
 | `TestUnDatoQueLaBaseNoConoceNoSeGuarda` [rows_test.go:11](../internal/store/rows_test.go#L11) | #177 D5, RN-2 | el que ya estaba | `b36baae` (sin RED: ya pasaba) |
 
 ## #78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes
