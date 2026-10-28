@@ -684,6 +684,43 @@ func TestMostrarElRechazoSinPerderLoEscrito(t *testing.T) {
 			err:        errInvalidHours,
 		},
 		{
+			// Defecto #192: las horas no aceptan exponente; 1e3 se leia como 1000.
+			nombre: "esfuerzo con horas en notacion cientifica (#192)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"1e3"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        errInvalidHours,
+		},
+		{
+			nombre: "horas estimadas en hexadecimal (#192)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/historias/1/horas-estimadas",
+			datos:      url.Values{"horas": {"0x1p4"}},
+			campo:      "horas",
+			err:        errInvalidHours,
+		},
+		{
+			// Defecto #192: un registro es de un solo dia (RN-20 de la #14).
+			nombre: "esfuerzo de 25 horas en un registro (#192)",
+			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
+				project := addProject(t, registry, "Sistema de metricas")
+				addMember(t, project, "Ana Perez", domain.RoleProductBuilder)
+				addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			},
+			formulario: "/proyectos/1/esfuerzo/nuevo",
+			datos:      url.Values{"integrante": {"Ana Perez"}, "historia": {"1"}, "dia": {"2026-10-27"}, "horas": {"25"}, "actividad": {"Escribir tests"}},
+			campo:      "horas",
+			err:        domain.ErrEffortHoursOverDay,
+		},
+		{
 			nombre: "esfuerzo con NaN horas (#78)",
 			preparar: func(t *testing.T, registry *domain.ProjectRegistry) {
 				project := addProject(t, registry, "Sistema de metricas")
