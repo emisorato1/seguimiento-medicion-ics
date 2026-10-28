@@ -468,7 +468,7 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 | 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | hecha |
 | 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | hecha |
 | 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | hecha |
-| 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | pendiente |
+| 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | hecha |
 | 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | pendiente |
 | 17 | De punta a punta: con el dominio real, la página muestra los números que calcula la #16 | — (conexión de las dos mitades) | RN-2 | pendiente |
 
@@ -560,6 +560,7 @@ de `RED:` en el mensaje, y la implementación en otro.
 | 12 | `71ccebe` | `6f8bd5a` |
 | 13 | `210f45d` | `cc37e50` (y el estilo de toda la página, `0ee0fc3`) |
 | 14 | `3721850` (sin RED) | — |
+| 15 | `fae9c92` | `d7803df` |
 
 ### Decisiones tomadas al implementar
 
@@ -630,6 +631,15 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   Salvia oscurecido (`#5E7A47`, 3,94 a 1) y la velocidad en Vara de Oro oscurecida
   (`#8A6A1E`, 4,12 a 1). Los originales de la paleta, `#87A96B` y `#D4A437`, no llegaban al
   3 a 1 de la RN-20 sobre ese fondo. Las fuentes de la web no cambian.
+- **El texto alternativo empieza con una frase por gráfico** (tarea 15) que dice qué compara,
+  y sigue con cada rótulo y su valor: «Story points planificados contra completados.
+  Planificados: 40, Completados: 30.». La frase la da la web por la posición del gráfico,
+  como el color, sin cambiar el contrato del dominio. Va en el `aria-label` del SVG, que es
+  una imagen para el lector de pantalla. Lo eligió Juliana.
+- **La tabla de «Ver los valores» tiene dos columnas, «Barra» y «Valor»** (tarea 15), con
+  cada rótulo como encabezado de su fila, dentro del recuadro de tablas de la #77. El
+  gráfico de velocidad sin sprints cerrados tiene solo el aviso, sin dibujo ni tabla: el
+  aviso ya es texto. Lo eligió Juliana.
 
 ### Desvíos respecto de la spec
 
