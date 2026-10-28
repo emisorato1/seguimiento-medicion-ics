@@ -31,7 +31,9 @@ Sin este registro no hay con qué medir la desviación.
   de "Para decidir en la puerta").
 - **Modificar o borrar un registro** ya cargado, y **aprobar o revisar** lo que carga cada
   uno: lo que se registra se guarda.
-- **Controlar la jornada**: no hay máximo de horas por día, por semana ni por persona.
+- **Controlar la jornada**: no hay máximo de horas por día sumando registros, ni por semana ni
+  por persona. Lo único que se controla es que **un solo registro** no pase de 24 horas
+  (RN-20, agregada por el defecto #192).
 - Cómo se muestran las horas en pantalla: eso es de la interfaz.
 
 ### Entradas
@@ -101,6 +103,13 @@ del proyecto, el total de horas de una historia y el total de horas de un integr
     como estaban antes.
 19. **[RN-19]** Si se intenta registrar esfuerzo o consultar horas en un proyecto que no
     existe, el sistema debe informar que no se encontró el proyecto y no registrar nada.
+20. **[RN-20]** Si un registro tiene más de 24 horas, el sistema debe rechazarlo e informar que
+    un registro es de un solo día y no puede tener más de 24 horas. Al cargar los datos
+    guardados no se controla, igual que el día futuro (RN-4): un registro que ya se guardó
+    antes de esta regla se sigue cargando. **Agregada el 27/10 por el defecto #192** (prueba
+    exploratoria del 26/10). Dos registros del mismo día que juntos pasan las 24 horas se
+    siguen aceptando: el tope por día sumando registros sigue afuera (punto 5 de "Para decidir
+    en la puerta").
 
 ### Casos límite
 
@@ -125,6 +134,7 @@ del proyecto, el total de horas de una historia y el total de horas de un integr
 | Situación | Qué hace el sistema |
 |---|---|
 | Horas cero, negativas, infinitas o que no son un número | rechaza e informa que las horas tienen que ser mayores que cero |
+| Un registro de más de 24 horas | rechaza e informa que un registro no puede tener más de 24 horas (RN-20, defecto #192) |
 | Día posterior al de hoy | rechaza e informa que no se pueden cargar horas de un día que todavía no pasó |
 | Falta el día | rechaza e informa que la fecha es obligatoria |
 | Actividad vacía o de solo espacios | rechaza e informa que la actividad realizada es obligatoria |
@@ -297,6 +307,28 @@ Escenario: Registrar esfuerzo en un proyecto que no existe
   Dado que no existe ningun proyecto con identificador 99
   Cuando intento registrar 2 horas en el proyecto 99
   Entonces se informa que no se encontro el proyecto
+
+Esquema del escenario: Un registro no puede tener mas de 24 horas
+  Dado un proyecto con la integrante "Juliana Bustos" y la historia 1
+  Cuando registro <horas> horas en un solo registro
+  Entonces <resultado>
+
+  Ejemplos:
+    | horas | resultado                                                                     |
+    | 24    | el registro queda guardado                                                    |
+    | 24,5  | se informa que un registro es de un solo dia y no puede tener mas de 24 horas |
+
+Escenario: Dos registros del mismo dia que juntos pasan de 24 horas se aceptan
+  Dado un proyecto con la integrante "Juliana Bustos" y la historia 1
+  Y un registro de 24 horas de "Juliana Bustos" el dia de hoy
+  Cuando registro otras 3 horas de ella el mismo dia
+  Entonces los dos registros quedan guardados
+
+Escenario: Un registro de mas de 24 horas que ya estaba guardado se sigue cargando
+  Dado que los datos se guardaron antes de esta regla, con un registro de 25 horas en la historia 1
+  Cuando se cargan los datos
+  Entonces se cargan sin error
+  Y la historia 1 tiene 25 horas
 ```
 
 **Para decidir en la puerta:**
@@ -330,6 +362,8 @@ Escenario: Registrar esfuerzo en un proyecto que no existe
    las dos cosas.
    **Decidido el 21/10: se acepta como está.** Lo único que se rechaza además de cero y los
    negativos es un valor infinito o que no es un número, porque no son horas (RN-3).
+   **Cambiado en parte el 27/10 por el defecto #192:** un solo registro no puede tener más de
+   24 horas, porque es de un solo día (RN-20). El tope por día sumando registros sigue afuera.
 
 6. **Nota del Agile Enabler — rechazar días futuros obliga al dominio a leer el reloj.**
    Sería la primera vez: hoy ninguna parte de `internal/domain` lo hace, y la #8 decidió lo
@@ -568,6 +602,10 @@ Ninguno de comportamiento. Los de proceso:
 - **La carga rechaza también una fecha que no tiene la forma aaaa-mm-dd**, además de los
   casos que lista la tarea 14: es el mismo control que ya hacía la #77 con las fechas del
   proyecto.
+- **RN-20 (máximo de 24 horas por registro) se agregó el 27/10 por el defecto #192**, después
+  de la historia: con su test y su arreglo en el PR del defecto. La carga no la controla, como
+  el día futuro. Sus tres escenarios se sumaron a la Fase 1 el 28/10, a pedido de la revisión
+  de Juliana Bustos.
 
 ## Trazabilidad
 
