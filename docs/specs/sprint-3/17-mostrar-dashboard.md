@@ -3,7 +3,7 @@
 - **Historia:** #17
 - **Sprint:** 3
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. **Adaptado a la web el 20/10** (punto 1 de "Para decidir

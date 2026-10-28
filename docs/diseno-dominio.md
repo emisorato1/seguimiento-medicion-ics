@@ -37,9 +37,9 @@ Nada de esto se toca sin avisar: ya está implementado y con tests. Al 27/10:
 | `Story` | `ID`, `Title`, `Description`, `Priority`, `State`, `StoryPoints`, `EstimatedHours`, `AcceptanceCriteria`; `p.Backlog()` y `p.PrioritizedBacklog()` (#7) | `story.go`, `story_priority.go`, `story_estimation.go`, `story_hours.go` |
 | `Sprint` (#8 a #11), `Effort` (#14), `Defect` (#15), `Metrics` (#16) y `VotingRound` (#13, #73) | lo que dicen sus secciones de abajo, que ya están implementadas | ver cada sección |
 
-**Lo que todavía no está en `dev`:** `Report` (#18 y #19). El `Dashboard` (#17) ya está en el
-dominio, con sus datos, `p.Dashboard()` y la regla de formato de los números (`format.go`);
-falta su página web.
+**Lo que todavía no está en `dev`:** `Report` (#18 y #19). El `Dashboard` (#17) está entero:
+el dominio, con sus datos, `p.Dashboard()` y la regla de formato de los números (`format.go`),
+y su página web, `GET /proyectos/{id}/dashboard`.
 
 Las operaciones cuelgan del proyecto: `p.AddStory(...)`, `p.Members()`, `p.Story(id)`.
 Lo nuevo sigue el mismo camino.

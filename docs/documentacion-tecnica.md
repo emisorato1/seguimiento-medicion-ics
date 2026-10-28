@@ -55,7 +55,7 @@ internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métr
 | `internal/store` | lee y escribe la base SQLite y el archivo de datos, e importa y exporta | no valida datos: eso lo hace el dominio, con su conversión |
 | `cmd/app` | la consola: lee lo que escribe el usuario, llama al dominio y muestra el resultado | no valida nada por su cuenta: le pregunta al dominio |
 | `cmd/web` | lee las opciones (`-puerto`, `-datos`, `-red`), carga los datos guardados, toma el puerto avisando si está ocupado o no hay permiso, y arranca la web con la fecha de la computadora | no guarda ni valida nada: lo hacen `store` y el dominio |
-| `internal/web` (#77 y #78) | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas. Cuando entre el dashboard (#17), dibuja sus barras | no valida reglas: las valida el dominio |
+| `internal/web` (#77 y #78) | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas. En el dashboard (#17) mide y dibuja las barras de los gráficos en SVG | no valida reglas: las valida el dominio |
 
 Las dos interfaces usan **el mismo dominio**: una regla se escribe y se testea una sola vez,
 y vale igual en la consola y en la web.
