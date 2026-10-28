@@ -358,8 +358,8 @@ func TestUnGuardadoQueFallaNoDejaNadaAMedias(t *testing.T) {
 	}
 }
 
-// Escenarios: Un dato guardado que no cumple las reglas no se carga / Una base de una
-// versión más nueva no se abre
+// Escenario: Un dato guardado que no cumple las reglas no se carga
+// Escenario: Una base de una versión más nueva no se abre
 // Cubre: #177 RN-4, RN-13
 func TestLoQueNoSePuedeAbrirSeAvisaYNoSeToca(t *testing.T) {
 	casos := []struct {
@@ -432,8 +432,9 @@ func TestUnaBaseQueNoSePuedeCrearSeAvisa(t *testing.T) {
 	}
 }
 
-// Escenario: Un cambio que no se pudo guardar no deja nada a medias, con la falla en cada
-// una de las tablas: el guardado se puede cortar en cualquier punto.
+// Escenario: Un cambio que no se pudo guardar no deja nada a medias (la falla en cada tabla)
+// El guardado se puede cortar en cualquier punto, así que la falla se prueba en cada una de
+// las tablas.
 // Cubre: #177 RN-2, D4, D9
 func TestUnGuardadoQueFallaEnCualquierTablaNoDejaNada(t *testing.T) {
 	for _, tabla := range tables {
@@ -459,8 +460,9 @@ func TestUnGuardadoQueFallaEnCualquierTablaNoDejaNada(t *testing.T) {
 	}
 }
 
-// Sin escenario: una base editada a mano con una fila que apunta a algo que no esta (un
-// proyecto, una historia, un sprint o una ronda) no se carga.
+// Escenario: Un dato guardado que no cumple las reglas no se carga (una fila que apunta a nada)
+// Una base editada a mano con una fila que apunta a algo que no esta (un proyecto, una
+// historia, un sprint o una ronda) no se carga.
 // Cubre: #177 RN-4
 func TestUnaFilaQueApuntaANadaNoSeCarga(t *testing.T) {
 	filas := map[string]string{
@@ -524,7 +526,8 @@ func TestUnaBaseAbiertaNoLaAbreOtroSistema(t *testing.T) {
 	}
 }
 
-// Sin escenario: una ruta con signos raros abre la base en ese lugar y no en otro, y una con
+// Escenario: Abrir por primera vez (en la ruta que se indica)
+// Una ruta con signos raros abre la base en ese lugar y no en otro, y una con
 // "?" se rechaza: el driver corta el nombre ahi y la crearia en otro archivo, sin avisar.
 // Windows no permite "?" en los nombres, asi que ese caso solo se prueba en Linux y macOS.
 // Cubre: #177 RN-5
