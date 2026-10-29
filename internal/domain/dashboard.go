@@ -5,7 +5,8 @@ import "time"
 // Dashboard son los datos del dashboard de un proyecto (historia #17). El dominio los arma
 // con los números ya escritos y la web los dibuja: cuánto mide cada barra depende de la
 // pantalla y lo decide la web (D2). Es un dato plano y sus campos son públicos, como
-// Metrics: no tiene reglas que proteger, y la web lo arma a mano en sus tests (D10).
+// Metrics: no tiene reglas que proteger. La web lo pide con p.Dashboard(), también en sus
+// tests, que arman el proyecto con las operaciones de verdad (desvío de la D10, Fase 4).
 type Dashboard struct {
 	// HasSprints dice si el proyecto tiene algún sprint. Sin sprints, la página muestra solo
 	// el encabezado y el aviso de que no hay datos (RN-7).
