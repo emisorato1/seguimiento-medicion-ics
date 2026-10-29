@@ -100,6 +100,11 @@ func (p *Project) newEffort(data EffortData, today time.Time, loading bool) (*Ef
 	if !(data.Hours > 0) || math.IsInf(data.Hours, 0) {
 		return nil, ErrEffortHoursInvalid
 	}
+	// un registro es de un solo dia: no pasa de 24 horas. Al cargar no se controla, como el dia
+	// futuro, para no rechazar lo que se guardo antes de esta regla (RN-20, defecto #192)
+	if !loading && data.Hours > 24 {
+		return nil, ErrEffortHoursOverDay
+	}
 	// la actividad se controla ya sin los espacios de los extremos, así un texto de solo
 	// espacios cuenta como vacío, y se guarda así (RN-6)
 	activity := strings.TrimSpace(data.Activity)

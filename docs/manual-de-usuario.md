@@ -29,11 +29,23 @@ navegador. No hace falta internet. Para cerrarlo, volvé a la terminal y apretá
 
 - **Si dice que el puerto ya lo está usando otro programa**, abrilo en otro puerto con
   `go run ./cmd/web -puerto 8081` y usá la dirección que muestra.
-- **Los datos se guardan solos** después de cada cambio, en el archivo `datos-ics.json` de
-  esa carpeta. Al volver a abrir el sistema está todo como lo dejaste. Para usar otro archivo,
-  por ejemplo uno para una demo: `go run ./cmd/web -datos demo.json`.
-- **Si el archivo de datos está dañado**, el sistema avisa y no arranca, y no lo toca. Los
-  datos se pueden recuperar arreglando el archivo, o se arranca con otro usando `-datos`.
+- **Los datos se guardan solos** después de cada cambio, en la base de datos `datos-ics.db`
+  de esa carpeta. Al volver a abrir el sistema está todo como lo dejaste. Un cambio queda
+  guardado entero o no queda: nunca a medias. Para usar otra base, por ejemplo una para una
+  demo: `go run ./cmd/web -datos demo.db`.
+- **Si en la carpeta está el `datos-ics.json`** donde guardaba los datos la versión anterior,
+  y la base está vacía, el sistema lo importa solo la primera vez que se abre, lo renombra a
+  `datos-ics.json.importado` y lo avisa. Así no se vuelve a importar.
+- **Para traer datos de un archivo**, por ejemplo los de una demo, a una base nueva:
+  `go run ./cmd/web -datos demo.db -importar datos-demo.json`. Solo se importa a una base
+  vacía: si ya tiene datos, el sistema avisa y no cambia nada.
+- **Para llevarse todos los datos a un archivo**, como copia o para otra computadora:
+  `go run ./cmd/web -exportar copia.json`. Escribe el archivo y termina, sin abrir la página.
+  `-importar` y `-exportar` no se usan juntas, y no se exporta al mismo archivo de la base.
+- **Una base la usa un solo sistema por vez.** Si se abre un segundo sistema con la misma
+  base, avisa que ya está abierta y no arranca: así no se pisan los cambios.
+- **Si la base de datos está dañada**, el sistema avisa y no arranca, y no la toca. Se puede
+  arrancar con otra base usando `-datos`, e importar ahí una copia exportada.
 - **Para abrirlo desde un celular** en la misma red, agregá `-red`: el sistema muestra
   también la dirección para el celular. No tiene usuarios ni contraseñas, así que usalo solo
   en una red de confianza.
@@ -191,7 +203,13 @@ cada una.
 | «todavía faltan votos para revelar la ronda» | esperar a que voten todos los que figuran en «Faltan» |
 | «No quedó guardado» | el cambio sigue cargado y se guarda con el próximo que funcione; revisá que se pueda escribir en la carpeta de los datos |
 | Al abrir, «el puerto ya lo está usando otro programa» | abrirlo con `-puerto 8081` |
-| Al abrir, «los datos guardados no se pueden leer» | arreglar el archivo de datos o arrancar con otro usando `-datos` |
+| Al abrir, «los datos guardados no se pueden leer» | arrancar con otra base usando `-datos` e importar ahí una copia exportada |
+| Al abrir, «es de una versión más nueva del sistema» | abrir esa base con la versión nueva del sistema |
+| Al importar, «la base ya tiene datos y no se importa sobre datos existentes» | importar en una base nueva, con otro nombre en `-datos` |
+| Al abrir, «la base ya está abierta por otro sistema» | cerrar el otro sistema (`Ctrl+C` en su terminal) y volver a abrir |
+| Al abrir, «-datos es la base de datos (.db); para traer un archivo .json usá -importar» | en `-datos` va la base, que termina en `.db`; el archivo `.json` se trae con `-importar` |
+| Al exportar, «no hay datos para exportar» | revisar el nombre de la base en `-datos`: esa base no existe |
+| Al exportar, «ya está abierta por la web. Cerrá la web y volvé a exportar.» | cerrar la web (`Ctrl+C` en su terminal) y volver a exportar |
 
 ## Desde la consola
 
