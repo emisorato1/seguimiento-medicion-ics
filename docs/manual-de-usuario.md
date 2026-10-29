@@ -6,8 +6,8 @@ consola** (historia #24), y en la web también los sprints, el esfuerzo, los def
 Planning Poker (historia #78). El reporte y su PDF se suman cuando estén terminados.
 
 Las dos interfaces hacen lo mismo con los proyectos, los integrantes y el backlog; lo demás
-se hace solo desde la web. **No comparten los datos**: la web los guarda en un archivo y los
-encuentra al volver a abrirla; la consola los pierde al cerrarse.
+se hace solo desde la web. **No comparten los datos**: la web los guarda en una base de datos
+y los encuentra al volver a abrirla; la consola los pierde al cerrarse.
 
 **Antes de empezar:** para abrir cualquiera de las dos hace falta tener Go instalado. Los
 proyectos, las historias, los sprints y los defectos se reconocen por su **número**, que el
@@ -37,8 +37,8 @@ navegador. No hace falta internet. Para cerrarlo, volvé a la terminal y apretá
   y la base está vacía, el sistema lo importa solo la primera vez que se abre, lo renombra a
   `datos-ics.json.importado` y lo avisa. Así no se vuelve a importar.
 - **Para traer datos de un archivo**, por ejemplo los de una demo, a una base nueva:
-  `go run ./cmd/web -datos demo.db -importar datos-demo.json`. Solo se importa a una base
-  vacía: si ya tiene datos, el sistema avisa y no cambia nada.
+  `go run ./cmd/web -datos demo.db -importar docs/demo/datos-demo.json`. Solo se importa a
+  una base vacía: si ya tiene datos, el sistema avisa y no cambia nada.
 - **Para llevarse todos los datos a un archivo**, como copia o para otra computadora:
   `go run ./cmd/web -exportar copia.json`. Escribe el archivo y termina, sin abrir la página.
   `-importar` y `-exportar` no se usan juntas, y no se exporta al mismo archivo de la base.
@@ -147,8 +147,9 @@ historia, los story points que tenía al cerrarse y si se completó.
 
 En **Esfuerzo** se ven las horas trabajadas: el total por historia, el total por integrante
 y todos los registros. Con **Registrar horas** se carga uno: quién trabajó, en qué historia,
-qué día (propone el de hoy), cuántas horas y qué hizo. Las horas aceptan decimales (`2,5`).
-No se pueden cargar horas de un día que todavía no pasó. Si el proyecto no tiene
+qué día (propone el de hoy), cuántas horas y qué hizo. Las horas aceptan decimales, con coma
+o con punto (`2,5` o `2.5`). Un registro es de un solo día, así que no puede tener más de 24
+horas. No se pueden cargar horas de un día que todavía no pasó. Si el proyecto no tiene
 integrantes, el formulario lo dice y ofrece agregar el primero.
 
 ![Horas trabajadas](manual/esfuerzo.png)

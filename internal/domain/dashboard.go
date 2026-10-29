@@ -5,7 +5,8 @@ import "time"
 // Dashboard son los datos del dashboard de un proyecto (historia #17). El dominio los arma
 // con los números ya escritos y la web los dibuja: cuánto mide cada barra depende de la
 // pantalla y lo decide la web (D2). Es un dato plano y sus campos son públicos, como
-// Metrics: no tiene reglas que proteger, y la web lo arma a mano en sus tests (D10).
+// Metrics: no tiene reglas que proteger. La web lo pide con p.Dashboard(), también en sus
+// tests, que arman el proyecto con las operaciones de verdad (desvío de la D10, Fase 4).
 type Dashboard struct {
 	// HasSprints dice si el proyecto tiene algún sprint. Sin sprints, la página muestra solo
 	// el encabezado y el aviso de que no hay datos (RN-7).
@@ -60,6 +61,25 @@ type dashboardSource struct {
 	sprintMetrics  map[int]Metrics
 }
 
+// Dashboard arma el dashboard del proyecto con las métricas que calcula la #16: las del
+// proyecto entero y las de cada sprint. No falla: el proyecto que no existe lo informa el
+// registro (contrato del dominio). Solo lee, así que no cambia nada (RN-16).
+func (p *Project) Dashboard() Dashboard {
+	sprints := p.Sprints()
+	sprintMetrics := make(map[int]Metrics, len(sprints))
+	for _, sprint := range sprints {
+		// SprintMetrics solo falla con un sprint que no existe, y el número sale de los
+		// sprints del propio proyecto: el error no puede darse.
+		m, _ := p.SprintMetrics(sprint.Number())
+		sprintMetrics[sprint.Number()] = m
+	}
+	return buildDashboard(dashboardSource{
+		sprints:        sprints,
+		projectMetrics: p.ProjectMetrics(),
+		sprintMetrics:  sprintMetrics,
+	})
+}
+
 // buildDashboard arma los datos del dashboard a partir de lo que trae source, sin cambiar
 // nada. Un proyecto sin sprints no tiene estado general, sprint en curso ni gráficos, y eso
 // no es un error (RN-7).
@@ -67,12 +87,45 @@ func buildDashboard(source dashboardSource) Dashboard {
 	if len(source.sprints) == 0 {
 		return Dashboard{}
 	}
+	closed := closedSprints(source.sprints)
 	return Dashboard{
 		HasSprints:    true,
-		Overview:      overview(source.projectMetrics),
+		Overview:      overview(source.projectMetrics, len(closed) > 0),
 		CurrentSprint: currentSprint(source),
-		Charts:        charts(source.projectMetrics),
+		Charts:        append(charts(source.projectMetrics), velocityChart(closed, source.sprintMetrics)),
 	}
+}
+
+// closedSprints devuelve los sprints cerrados, en el orden en que llegan, que es el de su
+// número.
+func closedSprints(sprints []*Sprint) []*Sprint {
+	var closed []*Sprint
+	for _, sprint := range sprints {
+		if sprint.State() == SprintClosed {
+			closed = append(closed, sprint)
+		}
+	}
+	return closed
+}
+
+// velocityChart arma el cuarto gráfico: una barra por sprint cerrado, con la velocidad de sus
+// métricas, del más viejo al más nuevo. El sprint abierto no va, porque su velocidad se
+// registra recién al cerrarlo. Sin sprints cerrados no tiene barras y trae el aviso (RN-9).
+func velocityChart(closed []*Sprint, sprintMetrics map[int]Metrics) Chart {
+	chart := Chart{Title: "Velocidad"}
+	if len(closed) == 0 {
+		chart.Empty = "Todavía no hay sprints cerrados"
+		return chart
+	}
+	for _, sprint := range closed {
+		velocity := sprintMetrics[sprint.Number()].Velocity
+		chart.Bars = append(chart.Bars, Bar{
+			Label: "Sprint " + formatCount(sprint.Number()),
+			Value: float64(velocity),
+			Text:  formatCount(velocity),
+		})
+	}
+	return chart
 }
 
 // charts arma los gráficos del proyecto entero en el orden de la RN-8: story points, horas
@@ -120,8 +173,14 @@ func currentSprint(source dashboardSource) *CurrentSprint {
 }
 
 // overview arma el estado general con las métricas del proyecto entero, en el orden de la
-// RN-4, tal como llegaron: no vuelve a calcular ninguna (RN-2).
-func overview(m Metrics) []Figure {
+// RN-4, tal como llegaron: no vuelve a calcular ninguna (RN-2). Sin sprints cerrados, la
+// velocidad dice «sin sprints cerrados» en lugar de un cero, que haría parecer que el equipo
+// no hizo nada; con sprints cerrados, un cero se escribe como cero (RN-4).
+func overview(m Metrics, hasClosed bool) []Figure {
+	velocity := "sin sprints cerrados"
+	if hasClosed {
+		velocity = formatCount(m.Velocity)
+	}
 	return []Figure{
 		{Label: "Story points planificados", Text: formatCount(m.PlannedPoints)},
 		{Label: "Story points completados", Text: formatCount(m.CompletedPoints)},
@@ -133,6 +192,6 @@ func overview(m Metrics) []Figure {
 		{Label: "Desviación de horas", Text: formatPercent(m.HoursDeviation)},
 		{Label: "Defectos detectados", Text: formatCount(m.DefectsDetected)},
 		{Label: "Defectos resueltos", Text: formatCount(m.DefectsResolved)},
-		{Label: "Velocidad", Text: formatCount(m.Velocity)},
+		{Label: "Velocidad", Text: velocity},
 	}
 }
