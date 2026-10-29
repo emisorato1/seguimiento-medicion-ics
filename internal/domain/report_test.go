@@ -587,3 +587,33 @@ func TestPedirUnReporteDeAlgoQueNoExiste(t *testing.T) {
 		})
 	}
 }
+
+// Esquema del escenario: El resumen del proyecto cuenta los sprints en singular o en plural
+// Cubre: RN-8
+func TestElResumenDelProyectoCuentaLosSprintsEnSingularOEnPlural(t *testing.T) {
+	cases := []struct {
+		sprints, cerrados int
+		linea             string
+	}{
+		{1, 1, "1 sprint, 1 cerrado"},
+		{2, 1, "2 sprints, 1 cerrado"},
+		{3, 2, "3 sprints, 2 cerrados"},
+	}
+	for _, c := range cases {
+		t.Run(c.linea, func(t *testing.T) {
+			project := unProyecto(t)
+			for i := 1; i <= c.cerrados; i++ {
+				unSprintCerrado(t, project, "Sprint de prueba", unDia(2026, 10, 1), unDia(2026, 10, 5), unDia(2026, 10, 5), nil)
+			}
+			for i := c.cerrados; i < c.sprints; i++ {
+				unSprint(t, project)
+			}
+
+			report := project.ProjectReport(unDia(2026, 10, 30))
+
+			if lines := seccion(t, report, "Resumen"); !slices.Contains(lines, c.linea) {
+				t.Errorf("se esperaba la linea %q, y no esta en:\n%q", c.linea, lines)
+			}
+		})
+	}
+}
