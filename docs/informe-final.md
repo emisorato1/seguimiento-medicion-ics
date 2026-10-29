@@ -105,7 +105,9 @@ Sprint 3, la tabla ya tiene lo planificado: 41 SP y 110,7 horas estimadas.
   se termina, suma a la velocidad, aparte. Fueron la #13 en el Sprint 2 y la #73 en el 3.
 - **Agregadas durante el sprint.** La #177 (guardar los datos en una base de datos) entró al
   Sprint 3 el 26/10, ya empezado. Se cuenta igual que una adelantada: no suma a lo comprometido
-  y, si se termina, suma a la velocidad. Sus story points están [pendientes] del Planning Poker.
+  y, si se termina, suma a la velocidad. Se terminó el 28/10 (PR #186) sin story points, porque
+  su Planning Poker no se cerró: sus 1,5 h reales suman al total del sprint, pero no a la
+  velocidad ni a la desviación.
 - **Estimadas después.** La #77 y la #78, las de la web, entraron sin story points. El equipo
   las estimó el 26/10, en la ronda 2 del Planning Poker de la planning del Sprint 3: 13 y 13,
   con los cuatro de acuerdo. La #77 ya estaba terminada y suma al Sprint 2, donde se terminó.
@@ -130,20 +132,23 @@ proyecto.]
 
 ## 5. Pruebas y cobertura
 
-Medido con `go test -cover ./...` sobre `dev` en `4f7644b`, el 26/10, el primer día del
-Sprint 3. Los cierres anteriores salen de las actas de review.
+Medido con `go test -cover ./...` sobre `dev`: en `4f7644b`, el 26/10, el primer día del
+Sprint 3, y en `17ec982`, el 29/10. Los cierres anteriores salen de las actas de review.
 
-| Paquete | Qué tiene | Sprint 1 (`4481d1c`, 15/10) | Sprint 2 (`b45cbe6`, 24/10) | 26/10 (`4f7644b`) |
-|---|---|---|---|---|
-| `internal/domain` | el núcleo y las reglas de negocio | **100%** | **100%** | **100%** |
-| `internal/store` | el guardado en archivo | — | 96,0% | 96,0% |
-| `internal/web` | las pantallas de la web | — | 93,8% | 94,0% |
-| `cmd/app` | la consola | 0% (sin lógica todavía) | 96,2% | 96,2% |
-| `cmd/web` | el arranque de la web | — | 56,2% | 94,0% |
-| **Total** | | **99,2%** | **96,0%** | **96,9%** |
-| Tests | | 52 | 263 | 317 |
+| Paquete | Qué tiene | Sprint 1 (`4481d1c`, 15/10) | Sprint 2 (`b45cbe6`, 24/10) | 26/10 (`4f7644b`) | 29/10 (`17ec982`) |
+|---|---|---|---|---|---|
+| `internal/domain` | el núcleo y las reglas de negocio | **100%** | **100%** | **100%** | **100%** |
+| `internal/store` | el guardado: en archivo, y desde la #177 en la base de datos | — | 96,0% | 96,0% | 87,1% |
+| `internal/web` | las pantallas de la web | — | 93,8% | 94,0% | 93,9% |
+| `cmd/app` | la consola | 0% (sin lógica todavía) | 96,2% | 96,2% | 96,2% |
+| `cmd/web` | el arranque de la web | — | 56,2% | 94,0% | 91,1% |
+| **Total** | | **99,2%** | **96,0%** | **96,9%** | **95,5%** |
+| Tests | | 52 | 263 | 317 | 384 |
 
-- Al 26/10 son **317 tests**, y 469 subtests más, que salen de los tests con tabla.
+- Al 26/10 son **317 tests**, y 469 subtests más, que salen de los tests con tabla. Al 29/10
+  son **384 tests** y 553 subtests, y pasan todos.
+- Del 26/10 al 29/10 la cobertura total baja de 96,9% a 95,5% por `internal/store`: la #177
+  cambió el guardado en archivo por la base de datos, y esa parte nueva queda en 87,1%.
 - [pendiente: la cobertura al cierre del Sprint 3 y del Sprint 4.]
 - El CI corre formato, análisis estático y los tests con cobertura en cada pull request. Desde
   el arreglo del defecto #108 (PR #116) los corre también en Windows.
@@ -154,15 +159,15 @@ Sprint 3. Los cierres anteriores salen de las actas de review.
 La regla del proyecto es que el test va en un commit (`test:`, con la salida del RED en el
 mensaje) y el código que lo hace pasar, en el siguiente (`feat:`). No se aplasta la historia,
 así que el ciclo queda en el historial de `dev`. `scripts/trazabilidad.sh` lee ese historial y
-le pone a cada test una marca. Al 26/10, sobre `4f7644b`:
+le pone a cada test una marca:
 
-| Qué muestra el historial | Tests |
-|---|---|
-| Ciclo completo: el test en un commit y el código que lo hace pasar en el siguiente | 250 |
-| Ciclo completo, con el test trayendo lo justo para compilar (una firma o una constante) | 3 |
-| Sin RED: el test pasó con el código que ya estaba, y el commit lo dice | 44 |
-| Sin GREEN: después del test no hay un commit de código | 13 |
-| Test y código en el mismo commit (desvío del TDD) | 1 |
+| Qué muestra el historial | 26/10 (`4f7644b`) | 29/10 (`17ec982`) |
+|---|---|---|
+| Ciclo completo: el test en un commit y el código que lo hace pasar en el siguiente | 250 | 297 |
+| Ciclo completo, con el test trayendo lo justo para compilar (una firma o una constante) | 3 | 3 |
+| Sin RED: el test pasó con el código que ya estaba, y el commit lo dice | 44 | 64 |
+| Sin GREEN: después del test no hay un commit de código | 13 | 13 |
+| Test y código en el mismo commit (desvío del TDD) | 1 | 1 |
 
 El único desvío es `0d22bc7`, de la #6, en el Sprint 1. Los "sin RED" son casos que una tarea
 anterior ya resolvía. Desde el 20/10 se dejan dichos en el asunto del commit, para que no
@@ -182,7 +187,9 @@ empezó el 20/10.
 - GREEN: `6a78fd1` — *feat: votar sin que se pueda leer ningún voto antes de revelar (historia
   13, tarea 5)*.
 
-[pendiente: actualizar los números al cierre del Sprint 3 y del Sprint 4.]
+Del 26/10 al 29/10 se sumaron 47 ciclos completos y 20 "sin RED", y ningún desvío nuevo: los
+13 "sin GREEN" y el test con el código en el mismo commit son los mismos del Sprint 1.
+[pendiente: los números al cierre del Sprint 4.]
 
 ## 7. Trazabilidad de punta a punta: la #13 *Votar en secreto en una ronda de Planning Poker*
 
