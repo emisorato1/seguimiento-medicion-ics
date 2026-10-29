@@ -34,7 +34,7 @@ final, con la exportación del informe del proyecto a PDF.
 | — | Documentación técnica | — | Agustín Salinas | `docs/documentacion-tecnica.md` en `dev`, ya con la base SQLite de la #177 |
 | — | Presentación final | — | Juliana Bustos arma, los cuatro revisan | [pendiente] |
 | — | Pull request de `dev` a `main` con el incremento final, la entrega, y su tag `v1.0.0` | — | Emiliano Sorato | el 29/10, después del incremento del Sprint 3 con su tag `v0.3.0-sprint3` |
-| — | Actas de review y retrospectiva del Sprint 4 | — | Emiliano Sorato | [pendiente] |
+| — | Actas de [review](sprint-4-review.md) y [retrospectiva](sprint-4-retrospectiva.md) del Sprint 4 | — | Emiliano Sorato | borradores armados el 29/10 |
 
 [pendiente: lo que vuelva del Sprint 3 sin terminar, si el equipo decide terminarlo en el 4.]
 
