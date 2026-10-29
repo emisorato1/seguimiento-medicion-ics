@@ -69,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-6d9af32 2026-10-29 chore: ESTADO.md con la #19 en progreso
-b0afa1a 2026-10-29 docs: el índice de specs al 29/10 (la #17, la #18, la #78 y la #19, y las fechas de los sprints 3 y 4)
-b03f5ef 2026-10-28 chore: trazabilidad y ESTADO.md regenerados con dev en 17ec982 (la #177 da 14 de 14)
-0d83f1e 2026-10-28 Merge remote-tracking branch 'origin/dev' into cierre-historia-177
-17ec982 2026-10-28 Merge pull request #206 from emisorato1/guia-defensa-177
-2b0b1be 2026-10-28 Merge pull request #179 from emisorato1/historia-177-planning
-5dd3905 2026-10-28 Merge pull request #207 from emisorato1/historia-177-trazabilidad
-b49d53f 2026-10-28 chore: trazabilidad y ESTADO.md regenerados con dev en 93e2e49 (defecto #192)
+3a88881 2026-10-29 docs: la #17 terminada en su spec (PR #209)
+7a66266 2026-10-29 Merge origin/dev en cierre-historia-177: la #17 y la #18 terminadas en el índice, y la trazabilidad y ESTADO.md regenerados
+5d1d556 2026-10-29 Merge pull request #209 from emisorato1/historia-17-dashboard
+c61b079 2026-10-29 docs: el comentario de Dashboard dice que la web lo pide con p.Dashboard(), tambien en sus tests (revision de Agustin en el #209)
+d039489 2026-10-29 Merge branch 'dev' into historia-17-dashboard
+4c71445 2026-10-29 Merge pull request #211 from emisorato1/documentacion-tecnica-29-10
+0293c41 2026-10-29 docs: la historia 18 terminada, en su spec, en el indice y en ESTADO.md
+7c3bcfd 2026-10-29 Merge remote-tracking branch 'origin/dev' into documentacion-tecnica-29-10
 ```
