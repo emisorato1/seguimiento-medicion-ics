@@ -544,6 +544,50 @@ button:hover {
   }
 }
 
+/* Los graficos del dashboard (#17), con la identidad salvia: cada grafico es una tarjeta como
+   el resto de la web, y las barras usan los colores de los graficos de :root. Contraste sobre
+   blanco: Siena 5,62 a 1, Salvia vivo 4,86 y Oro oscurecido 5,05, todas sobre el 3 a 1 de la
+   RN-20. El color ayuda, pero cada barra lleva su rotulo (D6). */
+.grafico {
+  margin: 0 0 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.grafico figcaption {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
+.grafico p {
+  margin: 0;
+}
+
+.grafico svg {
+  display: block;
+  overflow: visible;
+}
+
+.grafico text {
+  fill: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.barra-planificada {
+  fill: var(--chart-planned);
+}
+
+.barra-real {
+  fill: var(--chart-actual);
+}
+
+.barra-velocidad {
+  fill: var(--chart-velocity);
+}
+
 /* En una tableta o un celular la barra lateral pasa arriba y queda fija al desplazarse
    (RN-4). Las secciones van en una fila que se recorre de costado dentro de la barra, asi la
    pagina no se desplaza (RN-18). El nombre del proyecto va en un renglon y, si no entra, se
