@@ -4,6 +4,7 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // La regla de formato de los números (RN-15 de la #17, RN-14 de la #18): cómo se escribe cada
@@ -41,4 +42,12 @@ func formatDecimal(x float64) string {
 		rounded = 0
 	}
 	return strings.Replace(strconv.FormatFloat(rounded, 'f', 1, 64), ".", ",", 1)
+}
+
+// formatDate escribe un día como día/mes/año, con el día y el mes en dos dígitos, por
+// ejemplo "01/10/2026". Es el mismo formato que usa la web, así una fecha se lee igual en la
+// pantalla, en el reporte y en el PDF (RN-14 de la #18). La suma la #18: en la #17 las fechas
+// las escribe la web.
+func formatDate(day time.Time) string {
+	return day.Format("02/01/2006")
 }
