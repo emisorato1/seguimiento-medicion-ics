@@ -26,16 +26,16 @@ a `dev`.
 | 10 | Cerrar un sprint | 5 | **Hecho** | Emiliano Sorato (con asistencia de IA) | PR #150, 26/10 |
 | 16 | Calcular las métricas | 8 | **Hecho** | Emiliano Sorato (con asistencia de IA) | PRs #81, #140 y #151 |
 | 11 | Consultar sprints anteriores | 2 | **Hecho** | Agustín Salinas | PR #143, 26/10 |
-| 17 | Mostrar el dashboard | 8 | En review | Juliana Bustos | PR #209, abierto al 29/10 |
-| 18 | Generar el reporte | 5 | En review | Agustín Salinas | PR #181, abierto al 29/10, con las tres puertas aprobadas el 27/10 por Emiliano Sorato. [pendiente: el cierre, cuando entre a `dev`] |
+| 17 | Mostrar el dashboard | 8 | **Hecho** | Juliana Bustos | PR #204 (dominio) y PR #209 (merge `5d1d556`, 29/10) |
+| 18 | Generar el reporte | 5 | **Hecho** | Agustín Salinas | PR #181 (merge `556edca`, 29/10), con las tres puertas aprobadas el 27/10 por Emiliano Sorato |
 | 78 | Operar todo desde la web | 13 | En progreso | Emiliano Sorato (con asistencia de IA) | PRs #149, #163, #165 y #170 en `dev`; 17 de 22 escenarios con test al 29/10 |
 
 - **Story points comprometidos:** 41. Son los 28 de la planning más los 13 de la #78, que se
   estimó en la misma planning ([planning del Sprint 3](sprint-3-planning.md)).
-- **Story points completados:** [pendiente: al cierre]. Al 29/10 son 15 (37%).
-- **Velocidad del Sprint 3:** [pendiente: al cierre]. Al 29/10 son 20 (15 + 5 de la #73
+- **Story points completados:** [pendiente: al cierre]. Al 29/10 son 28 (68%).
+- **Velocidad del Sprint 3:** [pendiente: al cierre]. Al 29/10 son 33 (28 + 5 de la #73
   adelantada). La #177 no suma: se terminó sin story points.
-- **Historias completadas:** [pendiente: al cierre]. Al 29/10 son 3 de 6 (50%).
+- **Historias completadas:** [pendiente: al cierre]. Al 29/10 son 5 de 6 (83%). Falta la #78.
 
 Las historias no terminadas al cierre **vuelven al Product Backlog**, no se arrastran en
 silencio.
@@ -62,23 +62,26 @@ _Al 29/10, según el tablero._
 | #10 | 13,5 | 0,5 | −13 h |
 | #16 | 21,6 | 1 | −20,6 h |
 | #11 | 5,4 | 4,5 | −0,9 h |
+| #17 | 21,6 | 25 | +3,4 h |
+| #18 | 13,5 | 10 | −3,5 h |
 | #73 (adelantada) | 13,5 | 3 | −10,5 h |
-| **Total de las terminadas** | **54** | **9** | **−45 h (−83%)** |
+| **Total de las terminadas** | **89,1** | **44** | **−45,1 h (−51%)** |
 
 - **Horas estimadas de lo comprometido:** 110,7 (41 SP a 2,7 h por punto, con las 35,1 h de
   la #78).
 - **La #10 y la #16 se hicieron con asistencia de IA.** Sus horas reales son el tiempo de
   Emiliano Sorato para dirigir y revisar, y por eso la desviación da muy negativa. Sin esas
-  dos, la #11 y la #73 dan −60% (18,9 h estimadas contra 7,5 reales).
+  dos, la #11, la #17, la #18 y la #73 dan −21% (54 h estimadas contra 42,5 reales).
 - **La #78 y la #177: 1,5 h reales cada una**, dadas por Emiliano Sorato el 28/10. También son
   su tiempo de dirección y revisión con asistencia de IA. La #78 sigue en progreso, con 35,1 h
   estimadas. La #177 se terminó sin story points: sus horas suman al total, pero no entran en la
   desviación ni en las horas por story point.
-- **La #18 tiene 10 h reales** cargadas, y está en review: no suma hasta que entre a `dev`.
-- **Horas reales cargadas en el sprint:** 22 al 29/10. Son 17,5 de lo comprometido, 3 de la
+- **La #17: 25 h reales**, dadas por Juliana Bustos el 29/10. Incluyen también sus revisiones
+  de PRs y los conflictos de integración del sprint.
+- **Horas reales cargadas en el sprint:** 47 al 29/10. Son 42,5 de lo comprometido, 3 de la
   #73 y 1,5 de la #177.
 - **Horas por integrante:** [pendiente: cada uno las completa en la review].
-- **Horas por story point completado:** [pendiente: al cierre]. Al 29/10, 0,5 (9 h / 20 SP).
+- **Horas por story point completado:** [pendiente: al cierre]. Al 29/10, 1,3 (44 h / 33 SP).
 
 ## Defectos
 
@@ -100,17 +103,17 @@ _Al 29/10, según el tablero._
 
 [pendiente: medir de nuevo si entra más código antes del cierre.]
 
-| Paquete | 26/10 (`4f7644b`) | 29/10 (`17ec982`) |
+| Paquete | 26/10 (`4f7644b`) | 29/10 (`5d1d556`) |
 |---|---|---|
 | `internal/domain` | 100% | 100% |
 | `internal/store` | 96,0% | 87,1% |
-| `internal/web` | 94,0% | 93,9% |
+| `internal/web` | 94,0% | 94,1% |
 | `cmd/app` | 96,2% | 96,2% |
 | `cmd/web` | 94,0% | 91,1% |
-| **Total** | **96,9%** | **95,5%** |
-| Tests | 317 | 384 |
+| **Total** | **96,9%** | **95,7%** |
+| Tests | 317 | 420 |
 
-Medido con `go test -cover ./...`; los 384 tests pasan. Baja `internal/store`, porque la #177
+Medido con `go test -cover ./...`; los 420 tests pasan, con la #17 y la #18 ya en `dev`. Baja `internal/store`, porque la #177
 cambió el guardado en archivo por la base de datos.
 
 ## Demostración
