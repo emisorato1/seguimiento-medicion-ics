@@ -39,9 +39,9 @@ Nada de esto se toca sin avisar: ya está implementado y con tests. Al 27/10:
 
 **`Report` entra con la #18** (PR #181): `Report`, `Section`, `p.ProjectReport(today)` y
 `p.SprintReport(number, today)`, en `report.go`, y la fecha `02/01/2006` en `format.go`.
-**Lo que todavía no está en `dev`:** `r.WritePDF(w)` (#19) y la operación `p.Dashboard()`
-(#17, tarea 8). Los datos del `Dashboard` y la regla de formato de los números (`format.go`) ya
-están, con la primera parte de la #17.
+**El `Dashboard` (#17) está entero:** el dominio, con sus datos, `p.Dashboard()` y la regla de
+formato de los números (`format.go`), y su página web, `GET /proyectos/{id}/dashboard`.
+**Lo que todavía no está en `dev`:** `r.WritePDF(w)` (#19).
 
 Las operaciones cuelgan del proyecto: `p.AddStory(...)`, `p.Members()`, `p.Story(id)`.
 Lo nuevo sigue el mismo camino.

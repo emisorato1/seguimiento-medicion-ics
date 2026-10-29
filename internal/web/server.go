@@ -73,6 +73,7 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.
 	s.mux.HandleFunc("GET /proyectos/nuevo", s.newProject)
 	s.mux.HandleFunc("POST /proyectos/nuevo", s.createProject)
 	s.mux.HandleFunc("GET /proyectos/{id}", s.showProject)
+	s.mux.HandleFunc("GET /proyectos/{id}/dashboard", s.showDashboard)
 	s.mux.HandleFunc("GET /proyectos/{id}/editar", s.editProject)
 	s.mux.HandleFunc("POST /proyectos/{id}/editar", s.updateProject)
 	s.mux.HandleFunc("GET /proyectos/{id}/integrantes", s.listMembers)
