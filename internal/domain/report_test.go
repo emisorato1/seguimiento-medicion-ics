@@ -459,6 +459,45 @@ func TestLasHistoriasYLosDefectosVanOrdenadosPorIdentificador(t *testing.T) {
 	}
 }
 
+// Esquema del escenario: Las historias de un sprint van ordenadas por identificador
+// Cubre: RN-13
+//
+// El Sprint Backlog guarda las historias en el orden en que se asignaron (#9), que no es el de
+// sus numeros: lo encontro Juliana en la revision del #181.
+func TestLasHistoriasDeUnSprintVanOrdenadasPorIdentificador(t *testing.T) {
+	for _, estado := range []string{"abierto", "cerrado"} {
+		t.Run(estado, func(t *testing.T) {
+			project := unProyecto(t)
+			for _, points := range []int{3, 5, 8} {
+				unaHistoriaEstimada(t, project, points)
+			}
+			unSprint(t, project)
+			for _, id := range []int{3, 1, 2} {
+				if err := project.AssignStory(id); err != nil {
+					t.Fatalf("no se pudo asignar la historia %d: %v", id, err)
+				}
+			}
+			if estado == "cerrado" {
+				if err := project.CloseSprint([]int{1}, unDia(2026, 10, 30)); err != nil {
+					t.Fatalf("no se pudo cerrar el sprint de prueba: %v", err)
+				}
+			}
+
+			report, err := project.SprintReport(1, unDia(2026, 10, 30))
+
+			if err != nil {
+				t.Fatalf("se esperaba generar el reporte del sprint 1 sin error, salio: %v", err)
+			}
+			stories := seccion(t, report, "Historias")[2:]
+			for i, prefix := range []string{"#1 — ", "#2 — ", "#3 — "} {
+				if i >= len(stories) || !strings.HasPrefix(stories[i], prefix) {
+					t.Fatalf("se esperaban las historias como 1, 2 y 3, salio:\n%q", stories)
+				}
+			}
+		})
+	}
+}
+
 // Escenarios: Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las
 // metricas, pedidos por las dos operaciones del contrato
 // Cubre: RN-2, RN-15
