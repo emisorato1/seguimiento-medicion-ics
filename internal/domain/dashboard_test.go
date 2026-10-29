@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -210,6 +211,154 @@ func TestDashboardDeUnProyectoConUnSprintEnCurso(t *testing.T) {
 	if got := dashboard.Charts[:len(want)]; !reflect.DeepEqual(got, want) {
 		t.Fatalf("se esperaban los graficos %+v, salieron %+v", want, got)
 	}
+}
+
+// Escenario: El grafico de velocidad tiene una barra por sprint cerrado
+// Cubre: RN-8, RN-9
+// Cuánto mide cada barra (61,5 %, 100 % y 76,9 %) es de la web, en la tarea 13.
+func TestElGraficoDeVelocidadTieneUnaBarraPorSprintCerrado(t *testing.T) {
+	project := unProyecto(t)
+	sprintMetrics := map[int]Metrics{}
+	for _, velocity := range []int{8, 13, 10} {
+		sprint := dashboardSprint(t, project, true)
+		sprintMetrics[sprint.Number()] = Metrics{Velocity: velocity}
+	}
+
+	dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), sprintMetrics: sprintMetrics})
+
+	want := Chart{Title: "Velocidad", Bars: []Bar{
+		{Label: "Sprint 1", Value: 8, Text: "8"},
+		{Label: "Sprint 2", Value: 13, Text: "13"},
+		{Label: "Sprint 3", Value: 10, Text: "10"},
+	}}
+	if len(dashboard.Charts) != 4 {
+		t.Fatalf("se esperaban 4 graficos, salieron %d: %+v", len(dashboard.Charts), dashboard.Charts)
+	}
+	if got := dashboard.Charts[3]; !reflect.DeepEqual(got, want) {
+		t.Fatalf("se esperaba el grafico de velocidad %+v, salio %+v", want, got)
+	}
+}
+
+// Escenario: Todavia no hay sprints cerrados para el grafico de velocidad
+// Cubre: RN-4, RN-9
+func TestTodaviaNoHaySprintsCerradosParaElGraficoDeVelocidad(t *testing.T) {
+	project := unProyecto(t)
+	open := dashboardSprint(t, project, false)
+	// El sprint abierto trae velocidad, para ver que no aparece como barra.
+	sprintMetrics := map[int]Metrics{open.Number(): {Velocity: 5}}
+
+	dashboard := buildDashboard(dashboardSource{sprints: project.Sprints(), sprintMetrics: sprintMetrics})
+
+	if len(dashboard.Charts) != 4 {
+		t.Fatalf("se esperaban 4 graficos, salieron %d: %+v", len(dashboard.Charts), dashboard.Charts)
+	}
+	velocity := dashboard.Charts[3]
+	if velocity.Title != "Velocidad" || len(velocity.Bars) != 0 || velocity.Empty != "Todavía no hay sprints cerrados" {
+		t.Fatalf("se esperaba el grafico de velocidad sin barras y con el aviso, salio %+v", velocity)
+	}
+	if got, _ := figureText(dashboard.Overview, "Velocidad"); got != "sin sprints cerrados" {
+		t.Fatalf("se esperaba la velocidad del estado general como %q, salio %q", "sin sprints cerrados", got)
+	}
+
+	// Un caso límite que el escenario no muestra: con sprints cerrados, una velocidad promedio
+	// de cero se escribe "0" y no el aviso. El aviso depende de que no haya sprints cerrados,
+	// no de que el valor sea cero (RN-4).
+	t.Run("con sprints cerrados y velocidad cero", func(t *testing.T) {
+		project := unProyecto(t)
+		dashboardSprint(t, project, true)
+
+		dashboard := buildDashboard(dashboardSource{sprints: project.Sprints()})
+
+		if got, _ := figureText(dashboard.Overview, "Velocidad"); got != "0" {
+			t.Fatalf("se esperaba la velocidad del estado general como %q, salio %q", "0", got)
+		}
+		if len(dashboard.Charts) != 4 || dashboard.Charts[3].Empty != "" {
+			t.Fatalf("se esperaba el grafico de velocidad sin el aviso, salio %+v", dashboard.Charts)
+		}
+	})
+}
+
+// Escenario: Abrir el dashboard no cambia el proyecto
+// Cubre: RN-16
+// Pasa sin código nuevo, porque el armado nunca escribe (Fase 3, "Un test pasa solo").
+func TestAbrirElDashboardNoCambiaElProyecto(t *testing.T) {
+	project := unProyecto(t)
+	dashboardSprint(t, project, false)
+	historiasEstimadas(t, project, 3, 5, 8)
+	for id := 1; id <= 3; id++ {
+		if err := project.AssignStory(id); err != nil {
+			t.Fatalf("no se pudo asignar la historia %d: %v", id, err)
+		}
+	}
+	before := backlogSnapshot(project)
+	sprintMetrics := map[int]Metrics{1: {PlannedPoints: 16}}
+
+	buildDashboard(dashboardSource{sprints: project.Sprints(), projectMetrics: Metrics{PlannedPoints: 16}, sprintMetrics: sprintMetrics})
+
+	sprint, ok := project.OpenSprint()
+	if !ok || sprint.Number() != 1 || !reflect.DeepEqual(sprint.Stories(), []int{1, 2, 3}) {
+		t.Fatalf("el sprint 1 tenia que seguir abierto con las historias 1, 2 y 3, quedo: %v %+v", ok, sprint)
+	}
+	if after := backlogSnapshot(project); !reflect.DeepEqual(after, before) {
+		t.Fatalf("el backlog tenia que seguir igual: era %v, quedo %v", before, after)
+	}
+}
+
+// Sin escenario: tarea 8 de la #17, el dashboard se pide al proyecto y usa las métricas que
+// calcula la #16 (es la conexión con la #16, que la Fase 3 deja sin escenario)
+// Cubre: RN-2
+// A diferencia de los demás, este test arma el proyecto con las operaciones de verdad: los
+// números esperados son los que da la #16 con estos datos.
+func TestElDashboardSePideAlProyectoYUsaLasMetricasDeLa16(t *testing.T) {
+	project := unProyecto(t)
+	historiasEstimadas(t, project, 3, 5)
+	unSprint(t, project)
+	if err := project.AssignStory(1); err != nil {
+		t.Fatalf("no se pudo asignar la historia 1: %v", err)
+	}
+	if err := project.CloseSprint([]int{1}, unDia(2026, 10, 30)); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint 1: %v", err)
+	}
+	unSprint(t, project)
+	if err := project.AssignStory(2); err != nil {
+		t.Fatalf("no se pudo asignar la historia 2: %v", err)
+	}
+
+	dashboard := project.Dashboard()
+
+	// Del proyecto entero: 8 planificados, 3 completados en el sprint 1, y la velocidad es el
+	// promedio de un único sprint cerrado.
+	for label, want := range map[string]string{
+		"Story points planificados": "8",
+		"Story points completados":  "3",
+		"Velocidad":                 "3",
+	} {
+		if got, _ := figureText(dashboard.Overview, label); got != want {
+			t.Errorf("se esperaba %q en %q, salio %q", want, label, got)
+		}
+	}
+	// Del sprint abierto: los 5 puntos de la historia 2.
+	if dashboard.CurrentSprint == nil || dashboard.CurrentSprint.Number != 2 {
+		t.Fatalf("se esperaba el sprint 2 en curso, salio %+v", dashboard.CurrentSprint)
+	}
+	if got, _ := figureText(dashboard.CurrentSprint.Figures, "Story points planificados"); got != "5" {
+		t.Errorf("se esperaban 5 story points planificados en el sprint en curso, salio %q", got)
+	}
+	// Del sprint cerrado: su velocidad, en el gráfico.
+	wantVelocity := Chart{Title: "Velocidad", Bars: []Bar{{Label: "Sprint 1", Value: 3, Text: "3"}}}
+	if len(dashboard.Charts) != 4 || !reflect.DeepEqual(dashboard.Charts[3], wantVelocity) {
+		t.Errorf("se esperaba el grafico de velocidad %+v, salio %+v", wantVelocity, dashboard.Charts)
+	}
+}
+
+// backlogSnapshot copia lo que se ve de cada historia del backlog: su número, su estado y sus
+// story points. Es una copia, así que sirve para comparar antes y después.
+func backlogSnapshot(project *Project) []string {
+	var snapshot []string
+	for _, story := range project.Backlog() {
+		snapshot = append(snapshot, fmt.Sprintf("%d %v %d", story.ID(), story.State(), story.StoryPoints()))
+	}
+	return snapshot
 }
 
 // figureText devuelve el valor escrito del número con ese rótulo, y si está.

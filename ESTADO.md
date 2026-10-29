@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-29 15:18. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-29 16:50. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -70,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-e977a1e 2026-10-29 docs: la documentacion tecnica al 29/10, con el dashboard, el reporte y el PDF
+c145349 2026-10-28 docs: el PR de la historia 17 en el indice de specs
+d874ce7 2026-10-28 chore: la historia 17 pasa a En review en ESTADO.md
+9e00e87 2026-10-28 docs: la historia 17 en review, con la trazabilidad, el contrato y la documentacion tecnica al dia
+aefa169 2026-10-28 test: los dos tests de la historia 17 sin escenario lo dicen (tareas 8 y 17), solo comentarios
+cc29fa4 2026-10-28 Merge branch 'dev' into historia-17-dashboard
+665035c 2026-10-28 docs: la verificacion manual de la historia 17 en su Fase 4, con lo que queda a mano
 17ec982 2026-10-28 Merge pull request #206 from emisorato1/guia-defensa-177
 2b0b1be 2026-10-28 Merge pull request #179 from emisorato1/historia-177-planning
-5dd3905 2026-10-28 Merge pull request #207 from emisorato1/historia-177-trazabilidad
-93e2e49 2026-10-28 Merge pull request #196 from emisorato1/defecto-192-horas
-38735b0 2026-10-28 refactor: decimalHours arriba del comentario de hours (defecto #192)
-2747e71 2026-10-28 docs: los escenarios de la RN-20 de la #14 y el escenario de cada test (defecto #192)
-687105a 2026-10-28 docs: la Fase 4 de la historia 177 con los dos ajustes de la revisión del #207
 ```
