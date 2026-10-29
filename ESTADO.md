@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-28 16:01. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-29 10:29. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -16,13 +16,14 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+| #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 13 | Alta | Sprint 3 |
 
 ## Lista para implementar
@@ -31,9 +32,7 @@ _No hay historias en este estado._
 
 ## Especificacion SDD
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
+_No hay historias en este estado._
 
 ## Sprint Backlog
 
@@ -71,12 +70,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+b0afa1a 2026-10-29 docs: el índice de specs al 29/10 (la #17, la #18, la #78 y la #19, y las fechas de los sprints 3 y 4)
+b03f5ef 2026-10-28 chore: trazabilidad y ESTADO.md regenerados con dev en 17ec982 (la #177 da 14 de 14)
 0d83f1e 2026-10-28 Merge remote-tracking branch 'origin/dev' into cierre-historia-177
 17ec982 2026-10-28 Merge pull request #206 from emisorato1/guia-defensa-177
 2b0b1be 2026-10-28 Merge pull request #179 from emisorato1/historia-177-planning
 5dd3905 2026-10-28 Merge pull request #207 from emisorato1/historia-177-trazabilidad
 b49d53f 2026-10-28 chore: trazabilidad y ESTADO.md regenerados con dev en 93e2e49 (defecto #192)
 f330065 2026-10-28 Merge remote-tracking branch 'origin/dev' into cierre-historia-177
-93e2e49 2026-10-28 Merge pull request #196 from emisorato1/defecto-192-horas
-38735b0 2026-10-28 refactor: decimalHours arriba del comentario de hours (defecto #192)
 ```
