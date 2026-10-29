@@ -75,20 +75,26 @@ se completan cuando esas historias entren a `dev`.
   ([13](capturas/13-sprint-3-abierto.png))
 - **Cerrar el sprint:** *Cerrar el sprint* propone la fecha de hoy y una casilla por historia.
   ([14](capturas/14-cerrar-sprint.png))
-  - Como el Sprint 3 terminó el 28/10, se marcan **solo las historias que de verdad se
-    terminaron** (mirar el tablero antes de presentar) y se confirma.
+  - **Cambiar la fecha** por la del cierre real del Sprint 3 (28/10, o la que diga el acta de
+    la review). El formulario acepta una fecha posterior al fin del sprint: si se deja la de
+    hoy, el sprint queda cerrado el día de la presentación.
+  - Se marcan **solo las historias que de verdad se terminaron** (mirar el tablero antes de
+    presentar) y se confirma.
   - **Contar:** "Antes de cerrar, el sistema dice cuáles quedan completadas y cuáles vuelven
     al Product Backlog. Un sprint cerrado no se puede volver a abrir."
 
 ## 5. El esfuerzo y los defectos (1,5 minutos)
 
 - **Abrir** *Esfuerzo*. ([15](capturas/15-esfuerzo.png))
-  - **Contar:** "Son las horas reales del tablero: 69,25 en los dos primeros sprints, con el
+  - **Contar:** "Son las horas reales del tablero de los dos primeros sprints, unas 69, con el
     total por historia y por integrante."
-- **Abrir** *Defectos* y filtrar por la severidad *Mayor*. ([16](capturas/16-defectos.png))
+  - La página no muestra el total general, solo los de cada historia y cada integrante
+    (16 + 28 + 8 + 17,25 = 69,25). El dashboard lo redondea a 69,3.
+- **Abrir** *Defectos*: están los tres. ([16](capturas/16-defectos.png))
   - **Contar:** "Son los defectos que nos encontramos entre nosotros, con la historia y el
     sprint en que se detectaron y se resolvieron."
-- **Entrar** al defecto 60. ([17](capturas/17-defecto.png))
+- **Entrar** al defecto 60, *Menor*, y volver. ([17](capturas/17-defecto.png))
+- **Filtrar** por la severidad *Mayor*: quedan el 59 y el 108.
 
 > **[Dashboard — #17]** Cuando entre la #17: abrir el dashboard y mostrar los gráficos de la
 > velocidad, las horas estimadas contra las reales y los defectos. Tiempo: 1 minuto. Captura:
