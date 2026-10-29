@@ -2,6 +2,7 @@ package web
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"slices"
 	"strings"
@@ -378,5 +379,33 @@ func TestCerrarConUnaFechaQueNoEsFecha(t *testing.T) {
 	}
 	if !strings.Contains(html, `value="2" checked`) || strings.Contains(html, `value="1" checked`) {
 		t.Errorf("se esperaba marcada solo la historia 2, como se habia elegido:\n%s", html)
+	}
+}
+
+// Defecto #190 (QA-9): confirmar el cierre desde una pagina vieja, con el sprint ya cerrado en
+// otra pestaña, avisa en la pagina de cerrar con el mensaje del nucleo, y no con la de "No se
+// encontro".
+// Cubre: #78 RN-2 (RN-13 de la #77); #10 RN-6
+func TestCerrarDesdeUnaPaginaViejaAvisaEnElFormulario(t *testing.T) {
+	registry, project := closeRegistry(t)
+	if err := project.CloseSprint([]int{1}, el30DeOctubre()); err != nil {
+		t.Fatalf("no se pudo cerrar el sprint: %v", err)
+	}
+	navegador := newBrowser(t, NewServer(registry, &fakeSaver{}, el30DeOctubre))
+
+	for _, res := range map[string]*httptest.ResponseRecorder{
+		"confirmar": navegador.get("/proyectos/1/sprints/cerrar/confirmar?cierre=2026-10-30&completada=2"),
+		"cerrar":    navegador.post("/proyectos/1/sprints/cerrar", url.Values{"cierre": {"2026-10-30"}, "completadas": {"2"}}),
+	} {
+		html := res.Body.String()
+		if res.Code != http.StatusUnprocessableEntity {
+			t.Errorf("se esperaba el estado %d, salio %d", http.StatusUnprocessableEntity, res.Code)
+		}
+		if !strings.Contains(html, `id="error-formulario">`+domain.ErrNoOpenSprint.Error()) || strings.Contains(html, "No se encontró") {
+			t.Errorf("se esperaba el aviso del nucleo arriba, en la pagina de cerrar, y la pagina es:\n%s", html)
+		}
+		if !strings.Contains(html, `href="/proyectos/1/sprints"`) {
+			t.Errorf("se esperaba el acceso para volver a los sprints:\n%s", html)
+		}
 	}
 }

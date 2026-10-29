@@ -146,15 +146,19 @@ main:focus {
   outline: none;
 }
 
+/* Los titulos llevan nombres que escribe el usuario: una palabra que no entra se corta, como
+   en las tablas, para que la pagina no se desplace de costado en el celular (#191). */
 h1 {
   font-size: 1.6rem;
   line-height: 1.25;
   margin: 0 0 1rem;
+  overflow-wrap: anywhere;
 }
 
 h2 {
   font-size: 1.25rem;
   margin: 2rem 0 0.75rem;
+  overflow-wrap: anywhere;
 }
 
 a {
@@ -380,6 +384,7 @@ fieldset.campo legend {
 
 .confirmar p {
   margin: 0 0 0.5rem;
+  overflow-wrap: anywhere;
 }
 
 /* Botones y acciones. */

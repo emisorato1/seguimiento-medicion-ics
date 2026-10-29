@@ -50,14 +50,16 @@ go run ./cmd/web              # abrir el sistema en el navegador
 **http://127.0.0.1:8080**. Funciona sin internet: las páginas y los estilos van adentro del
 programa.
 
-Los datos se guardan solos después de cada operación, en `datos-ics.json`, en la carpeta
-desde donde se corre el comando. Al volver a abrirlo está todo como quedó. Ese archivo no se
-versiona; borrarlo es empezar de cero.
+Los datos se guardan solos después de cada operación, en la base de datos `datos-ics.db`, en
+la carpeta desde donde se corre el comando. Al volver a abrirlo está todo como quedó. Esa base
+no se versiona; borrarla es empezar de cero.
 
 | Opción | Para qué |
 |---|---|
 | `-puerto 9090` | usar otro puerto si el 8080 está ocupado |
-| `-datos otro.json` | usar otro archivo de datos, por ejemplo uno para la demo |
+| `-datos otra.db` | usar otra base, por ejemplo una para la demo. La base termina en `.db`: un archivo `.json` se trae con `-importar` |
+| `-importar datos.json` | traer los datos de un archivo a una base vacía y abrir |
+| `-exportar copia.json` | escribir todos los datos en un archivo y terminar, sin abrir la web |
 | `-red` | aceptar conexiones de otras computadoras de la red, para abrirlo desde un celular. No hay usuarios ni contraseñas: usarlo solo en una red de confianza |
 
 ### Qué funciona hoy
@@ -118,6 +120,7 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [Informe de métricas y cobertura](docs/informe-de-metricas.md) — las métricas del propio proyecto, sprint por sprint, y la cobertura de los tests.
 - [Documentación técnica](docs/documentacion-tecnica.md) — cómo está construido el sistema: arquitectura, modelo de dominio, decisiones de diseño, manejo de errores, persistencia, pruebas y trazabilidad.
 - [Trazabilidad](docs/trazabilidad.md) — el recorrido historia → spec → criterios → escenario BDD → test → código de cada historia con tests, con los huecos marcados. Lo genera [scripts/trazabilidad.sh](scripts/trazabilidad.sh).
+- [Guía de defensa](docs/guia-de-defensa.md) — para la presentación final: cómo recorrer cada historia de punta a punta, cómo mostrarlo en vivo, los límites conocidos y las preguntas probables.
 - [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — el análisis de dependencias previo a la planning del Sprint 2.
 - [Replanificación al 2 de noviembre](docs/replan-al-2-de-noviembre.md) — el análisis de recorte que se descartó, conservado como registro de la decisión.
 

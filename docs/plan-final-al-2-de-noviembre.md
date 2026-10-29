@@ -48,16 +48,28 @@ ritmo. Si alguien no puede, se dice ahora y se recorta con tiempo, no el 31 a la
 | | Fechas | Días | SP | Objetivo |
 |---|---|---|---|---|
 | **Sprint 2** | mar 20 → dom 25/10 | 6 | 31 | Sprints, esfuerzo, defectos y consola |
-| **Sprint 3** | lun 26 → vie 30/10 | 5 | 36 | Métricas, dashboard, Planning Poker y reportes |
-| **Sprint 4** | sáb 31/10 → dom 1/11 | 2 | 10 | PDF, informe, manual y presentación |
+| **Sprint 3** | lun 26 → mié 28/10 | 3 | 36 | Métricas, dashboard, Planning Poker y reportes |
+| **Sprint 4** | jue 29/10 | 1 | 5 (0 si la #19 se adelanta) | PDF, informe, manual y presentación |
 | **Presentación** | lun 2/11 | — | — | Defensa |
 
 Cada sprint cierra con review y retrospectiva **el último día**, no al día siguiente.
 
-**Fecha de cierre del producto** (decisión de Emiliano Sorato, del 26/10): todo el producto
-queda terminado el **viernes 30/10**. El 31/10 y el 1/11 quedan para el informe PDF, la
-presentación y el ensayo. Por eso la #19 (exportar el reporte a PDF), que era del Sprint 4,
-tiene que estar terminada antes del 30/10.
+**Fecha de cierre: jueves 29/10**, decidido el 26/10 a pedido del equipo (presentan el 2/11).
+Todo queda terminado el 29: el producto, las actas, el informe y la presentación. El viernes 30
+y el fin de semana quedan para estudiar. Reemplaza al cierre del viernes 30/10, decidido más
+temprano ese mismo día.
+
+- **Sprint 3:** del lunes 26 al miércoles 28/10. La review y la retrospectiva se hacen el 28 a
+  la noche.
+- **Sprint 4:** el jueves 29/10, un solo día. Entran la #19 (exportar el reporte a PDF) si no se
+  adelantó antes, el informe, el manual, la documentación técnica y el pull request de `dev` a
+  `main` con su tag. La review y la retrospectiva se hacen el 29 a la noche.
+- **Review final:** la presentación del lunes 2/11, que es la presentación formal del producto
+  completo que pide la consigna para el Sprint 4.
+- **No se fusiona el Sprint 4 con el 3:** la consigna arma el plan en cinco sprints (0 a 4), y
+  el Sprint 4 tiene un objetivo propio: pulir, documentar y exportar el informe a PDF.
+- **La #19 se puede adelantar al Sprint 3** cuando la #18 esté en `dev`, por la decisión 11, ya
+  que sus puertas están aprobadas.
 
 ## Quién hace qué
 
@@ -94,7 +106,7 @@ Emiliano no toma historias esta semana a propósito: su trabajo es dejar **todas
 especificaciones escritas y aprobadas antes del jueves 22**, para que en el Sprint 3 nadie
 espere una puerta. Es el cuello de botella que mató al Sprint 1.
 
-### Sprint 3 — del 26 al 30 de octubre (36 SP)
+### Sprint 3 — del 26 al 28 de octubre (36 SP)
 
 | Quién | Historias | SP |
 |---|---|---|
@@ -107,12 +119,20 @@ espere una puerta. Es el cuello de botella que mató al Sprint 1.
 
 Es el sprint más cargado y el que decide la presentación.
 
-### Sprint 4 — 31 de octubre y 1 de noviembre (10 SP)
+**Historia agregada durante el sprint, el 26/10:** la #177 *Guardar los datos en una base de
+datos* (SQLite), propuesta por Emiliano Sorato, que es su responsable. Sus story points están
+[pendientes] del Planning Poker. Suma una dependencia nueva al proyecto. La historia y la
+dependencia las acordó el equipo: Maximiliano Eula dio el ok el 26/10, y Juliana Bustos y
+Agustín Salinas estuvieron de acuerdo, como confirmaron Maximiliano en la
+[#177](https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043) y Agustín en el
+[#179](https://github.com/emisorato1/seguimiento-medicion-ics/pull/179#issuecomment-6451913739) el 27/10 a las 19:45 UTC.
+
+### Sprint 4 — jueves 29 de octubre (5 SP, o 0 si la #19 se adelanta al Sprint 3)
 
 | Quién | Historias | SP |
 |---|---|---|
-| Emiliano | #19 Exportar el reporte a PDF (5) | 5 |
-| Maximiliano | #73 Resolver diferencias y acordar (5) | 5 |
+| Emiliano | #19 Exportar el reporte a PDF (5), si no se adelantó; informe de métricas y pull request de `dev` a `main` con tag | 5 |
+| Maximiliano | #73 Resolver diferencias y acordar (5): **ya terminada**, se adelantó al Sprint 3 y suma a su velocidad; manual de usuario | — |
 | Agustín | documentación técnica | — |
 | Juliana | presentación final | — |
 
@@ -151,10 +171,10 @@ Van en paralelo con el código, no después:
 
 | Entregable | Quién | Para cuándo |
 |---|---|---|
-| Informe de métricas y cobertura | Emiliano | 1/11 |
-| Manual breve de usuario | Maximiliano | crece con cada tarea de la consola, cierra 1/11 |
-| Documentación técnica | Agustín | 1/11 |
-| Presentación final | Juliana arma, los cuatro revisan | 1/11 |
+| Informe de métricas y cobertura | Emiliano | 29/10 |
+| Manual breve de usuario | Maximiliano | crece con cada tarea de la consola, cierra 29/10 |
+| Documentación técnica | Agustín | 29/10 |
+| Presentación final | Juliana arma, los cuatro revisan | 29/10 |
 | Actas de planning, review y retrospectiva | Emiliano | al cierre de cada sprint |
 | Retrospectiva del Sprint 1 (pendiente) | Emiliano | 21/10 |
 

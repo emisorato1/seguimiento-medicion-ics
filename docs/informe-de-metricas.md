@@ -4,7 +4,7 @@ Proyecto integrador de **Ingeniería y Calidad de Software** — UTN FRSR, 2026.
 Responsable: Emiliano Sorato (Agile Enabler).
 
 > **Borrador en construcción.** Tiene cargado el Sprint 1. Los Sprints 2, 3 y 4 se completan
-> al cierre de cada uno, con su review. La versión final se entrega el 1/11.
+> al cierre de cada uno, con su review. La versión final queda lista el 29/10.
 
 ## De qué se trata
 
@@ -94,26 +94,30 @@ escritas las horas que tenía cada historia al cierre.
 
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|
-| Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 30/10 | 31/10 → 01/11 |
-| SP planificados | 16 | 31 | _pendiente_ | _pendiente_ |
-| SP completados (velocidad) | **6** | 31 + 8 adelantados = 39 * | _pendiente_ | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | 9 de 9 (100%) * | _pendiente_ | _pendiente_ |
+| Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 28/10 | 29/10 |
+| SP planificados | 16 | 31 (44 con la #77) ‡ | _pendiente_ | _pendiente_ |
+| SP completados (velocidad) | **6** | 44 + 8 adelantados = **52** ‡ | _pendiente_ | _pendiente_ |
+| Historias completadas | 2 de 5 (40%) | 10 de 10 (100%) ‡ | _pendiente_ | _pendiente_ |
 | Horas estimadas | 48 | 56,7 | _pendiente_ | _pendiente_ |
 | Horas reales | 38,25 | 31 * | _pendiente_ | _pendiente_ |
 | Desviación total | −20% | al cierre | _pendiente_ | _pendiente_ |
 | Desviación de las historias terminadas | −11% | −52% * † | _pendiente_ | _pendiente_ |
-| Horas por story point completado | 2,7 | 1,3 * † | _pendiente_ | _pendiente_ |
+| Horas por story point completado | 2,7 | 1,0 † ‡ | _pendiente_ | _pendiente_ |
 | Defectos detectados / resueltos | 2 / 1 | 1 / 2 * | _pendiente_ | _pendiente_ |
 | Cobertura del dominio | 100% | 100% * | _pendiente_ | _pendiente_ |
 | Tests | 52 | 263 * | _pendiente_ | _pendiente_ |
 
 _* Sprint 2 al 24/10: se revisa al cierre, el domingo 25._
 
-_† En el Sprint 2 la #5, la #14 y la #15 se implementaron con asistencia de IA, que la consigna
-permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
+_† En el Sprint 2 la #5, la #14 y la #15 las implementó Emiliano Sorato con asistencia de IA, que
+la consigna permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
 desviación da muy negativa (ver el [Sprint 2](#sprint-2--interfaz-usable))._
 
-**Velocidad del proyecto:** 6 (el promedio de los sprints cerrados; por ahora, uno solo).
+_‡ La #77 se terminó en el Sprint 2 sin story points y el equipo la estimó en 13 el 26/10, en la
+planning del Sprint 3. Ya estimada, suma al Sprint 2: al cierre eran 31 de 31, velocidad 39 y
+1,3 h por story point._
+
+**Velocidad del proyecto:** 29 (el promedio de los sprints cerrados: 6 en el Sprint 1 y 52 en el Sprint 2).
 
 ## Sprint 1 — MVP
 
@@ -249,6 +253,9 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
   suma a los 31 comprometidos. **Se terminó el 23/10** (PR #141), así que la velocidad del
   sprint es **31 + 8 = 39**, y el Sprint 3 se planifica sin esos 8 puntos. Está en el
   [acta de review](actas/sprint-2-review.md#historias-adelantadas).
+- **La #77, estimada el 26/10 en 13 SP**, suma al Sprint 2, donde se terminó: el sprint queda
+  con 44 SP terminados, 10 de 10 historias y **velocidad 52** (44 + 8 de la #13). Está en el
+  [acta de review](actas/sprint-2-review.md).
 - Completados al 24/10: **31 SP**, las 9 historias comprometidas. Tres llegaron del Sprint 1, y
   las otras seis son nuevas del sprint: la #7, la #5, la #14, la #8, la #9 y la #15.
 
@@ -260,16 +267,18 @@ estimar: no suma puntos ni horas hasta que el equipo la estime.
   (53,25) menos las 22,25 h que esas tres historias tenían cargadas al cierre del Sprint 1.
 - Historias terminadas, medidas enteras: **108,3 h estimadas contra 51,75 reales (−52%)**, 1,3 h
   por story point. Entran la #13 (21,6 h contra 6; Maxi corrigió sus horas de 3 a 6) y la #15 (13,5 h contra 0,5).
-- **La #5, la #14, la #15 y la #77 se implementaron con asistencia de IA**, que la consigna
-  permite. Sus horas reales son el tiempo humano de dirección y revisión, todas de Emiliano
-  Sorato: 0,5 h en la #5, en la #14 y en la #15, y 1,5 h en la #77. Por eso la desviación da muy negativa.
+- **La #5, la #14, la #15 y la #77 las implementó Emiliano Sorato con asistencia de IA**, que la
+  consigna permite. Sus horas reales son su tiempo de dirección y revisión: 0,5 h en la #5, en
+  la #14 y en la #15, y 1,5 h en la #77. Por eso la desviación da muy negativa.
   Sin la #5, la #14 y la #15, las otras siete terminadas dan **−36%** (78,6 h contra 50,25) y
   1,8 h por story point.
 - **Cuánto cuesta un punto en el Sprint 2.** La #6, la #12 y la #24 se trabajaron casi todas
   en el Sprint 1. Las nuevas del sprint hechas a mano, la #7, la #8 y la #9 (las tres de
   Agustín Salinas), dan **27 h estimadas contra 20 reales (−26%)**, 2 h por story point.
-- La #77 no entra en la desviación ni en las horas por story point porque no está estimada:
-  no hay horas estimadas con qué comparar su 1,5 h. Sí cuenta en las horas trabajadas.
+- La #77 no entra en la desviación porque no tiene horas estimadas con qué comparar su 1,5 h.
+  Desde que tiene story points (13, desde el 26/10), sí entra en las horas por story point: el
+  sprint da **1,0** (53,25 h ÷ 52 SP). Sin las cuatro que implementó Emiliano con asistencia de IA
+  (la #5, la #14, la #15 y la #77), sigue en 1,8. También cuenta en las horas trabajadas.
 
 ### Defectos
 
@@ -295,11 +304,11 @@ El recorrido de cada historia —escenario, test, código y los commits RED y GR
 
 ## Sprint 3 — funcionalidad y calidad
 
-_[Se completa el 30/10 con la review.]_
+_[Se completa el 28/10 con la review.]_
 
 ## Sprint 4 — cierre
 
-_[Se completa el 01/11 con la review.]_
+_[Se completa el 29/10 con la review.]_
 
 ## Evolución del proyecto
 
@@ -332,10 +341,20 @@ más de lo pensado y qué haríamos distinto.]_
   que se abre su issue y se resuelve el día que se cierra. Lo que cae entre dos sprints va al
   siguiente, así que para el script el Sprint 2 arranca el 17/10, el día después del cierre
   del Sprint 1.
-- **Historias sin estimar.** Una historia terminada sin story points, como la #77, suma sus
-  horas reales a las trabajadas en el sprint, pero `scripts/metricas.sh` no la cuenta en la
-  desviación ni en las horas por story point, porque no tiene con qué compararlas.
+- **Historias sin estimar.** Una historia terminada sin story points, como la #77 hasta el
+  26/10, suma sus horas reales a las trabajadas en el sprint, pero `scripts/metricas.sh` no la
+  cuenta en la desviación ni en las horas por story point, porque no tiene con qué compararlas.
+  Cuando el equipo la estima, suma sus puntos al sprint donde se terminó. Si tiene story points
+  pero no horas estimadas, como la #77, el script la cuenta en las horas por story point pero no
+  en la desviación: para el Sprint 2 da −52%, igual que el acta.
 - **Historias adelantadas.** `scripts/metricas.sh` las reconoce por la etiqueta `adelantada`
   de la issue: no las cuenta en lo comprometido ni en sus horas y las muestra en un bloque
   aparte. Si una no se termina y vuelve a su sprint del plan, hay que sacarle la etiqueta.
+- **Historias agregadas durante el sprint.** Una historia que entra con el sprint ya empezado,
+  sin haber estado en la planning (como la #177 en el Sprint 3), lleva la etiqueta `agregada`.
+  `scripts/metricas.sh` la cuenta igual que una adelantada: no entra en lo comprometido ni en el
+  porcentaje de historias completadas, la muestra en un bloque aparte y, si se termina, la suma
+  a la velocidad.
+- **Defectos del sprint.** El bloque de defectos del script lista solo los del sprint: los que se
+  detectaron o se resolvieron en él, y los que quedaron abiertos al cierre.
 - **Redondeo.** Los porcentajes se redondean al entero más cercano.

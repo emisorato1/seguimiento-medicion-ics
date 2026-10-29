@@ -77,6 +77,8 @@ func (s *Server) listDefects(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		data.Defects = project.DefectsByState(state)
+		// la lista marca el estado que reconocio el filtro, escrito como en sus opciones (#193)
+		data.State = state.String()
 	case data.Severity != "":
 		severity, err := domain.ParseSeverity(data.Severity)
 		if err != nil {
@@ -84,6 +86,7 @@ func (s *Server) listDefects(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		data.Defects = project.DefectsBySeverity(severity)
+		data.Severity = severity.String()
 	}
 	s.render(w, r, http.StatusOK, "defectos.html", page{
 		Title:   "Defectos de " + project.Name(),
@@ -258,7 +261,15 @@ func (s *Server) confirmResolve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f := readForm(r, "sprint")
-	if f.number("sprint", errInvalidSprint); f.hasErrors() {
+	number := f.number("sprint", errInvalidSprint)
+	if !f.hasErrors() {
+		// Un sprint que no existe se avisa antes de preguntar, junto al sprint: a este caso solo
+		// se llega con la direccion armada a mano (#190).
+		if _, err := project.Sprint(number); err != nil {
+			f.reject(err)
+		}
+	}
+	if f.hasErrors() {
 		s.renderDefect(w, r, http.StatusUnprocessableEntity, project, defect, f)
 		return
 	}
