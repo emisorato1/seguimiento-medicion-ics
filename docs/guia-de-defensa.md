@@ -29,7 +29,7 @@ test traen la salida del RED.
 | #15 | Gestionar defectos | [15-gestionar-defectos.md](specs/sprint-2/15-gestionar-defectos.md?plain=1#L185): Registrar un defecto | `TestRegistrarUnDefecto` [defect_test.go:50](../internal/domain/defect_test.go#L50) | `(*Project).AddDefect` [defect.go:167](../internal/domain/defect.go#L167) |
 | #16 | Calcular las metricas del proyecto | [16-calcular-metricas.md](specs/sprint-3/16-calcular-metricas.md?plain=1#L171): Metricas de un sprint cerrado | `TestMetricasDeUnSprintCerrado` [metrics_test.go:122](../internal/domain/metrics_test.go#L122) | `(*Project).SprintMetrics` [metrics.go:91](../internal/domain/metrics.go#L91) |
 | #17 | Mostrar el dashboard | [17-mostrar-dashboard.md](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L167): Dashboard de un proyecto con un sprint en curso | [pendiente] | [pendiente] |
-| #18 | Generar el reporte de proyecto o sprint | [18-generar-reporte.md](specs/sprint-3/18-generar-reporte.md?plain=1#L144): Generar el reporte de un sprint cerrado | [pendiente] | [pendiente] |
+| #18 | Generar el reporte de proyecto o sprint | [18-generar-reporte.md](specs/sprint-3/18-generar-reporte.md?plain=1#L154): Generar el reporte de un sprint cerrado | `TestGenerarElReporteDeUnSprintCerrado` [report_test.go:31](../internal/domain/report_test.go#L31) | `(*Project).SprintReport` [report.go:42](../internal/domain/report.go#L42), que pide las métricas a la #16 y se las pasa al armado `buildSprintReport` [report.go:62](../internal/domain/report.go#L62). El test prueba el armado; la operación pública la prueba `TestLasOperacionesDelReportePidenLasMetricasYNoCambianNada` [report_test.go:507](../internal/domain/report_test.go#L507) |
 | #19 | Exportar el reporte a PDF | [19-exportar-reporte-pdf.md](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L128): Exportar el reporte de un sprint a PDF | `TestExportarElReporteDeUnSprintAPDF` [report_pdf_test.go:33](../internal/domain/report_pdf_test.go#L33) | `layoutReport` [report_pdf.go:202](../internal/domain/report_pdf.go#L202), que arma las páginas; el archivo lo arma `buildPDF` [report_pdf.go:252](../internal/domain/report_pdf.go#L252). [pendiente: el botón de la web, que espera la #18] |
 | #24 | Operar el sistema desde una interfaz de consola | [24-interfaz-de-consola.md](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L103): Crear un proyecto desde la consola | `TestCrearUnProyectoDesdeLaConsola` [console_test.go:74](../cmd/app/console_test.go#L74) | `createProject` [console.go:97](../cmd/app/console.go#L97) (la despacha `runConsole` en `:64`; llama a `(*ProjectRegistry).Create`) |
 | #73 | Resolver diferencias y acordar la estimacion | [73-resolver-diferencias-y-acordar.md](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L167): Acordar la estimacion de una ronda revelada (esquema del escenario) | `TestAcordarLaEstimacionDeUnaRondaRevelada` [voting_round_agreement_test.go:142](../internal/domain/voting_round_agreement_test.go#L142) | `(*VotingRound).Agree` [voting_round_agreement.go:67](../internal/domain/voting_round_agreement.go#L67) |
@@ -37,12 +37,12 @@ test traen la salida del RED.
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | [78-interfaz-web-operaciones.md](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L224): Crear un sprint desde la web | `TestCrearUnSprintDesdeLaWeb` [sprints_test.go:60](../internal/web/sprints_test.go#L60) | `(*Server).createSprint` [sprints.go:60](../internal/web/sprints.go#L60) (ruta `POST /proyectos/{id}/sprints/nuevo` en `internal/web/server.go:95`) |
 | #177 | Guardar los datos en una base de datos | [177-guardar-en-base-de-datos.md](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L192): Los datos siguen al cerrar y volver a abrir | `TestUnRegistroCompletoVuelveIgual` [database_test.go:209](../internal/store/database_test.go#L209) | `(*Database).Save` [database.go:93](../internal/store/database.go#L93), y lo vuelve a leer `(*Database).Load` [database.go:233](../internal/store/database.go#L233) |
 
-Sacado de `dev` en `203859d` (26/10), la #177 en `59bef23` (28/10) y la #19 en `17ec982`
-(29/10), con cada línea verificada. Las historias web (#77 y #78) entran por una ruta HTTP: la
-función es el handler, y el handler llama al dominio. La #24 entra por la consola:
-`createProject` llama a `(*ProjectRegistry).Create`, la misma función de la #3. La #12 y la
-#73 tienen un *Esquema del escenario*, con una tabla de ejemplos que el test recorre con
-subtests. [pendiente: completar la #17 y la #18 cuando se mergeen.]
+Sacado de `dev` en `203859d` (26/10), la #177 en `59bef23` (28/10), la #19 en `17ec982`
+(29/10) y la #18 en `c53a167` (29/10), con cada línea verificada. Las historias web (#77 y
+#78) entran por una ruta HTTP: la función es el handler, y el handler llama al dominio. La #24
+entra por la consola: `createProject` llama a `(*ProjectRegistry).Create`, la misma función de
+la #3. La #12 y la #73 tienen un *Esquema del escenario*, con una tabla de ejemplos que el test
+recorre con subtests. [pendiente: completar la #17 cuando se mergee.]
 
 ## Cómo mostrarlo en vivo
 
