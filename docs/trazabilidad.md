@@ -41,6 +41,7 @@ Los huecos se marcan con ⚠️ y no se tapan.
 | [#16 Calcular las métricas del proyecto y de cada sprint](#16-calcular-las-m�tricas-del-proyecto-y-de-cada-sprint) | 16 | 16 | 0 | 2 |
 | [#17 Mostrar el dashboard](#17-mostrar-el-dashboard) | 16 | 16 | 0 | 2 |
 | [#177 Guardar los datos en una base de datos](#177-guardar-los-datos-en-una-base-de-datos) | 14 | 14 | 0 | 2 |
+| [#18 Generar el reporte de un proyecto o de un sprint](#18-generar-el-reporte-de-un-proyecto-o-de-un-sprint) | 16 | 16 | 0 | 1 |
 | [#78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](#78-interfaz-web-sprints-esfuerzo-defectos-planning-poker-y-reportes) | 22 | 17 | 5 | 5 |
 | [#19 Exportar el reporte a PDF](#19-exportar-el-reporte-a-pdf) | 13 | 13 | 0 | 3 |
 | [#73 Resolver diferencias y acordar la estimación](#73-resolver-diferencias-y-acordar-la-estimaci�n) | 13 | 13 | 0 | 0 |
@@ -957,6 +958,54 @@ cinco casos posibles:
 |---|---|---|---|
 | `TestUnaBaseQueNoSePuedeCrearSeAvisa` [database_test.go:421](../internal/store/database_test.go#L421) | #177 RN-2, RN-4 | el que ya estaba | `9a1c02c` (sin RED: ya pasaba) |
 | `TestUnDatoQueLaBaseNoConoceNoSeGuarda` [rows_test.go:11](../internal/store/rows_test.go#L11) | #177 D5, RN-2 | el que ya estaba | `b36baae` (sin RED: ya pasaba) |
+
+## #18 Generar el reporte de un proyecto o de un sprint
+
+- **Historia:** issue #18
+- **Spec:** [docs/specs/sprint-3/18-generar-reporte.md](specs/sprint-3/18-generar-reporte.md)
+- **Código según la spec:** `internal/domain/report.go`
+
+<details><summary>Criterios de aceptación (12)</summary>
+
+- Se puede generar el reporte de un sprint y el del proyecto entero, cada uno con su título, su día de generación y su alcance.
+- El reporte tiene siempre las cuatro secciones en orden, y una sección sin datos dice que no hay.
+- Todos los números del reporte coinciden con las métricas del mismo alcance.
+- El Resumen de un sprint tiene proyecto, Sprint Goal, fechas y estado, y si el sprint está abierto avisa que los números son parciales.
+- El Resumen del proyecto tiene nombre, fechas y cantidad de sprints.
+- Incluye las historias planificadas y completadas, una por línea, con sus story points o "sin estimar".
+- En el reporte de un sprint, cada historia figura como completada o no según el cierre de ese sprint.
+- Incluye las estimaciones y el esfuerzo registrado: puntos, velocidad, horas estimadas y reales, y desviación.
+- Incluye los defectos del período, uno por línea, con su severidad y su estado.
+- Horas y porcentajes van con un decimal, coma y su unidad, la desviación negativa con su signo y la positiva sin signo, la velocidad sin decimales, y las fechas como día/mes/año.
+- Generar el reporte no cambia ningún dato.
+- Pedir el reporte de un sprint o de un proyecto inexistente informa que no se encontró.
+
+</details>
+
+| Escenario BDD | Test | Código | RED → GREEN |
+|---|---|---|---|
+| [Generar el reporte de un sprint cerrado](specs/sprint-3/18-generar-reporte.md?plain=1#L154) | `TestGenerarElReporteDeUnSprintCerrado` [report_test.go:31](../internal/domain/report_test.go#L31) | ⚠️ no se encontró el commit del test | — |
+| [Los numeros del reporte son los de las metricas](specs/sprint-3/18-generar-reporte.md?plain=1#L162) | `TestLosNumerosDelReporteSonLosDeLasMetricas` [report_test.go:68](../internal/domain/report_test.go#L68) | ⚠️ no se encontró el commit del test | — |
+| [El resumen dice en que estado esta el sprint](specs/sprint-3/18-generar-reporte.md?plain=1#L174) | `TestElResumenDiceEnQueEstadoEstaElSprint` [report_test.go:130](../internal/domain/report_test.go#L130) | ⚠️ no se encontró el commit del test | — |
+| [Las historias del sprint figuran segun el cierre de ese sprint](specs/sprint-3/18-generar-reporte.md?plain=1#L185) | `TestLasHistoriasDelSprintFiguranSegunElCierreDeEseSprint` [report_test.go:170](../internal/domain/report_test.go#L170) | ⚠️ no se encontró el commit del test | — |
+| [Una historia sin estimar figura como sin estimar](specs/sprint-3/18-generar-reporte.md?plain=1#L193) | `TestUnaHistoriaSinEstimarFiguraComoSinEstimar` [report_test.go:209](../internal/domain/report_test.go#L209) | ⚠️ no se encontró el commit del test | — |
+| [Las historias de un sprint abierto figuran en curso](specs/sprint-3/18-generar-reporte.md?plain=1#L198) | `TestLasHistoriasDeUnSprintAbiertoFiguranEnCurso` [report_test.go:240](../internal/domain/report_test.go#L240) | ⚠️ no se encontró el commit del test | — |
+| [Una seccion sin datos lo dice](specs/sprint-3/18-generar-reporte.md?plain=1#L203) | `TestUnaSeccionSinDatosLoDice` [report_test.go:294](../internal/domain/report_test.go#L294) | ⚠️ no se encontró el commit del test | — |
+| [Los defectos del sprint son los detectados o resueltos en el](specs/sprint-3/18-generar-reporte.md?plain=1#L214) | `TestLosDefectosDelSprintSonLosDetectadosOResueltosEnEl` [report_test.go:258](../internal/domain/report_test.go#L258) | ⚠️ no se encontró el commit del test | — |
+| [Generar el reporte del proyecto entero](specs/sprint-3/18-generar-reporte.md?plain=1#L222) | `TestGenerarElReporteDelProyectoEntero` [report_test.go:323](../internal/domain/report_test.go#L323) | ⚠️ no se encontró el commit del test | — |
+| [Un proyecto sin fecha de fin](specs/sprint-3/18-generar-reporte.md?plain=1#L233) | `TestUnProyectoSinFechaDeFin` [report_test.go:389](../internal/domain/report_test.go#L389) | ⚠️ no se encontró el commit del test | — |
+| [Un proyecto sin sprints cerrados no muestra una velocidad de cero](specs/sprint-3/18-generar-reporte.md?plain=1#L238) | `TestUnProyectoSinSprintsCerradosNoMuestraUnaVelocidadDeCero` [report_test.go:401](../internal/domain/report_test.go#L401) | ⚠️ no se encontró el commit del test | — |
+| [Formato de los numeros](specs/sprint-3/18-generar-reporte.md?plain=1#L244) | `TestFormatoDeLosNumeros` [report_test.go:102](../internal/domain/report_test.go#L102) | ⚠️ no se encontró el commit del test | — |
+| [Las historias y los defectos van ordenados por identificador](specs/sprint-3/18-generar-reporte.md?plain=1#L257) | `TestLasHistoriasYLosDefectosVanOrdenadosPorIdentificador` [report_test.go:418](../internal/domain/report_test.go#L418) | ⚠️ no se encontró el commit del test | — |
+| [Las historias de un sprint van ordenadas por identificador](specs/sprint-3/18-generar-reporte.md?plain=1#L264) | `TestLasHistoriasDeUnSprintVanOrdenadasPorIdentificador` [report_test.go:467](../internal/domain/report_test.go#L467) | ⚠️ no se encontró el commit del test | — |
+| [El resumen del proyecto cuenta los sprints en singular o en plural](specs/sprint-3/18-generar-reporte.md?plain=1#L274) | `TestElResumenDelProyectoCuentaLosSprintsEnSingularOEnPlural` [report_test.go:593](../internal/domain/report_test.go#L593) | ⚠️ no se encontró el commit del test | — |
+| [Pedir un reporte de algo que no existe](specs/sprint-3/18-generar-reporte.md?plain=1#L285) | `TestPedirUnReporteDeAlgoQueNoExiste` [report_test.go:555](../internal/domain/report_test.go#L555) | ⚠️ no se encontró el commit del test | — |
+
+**Tests que no citan un escenario de la Fase 1 (1).**
+
+| Test | Cubre | Código | RED → GREEN |
+|---|---|---|---|
+| `TestLasOperacionesDelReportePidenLasMetricasYNoCambianNada` [report_test.go:507](../internal/domain/report_test.go#L507) ⚠️ no dice que no tiene escenario | RN-2, RN-15 | ⚠️ no se encontró el commit del test | — |
 
 ## #78 Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes
 
