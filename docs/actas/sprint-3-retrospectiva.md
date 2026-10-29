@@ -4,7 +4,7 @@
 > diga cada uno: acá no se escribe nada que alguien no haya dicho.
 
 - **Fecha:** [pendiente: el día, y si fue por escrito o con reunión]
-- **Respondieron:** Maximiliano Eula (29/10, por escrito). [pendiente: los demás]
+- **Respondieron:** Maximiliano Eula y Juliana Bustos (29/10, por escrito). [pendiente: los demás]
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 
 Los números con los que se abre la retro salen del [acta de review](sprint-3-review.md):
@@ -17,7 +17,10 @@ al cierre].
 - **Maximiliano Eula:** "terminé la #73 y me dediqué mucho a revisar PRs. Varias revisiones encontraron errores
   antes de que llegaran a dev, como el defecto #172, el tema del -datos con JSON y el orden del
   reporte".
-- **Juliana Bustos:** [pendiente]
+- **Juliana Bustos:** "Cerré la #17 (Dashboard) con las 17 tareas y los 16 escenarios con test, TDD
+  estricto y 100 % de cobertura en el dominio. Partir la historia ayudó: el PR #204 con el
+  dominio y format.go destrabó a Agus para la #18. Las revisiones cruzadas sirvieron para
+  detectar detalles reales a tiempo (como el orden de las historias en la RN-13)".
 - **Agustín Salinas:** [pendiente]
 
 ## Qué no salió bien
@@ -26,7 +29,9 @@ al cierre].
 - **Maximiliano Eula:** "mi #73 se mergeó con un cambio pedido por Juli sin responder, y después hubo que
   arreglarlo (#156). La #177 entró a mitad de sprint sin estimar. Y perdimos bastante tiempo
   resolviendo conflictos en ESTADO.md y en los documentos".
-- **Juliana Bustos:** [pendiente]
+- **Juliana Bustos:** "Se acumularon muchos PRs al cierre y los archivos compartidos (ESTADO.md,
+  índice de specs y diseno-dominio.md) chocaban seguido. Además, cuatro tareas pasaron sin RED
+  directo porque el código previo ya las cubría (se puede ordenar mejor la spec)".
 - **Agustín Salinas:** [pendiente]
 
 ## Seguimiento de los acuerdos del Sprint 2
@@ -66,7 +71,7 @@ presentación y para la retro final.
 - **Emiliano Sorato:** [pendiente]
 - **Maximiliano Eula:** "no mergear nada con cambios pedidos sin responder, aunque estemos apurados. Y regenerar
   ESTADO.md una vez por día, no en cada PR".
-- **Juliana Bustos:** [pendiente]
+- **Juliana Bustos:** "mergear apenas hay revisión y unificar quién regenera ESTADO.md".
 - **Agustín Salinas:** [pendiente]
 
 | Acuerdo | Responsable |

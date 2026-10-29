@@ -6,7 +6,7 @@
 > dicho.
 
 - **Fecha:** [pendiente: el día, y si fue por escrito o con reunión]
-- **Respondieron:** Maximiliano Eula (29/10, por escrito, mirando el proyecto entero). [pendiente: los demás]
+- **Respondieron:** Maximiliano Eula y Juliana Bustos (29/10, por escrito, mirando el proyecto entero). [pendiente: los demás]
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 
 Los números con los que se abre la retro salen del [acta de review](sprint-4-review.md):
@@ -16,14 +16,14 @@ Los números con los que se abre la retro salen del [acta de review](sprint-4-re
 
 - **Emiliano Sorato:** [pendiente]
 - **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
-- **Juliana Bustos:** [pendiente]
+- **Juliana Bustos:** respondió mirando el proyecto entero (más abajo).
 - **Agustín Salinas:** [pendiente]
 
 ## Qué no salió bien
 
 - **Emiliano Sorato:** [pendiente]
 - **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
-- **Juliana Bustos:** [pendiente]
+- **Juliana Bustos:** respondió mirando el proyecto entero (más abajo).
 - **Agustín Salinas:** [pendiente]
 
 ## Seguimiento de los acuerdos del Sprint 3
@@ -44,7 +44,11 @@ distinto. Lo que salga acá va a las conclusiones del informe final y a la prese
   - "Casi todos los defectos los encontramos revisando, así que la revisión con los tests
     corridos fue lo que más nos ayudó con la calidad."
 - **Emiliano Sorato:** [pendiente]
-- **Juliana Bustos:** [pendiente]
+- **Juliana Bustos:** "Las horas estimadas quedaron por encima de las reales (-72 % en historias
+  terminadas del Sprint 3). Las horas no miden bien nuestro ritmo con IA, mientras que los
+  story points resultaron más estables. También aprendí que hay que cargar las horas reales
+  inmediatamente al terminar cada historia y que la capa web (accesibilidad y responsividad)
+  requiere más trabajo que la regla de negocio que muestra".
 - **Agustín Salinas:** [pendiente]
 
 ## Pendientes
