@@ -3,7 +3,7 @@
 - **Historia:** #18
 - **Sprint:** 3
 - **Responsable:** Agustín Salinas
-- **Estado:** Implementada — **en review**
+- **Estado:** Terminada en el Sprint 3 — **mergeada a `dev`** el 29/10 (PR #181)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #16 (las métricas), #8 (buscar un sprint por su número), #10 (qué se
   completó en cada sprint) y #15 (los defectos que se listan), todas en `dev`. La regla de
