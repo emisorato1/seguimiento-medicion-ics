@@ -157,10 +157,12 @@ func (p *Project) sprintSummaryLines(sprint *Sprint) []string {
 // registro el cierre de ese sprint, y no del estado actual de la historia, que pudo
 // terminarse despues en otro sprint (RN-10, punto 2 de la puerta). Los puntos tambien son
 // los que tenia al cerrar (#10). Mientras el sprint esta abierto no hay cierre: cada
-// historia va con sus puntos actuales y "en curso".
+// historia va con sus puntos actuales y "en curso". Van por identificador (RN-13): el Sprint
+// Backlog las guarda en el orden en que se asignaron, asi que se ordena una copia y lo
+// guardado no cambia (RN-15).
 func (p *Project) sprintStoryLines(sprint *Sprint, metrics Metrics) []string {
 	lines := storyTotals(metrics)
-	for _, id := range sprint.stories {
+	for _, id := range slices.Sorted(slices.Values(sprint.stories)) {
 		story, _ := p.Story(id)
 		points, situation := story.storyPoints, "en curso"
 		if sprint.state == SprintClosed {
