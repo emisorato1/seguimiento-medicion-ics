@@ -69,7 +69,8 @@ encabezado y sus líneas:
 7. **[RN-7]** Mientras el sprint esté abierto, el sistema debe avisar en el Resumen que los
    números son parciales porque el sprint todavía no cerró.
 8. **[RN-8]** En el reporte del proyecto, el Resumen debe tener el nombre, la fecha de
-   inicio, la de fin —o "sin fecha de fin"— y cuántos sprints tiene y cuántos están cerrados.
+   inicio, la de fin —o "sin fecha de fin"— y cuántos sprints tiene y cuántos están cerrados,
+   en singular cuando es uno ("1 sprint", "1 cerrado").
 9. **[RN-9]** La sección Historias debe tener las historias planificadas, las completadas con
    su porcentaje, y una línea por historia con su identificador, su título, sus story points
    —o "sin estimar"— y su situación.
@@ -260,6 +261,27 @@ Escenario: Las historias y los defectos van ordenados por identificador
   Entonces las historias aparecen como 1, 2 y 3
   Y los defectos aparecen como 1 y 2
 
+Esquema del escenario: Las historias de un sprint van ordenadas por identificador
+  Dado un sprint <estado> al que se le asignaron las historias 3, 1 y 2, en ese orden
+  Cuando genero el reporte del sprint
+  Entonces las historias aparecen como 1, 2 y 3
+
+  Ejemplos:
+    | estado  |
+    | abierto |
+    | cerrado |
+
+Esquema del escenario: El resumen del proyecto cuenta los sprints en singular o en plural
+  Dado un proyecto con <sprints> sprints, <cerrados> de ellos cerrados
+  Cuando genero el reporte del proyecto
+  Entonces el resumen dice <linea>
+
+  Ejemplos:
+    | sprints | cerrados | linea                   |
+    | 1       | 1        | "1 sprint, 1 cerrado"   |
+    | 2       | 1        | "2 sprints, 1 cerrado"  |
+    | 3       | 2        | "3 sprints, 2 cerrados" |
+
 Esquema del escenario: Pedir un reporte de algo que no existe
   Dado un proyecto sin sprint 99, y que no existe el proyecto 99
   Cuando intento generar <reporte>
@@ -396,6 +418,8 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 | 12 | Las operaciones del contrato piden las métricas a la #16: los números coinciden y ningún dato cambia | Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las metricas | RN-2, RN-15 | hecha |
 | 13 | Un sprint inexistente lo informa el reporte; un proyecto inexistente, el registro | Pedir un reporte de algo que no existe | RN-16 | hecha |
 | 14 | Las historias de un sprint abierto figuran con sus puntos actuales y "en curso" | Las historias de un sprint abierto figuran en curso | RN-10 | hecha |
+| 15 | Las historias de un sprint, abierto o cerrado, ordenadas por identificador (agregada el 29/10, revisión del #181) | Las historias de un sprint van ordenadas por identificador | RN-13 | pendiente |
+| 16 | "sprint" y "cerrado" en singular cuando es uno (agregada el 29/10, revisión del #181) | El resumen del proyecto cuenta los sprints en singular o en plural | RN-8 | pendiente |
 
 ### Por qué este orden
 
@@ -411,8 +435,8 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 ### Cobertura
 
 Las dieciséis reglas quedan cubiertas: RN-1 (1, 9), RN-2 (2, 12), RN-3 (1, 9), RN-4 (1),
-RN-5 (8), RN-6 (4), RN-7 (4), RN-8 (9, 10), RN-9 (5, 6), RN-10 (5, 9, 14), RN-11 (2, 9, 10),
-RN-12 (7, 9), RN-13 (11), RN-14 (3), RN-15 (12), RN-16 (13).
+RN-5 (8), RN-6 (4), RN-7 (4), RN-8 (9, 10, 16), RN-9 (5, 6), RN-10 (5, 9, 14), RN-11 (2, 9, 10),
+RN-12 (7, 9), RN-13 (11, 15), RN-14 (3), RN-15 (12), RN-16 (13).
 
 | Criterio de aceptación | Tareas |
 |---|---|
@@ -420,7 +444,7 @@ RN-12 (7, 9), RN-13 (11), RN-14 (3), RN-15 (12), RN-16 (13).
 | Cuatro secciones en orden, y una sección vacía dice que no hay | 1, 8 |
 | Los números coinciden con las métricas | 2, 12 |
 | Resumen de un sprint, con aviso si está abierto | 4 |
-| Resumen del proyecto | 9, 10 |
+| Resumen del proyecto | 9, 10, 16 |
 | Historias planificadas y completadas, con puntos o "sin estimar" | 5, 6 |
 | Situación de cada historia según el cierre del sprint, o en curso si sigue abierto | 5, 14 |
 | Estimaciones y esfuerzo registrado | 2 |
@@ -429,7 +453,7 @@ RN-12 (7, 9), RN-13 (11), RN-14 (3), RN-15 (12), RN-16 (13).
 | Generar no cambia ningún dato | 12 |
 | Sprint o proyecto inexistentes | 13 |
 
-Los catorce escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
+Los dieciséis escenarios BDD de la Fase 1 tienen su tarea en la columna "Escenario BDD".
 
 ### Dependencias
 
