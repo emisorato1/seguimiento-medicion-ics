@@ -103,16 +103,21 @@ func (p *Project) projectSummaryLines() []string {
 	if p.HasEnd() {
 		end = formatDate(p.end)
 	}
-	sprints := "sprints"
-	if len(p.sprints) == 1 {
-		sprints = "sprint"
-	}
+	closed := len(p.ClosedSprints())
 	return []string{
 		"Proyecto: " + p.name,
 		"Inicio: " + formatDate(p.start),
 		"Fin: " + end,
-		fmt.Sprintf("%d %s, %d cerrados", len(p.sprints), sprints, len(p.ClosedSprints())),
+		fmt.Sprintf("%d %s, %d %s", len(p.sprints), plural(len(p.sprints), "sprint", "sprints"), closed, plural(closed, "cerrado", "cerrados")),
 	}
+}
+
+// plural elige la palabra en singular cuando la cantidad es uno, y en plural si no (RN-8).
+func plural(count int, one, many string) string {
+	if count == 1 {
+		return one
+	}
+	return many
 }
 
 // averageVelocityLine escribe la velocidad promedio del proyecto. Mientras no hay ningun
