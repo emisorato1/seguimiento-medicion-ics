@@ -418,8 +418,8 @@ comparan completos: acá el texto **es** el resultado, no un mensaje de error.
 | 12 | Las operaciones del contrato piden las métricas a la #16: los números coinciden y ningún dato cambia | Generar el reporte de un sprint cerrado / Los numeros del reporte son los de las metricas | RN-2, RN-15 | hecha |
 | 13 | Un sprint inexistente lo informa el reporte; un proyecto inexistente, el registro | Pedir un reporte de algo que no existe | RN-16 | hecha |
 | 14 | Las historias de un sprint abierto figuran con sus puntos actuales y "en curso" | Las historias de un sprint abierto figuran en curso | RN-10 | hecha |
-| 15 | Las historias de un sprint, abierto o cerrado, ordenadas por identificador (agregada el 29/10, revisión del #181) | Las historias de un sprint van ordenadas por identificador | RN-13 | pendiente |
-| 16 | "sprint" y "cerrado" en singular cuando es uno (agregada el 29/10, revisión del #181) | El resumen del proyecto cuenta los sprints en singular o en plural | RN-8 | pendiente |
+| 15 | Las historias de un sprint, abierto o cerrado, ordenadas por identificador (agregada el 29/10, revisión del #181) | Las historias de un sprint van ordenadas por identificador | RN-13 | hecha |
+| 16 | "sprint" y "cerrado" en singular cuando es uno (agregada el 29/10, revisión del #181) | El resumen del proyecto cuenta los sprints en singular o en plural | RN-8 | hecha |
 
 ### Por qué este orden
 
@@ -473,7 +473,7 @@ Los dieciséis escenarios BDD de la Fase 1 tienen su tarea en la columna "Escena
 
 Ciclo RED → GREEN → REFACTOR. **El test en un commit y la implementación en otro.** Las
 tareas siguieron el orden de la Fase 3, salvo la 14, que se sumó durante la implementación y
-se hizo después de la 6 (ver abajo).
+se hizo después de la 6, y la 15 y la 16, que salieron de la revisión del #181 (ver abajo).
 
 | Tarea | Commit del test | Commit de la implementación |
 |---|---|---|
@@ -491,6 +491,8 @@ se hizo después de la 6 (ver abajo).
 | 11 | `745dff2` | — (sin RED, ver abajo) |
 | 12 | `9b8b67e` | `d989b1b` |
 | 13 | `61299e0` | — (sin RED) |
+| 15 | `0a3098d` | `6d7b256` |
+| 16 | `688cb5c` | `9fc560c` |
 
 La cobertura del paquete `domain` quedó en 100%.
 
@@ -502,8 +504,11 @@ La cobertura del paquete `domain` quedó en 100%.
   figure con sus puntos actuales y "en curso"; se agregó a la RN-10, con su escenario, en
   `4f04785`, antes del código, y se avisó en el PR #181.
 - **Dos tareas sin RED.** Pasaron en verde al escribirlas:
-  - **la 11**, porque el reporte recorre el backlog y los defectos tal como se guardan, que
-    es por identificador, y no el backlog priorizado de la #7;
+  - **la 11**, porque el reporte del proyecto recorre el backlog y los defectos tal como se
+    guardan, que es por identificador, y no el backlog priorizado de la #7. **Esa explicación
+    valía solo para el proyecto**: el reporte de un sprint recorría el Sprint Backlog, que
+    guarda las historias en el orden en que se asignaron, y las listaba así. El test de la 11
+    no miraba el sprint, así que no lo atrapó (ver la tarea 15);
   - **la 13**, porque la operación de la tarea 12 ya devolvía el error de sprint no
     encontrado de las métricas.
 
@@ -516,6 +521,13 @@ La cobertura del paquete `domain` quedó en 100%.
   el aviso de sección vacía. Es lo que pedía la Fase 2; hasta la 8 el reporte del sprint las
   tenía adentro. En la 10, la sección de esfuerzo pasó a recibir la línea de la velocidad
   entera, porque la del proyecto puede no tener número ("sin sprints cerrados").
+- **Se sumaron la 15 y la 16 en la revisión del #181** (Juliana Bustos, 28/10, confirmado
+  por Maximiliano Eula), con su escenario en la Fase 1 antes del código (`061169f`):
+  - **la 15**: la RN-13 no se cumplía en el reporte de un sprint, por lo dicho en la 11. Ahora
+    se listan las historias del sprint ordenadas por identificador, sobre una copia, sin
+    cambiar lo guardado. Tuvo RED, abierto y cerrado;
+  - **la 16**: el resumen del proyecto decía "1 cerrados". La RN-8 suma el singular, y
+    "sprint" y "cerrado" van en singular cuando son uno.
 - **`SprintReport` pide primero las métricas a la #16** y después el sprint: las métricas ya
   informan el sprint no encontrado, así que el error sale de un solo lugar.
 
