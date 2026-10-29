@@ -633,6 +633,12 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   Salvia oscurecido (`#5E7A47`, 3,94 a 1) y la velocidad en Vara de Oro oscurecida
   (`#8A6A1E`, 4,12 a 1). Los originales de la paleta, `#87A96B` y `#D4A437`, no llegaban al
   3 a 1 de la RN-20 sobre ese fondo. Las fuentes de la web no cambian.
+  **Cambiado el 29/10 por el rediseño de toda la web en Verde Salvia** (rama
+  `estilo-paleta-salvia`, con el ok del grupo): el dashboard deja su paleta propia y toma la
+  de toda la web. Los gráficos van en tarjetas blancas como el resto, y las barras en Siena
+  (`#A0522D`, 5,62 a 1 sobre blanco), Salvia vivo (`#4A7C59`, 4,86) y Oro oscurecido
+  (`#8A6A1E`, 5,05). Los números de contraste de la verificación manual de abajo son los de la
+  paleta anterior.
 - **El texto alternativo empieza con una frase por gráfico** (tarea 15) que dice qué compara,
   y sigue con cada rótulo y su valor: «Story points planificados contra completados.
   Planificados: 40, Completados: 30.». La frase la da la web por la posición del gráfico,
