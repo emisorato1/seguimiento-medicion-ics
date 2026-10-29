@@ -1,10 +1,9 @@
 # Acta — Retrospectiva del Sprint 3
 
-> **Borrador armado el 27/10.** Se hace el miércoles 28/10 a la noche, después de la
-> [review](sprint-3-review.md). Lo que está entre corchetes, **[pendiente]**, lo completa lo que
+> **Borrador armado el 27/10.** Se hace después de la [review](sprint-3-review.md). Lo que está entre corchetes, **[pendiente]**, lo completa lo que
 > diga cada uno: acá no se escribe nada que alguien no haya dicho.
 
-- **Fecha:** 28/10/2026 [pendiente: cómo se hizo, por escrito o con reunión]
+- **Fecha:** [pendiente: el día, y si fue por escrito o con reunión]
 - **Respondieron:** [pendiente]
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 
