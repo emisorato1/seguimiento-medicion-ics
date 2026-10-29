@@ -6,7 +6,7 @@
 > dicho.
 
 - **Fecha:** [pendiente: el día, y si fue por escrito o con reunión]
-- **Respondieron:** [pendiente]
+- **Respondieron:** Maximiliano Eula (29/10, por escrito, mirando el proyecto entero). [pendiente: los demás]
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 
 Los números con los que se abre la retro salen del [acta de review](sprint-4-review.md):
@@ -15,14 +15,14 @@ Los números con los que se abre la retro salen del [acta de review](sprint-4-re
 ## Qué salió bien
 
 - **Emiliano Sorato:** [pendiente]
-- **Maximiliano Eula:** [pendiente]
+- **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
 - **Juliana Bustos:** [pendiente]
 - **Agustín Salinas:** [pendiente]
 
 ## Qué no salió bien
 
 - **Emiliano Sorato:** [pendiente]
-- **Maximiliano Eula:** [pendiente]
+- **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
 - **Juliana Bustos:** [pendiente]
 - **Agustín Salinas:** [pendiente]
 
@@ -33,9 +33,19 @@ y si se cumplieron.]
 
 ## Mirando el proyecto entero
 
-[pendiente: qué aprendimos midiéndonos, cómo cambió la estimación sprint a sprint y qué
-haríamos distinto. Lo que salga acá va a las conclusiones del informe final y a la
-presentación.]
+Qué aprendimos midiéndonos, cómo cambió la estimación sprint a sprint y qué haríamos
+distinto. Lo que salga acá va a las conclusiones del informe final y a la presentación.
+
+- **Maximiliano Eula:** 
+  - "Con las specs escritas de antemano y adelantando historias, la velocidad subió mucho (de
+    6 a 52)."
+  - "Las horas de las historias hechas con IA no sirven para estimar: habría que medirlas
+    aparte desde el principio."
+  - "Casi todos los defectos los encontramos revisando, así que la revisión con los tests
+    corridos fue lo que más nos ayudó con la calidad."
+- **Emiliano Sorato:** [pendiente]
+- **Juliana Bustos:** [pendiente]
+- **Agustín Salinas:** [pendiente]
 
 ## Pendientes
 

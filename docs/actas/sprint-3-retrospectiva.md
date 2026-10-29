@@ -4,7 +4,7 @@
 > diga cada uno: acá no se escribe nada que alguien no haya dicho.
 
 - **Fecha:** [pendiente: el día, y si fue por escrito o con reunión]
-- **Respondieron:** [pendiente]
+- **Respondieron:** Maximiliano Eula (29/10, por escrito). [pendiente: los demás]
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 
 Los números con los que se abre la retro salen del [acta de review](sprint-3-review.md):
@@ -14,21 +14,26 @@ al cierre].
 ## Qué salió bien
 
 - **Emiliano Sorato:** [pendiente]
-- **Maximiliano Eula:** [pendiente]
+- **Maximiliano Eula:** "terminé la #73 y me dediqué mucho a revisar PRs. Varias revisiones encontraron errores
+  antes de que llegaran a dev, como el defecto #172, el tema del -datos con JSON y el orden del
+  reporte".
 - **Juliana Bustos:** [pendiente]
 - **Agustín Salinas:** [pendiente]
 
 ## Qué no salió bien
 
 - **Emiliano Sorato:** [pendiente]
-- **Maximiliano Eula:** [pendiente]
+- **Maximiliano Eula:** "mi #73 se mergeó con un cambio pedido por Juli sin responder, y después hubo que
+  arreglarlo (#156). La #177 entró a mitad de sprint sin estimar. Y perdimos bastante tiempo
+  resolviendo conflictos en ESTADO.md y en los documentos".
 - **Juliana Bustos:** [pendiente]
 - **Agustín Salinas:** [pendiente]
 
 ## Seguimiento de los acuerdos del Sprint 2
 
 En la [retrospectiva del Sprint 2](sprint-2-retrospectiva.md) se propusieron tres acuerdos para
-el Sprint 3. Al 27/10 solo votó Emiliano Sorato, que votó sí a los tres. Hay que cerrar primero
+el Sprint 3. Al 29/10 votaron Emiliano Sorato (26/10) y Maximiliano Eula (29/10), los dos sí a
+los tres. Hay que cerrar primero
 cuáles quedaron como acuerdo, y después si se cumplieron.
 
 | Propuesta | ¿Quedó como acuerdo? | ¿Se cumplió? |
@@ -59,7 +64,8 @@ El Sprint 4 dura un día (29/10), así que lo que salga acá sirve sobre todo pa
 presentación y para la retro final.
 
 - **Emiliano Sorato:** [pendiente]
-- **Maximiliano Eula:** [pendiente]
+- **Maximiliano Eula:** "no mergear nada con cambios pedidos sin responder, aunque estemos apurados. Y regenerar
+  ESTADO.md una vez por día, no en cada PR".
 - **Juliana Bustos:** [pendiente]
 - **Agustín Salinas:** [pendiente]
 

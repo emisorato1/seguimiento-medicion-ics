@@ -19,7 +19,7 @@
 ## Sprint Goal
 
 Propuesta, que sale del plan: **cerrar el producto y tener todo lo que se entrega listo para
-presentar.** [pendiente: que el equipo lo confirme o lo cambie]
+presentar.** Al 29/10 lo confirmó Maximiliano Eula. [pendiente: los demás]
 
 Es el objetivo que la consigna le da al Sprint 4: pulir, documentar y preparar la entrega
 final, con la exportación del informe del proyecto a PDF.
@@ -47,7 +47,7 @@ final, con la exportación del informe del proyecto a PDF.
 ## Confirmación de cada responsable
 
 - **Emiliano Sorato:** [pendiente]
-- **Maximiliano Eula:** [pendiente]
+- **Maximiliano Eula:** "de acuerdo con el objetivo" (29/10).
 - **Juliana Bustos:** [pendiente]
 - **Agustín Salinas:** [pendiente]
 
