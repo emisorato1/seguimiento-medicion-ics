@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-27 16:34. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-29 13:03. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,21 +10,21 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 24
 - Sin estimar: 3
 - Story points cargados: 109
-- Terminadas: 19
+- Terminadas: 20
 
 ## En review
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+| #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 13 | Alta | Sprint 3 |
-| #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
 
 ## Lista para implementar
 
@@ -32,9 +32,7 @@ _No hay historias en este estado._
 
 ## Especificacion SDD
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
+_No hay historias en este estado._
 
 ## Sprint Backlog
 
@@ -67,10 +65,12 @@ _No hay historias en este estado._
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | 13 | Alta | Sprint 2 |
+| #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
 
 ## Ultimos commits
 
 ```
+3878f0a 2026-10-27 chore: la historia 18 pasa a En review en ESTADO.md
 8ca15a4 2026-10-27 Merge remote-tracking branch 'origin/dev' into historia-18-generar-reporte
 5ea6b9c 2026-10-27 docs: Fase 4 de la historia 18 y el reporte en la documentacion tecnica
 61299e0 2026-10-27 test: pedir un reporte de algo que no existe, sin RED (tarea 13, historia 18)
@@ -78,5 +78,4 @@ d989b1b 2026-10-27 feat: las operaciones del reporte piden las metricas a la #16
 9b8b67e 2026-10-27 test: las operaciones del reporte piden las metricas y no cambian nada (tarea 12, historia 18)
 7bf515d 2026-10-27 Merge pull request #182 from emisorato1/cierre-historia-11
 58e54a1 2026-10-27 Merge remote-tracking branch 'origin/dev' into cierre-historia-11
-4280b60 2026-10-27 Merge pull request #189 from emisorato1/guia-de-defensa
 ```

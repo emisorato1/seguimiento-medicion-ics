@@ -119,6 +119,14 @@ espere una puerta. Es el cuello de botella que mató al Sprint 1.
 
 Es el sprint más cargado y el que decide la presentación.
 
+**Historia agregada durante el sprint, el 26/10:** la #177 *Guardar los datos en una base de
+datos* (SQLite), propuesta por Emiliano Sorato, que es su responsable. Sus story points están
+[pendientes] del Planning Poker. Suma una dependencia nueva al proyecto. La historia y la
+dependencia las acordó el equipo: Maximiliano Eula dio el ok el 26/10, y Juliana Bustos y
+Agustín Salinas estuvieron de acuerdo, como confirmaron Maximiliano en la
+[#177](https://github.com/emisorato1/seguimiento-medicion-ics/issues/177#issuecomment-6429654043) y Agustín en el
+[#179](https://github.com/emisorato1/seguimiento-medicion-ics/pull/179#issuecomment-6451913739) el 27/10 a las 19:45 UTC.
+
 ### Sprint 4 — jueves 29 de octubre (5 SP, o 0 si la #19 se adelanta al Sprint 3)
 
 | Quién | Historias | SP |

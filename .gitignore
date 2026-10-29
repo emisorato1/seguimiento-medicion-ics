@@ -3,8 +3,12 @@
 /app
 *.exe
 
-# datos que guarda la interfaz web al usarla (go run ./cmd/web)
+# datos que guarda la interfaz web al usarla (go run ./cmd/web): la base, el archivo de la
+# versión anterior y el que queda después de importarlo
+datos-ics.db
+datos-ics.db-journal
 datos-ics.json
+datos-ics.json.importado
 
 # salidas de tests
 *.out
