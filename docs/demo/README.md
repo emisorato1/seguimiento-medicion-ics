@@ -33,8 +33,8 @@ go run ./cmd/web -datos /tmp/demo.json
   26/10), el Sprint 3 con el goal, las fechas y el Sprint Backlog de su acta de planning,
   abierto, y su cierre con la fecha de fin del sprint (28/10) y las cinco historias que la
   review cuenta como terminadas. La del dashboard (#17) es
-  la de después de ese cierre, como en el guion. Las del reporte (#18) y el PDF (#19) se suman
-  cuando se puedan abrir desde la web.
+  la de después de ese cierre, como en el guion, y las del reporte (#18) y su PDF (#19) son las
+  del Sprint 2.
 
 ## Qué tiene
 

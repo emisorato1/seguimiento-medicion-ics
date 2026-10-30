@@ -4,9 +4,8 @@ Un recorrido de 8 a 10 minutos por el sistema con nuestro propio proyecto, carga
 [datos de demo](README.md). Cada paso dice qué abrir, qué hacer y qué contar. Las capturas
 de cada pantalla están en [capturas/](capturas).
 
-El **dashboard (#17)** ya está en el recorrido. Los lugares del **reporte (#18)** y del **PDF
-(#19)** están marcados: se completan cuando se puedan abrir desde la web (la #19 y lo que falta
-de la #78).
+El recorrido muestra todas las historias, también el **dashboard (#17)**, el **reporte (#18)** y
+su **PDF (#19)**, que se abren desde la web (#78).
 
 ## Antes de presentar
 
@@ -114,12 +113,18 @@ de la #78).
     sprint está en su acta de review.
 
 
-> **[Reporte — #18]** La #18 ya está en `dev`; cuando el reporte se pueda abrir desde la web:
-> abrir el del proyecto y el del Sprint 2, y mostrar sus secciones. Captura:
-> `capturas/19-reporte.png`.
->
-> **[PDF — #19]** Cuando entre la #19: descargar el reporte en PDF y abrirlo. Captura:
-> `capturas/20-pdf.png`.
+- **Abrir** *Reporte* (1 minuto), elegir el Sprint 2 en *Reporte de* y apretar *Ver el
+  reporte*. ([19](capturas/19-reporte.png))
+  - **Contar:** "El reporte dice lo mismo que el dashboard, pero en texto y por secciones: el
+    resumen, las historias, la estimación y el esfuerzo, y los defectos. Sale de la misma cuenta
+    de métricas que el dashboard, así que no puede mostrar otra cosa. El Sprint 2 da 52 story
+    points de 52 y los dos defectos resueltos."
+  - Si preguntan por las horas: el reporte mide cada historia entera, y por eso da 53,3 h. El
+    acta de review cuenta 31, las trabajadas en el sprint, porque tres historias venían del
+    Sprint 1.
+- **Descargar en PDF** y abrir el archivo. ([20](capturas/20-pdf.png))
+  - **Contar:** "El PDF es el mismo reporte, con el nombre del proyecto y del sprint:
+    reporte-proyecto-1-sprint-2.pdf. Lo escribe nuestro código en Go, sin librerías."
 
 ## 7. La base de datos: cerrar y volver a abrir (1 minuto)
 
