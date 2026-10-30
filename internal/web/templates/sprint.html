@@ -1,0 +1,71 @@
+{{define "content"}}
+{{with .Data}}
+<h1>Sprint {{.Sprint.Number}}</h1>
+<dl class="datos">
+  <dt>Sprint Goal</dt><dd>{{.Sprint.Goal}}</dd>
+  <dt>Inicio</dt><dd>{{fecha .Sprint.Start}}</dd>
+  <dt>Fin</dt><dd>{{fecha .Sprint.End}}</dd>
+  <dt>Estado</dt><dd>{{.Sprint.State}}</dd>
+  {{if not .Open}}<dt>Fecha de cierre</dt><dd>{{fecha .Sprint.ClosedOn}}</dd>{{end}}
+</dl>
+{{if .Open}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/sprints/cerrar">Cerrar el sprint</a>
+</div>
+{{end}}
+<h2>Sprint Backlog</h2>
+{{if .Open}}
+{{template "error-formulario" .Form.General}}
+{{if .Choices}}
+<form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/sprints/asignar" novalidate>
+  {{with .Form.Field "historia"}}
+  <div class="campo">
+    <label for="historia">Historia para asignar</label>
+    <select id="historia" name="historia"{{template "invalido" .}}>
+      {{template "opciones-con-texto" (labeled "Elegí una historia" $.Data.Choices .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Asignar al sprint</button>
+  </div>
+</form>
+{{else}}
+<div class="vacio">
+  <p>El backlog está vacío: no hay historias para asignar.</p>
+  <a class="boton" href="/proyectos/{{.ProjectID}}/historias/nueva">Cargar la primera historia</a>
+</div>
+{{end}}
+{{end}}
+{{if not .Stories}}
+<p class="sin-dato">Este sprint no tiene historias asignadas.</p>
+{{else}}
+<div class="tabla">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Título</th>
+        <th scope="col">Story points</th>
+        <th scope="col">Estado</th>
+        {{if .Open}}<th scope="col"><span class="oculto">Acciones</span></th>{{else}}<th scope="col">Completada</th>{{end}}
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Stories}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.ID}}">{{.Title}}</a></td>
+        <td>{{if $.Data.Open}}{{.StoryPoints}}{{else}}{{index $.Data.Points .ID}}{{end}}</td>
+        <td>{{.State}}</td>
+        {{if not $.Data.Open}}<td>{{if index $.Data.Completed .ID}}Sí{{else}}No{{end}}</td>{{end}}
+        {{if $.Data.Open}}<td><a href="/proyectos/{{$.Data.ProjectID}}/sprints/quitar?historia={{.ID}}">Quitar<span class="oculto"> la historia {{.ID}}</span></a></td>{{end}}
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{end}}
+{{end}}

@@ -3,7 +3,7 @@
 - **Historia:** #17
 - **Sprint:** 3
 - **Responsable:** Juliana Bustos
-- **Estado:** Puerta 3 aprobada — **lista para implementar**
+- **Estado:** Implementada — **en review**
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. **Adaptado a la web el 20/10** (punto 1 de "Para decidir
@@ -449,28 +449,28 @@ el dominio y otra en la web, cada una tiene su test, en su paquete, con el mismo
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 1 | Un proyecto sin sprints arma un dashboard sin estado general, sin sprint en curso y sin gráficos, y sin error | Un proyecto sin sprints avisa que no hay datos | RN-7 | pendiente |
-| 2 | El estado general trae cada métrica del proyecto con su rótulo y su valor, tal como llegó, incluida la velocidad promedio | El estado general muestra las metricas tal como se calcularon | RN-2, RN-4 | pendiente |
-| 3 | Porcentajes y horas con un decimal, coma y unidad; enteros sin decimales; la desviación negativa, con su signo | Porcentajes, horas y enteros se muestran con su formato | RN-15 | pendiente |
-| 4 | El sprint en curso trae el sprint abierto y lo que lleva registrado, sin completados ni velocidad; sin sprint abierto, no trae nada | El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-5, RN-6 | pendiente |
-| 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | pendiente |
-| 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso, y la velocidad del estado general escrita como «sin sprints cerrados» | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-4, RN-8, RN-9 | pendiente |
-| 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | pendiente |
-| 8 | El dashboard se pide al proyecto y usa las métricas que calcula la #16 | — (conexión con la #16) | RN-2 | pendiente |
+| 1 | Un proyecto sin sprints arma un dashboard sin estado general, sin sprint en curso y sin gráficos, y sin error | Un proyecto sin sprints avisa que no hay datos | RN-7 | hecha |
+| 2 | El estado general trae cada métrica del proyecto con su rótulo y su valor, tal como llegó, incluida la velocidad promedio | El estado general muestra las metricas tal como se calcularon | RN-2, RN-4 | hecha |
+| 3 | Porcentajes y horas con un decimal, coma y unidad; enteros sin decimales; la desviación negativa, con su signo | Porcentajes, horas y enteros se muestran con su formato | RN-15 | hecha |
+| 4 | El sprint en curso trae el sprint abierto y lo que lleva registrado, sin completados ni velocidad; sin sprint abierto, no trae nada | El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-5, RN-6 | hecha |
+| 5 | Los gráficos de story points, horas y defectos, en ese orden, cada barra con su rótulo, su valor y su valor escrito | Dashboard de un proyecto con un sprint en curso | RN-8, RN-10 | hecha |
+| 6 | El gráfico de velocidad va cuarto, con una barra por sprint cerrado ordenadas por número; sin sprints cerrados, sin barras y con el aviso, y la velocidad del estado general escrita como «sin sprints cerrados» | El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-4, RN-8, RN-9 | hecha |
+| 7 | Armar el dashboard no cambia nada del proyecto | Abrir el dashboard no cambia el proyecto | RN-16 | hecha |
+| 8 | El dashboard se pide al proyecto y usa las métricas que calcula la #16 | — (conexión con la #16) | RN-2 | hecha |
 
 **Web** (`internal/web/dashboard_test.go`), con los datos del dashboard armados a mano:
 
 | # | Tarea | Escenario BDD | Reglas | Estado |
 |---|---|---|---|---|
-| 9 | El largo de una barra: 100 % para el valor más grande, la parte proporcional con un decimal, sin barra para un cero y al menos 1 % para un valor mayor que cero | El largo de cada barra es proporcional al valor mas grande del grafico | RN-11, RN-12, RN-13 | pendiente |
-| 10 | La página del dashboard, con el encabezado del proyecto, su fecha de inicio como día/mes/año y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-15, RN-17, RN-18 | pendiente |
-| 11 | Sin sprints, la página muestra el encabezado y el aviso, sin gráficos | Un proyecto sin sprints avisa que no hay datos | RN-7 | pendiente |
-| 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | pendiente |
-| 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | pendiente |
-| 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | pendiente |
-| 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | pendiente |
-| 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | pendiente |
-| 17 | De punta a punta: con el dominio real, la página muestra los números que calcula la #16 | — (conexión de las dos mitades) | RN-2 | pendiente |
+| 9 | El largo de una barra: 100 % para el valor más grande, la parte proporcional con un decimal, sin barra para un cero y al menos 1 % para un valor mayor que cero | El largo de cada barra es proporcional al valor mas grande del grafico | RN-11, RN-12, RN-13 | hecha |
+| 10 | La página del dashboard, con el encabezado del proyecto, su fecha de inicio como día/mes/año y «sin fecha de fin», y el acceso en la barra; un proyecto que no existe da 404 con el mensaje y el acceso a la lista | Encabezado de un proyecto sin fecha de finalizacion; Abrir el dashboard desde la barra de navegacion; Pedir el dashboard de un proyecto que no existe | RN-3, RN-15, RN-17, RN-18 | hecha |
+| 11 | Sin sprints, la página muestra el encabezado y el aviso, sin gráficos | Un proyecto sin sprints avisa que no hay datos | RN-7 | hecha |
+| 12 | El estado general y el sprint en curso muestran lo que entrega el dominio, con las fechas del sprint como día/mes/año; sin sprint abierto, el aviso | El estado general muestra las metricas tal como se calcularon; El sprint en curso muestra su meta y lo que lleva registrado; Un proyecto con todos sus sprints cerrados no tiene sprint en curso | RN-4, RN-5, RN-6, RN-15 | hecha |
+| 13 | Cada gráfico dibuja una barra por valor con el largo de la tarea 9, escrito con punto en el atributo del SVG (`61.5%`, D3), y su rótulo y su valor escritos con coma; un cero sin barra y un gráfico todo en cero sin barras; el de velocidad sin sprints cerrados, con el aviso | Las barras de un grafico se miden contra su valor mas grande; El grafico de velocidad tiene una barra por sprint cerrado; Todavia no hay sprints cerrados para el grafico de velocidad | RN-8 a RN-14 | hecha |
+| 14 | La página tiene las cuatro partes en orden, y los gráficos en el orden en que llegan | Dashboard de un proyecto con un sprint en curso | RN-1, RN-8 | hecha |
+| 15 | Cada gráfico tiene su texto alternativo con cada rótulo y su valor, y su tabla de valores | Cada grafico tiene su texto alternativo y su tabla | RN-19, RN-20 | hecha |
+| 16 | El dashboard entra en los tests de la #77: en castellano, adaptado al ancho, con la barra, sin pedir nada de afuera, y su tabla dentro del recuadro | Usar el dashboard en un celular y sin internet | RN-21 | hecha |
+| 17 | De punta a punta: con el dominio real, la página muestra los números que calcula la #16 | — (conexión de las dos mitades) | RN-2 | hecha |
 
 **Verificación manual**, antes de abrir el PR y anotada en la Fase 4, como en la #77: el
 contraste de las barras con un verificador (RN-20), el modo celular del navegador a 360 de
@@ -541,7 +541,179 @@ tienen escenario: sus tests van encabezados con `// Tarea 8:` y `// Tarea 17:`.
 
 ## Fase 4 — Implementación
 
-_Se completa durante la implementación._
+Ciclo RED → GREEN → REFACTOR. El test en un commit, con la salida del test fallando después
+de `RED:` en el mensaje, y la implementación en otro.
+
+| Tarea | Commit del test | Commit de la implementación |
+|---|---|---|
+| 1 | `6367a0e` | `1b11f92` |
+| 2 | `5941e21` | `a3487f5` |
+| 3 | `92c6a8b` | `b66feed` |
+| 4 | `6330fb4` | `e84abc3` |
+| 5 | `ef5ab19` | `fc0c221` |
+| 6 | `1be2d30` | `2e28197` |
+| 7 | `4f8e6d1` (sin RED) | — |
+| 8 | `792ee9a` | `acc6ff5` |
+| 9 | `a176c80` | `1833a8d` |
+| 10 | `9bf4313` | `132571d` |
+| 11 | `9c4e01e` | `4a9caae` |
+| 12 | `71ccebe` | `6f8bd5a` |
+| 13 | `210f45d` | `cc37e50` (y el estilo de toda la página, `0ee0fc3`) |
+| 14 | `3721850` (sin RED) | — |
+| 15 | `fae9c92` | `d7803df` |
+| 16 | `ad3b799` (sin RED) | — |
+| 17 | `13048ad` (sin RED) | — |
+
+### Decisiones tomadas al implementar
+
+Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
+
+- **El empate se redondea hacia afuera del cero** (tarea 3): 12,25 h se escribe "12,3 h". La
+  biblioteca estándar redondea el empate al par y daría "12,2", que no es como se redondea a
+  mano. Pasa con los cuartos de hora del esfuerzo.
+- **Un negativo que se redondea a cero se escribe sin signo** (tarea 3): una desviación de
+  -0,04 % es "0,0 %" y no "-0,0 %", porque la RN-15 escribe el cero sin signo.
+- **La regla de formato quedó en `internal/domain/format.go`**, aparte del dashboard, para
+  que la #18 la use tal como está.
+- **El armado recibe las métricas de cada sprint por su número** (tarea 4): las del sprint
+  abierto para el sprint en curso, y las mismas le van a servir a la tarea 6 para la
+  velocidad de cada sprint cerrado.
+- **Los gráficos usan las métricas del proyecto entero** (tarea 5), las mismas del estado
+  general: un número no se lee distinto en dos partes de la página (RN-2).
+- **Cada gráfico lleva un título corto y cada barra un rótulo corto** (tarea 5): «Story
+  points» con «Planificados» y «Completados», «Horas» con «Estimadas» y «Reales», y
+  «Defectos» con «Detectados» y «Resueltos». El título dice qué se compara y el rótulo, cuál
+  es cada barra.
+- **El test de la tarea 5 mira solo los tres primeros gráficos**: el de velocidad, cuarto, lo
+  agrega la tarea 6 con su propio test, sin reescribir este.
+- **El gráfico de velocidad se titula «Velocidad»** (tarea 6), corto como los otros tres y
+  con el mismo rótulo que la velocidad del estado general.
+- **El aviso «sin sprints cerrados» sale de los sprints, no de la velocidad** (tarea 6): una
+  velocidad de cero no dice si hay sprints cerrados, porque la #16 da cero en los dos casos.
+  El test de la tarea suma como subcaso el caso límite de los sprints cerrados con velocidad
+  promedio de cero, que se escribe «0».
+- **`p.Dashboard()` descarta el error de las métricas de cada sprint** (tarea 8), con un
+  comentario: `SprintMetrics` solo falla con un sprint que no existe, y los números salen de
+  los sprints del propio proyecto. Es lo mismo que hace el cierre de la #10 con `p.Story`, y
+  así no se toca el código de la #16.
+- **El test de la tarea 8 usa las operaciones de verdad** (las historias, el sprint, la
+  asignación y el cierre de la #10) y fija los números que da la #16 con esos datos, en lugar
+  de compararlos contra una llamada a la #16 dentro del test.
+- **El largo de la barra es un número, no el texto del SVG** (tarea 9): la web lo mide en
+  porcentaje con un decimal (61,5), y escribirlo con punto en el atributo (`61.5%`, D3) es de
+  la tarea 13, que dibuja la barra. El test suma dos casos que el escenario no muestra: el
+  redondeo a un decimal (8 de 13 da 61,5) y un gráfico todo en cero, que no divide por cero.
+- **«Dashboard» va en la barra después de Datos** (tarea 10), antes de Integrantes: es la
+  vista general del proyecto, al lado de sus datos (RN-18). La pestaña se titula «Dashboard
+  de» y el nombre del proyecto, como «Esfuerzo de»; el h1 es el nombre, con el inicio y el
+  fin debajo, escritos igual que en la página de datos.
+- **Los tests de la barra y del proyecto que no existe son propios** (tarea 10), en
+  `internal/web/dashboard_test.go` y con el nombre de su escenario, en lugar de filas en las
+  tablas de la #77 y la #78. Así toda la trazabilidad de la #17 apunta a un solo archivo.
+- **El aviso sin sprints lleva el acceso a crear el primero** (tarea 11): «Todavía no hay
+  datos para mostrar.» en el recuadro de vacío, con el botón «Crear el primer sprint», como
+  la pantalla de Sprints. El dashboard no cambia nada: el botón solo lleva a otra pantalla.
+- **El estado general y el sprint en curso se escriben como en la página del proyecto**
+  (tarea 12): cada número en una lista de rótulo y valor, el sprint en curso con su enlace,
+  su goal y sus fechas («Sprint 2: … (26/10/2026 al 30/10/2026)»), y sin sprint abierto el
+  mismo texto, «No hay ningún sprint en curso».
+- **Cada gráfico es un solo SVG** (tarea 13), con los rótulos, los valores y las barras
+  adentro, y no un SVG chico por barra: así la tarea 15 le pone el `role="img"` y el texto
+  alternativo a un solo dibujo, como pide la D4. Lo eligió Juliana. Los gráficos van en una
+  parte «Gráficos», debajo del sprint en curso, cada uno en su tarjeta con el título arriba.
+- **El color de cada barra sale de su posición** (tarea 13), sin cambiar el contrato del
+  dominio: en los tres gráficos que comparan, la primera barra es lo planificado y la segunda
+  lo real; en el de velocidad, todas del mismo color. Lo eligió Juliana.
+- **La paleta es la que eligió Juliana el 27/10** (tarea 13, D6), y es el foco de toda la
+  página del dashboard, no solo de los gráficos, como pidió después: el nombre del proyecto
+  en Siena, los títulos subrayados en Rosa Polvoriento, las tarjetas en alabastro con un
+  borde de color, y los enlaces y el botón en Siena. Va en `app.css`, solo para esta página,
+  sin tocar los colores de la #77 ni el resto de la web: cada gráfico en una tarjeta Alabastro Cálido
+  (`#F5E6D3`), lo planificado en Siena Tostado (`#A0522D`, 4,58 a 1), lo real en Verde
+  Salvia oscurecido (`#5E7A47`, 3,94 a 1) y la velocidad en Vara de Oro oscurecida
+  (`#8A6A1E`, 4,12 a 1). Los originales de la paleta, `#87A96B` y `#D4A437`, no llegaban al
+  3 a 1 de la RN-20 sobre ese fondo. Las fuentes de la web no cambian.
+- **El texto alternativo empieza con una frase por gráfico** (tarea 15) que dice qué compara,
+  y sigue con cada rótulo y su valor: «Story points planificados contra completados.
+  Planificados: 40, Completados: 30.». La frase la da la web por la posición del gráfico,
+  como el color, sin cambiar el contrato del dominio. Va en el `aria-label` del SVG, que es
+  una imagen para el lector de pantalla. Lo eligió Juliana.
+- **La tabla de «Ver los valores» tiene dos columnas, «Barra» y «Valor»** (tarea 15), con
+  cada rótulo como encabezado de su fila, dentro del recuadro de tablas de la #77. El
+  gráfico de velocidad sin sprints cerrados tiene solo el aviso, sin dibujo ni tabla: el
+  aviso ya es texto. Lo eligió Juliana.
+
+### Desvíos respecto de la spec
+
+- **Tarea 4:** el escenario "Un proyecto con todos sus sprints cerrados no tiene sprint en
+  curso" se llama igual que uno de la #5, y los dos tests están en el mismo paquete. El del
+  dashboard se llama `TestUnProyectoConTodosSusSprintsCerradosNoTieneSprintEnCursoEnElDashboard`,
+  con el escenario exacto en su comentario. Además pasaría sin código nuevo, porque hasta esta
+  tarea el sprint en curso venía siempre vacío; el RED lo dio el otro test de la tarea.
+- **Tarea 7, sin RED:** el test de "Abrir el dashboard no cambia el proyecto" pasó al
+  escribirlo, como anticipaba la Fase 3, porque el armado nunca escribe. No tiene commit de
+  implementación. Para saber que sirve se rompió el armado a propósito dos veces —que
+  cerrara el sprint abierto y que le vaciara las historias— y falló las dos; después se
+  volvió atrás (el detalle está en el mensaje del commit). El backlog el armado no lo puede
+  tocar, porque solo recibe los sprints: esa mitad del test cuida la operación de la
+  tarea 8.
+- **Tareas 12 a 15, los tests de la web usan datos reales (D10):** la D10 decía que los
+  tests de la web arman el dashboard a mano. Pero la página se lo pide al proyecto con
+  `p.Dashboard()`, así que armarlo a mano exigía sumarle al servidor de la #77 una forma de
+  recibirlo. Juliana eligió el 27/10 que los tests armen el proyecto con las operaciones de
+  verdad (historias estimadas, sprints, asignación y cierre), sin tocar el servidor. Cada
+  test fija igual los números que da la #16 con sus datos.
+- **Tarea 13, el caso «más de lo planificado» va con el gráfico de horas:** el escenario lo
+  pide con 20 story points planificados y 25 completados, pero con datos reales lo
+  completado sale de lo comprometido y nunca lo supera. Juliana eligió probarlo con 20 h
+  estimadas y 25 h reales, que da lo mismo (80 % y 100 %). Los otros cuatro casos van con
+  story points como dice el escenario.
+- **Tarea 14, sin RED:** el test de "Dashboard de un proyecto con un sprint en curso" pasó al
+  escribirlo, porque las tareas 12 y 13 ya dejaron las cuatro partes y los gráficos en orden.
+  No tiene commit de implementación. Para saber que sirve se rompió el orden dos veces —el
+  sprint en curso antes del estado general, en la plantilla, y Horas antes que Story points,
+  al armar los gráficos— y falló las dos; después se volvió atrás. Lo eligió Juliana, como
+  en la tarea 7.
+- **Tarea 16, un test propio y sin RED:** la tarea decía sumar el dashboard a los tests de la
+  #77 en `server_test.go`. Juliana eligió un test propio del escenario en
+  `internal/web/dashboard_test.go`, con un proyecto con sprints, por la misma razón que en la
+  tarea 10: toda la trazabilidad de la #17 en un archivo. Revisa lo mismo que la #77 y,
+  además, que cada gráfico mida todo el ancho. Pasó al escribirlo, porque el dashboard ya
+  usa el layout y el recuadro de tablas de la #77; se rompió dos veces —la tabla sin su
+  recuadro y los gráficos con 600 px fijos— y falló las dos. Que la página no se desplace de
+  costado a 360 de ancho queda para la verificación manual.
+- **Tarea 17, sin RED:** el test de punta a punta iba a ser el que conectara la web con el
+  dominio real, porque la D10 armaba los datos a mano. Como desde la tarea 12 los tests ya
+  usan el dominio real, Juliana eligió igual un test completo, `TestElDashboardMuestraLosNumerosQueCalculaLaHistoria16`:
+  un proyecto con historias, un sprint cerrado y otro abierto, esfuerzo y defectos, y cada
+  número de la página (estado general, sprint en curso y cada barra) fijado con lo que da la
+  #16 para esos datos. Es el recorrido de la RN-2 para la defensa. Pasó al escribirlo; se
+  rompió la conexión dos veces en `p.Dashboard()` —el estado general con las métricas del
+  sprint abierto, y el sprint en curso con las del proyecto— y falló las dos.
+
+### Verificación manual
+
+El 28/10, con los datos de demo (`docs/demo/datos-demo.json` importados a una base nueva) y
+el navegador del panel de Claude Code (Chromium), sin script:
+
+- **Contraste (RN-20 y RN-19 de la #77)**, con la fórmula de la WCAG sobre los colores que
+  pinta la página: las barras sobre la tarjeta alabastro dan 4,58 a 1 (Siena), 3,94 (Salvia
+  oscurecido) y 4,12 (Oro oscurecido), todas sobre el 3 a 1. El texto da 12,90 sobre la
+  tarjeta; los rótulos y el aviso en gris, 5,22; el título y los enlaces en Siena, 5,24
+  sobre el fondo y 4,58 sobre la tarjeta; el botón, 5,62 (7,55 al pasar el mouse); la
+  tabla, 6,39 y 15,80. Todo sobre el 4,5 a 1 del texto.
+- **A 360 de ancho (RN-21)**: la página no se desplaza de costado (ancho del documento 360).
+  Cada gráfico mide 292 px, cada tarjeta termina en el borde con su margen, y las cuatro
+  tablas abiertas entran en su recuadro sin desplazarse.
+- **Sin pedir nada de afuera (RN-21)**: el único recurso que pide la página es
+  `/static/app.css`, que sale del programa.
+- **Texto alternativo (RN-19)**: en el árbol de accesibilidad, cada gráfico es una imagen
+  con su nombre completo, por ejemplo «Story points planificados contra completados.
+  Planificados: 109, Completados: 58.».
+
+**Lo que queda para hacer a mano antes del PR:** escuchar un gráfico con un lector de
+pantalla de verdad (NVDA o Narrador) y abrir la página con la red desconectada. Lo de arriba
+lo anticipa, pero no lo reemplaza.
 
 ## Trazabilidad
 

@@ -104,7 +104,8 @@ func (s *Server) findProject(r *http.Request) (*domain.Project, error) {
 	return s.registry.Get(id)
 }
 
-// showProject muestra la pagina de un proyecto.
+// showProject muestra la pagina de un proyecto, con el resumen que arma el nucleo (#5,
+// RN-20 de la #78).
 func (s *Server) showProject(w http.ResponseWriter, r *http.Request) {
 	project, err := s.findProject(r)
 	if err != nil {
@@ -115,7 +116,10 @@ func (s *Server) showProject(w http.ResponseWriter, r *http.Request) {
 		Title:   project.Name(),
 		Project: project,
 		Section: "datos",
-		Data:    project,
+		Data: struct {
+			*domain.Project
+			Status domain.ProjectStatus
+		}{project, project.Status()},
 	})
 }
 

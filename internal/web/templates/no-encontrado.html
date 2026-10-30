@@ -2,6 +2,7 @@
 <h1>No se encontró</h1>
 <div class="aviso aviso-error" role="alert">{{.Data}}</div>
 <div class="acciones">
-  <a class="boton" href="/proyectos">Volver a la lista de proyectos</a>
+  {{with .Project}}<a class="boton" href="/proyectos/{{.ID}}">Volver al proyecto</a>{{end}}
+  <a class="boton{{if .Project}} boton-secundario{{end}}" href="/proyectos">Volver a la lista de proyectos</a>
 </div>
 {{end}}

@@ -1,0 +1,41 @@
+{{define "content"}}
+{{with .Data}}
+{{if not .Sprint}}
+{{/* Una pagina vieja: el sprint ya se cerro en otra pestaña (#190). */}}
+<h1>Cerrar el sprint</h1>
+{{template "error-formulario" .Form.General}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/sprints">Ver los sprints</a>
+</div>
+{{else}}
+<h1>Cerrar el sprint {{.Sprint.Number}}</h1>
+{{template "error-formulario" .Form.General}}
+<form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/sprints/cerrar/confirmar" novalidate>
+  {{with .Form.Field "cierre"}}
+  <div class="campo">
+    <label for="cierre">Fecha de cierre</label>
+    <input type="date" id="cierre" name="cierre" value="{{.Value}}"{{template "invalido" .}}>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  {{if .Stories}}
+  <fieldset class="campo">
+    <legend>Historias completadas</legend>
+    {{range .Stories}}
+    <div class="casilla">
+      <input type="checkbox" id="completada-{{.ID}}" name="completada" value="{{.ID}}"{{if index $.Data.Checked .ID}} checked{{end}}>
+      <label for="completada-{{.ID}}">{{.ID}} — {{.Title}}</label>
+    </div>
+    {{end}}
+  </fieldset>
+  {{else}}
+  <p class="sin-dato">Este sprint no tiene historias asignadas.</p>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Cerrar el sprint</button>
+    <a class="boton boton-secundario" href="/proyectos/{{.ProjectID}}/sprints/{{.Sprint.Number}}">Cancelar</a>
+  </div>
+</form>
+{{end}}
+{{end}}
+{{end}}

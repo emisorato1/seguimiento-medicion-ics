@@ -1,43 +1,37 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-24 16:09. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-29 16:50. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 23
-- Sin estimar: 4
-- Story points cargados: 83
-- Terminadas: 15
+- Historias en el tablero: 24
+- Sin estimar: 3
+- Story points cargados: 109
+- Terminadas: 21
 
 ## En review
 
-_No hay historias en este estado._
+| # | Historia | SP | Prioridad | Sprint |
+|---|---|---|---|---|
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 
 ## En progreso
 
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
-| #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
-| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+| #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 13 | Alta | Sprint 3 |
 
 ## Lista para implementar
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 4 |
+_No hay historias en este estado._
 
 ## Especificacion SDD
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
-| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
-| #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
-| #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
-| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | - | Alta | Sprint 3 |
+_No hay historias en este estado._
 
 ## Sprint Backlog
 
@@ -60,22 +54,28 @@ _No hay historias en este estado._
 | #7 | Priorizar el Product Backlog | 2 | Media | Sprint 2 |
 | #8 | Crear un sprint con su Sprint Goal | 3 | Alta | Sprint 2 |
 | #9 | Asignar historias a un sprint | 5 | Alta | Sprint 2 |
+| #10 | Cerrar un sprint | 5 | Alta | Sprint 3 |
+| #11 | Consultar sprints anteriores | 2 | Media | Sprint 3 |
 | #12 | Estimar historias con Story Points | 2 | Alta | Sprint 2 |
 | #13 | Votar en secreto en una ronda de Planning Poker | 8 | Alta | Sprint 2 |
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
+| #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
+| #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
-| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | - | Alta | Sprint 2 |
+| #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
+| #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | 13 | Alta | Sprint 2 |
+| #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
 
 ## Ultimos commits
 
 ```
-cbef874 2026-10-24 Merge remote-tracking branch 'origin/dev' into historia-15-terminada
-b45cbe6 2026-10-23 Merge pull request #141 from emisorato1/historia-13-votar-en-secreto
-f7133d3 2026-10-23 Merge remote-tracking branch 'origin/dev' into historia-13-votar-en-secreto
-e567e56 2026-10-23 Merge pull request #142 from emisorato1/historia-73-resolver-diferencias
-a01d1c8 2026-10-23 chore: regenerar ESTADO.md con la historia 73 lista para implementar
-78ad4e9 2026-10-23 docs: registrar las tres puertas de la historia 73 y aplicar las observaciones de Juliana
-8e90105 2026-10-23 Merge branch 'dev' of https://github.com/emisorato1/seguimiento-medicion-ics into historia-73-resolver-diferencias
-2c2abd1 2026-10-23 Merge pull request #136 from emisorato1/historia-17-spec-datos-al-dia
+c145349 2026-10-28 docs: el PR de la historia 17 en el indice de specs
+d874ce7 2026-10-28 chore: la historia 17 pasa a En review en ESTADO.md
+9e00e87 2026-10-28 docs: la historia 17 en review, con la trazabilidad, el contrato y la documentacion tecnica al dia
+aefa169 2026-10-28 test: los dos tests de la historia 17 sin escenario lo dicen (tareas 8 y 17), solo comentarios
+cc29fa4 2026-10-28 Merge branch 'dev' into historia-17-dashboard
+665035c 2026-10-28 docs: la verificacion manual de la historia 17 en su Fase 4, con lo que queda a mano
+17ec982 2026-10-28 Merge pull request #206 from emisorato1/guia-defensa-177
+2b0b1be 2026-10-28 Merge pull request #179 from emisorato1/historia-177-planning
 ```

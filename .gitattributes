@@ -1,0 +1,4 @@
+# Lo que el binario de la web lleva embebido baja siempre con LF, también en un checkout de
+# Windows: así el HTML y el CSS que sirve son los mismos que se probaron, compile quien compile.
+internal/web/templates/*.html text eol=lf
+internal/web/static/*.css text eol=lf

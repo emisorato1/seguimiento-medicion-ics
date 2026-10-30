@@ -1,0 +1,63 @@
+{{define "content"}}
+{{with .Data}}
+{{with .Defect}}
+<h1>Defecto {{.ID}}: {{.Title}}</h1>
+<dl class="datos">
+  <dt>Número</dt>
+  <dd>{{.ID}}</dd>
+  <dt>Título</dt>
+  <dd>{{.Title}}</dd>
+  <dt>Descripción</dt>
+  <dd class="texto-largo">{{.Description}}</dd>
+  <dt>Severidad</dt>
+  <dd>{{.Severity}}</dd>
+  <dt>Estado</dt>
+  <dd>{{.State}}</dd>
+  <dt>Historia</dt>
+  <dd><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}">{{.StoryID}}</a></dd>
+  <dt>Detectado en</dt>
+  <dd>Sprint {{.DetectedIn}}</dd>
+  <dt>Resuelto en</dt>
+  <dd>{{if .ResolvedIn}}Sprint {{.ResolvedIn}}{{else}}<span class="sin-dato">sin resolver</span>{{end}}</dd>
+</dl>
+{{end}}
+{{/* El rechazo que no es de ningun campo va antes de los formularios: con una pagina vieja
+   de un defecto ya resuelto, los formularios no estan y el mensaje igual se ve (#190). */}}
+{{template "error-formulario" .Form.General}}
+{{if not .Resolved}}
+<h2>Cambiar el estado</h2>
+<form class="formulario" method="post" action="/proyectos/{{.ProjectID}}/defectos/{{.Defect.ID}}/estado" novalidate>
+  {{with .Form.Field "estado"}}
+  <div class="campo">
+    <label for="estado">Estado nuevo</label>
+    <select id="estado" name="estado"{{template "invalido" .}}>
+      {{template "opciones" (choices "Elegí el estado" $.Data.States .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Cambiar el estado</button>
+  </div>
+</form>
+<h2>Resolver</h2>
+<form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/defectos/{{.Defect.ID}}/resolver">
+  {{with .Form.Field "sprint"}}
+  <div class="campo">
+    <label for="sprint">Resuelto en el sprint</label>
+    <select id="sprint" name="sprint"{{template "invalido" .}}>
+      {{template "opciones-con-texto" (labeled "Elegí un sprint" $.Data.Sprints .Value)}}
+    </select>
+    {{template "error" .}}
+  </div>
+  {{end}}
+  <div class="acciones">
+    <button type="submit">Resolver</button>
+  </div>
+</form>
+{{end}}
+<div class="acciones">
+  <a class="boton boton-secundario" href="/proyectos/{{.ProjectID}}/defectos">Volver a los defectos</a>
+</div>
+{{end}}
+{{end}}

@@ -59,6 +59,9 @@ var (
 	// ErrDefectNotFound: cambiarle el estado o resolver un defecto que no existe en el
 	// proyecto (historia #15, RN-19).
 	ErrDefectNotFound = errors.New("no se encontró el defecto")
+	// ErrDefectStateUnknown: un texto que no es Abierto, En curso ni Resuelto (historia #15,
+	// agregado pedido por la #78).
+	ErrDefectStateUnknown = errors.New("el estado debe ser Abierto, En curso o Resuelto")
 	// ErrSavedDataInvalid: los datos guardados no se pueden leer o tienen algo que el dominio
 	// no acepta (historia #77, RN-24). Va antes de los de la #12 y no al final, para no chocar
 	// con los errores que agregan otras historias al mismo tiempo.
@@ -67,6 +70,9 @@ var (
 	// número (historia #14, RN-3). Van aca y no al final, para no chocar con los errores que
 	// agregan otras historias al mismo tiempo.
 	ErrEffortHoursInvalid = errors.New("las horas tienen que ser mayores que cero")
+	// ErrEffortHoursOverDay: un registro de mas de 24 horas (historia #14, RN-20, agregada
+	// por el defecto #192). Un registro es de un solo dia.
+	ErrEffortHoursOverDay = errors.New("un registro es de un solo día y no puede tener más de 24 horas")
 	// ErrEffortDayInFuture: registrar horas de un día posterior al de hoy (historia #14, RN-4).
 	ErrEffortDayInFuture = errors.New("no se pueden cargar horas de un día que todavía no pasó")
 	// ErrEffortDayRequired: registrar horas sin indicar el día (historia #14, RN-5).
@@ -80,6 +86,10 @@ var (
 	ErrStoryEstimateDone = errors.New("la estimación de una historia terminada no se modifica")
 	// ErrEstimatedHoursInvalid: cargar horas estimadas en cero o negativas (historia #16, RN-18).
 	ErrEstimatedHoursInvalid = errors.New("las horas estimadas tienen que ser mayores que cero")
+	// ErrPDFNotGenerated: el destino fallo al recibir el PDF, o lo recibio incompleto (historia
+	// #19, RN-12). No lleva el error del destino, que viene en ingles. Va aca y no al final, para
+	// no chocar con los errores que agregan otras historias al mismo tiempo.
+	ErrPDFNotGenerated = errors.New("no se pudo generar el PDF")
 	// ErrSprintNotFound: consultar un sprint con un numero que no existe en el proyecto
 	// (historia #8, RN-15). Lo usan tambien la #11 y la #15.
 	ErrSprintNotFound = errors.New("no se encontró el sprint")
@@ -108,6 +118,9 @@ var (
 	// ErrStoryNotInSprint: quitar del sprint una historia que no esta en su Sprint Backlog
 	// (historia #9, RN-8).
 	ErrStoryNotInSprint = errors.New("la historia no está en el sprint")
+	// ErrSprintCloseDateRequired: cerrar el sprint sin indicar la fecha de cierre (historia
+	// #10, RN-10).
+	ErrSprintCloseDateRequired = errors.New("la fecha de cierre es obligatoria")
 	// ErrVotingRoundNoMembers: abrir una ronda de Planning Poker en un proyecto sin
 	// integrantes (historia #13, RN-6).
 	ErrVotingRoundNoMembers = errors.New("el proyecto no tiene integrantes que puedan votar")
@@ -128,4 +141,12 @@ var (
 	ErrNotParticipant = errors.New("no participa de esta ronda")
 	// ErrRoundRevealed: votar o volver a revelar una ronda ya revelada (historia #13, RN-16).
 	ErrRoundRevealed = errors.New("la ronda ya fue revelada")
+	// ErrRoundNotRevealed: acordar la estimación de una ronda que todavía no se reveló
+	// (historia #73, RN-12).
+	ErrRoundNotRevealed = errors.New("primero hay que revelar la ronda para acordar la estimación")
+	// ErrRoundAlreadyAgreed: acordar por segunda vez la misma ronda (historia #73, RN-13).
+	ErrRoundAlreadyAgreed = errors.New("esa ronda ya tiene una estimación acordada")
+	// ErrNotLastRound: acordar sobre una ronda que ya fue superada por otra de la misma
+	// historia (historia #73, RN-14).
+	ErrNotLastRound = errors.New("solo se puede acordar sobre la última ronda de la historia")
 )

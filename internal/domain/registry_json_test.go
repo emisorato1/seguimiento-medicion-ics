@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"slices"
 	"strings"
 	"testing"
@@ -71,8 +72,12 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 		t.Fatalf("no se pudo crear el sprint 1 de prueba: %v", err)
 	}
 	closed.state = SprintClosed
-	// el sprint 1 tuvo la historia Terminada en su Sprint Backlog (#9); cerrarlo es de la #10
+	// el sprint 1 tuvo la historia Terminada en su Sprint Backlog (#9), y la completo al
+	// cerrar: los datos del cierre son de la #10, que los suma a la conversion
 	closed.stories = []int{done.ID()}
+	closed.closedOn = unDia(2026, 10, 14)
+	closed.completedStories = []int{done.ID()}
+	closed.pointsAtClose = map[int]int{done.ID(): 3}
 	if _, err := first.AddSprint(SprintData{Goal: "Medir la velocidad", Start: unDia(2026, 10, 15), End: unDia(2026, 10, 28)}); err != nil {
 		t.Fatalf("no se pudo crear el sprint 2 de prueba: %v", err)
 	}
@@ -129,6 +134,15 @@ func unRegistroCargado(t *testing.T) *ProjectRegistry {
 	}
 	if err := hidden.Vote("Ana Perez", 3); err != nil {
 		t.Fatalf("no se pudo votar en la ronda de prueba: %v", err)
+	}
+	// el acuerdo es de la #73, que lo suma a la conversion (tarea 7): la ronda revelada se
+	// acuerda en 5 y despues se abre la ronda 2 de la misma historia, asi queda una ronda
+	// acordada que ya no es la ultima, que es un estado valido
+	if err := revealed.Agree(5); err != nil {
+		t.Fatalf("no se pudo acordar la ronda de prueba: %v", err)
+	}
+	if _, err := first.OpenVotingRound(estimated.ID()); err != nil {
+		t.Fatalf("no se pudo abrir la ronda 2 de prueba: %v", err)
 	}
 	return registry
 }
@@ -210,6 +224,16 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 				}
 			}
 		}
+		for j, ws := range wantSprints {
+			gs := gotSprints[j]
+			// los datos del cierre de la #10
+			if !gs.ClosedOn().Equal(ws.ClosedOn()) || fmt.Sprint(gs.CompletedStories()) != fmt.Sprint(ws.CompletedStories()) ||
+				fmt.Sprint(gs.PointsAtClose()) != fmt.Sprint(ws.PointsAtClose()) {
+				t.Fatalf("sprint %d: se esperaba el cierre del %v con %v y los puntos %v, salio %v con %v y %v",
+					ws.Number(), ws.ClosedOn(), ws.CompletedStories(), ws.PointsAtClose(),
+					gs.ClosedOn(), gs.CompletedStories(), gs.PointsAtClose())
+			}
+		}
 		if g.lastSprintNumber != w.lastSprintNumber {
 			t.Fatalf("proyecto %d: se esperaba el contador de sprints en %d, salio en %d", w.ID(), w.lastSprintNumber, g.lastSprintNumber)
 		}
@@ -252,7 +276,7 @@ func mismoRegistro(t *testing.T, want, got *ProjectRegistry) {
 		}
 		for j, wr := range w.votingRounds {
 			gr := g.votingRounds[j]
-			if gr.storyID != wr.storyID || gr.number != wr.number || gr.revealed != wr.revealed ||
+			if gr.storyID != wr.storyID || gr.number != wr.number || gr.revealed != wr.revealed || gr.agreed != wr.agreed ||
 				!slices.Equal(gr.participants, wr.participants) || !slices.Equal(gr.votes, wr.votes) {
 				t.Fatalf("proyecto %d: se esperaba la ronda %d de la historia %d (revelada %v, %v, %v), salio la %d de la %d (revelada %v, %v, %v)",
 					w.ID(), wr.number, wr.storyID, wr.revealed, wr.participants, wr.votes,
@@ -294,6 +318,25 @@ func TestLosDatosSiguenAlCerrarYVolverAAbrir(t *testing.T) {
 	if story.ID() != 4 {
 		t.Fatalf("se esperaba que la historia nueva recibiera el numero 4, recibio el %d", story.ID())
 	}
+
+	// una ronda cargada se puede votar, revelar y acordar: recupera el proyecto que la abrio
+	// (historia #73, tarea 7)
+	round, _, err := first.CurrentVotingRound(2)
+	if err != nil || round == nil {
+		t.Fatalf("no se encontro la ronda cargada de la historia 2: %v", err)
+	}
+	if err := round.Vote("Juan Gomez", 3); err != nil {
+		t.Fatalf("no se pudo votar en la ronda cargada: %v", err)
+	}
+	if err := round.Reveal(); err != nil {
+		t.Fatalf("no se pudo revelar la ronda cargada: %v", err)
+	}
+	if err := round.Agree(3); err != nil {
+		t.Fatalf("se esperaba acordar la ronda cargada sin error, salio: %v", err)
+	}
+	if acordada, _ := first.Story(2); acordada.StoryPoints() != 3 {
+		t.Fatalf("se esperaba la historia 2 estimada en 3 por el acuerdo, salio en %d", acordada.StoryPoints())
+	}
 }
 
 // unosDatosGuardados devuelve datos guardados válidos, en la forma del archivo, para que
@@ -315,7 +358,8 @@ func unosDatosGuardados() registryJSON {
 				},
 				LastSprintNumber: 2,
 				Sprints: []sprintJSON{
-					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado", Stories: []int{2}},
+					{Number: 1, Goal: "Tener el backlog estimado", Start: "2026-10-01", End: "2026-10-14", State: "Cerrado", Stories: []int{2},
+						ClosedOn: "2026-10-14", CompletedStories: []int{2}, PointsAtClose: map[int]int{2: 3}},
 					{Number: 2, Goal: "Medir la velocidad", Start: "2026-10-15", End: "2026-10-28", State: "Abierto"},
 				},
 				LastDefectID: 2,
@@ -374,7 +418,14 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		{name: "sprint sin Sprint Goal", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Goal = "   " }, want: ErrSprintGoalRequired},
 		{name: "sprint sin fecha de inicio", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Start = "" }, want: ErrSprintStartRequired},
 		{name: "sprint con las fechas al reves", change: func(d *registryJSON) { d.Projects[0].Sprints[0].End = "2026-09-30" }, want: ErrSprintDatesInconsistent},
-		{name: "dos sprints abiertos", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Abierto" }, want: ErrSprintAlreadyOpen},
+		{name: "dos sprints abiertos", change: func(d *registryJSON) {
+			// desde la #10 el sprint 1 trae los datos del cierre: se le sacan, para que el
+			// motivo siga siendo los dos abiertos
+			d.Projects[0].Sprints[0].State = "Abierto"
+			d.Projects[0].Sprints[0].ClosedOn = ""
+			d.Projects[0].Sprints[0].CompletedStories = nil
+			d.Projects[0].Sprints[0].PointsAtClose = nil
+		}, want: ErrSprintAlreadyOpen},
 		{name: "numero de sprint repetido", change: func(d *registryJSON) { d.Projects[0].Sprints[1].Number = 1 }, want: ErrSavedDataInvalid},
 		{name: "contador de sprints que no llega a los numeros usados", change: func(d *registryJSON) { d.Projects[0].LastSprintNumber = 1 }, want: ErrSavedDataInvalid},
 		{name: "estado de sprint inexistente", change: func(d *registryJSON) { d.Projects[0].Sprints[0].State = "Planificado" }, want: ErrSavedDataInvalid},
@@ -383,6 +434,17 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 		// El Sprint Backlog de la #9 (tarea 14): solo historias que existen en el proyecto.
 		{name: "sprint con una historia que no existe", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Stories = []int{99} }, want: ErrStoryNotFound},
 		{name: "historia repetida en un Sprint Backlog", change: func(d *registryJSON) { d.Projects[0].Sprints[0].Stories = []int{2, 2} }, want: ErrStoryAlreadyInSprint},
+		// Los datos del cierre de la #10 (tarea 15): tienen que ser coherentes con el estado y
+		// con el Sprint Backlog.
+		{name: "sprint cerrado sin fecha de cierre", change: func(d *registryJSON) { d.Projects[0].Sprints[0].ClosedOn = "" }, want: ErrSprintCloseDateRequired},
+		{name: "fecha de cierre que no es fecha", change: func(d *registryJSON) { d.Projects[0].Sprints[0].ClosedOn = "14/10/2026" }, want: ErrSavedDataInvalid},
+		{name: "sprint abierto con fecha de cierre", change: func(d *registryJSON) { d.Projects[0].Sprints[1].ClosedOn = "2026-10-28" }, want: ErrSavedDataInvalid},
+		{name: "sprint abierto con puntos al cerrar", change: func(d *registryJSON) { d.Projects[0].Sprints[1].PointsAtClose = map[int]int{1: 5} }, want: ErrSavedDataInvalid},
+		{name: "historia completada repetida", change: func(d *registryJSON) { d.Projects[0].Sprints[0].CompletedStories = []int{2, 2} }, want: ErrSavedDataInvalid},
+		{name: "historia completada que no estaba en el sprint", change: func(d *registryJSON) { d.Projects[0].Sprints[0].CompletedStories = []int{1} }, want: ErrStoryNotInSprint},
+		{name: "faltan los puntos al cerrar de una historia del sprint", change: func(d *registryJSON) { d.Projects[0].Sprints[0].PointsAtClose = nil }, want: ErrSavedDataInvalid},
+		{name: "puntos al cerrar de una historia que no estaba en el sprint", change: func(d *registryJSON) { d.Projects[0].Sprints[0].PointsAtClose = map[int]int{2: 3, 1: 5} }, want: ErrSavedDataInvalid},
+		{name: "puntos al cerrar fuera de la escala", change: func(d *registryJSON) { d.Projects[0].Sprints[0].PointsAtClose = map[int]int{2: 4} }, want: ErrStoryPointsInvalid},
 		{name: "horas estimadas negativas", change: func(d *registryJSON) { d.Projects[0].Stories[0].EstimatedHours = -2 }, want: ErrEstimatedHoursInvalid},
 		{name: "esfuerzo con horas en cero", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Hours = 0 }, want: ErrEffortHoursInvalid},
 		{name: "esfuerzo sin actividad", change: func(d *registryJSON) { d.Projects[0].Efforts[0].Activity = "  " }, want: ErrEffortActivityRequired},
@@ -423,6 +485,35 @@ func TestLosDatosGuardadosEstanDanados(t *testing.T) {
 			d.Projects[0].VotingRounds = append(d.Projects[0].VotingRounds, votingRoundJSON{StoryID: 1, Number: 2, Participants: []string{"Ana Perez"}})
 		}, want: ErrVotingRoundInProgress},
 		{name: "ronda revelada a la que le faltan votos", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Revealed = true }, want: ErrVotesMissing},
+		// El acuerdo de la #73 (tarea 7): las mismas reglas que al acordar, y la numeracion de
+		// las rondas de cada historia.
+		{name: "ronda que no sigue la numeracion de su historia", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Number = 2 }, want: ErrSavedDataInvalid},
+		{name: "acuerdo sobre una ronda sin revelar", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Agreed = 5 }, want: ErrRoundNotRevealed},
+		// Defecto #156: al abrir una ronda siempre hay integrantes, con nombre y sin repetir
+		// (RN-6 de la #13 y la #4). Solo un archivo puede traerlos mal.
+		{name: "ronda con un participante sin nombre", change: func(d *registryJSON) { d.Projects[0].VotingRounds[0].Participants[1] = "  " }, want: ErrSavedDataInvalid},
+		{name: "ronda con un participante repetido", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds[0].Participants = []string{"Ana Perez", "Ana Perez"}
+		}, want: ErrSavedDataInvalid},
+		// Los participantes se comparan como los busca la ronda y la #4: sin distinguir
+		// mayusculas ni espacios de los extremos. Si no, la ronda queda trabada: uno de los dos
+		// nunca puede votar y no se revela nunca.
+		{name: "ronda con un participante repetido con otras mayusculas", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds[0].Participants = []string{"Ana Perez", "ana perez"}
+		}, want: ErrSavedDataInvalid},
+		{name: "ronda con un participante con espacios de mas", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds[0].Participants[1] = " Juan Gomez "
+		}, want: ErrSavedDataInvalid},
+		{name: "acuerdo fuera de la escala", change: func(d *registryJSON) {
+			round := &d.Projects[0].VotingRounds[0]
+			round.Votes = append(round.Votes, voteJSON{MemberName: "Juan Gomez", Points: 8})
+			round.Revealed = true
+			round.Agreed = 4
+		}, want: ErrStoryPointsInvalid},
+		{name: "ronda sin revelar seguida de otra de la misma historia", change: func(d *registryJSON) {
+			d.Projects[0].VotingRounds = append(d.Projects[0].VotingRounds, votingRoundJSON{StoryID: 1, Number: 2,
+				Participants: []string{"Ana Perez"}, Votes: []voteJSON{{MemberName: "Ana Perez", Points: 3}}, Revealed: true})
+		}, want: ErrVotingRoundInProgress},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -532,5 +623,34 @@ func TestElEsfuerzoDeUnIntegranteQuitadoSeCargaIgual(t *testing.T) {
 	}
 	if _, err := got.MemberHours("Juan Gomez"); !errors.Is(err, ErrMemberNotFound) {
 		t.Fatalf("se esperaba ErrMemberNotFound al consultar las horas de quien ya no es integrante, salio: %v", err)
+	}
+}
+
+// Sin escenario: defecto #156, encontrado por Juliana en la revisión del #148
+// Cubre: #77 RN-24, RN-6 de la #13
+//
+// Una ronda revelada sin participantes se cargaba sin error, porque a nadie le faltaba votar, y
+// después Differences() cortaba con un pánico al leer el primer voto. La carga la tiene que
+// rechazar: al abrir una ronda siempre hay integrantes.
+func TestUnaRondaReveladaSinParticipantesNoSeCarga(t *testing.T) {
+	saved := unosDatosGuardados()
+	saved.Projects[0].VotingRounds[0].Participants = []string{}
+	saved.Projects[0].VotingRounds[0].Votes = nil
+	saved.Projects[0].VotingRounds[0].Revealed = true
+	data, err := json.Marshal(saved)
+	if err != nil {
+		t.Fatalf("no se pudieron armar los datos de prueba: %v", err)
+	}
+
+	registry, err := RegistryFromJSON(data)
+	if err == nil {
+		// antes del arreglo la carga pasaba, y pedir las diferencias cortaba el programa
+		project, _ := registry.Get(1)
+		rounds, _ := project.VotingRounds(1)
+		rounds[0].Differences()
+	}
+
+	if !errors.Is(err, ErrSavedDataInvalid) {
+		t.Fatalf("se esperaba que la carga rechazara la ronda sin participantes, salio: %v", err)
 	}
 }
