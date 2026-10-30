@@ -1122,6 +1122,8 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/99/defectos", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/99/defectos/nuevo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/reporte", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/reporte?sprint=99", err: domain.ErrSprintNotFound, volver: "/proyectos/1"},
 	}
 
 	for _, caso := range casos {
