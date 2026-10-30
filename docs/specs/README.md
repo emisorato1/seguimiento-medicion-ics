@@ -78,7 +78,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 🔨 En implementación — tareas 1 a 12 en `dev` (PR #184); falta conectarla con el reporte de la #18 y con la web |
+| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 🔨 En implementación — tareas 1 a 12 en `dev` (PR #184), y `r.WritePDF` sobre el reporte de la #18 en su segundo PR (rama `historia-19-reporte`); la descarga desde la web es de la #78 |
 | [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #148), adelantada al Sprint 3 |
 
 ### Qué es un "borrador completo"
