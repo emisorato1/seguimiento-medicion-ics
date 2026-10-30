@@ -119,6 +119,7 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
 - [Informe de métricas y cobertura](docs/informe-de-metricas.md) — las métricas del propio proyecto, sprint por sprint, y la cobertura de los tests.
 - [Documentación técnica](docs/documentacion-tecnica.md) — cómo está construido el sistema: arquitectura, modelo de dominio, decisiones de diseño, manejo de errores, persistencia, pruebas y trazabilidad.
+- [Integración y despliegue continuos](docs/despliegue.md) — qué prueba el CI en cada PR y cómo el CD despliega la web en el servidor con cada incremento a `main`.
 - [Trazabilidad](docs/trazabilidad.md) — el recorrido historia → spec → criterios → escenario BDD → test → código de cada historia con tests, con los huecos marcados. Lo genera [scripts/trazabilidad.sh](scripts/trazabilidad.sh).
 - [Guía de defensa](docs/guia-de-defensa.md) — para la presentación final: cómo recorrer cada historia de punta a punta, cómo mostrarlo en vivo, los límites conocidos y las preguntas probables.
 - [Candidatas del Sprint 2](docs/sprint-2-candidatos.md) — el análisis de dependencias previo a la planning del Sprint 2.
