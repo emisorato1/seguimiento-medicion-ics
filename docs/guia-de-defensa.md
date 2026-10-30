@@ -28,21 +28,21 @@ test traen la salida del RED.
 | #14 | Registrar el esfuerzo real | [14-registrar-esfuerzo-real.md](specs/sprint-2/14-registrar-esfuerzo-real.md?plain=1#L169): Registrar horas trabajadas en una historia | `TestRegistrarHorasTrabajadasEnUnaHistoria` [effort_test.go:42](../internal/domain/effort_test.go#L42) | `(*Project).LogEffort` [effort.go:59](../internal/domain/effort.go#L59) |
 | #15 | Gestionar defectos | [15-gestionar-defectos.md](specs/sprint-2/15-gestionar-defectos.md?plain=1#L185): Registrar un defecto | `TestRegistrarUnDefecto` [defect_test.go:50](../internal/domain/defect_test.go#L50) | `(*Project).AddDefect` [defect.go:167](../internal/domain/defect.go#L167) |
 | #16 | Calcular las metricas del proyecto | [16-calcular-metricas.md](specs/sprint-3/16-calcular-metricas.md?plain=1#L171): Metricas de un sprint cerrado | `TestMetricasDeUnSprintCerrado` [metrics_test.go:122](../internal/domain/metrics_test.go#L122) | `(*Project).SprintMetrics` [metrics.go:91](../internal/domain/metrics.go#L91) |
-| #17 | Mostrar el dashboard | [17-mostrar-dashboard.md](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L167): Dashboard de un proyecto con un sprint en curso | [pendiente] | [pendiente] |
-| #18 | Generar el reporte de proyecto o sprint | [18-generar-reporte.md](specs/sprint-3/18-generar-reporte.md?plain=1#L144): Generar el reporte de un sprint cerrado | [pendiente] | [pendiente] |
-| #19 | Exportar el reporte a PDF | [19-exportar-reporte-pdf.md](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L128): Exportar el reporte de un sprint a PDF | `TestExportarElReporteDeUnSprintAPDF` [report_pdf_test.go:33](../internal/domain/report_pdf_test.go#L33) | `layoutReport` [report_pdf.go:202](../internal/domain/report_pdf.go#L202), que arma las páginas; el archivo lo arma `buildPDF` [report_pdf.go:252](../internal/domain/report_pdf.go#L252). [pendiente: el botón de la web, que espera la #18] |
+| #17 | Mostrar el dashboard | [17-mostrar-dashboard.md](specs/sprint-3/17-mostrar-dashboard.md?plain=1#L167): Dashboard de un proyecto con un sprint en curso | `TestDashboardDeUnProyectoConUnSprintEnCurso` [dashboard_test.go:177](../internal/domain/dashboard_test.go#L177) | `(*Project).Dashboard` [dashboard.go:67](../internal/domain/dashboard.go#L67), que le pasa las métricas a `buildDashboard` [dashboard.go:86](../internal/domain/dashboard.go#L86) |
+| #18 | Generar el reporte de proyecto o sprint | [18-generar-reporte.md](specs/sprint-3/18-generar-reporte.md?plain=1#L154): Generar el reporte de un sprint cerrado | `TestGenerarElReporteDeUnSprintCerrado` [report_test.go:31](../internal/domain/report_test.go#L31) | `(*Project).SprintReport` [report.go:42](../internal/domain/report.go#L42), que arma el texto con `buildSprintReport` [report.go:62](../internal/domain/report.go#L62) |
+| #19 | Exportar el reporte a PDF | [19-exportar-reporte-pdf.md](specs/sprint-4/19-exportar-reporte-pdf.md?plain=1#L128): Exportar el reporte de un sprint a PDF | `TestExportarElReporteDeUnSprintAPDF` [report_pdf_test.go:33](../internal/domain/report_pdf_test.go#L33) | `layoutReport` [report_pdf.go:202](../internal/domain/report_pdf.go#L202), que arma las páginas; el archivo lo arma `buildPDF` [report_pdf.go:252](../internal/domain/report_pdf.go#L252). [pendiente: conectarla con el reporte de la #18 y con la web] |
 | #24 | Operar el sistema desde una interfaz de consola | [24-interfaz-de-consola.md](specs/sprint-1/24-interfaz-de-consola.md?plain=1#L103): Crear un proyecto desde la consola | `TestCrearUnProyectoDesdeLaConsola` [console_test.go:74](../cmd/app/console_test.go#L74) | `createProject` [console.go:97](../cmd/app/console.go#L97) (la despacha `runConsole` en `:64`; llama a `(*ProjectRegistry).Create`) |
 | #73 | Resolver diferencias y acordar la estimacion | [73-resolver-diferencias-y-acordar.md](specs/sprint-4/73-resolver-diferencias-y-acordar.md?plain=1#L167): Acordar la estimacion de una ronda revelada (esquema del escenario) | `TestAcordarLaEstimacionDeUnaRondaRevelada` [voting_round_agreement_test.go:142](../internal/domain/voting_round_agreement_test.go#L142) | `(*VotingRound).Agree` [voting_round_agreement.go:67](../internal/domain/voting_round_agreement.go#L67) |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | [77-interfaz-web-base.md](specs/sprint-2/77-interfaz-web-base.md?plain=1#L156): Crear un proyecto desde la web | `TestCrearUnProyectoDesdeLaWeb` [projects_test.go:15](../internal/web/projects_test.go#L15) | `(*Server).createProject` [projects.go:77](../internal/web/projects.go#L77) (ruta `POST /proyectos/nuevo` en `internal/web/server.go:74`) |
 | #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | [78-interfaz-web-operaciones.md](specs/sprint-3/78-interfaz-web-operaciones.md?plain=1#L224): Crear un sprint desde la web | `TestCrearUnSprintDesdeLaWeb` [sprints_test.go:60](../internal/web/sprints_test.go#L60) | `(*Server).createSprint` [sprints.go:60](../internal/web/sprints.go#L60) (ruta `POST /proyectos/{id}/sprints/nuevo` en `internal/web/server.go:95`) |
 | #177 | Guardar los datos en una base de datos | [177-guardar-en-base-de-datos.md](specs/sprint-3/177-guardar-en-base-de-datos.md?plain=1#L192): Los datos siguen al cerrar y volver a abrir | `TestUnRegistroCompletoVuelveIgual` [database_test.go:209](../internal/store/database_test.go#L209) | `(*Database).Save` [database.go:93](../internal/store/database.go#L93), y lo vuelve a leer `(*Database).Load` [database.go:233](../internal/store/database.go#L233) |
 
-Sacado de `dev` en `203859d` (26/10), la #177 en `59bef23` (28/10) y la #19 en `17ec982`
-(29/10), con cada línea verificada. Las historias web (#77 y #78) entran por una ruta HTTP: la
+Sacado de `dev` en `203859d` (26/10), la #177 en `59bef23` (28/10), la #19 en `17ec982`
+(29/10) y la #17 y la #18 en `5d1d556` (29/10), con cada línea verificada. Las historias web (#77 y #78) entran por una ruta HTTP: la
 función es el handler, y el handler llama al dominio. La #24 entra por la consola:
 `createProject` llama a `(*ProjectRegistry).Create`, la misma función de la #3. La #12 y la
 #73 tienen un *Esquema del escenario*, con una tabla de ejemplos que el test recorre con
-subtests. [pendiente: completar la #17 y la #18 cuando se mergeen.]
+subtests.
 
 ## Cómo mostrarlo en vivo
 
@@ -158,9 +158,9 @@ tests y marca con ⚠️ los escenarios que no tienen test. El CI corre `scripts
 que controla que las specs, el índice y las puertas digan lo mismo.
 
 **12. ¿Qué cobertura tienen?**
-Al 28/10 (`dev` en `59bef23`, ya con la #177), 95,6% en total y 100% en el dominio
+Al 29/10 (`dev` en `5d1d556`, ya con la #17 y la #18), 95,7% en total y 100% en el dominio
 (`internal/domain`), que es donde están las reglas de negocio. La más baja es `internal/store`,
-el guardado en la base, con 87,1%. El CI la mide en cada PR con `go test ./... -coverprofile`.
+el guardado en la base, con 87,1%. Son 420 tests y todos pasan. El CI la mide en cada PR con `go test ./... -coverprofile`.
 El detalle por sprint está en el [informe de métricas](informe-de-metricas.md).
 
 **13. ¿Por qué hay consola y web?**
