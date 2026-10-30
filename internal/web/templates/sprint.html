@@ -42,7 +42,7 @@
 <p class="sin-dato">Este sprint no tiene historias asignadas.</p>
 {{else}}
 <div class="tabla">
-  <table>
+  <table class="historias-sprint">
     <thead>
       <tr>
         <th scope="col">Número</th>
@@ -54,7 +54,7 @@
     </thead>
     <tbody>
       {{range .Stories}}
-      <tr>
+      <tr data-estado="{{.State}}">
         <td>{{.ID}}</td>
         <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.ID}}">{{.Title}}</a></td>
         <td>{{if $.Data.Open}}{{.StoryPoints}}{{else}}{{index $.Data.Points .ID}}{{end}}</td>

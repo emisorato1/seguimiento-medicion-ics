@@ -690,3 +690,93 @@ button:hover {
 .indicador dt {
   font-size: 0.7rem;
 }
+
+/* Un punto de color antes del estado, la prioridad y la severidad, en el backlog, el sprint, la
+   lista de sprints, los defectos y las rondas. El texto sigue al lado: el color no es lo unico
+   que informa (RN-19 de la #77). El valor va en un atributo data- de la fila, o del enlace de la
+   ronda, para no cambiar el contenido de las celdas. Cada color dice lo mismo en todas las
+   tablas: verde lo terminado, Oro oscurecido lo que esta en curso, rojo lo que pide atencion y
+   gris lo que espera. */
+[data-prioridad="Alta"],
+[data-severidad="Crítica"] {
+  --punto-urgencia: var(--peligro);
+}
+
+[data-prioridad="Media"],
+[data-severidad="Mayor"] {
+  --punto-urgencia: var(--chart-velocity);
+}
+
+[data-prioridad="Baja"],
+[data-severidad="Menor"] {
+  --punto-urgencia: var(--text-muted);
+}
+
+[data-estado="Terminada"],
+[data-estado="Cerrado"],
+[data-estado="Resuelto"],
+[data-estado="Revelada"],
+.rondas tr:has([data-estado="Revelada"]) {
+  --punto-estado: var(--ok);
+  --texto-estado: var(--ok);
+  --peso-estado: 600;
+}
+
+[data-estado="En curso"],
+[data-estado="Abierto"],
+.rondas tr:has([data-estado="En curso"]) {
+  --punto-estado: var(--chart-velocity);
+}
+
+[data-estado="Pendiente"] {
+  --punto-estado: var(--text-muted);
+}
+
+/* Un defecto abierto pide atencion; un sprint abierto solo esta en curso. */
+.defectos [data-estado="Abierto"] {
+  --punto-estado: var(--peligro);
+}
+
+.historias td:nth-child(3),
+.defectos td:nth-child(3) {
+  --punto: var(--punto-urgencia);
+}
+
+.historias td:nth-child(4),
+.historias-sprint td:nth-child(4),
+.sprints td:nth-child(5),
+.defectos td:nth-child(4),
+.rondas td:nth-child(2) {
+  --punto: var(--punto-estado);
+  color: var(--texto-estado, inherit);
+  font-weight: var(--peso-estado, inherit);
+  white-space: nowrap;
+}
+
+.historias td:nth-child(3),
+.defectos td:nth-child(3),
+.poker a[data-estado] {
+  white-space: nowrap;
+}
+
+.poker a[data-estado] {
+  --punto: var(--punto-estado);
+}
+
+.historias td:nth-child(3)::before,
+.historias td:nth-child(4)::before,
+.historias-sprint td:nth-child(4)::before,
+.sprints td:nth-child(5)::before,
+.defectos td:nth-child(3)::before,
+.defectos td:nth-child(4)::before,
+.rondas td:nth-child(2)::before,
+.poker a[data-estado]::before {
+  content: "";
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.45rem;
+  vertical-align: 0.05rem;
+  border-radius: 50%;
+  background: var(--punto, var(--text-muted));
+}
