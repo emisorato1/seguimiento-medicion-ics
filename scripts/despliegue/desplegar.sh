@@ -5,7 +5,7 @@
 #
 # La base vuelve a empezar con los datos de demo en cada deploy: la web no tiene usuarios,
 # asi que cualquiera con la direccion puede cambiar los datos, y asi cada version arranca
-# limpia. La base anterior queda en ics.db.anterior.
+# limpia. La base anterior queda en ics.db.anterior, con su journal si lo tenia.
 #
 # Si la version nueva no responde, vuelve a poner la anterior con su base y falla, para que
 # el CD lo muestre en rojo.
@@ -32,10 +32,14 @@ sudo systemctl stop ics-web.service
 
 rm -rf "$APP.anterior"
 cp -a "$APP" "$APP.anterior"
-rm -f "$DATOS/ics.db.anterior"
-if [ -f "$DATOS/ics.db" ]; then
-  mv "$DATOS/ics.db" "$DATOS/ics.db.anterior"
-fi
+# La base y su journal se mueven juntos: un journal viejo al lado de una base nueva, SQLite
+# lo aplicaria sobre ella y la romperia.
+for archivo in ics.db ics.db-journal; do
+  rm -f "$DATOS/$archivo.anterior"
+  if [ -f "$DATOS/$archivo" ]; then
+    mv "$DATOS/$archivo" "$DATOS/$archivo.anterior"
+  fi
+done
 
 install -m 755 "$NUEVA/web" "$APP/web"
 install -m 755 "$NUEVA/iniciar.sh" "$APP/iniciar.sh"
@@ -51,9 +55,11 @@ echo "La version nueva no responde: vuelve la anterior."
 sudo systemctl stop ics-web.service
 rm -rf "$APP"
 mv "$APP.anterior" "$APP"
-rm -f "$DATOS/ics.db"
-if [ -f "$DATOS/ics.db.anterior" ]; then
-  mv "$DATOS/ics.db.anterior" "$DATOS/ics.db"
-fi
+for archivo in ics.db ics.db-journal; do
+  rm -f "$DATOS/$archivo"
+  if [ -f "$DATOS/$archivo.anterior" ]; then
+    mv "$DATOS/$archivo.anterior" "$DATOS/$archivo"
+  fi
+done
 sudo systemctl start ics-web.service
 exit 1
