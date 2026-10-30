@@ -3,11 +3,11 @@
 - **Historia:** #78
 - **Sprint:** 3
 - **Responsable:** Emiliano Sorato
-- **Estado:** En implementación. Parte 1 en dev (PR #149): sprints sin el cierre, esfuerzo,
-  horas estimadas, Planning Poker hasta revelar y el resumen del proyecto. Parte 2 en dev
-  (PR #163): los defectos. Parte 3 en su PR, rama `historia-78-cierre-acuerdo`: cerrar el
-  sprint, consultar uno anterior y el acuerdo del Planning Poker. Parte 4 en su PR, rama
-  `historia-78-reporte`: el reporte y su PDF (tareas 20, 21 y lo que faltaba de la 24). Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
+- **Estado:** Terminada en el Sprint 4 — **mergeada a `dev`** el 30/10. Se hizo en cuatro partes:
+  las tres primeras en los PRs #149, #163, #165 y #170 (sprints, esfuerzo, horas estimadas,
+  defectos, Planning Poker, cierre, sprints anteriores, acuerdo y resumen del proyecto), y la
+  cuarta en el PR #224 (el reporte y su PDF). Volvió al Product Backlog al cierre del Sprint 3,
+  con 22 de sus 24 tareas, y se terminó en el Sprint 4. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
   (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), con dos cambios que esta spec ya incorpora (la
   tarea 17 y el punto 8 de "Para decidir en la puerta") y una nota sobre los casos límite
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna, de
@@ -949,5 +949,5 @@ tests de Go (las etiquetas, el error enlazado y el foco de la tarea 24).
 | Especificación SDD | este archivo |
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
-| Tests | `internal/web/sprints_test.go`, `efforts_test.go`, `defects_test.go`, `poker_test.go`, `reports_test.go` y los de la #77 que suman filas |
+| Tests | `internal/web/sprints_test.go`, `internal/web/efforts_test.go`, `internal/web/defects_test.go`, `internal/web/poker_test.go`, `internal/web/reports_test.go` y `internal/web/server_test.go`, donde los tests de la #77 suman las filas de las pantallas nuevas |
 | Código Go | `internal/web/` (handlers, plantillas y CSS embebidos) y `cmd/web/main.go` |

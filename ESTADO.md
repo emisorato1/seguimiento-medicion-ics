@@ -1,16 +1,16 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-30 09:14. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-30 11:51. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
 
 ## Resumen
 
-- Historias en el tablero: 24
-- Sin estimar: 3
+- Historias en el tablero: 26
+- Sin estimar: 5
 - Story points cargados: 109
-- Terminadas: 22
+- Terminadas: 23
 
 ## En review
 
@@ -21,7 +21,8 @@ _No hay historias en este estado._
 | # | Historia | SP | Prioridad | Sprint |
 |---|---|---|---|---|
 | #19 | Exportar el reporte a PDF | 5 | Baja | Sprint 4 |
-| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 13 | Alta | Sprint 3 |
+| #78 | Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador | 13 | Alta | Sprint 4 |
+| #223 | Mejorar la presentación visual de la web para la demo | - | Media | Sprint 4 |
 
 ## Lista para implementar
 
@@ -65,16 +66,17 @@ _No hay historias en este estado._
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
 | #77 | Usar el sistema desde el navegador: proyectos, integrantes y backlog | 13 | Alta | Sprint 2 |
 | #177 | Guardar los datos en una base de datos | - | - | Sprint 3 |
+| #219 | Desplegar la web en un servidor con el CD | - | Media | Sprint 4 |
 
 ## Ultimos commits
 
 ```
-b94eb52 2026-10-30 docs: el dashboard en el guion de la demo, y las capturas con el diseño nuevo
-6bd527b 2026-10-29 Merge pull request #205 from emisorato1/cierre-historia-177
-60818e0 2026-10-29 Merge pull request #215 from emisorato1/guia-defensa-17-18
-de794da 2026-10-29 Merge pull request #212 from emisorato1/guion-demo-ensayo
-4d5d202 2026-10-29 Merge pull request #214 from emisorato1/estilo-paleta-salvia
-58d71db 2026-10-29 docs: la #17 y la #18 en la guía de defensa, y la cobertura al 29/10
-72aa970 2026-10-29 chore: trazabilidad y ESTADO.md regenerados con dev en 5d1d556 (la #17 da 16 de 16)
-3a88881 2026-10-29 docs: la #17 terminada en su spec (PR #209)
+89e4afd 2026-10-30 Merge pull request #225 from emisorato1/defecto-220-nombres
+bfd7742 2026-10-30 Merge pull request #224 from emisorato1/historia-78-reporte
+9459bb6 2026-10-30 Merge pull request #222 from emisorato1/historia-19-reporte
+8304d32 2026-10-30 fix: las diferencias de una ronda separan con comas tres o mas nombres (defecto #220)
+60ba49d 2026-10-30 test: las diferencias de una ronda separan con comas tres o mas nombres (defecto #220)
+bb030a9 2026-10-30 docs: la Fase 4 de la #78 con el reporte, el PDF y su verificacion, y el reporte en el manual (historia 78, tareas 20, 21 y 24)
+a212390 2026-10-30 ci: la prueba de humo pide el reporte y su PDF (historia 78, tareas 20 y 21)
+957a15e 2026-10-30 test: el formulario del reporte con el teclado y en el celular (historia 78, tarea 24, sin RED)
 ```
