@@ -43,7 +43,7 @@
 <p class="sin-dato">Ningún defecto cumple el filtro.</p>
 {{else}}
 <div class="tabla">
-  <table>
+  <table class="defectos">
     <thead>
       <tr>
         <th scope="col">Número</th>
@@ -57,7 +57,7 @@
     </thead>
     <tbody>
       {{range .Defects}}
-      <tr>
+      <tr data-severidad="{{.Severity}}" data-estado="{{.State}}">
         <td>{{.ID}}</td>
         <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/defectos/{{.ID}}">{{.Title}}</a></td>
         <td>{{.Severity}}</td>

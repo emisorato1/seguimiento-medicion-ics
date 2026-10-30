@@ -23,7 +23,7 @@
   </div>
 </form>
 <div class="tabla">
-  <table>
+  <table class="poker">
     <thead>
       <tr>
         <th scope="col">Historia</th>
@@ -36,7 +36,7 @@
       <tr>
         <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.Story.ID}}">{{.Story.ID}} — {{.Story.Title}}</a></td>
         <td>{{if .Story.IsEstimated}}{{.Story.StoryPoints}}{{else}}<span class="sin-dato">sin estimar</span>{{end}}</td>
-        <td>{{with .Round}}<a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}/rondas/{{.Number}}">Ronda {{.Number}}{{if .Revealed}}, revelada{{else}}, en curso{{end}}</a>{{else}}<span class="sin-dato">sin rondas</span>{{end}}</td>
+        <td>{{with .Round}}<a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}/rondas/{{.Number}}" data-estado="{{if .Revealed}}Revelada{{else}}En curso{{end}}">Ronda {{.Number}}{{if .Revealed}}, revelada{{else}}, en curso{{end}}</a>{{else}}<span class="sin-dato">sin rondas</span>{{end}}</td>
       </tr>
       {{end}}
     </tbody>

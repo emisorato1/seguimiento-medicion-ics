@@ -11,7 +11,7 @@
   <a class="boton" href="/proyectos/{{.ID}}/historias/nueva">Cargar historia</a>
 </div>
 <div class="tabla">
-  <table>
+  <table class="historias">
     <thead>
       <tr>
         <th scope="col">Número</th>
@@ -23,7 +23,7 @@
     </thead>
     <tbody>
       {{range .Backlog}}
-      <tr>
+      <tr data-prioridad="{{.Priority}}" data-estado="{{.State}}">
         <td>{{.ID}}</td>
         <td class="principal"><a href="/proyectos/{{$.Data.ID}}/historias/{{.ID}}">{{.Title}}</a></td>
         <td>{{.Priority}}</td>
