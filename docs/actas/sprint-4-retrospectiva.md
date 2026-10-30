@@ -5,8 +5,8 @@
 > completa lo que diga cada uno: acá no se escribe nada que alguien no haya dicho.
 
 - **Fecha:** 29 y 30/10, por escrito.
-- **Respondieron:** Maximiliano Eula y Juliana Bustos (29/10, mirando el proyecto entero) y
-  Emiliano Sorato (30/10), por escrito. Agustín Salinas: [pendiente].
+- **Respondieron:** Maximiliano Eula y Juliana Bustos (29/10) y Agustín Salinas (30/10), mirando
+  el proyecto entero, y Emiliano Sorato (30/10), por escrito.
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 
 Los números con los que se abre la retro salen del [acta de review](sprint-4-review.md): 18 de
@@ -21,7 +21,7 @@ las 21 historias del Product Backlog están terminadas: 109 story points.
   despliega solo en el servidor".
 - **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
 - **Juliana Bustos:** respondió mirando el proyecto entero (más abajo).
-- **Agustín Salinas:** [pendiente]
+- **Agustín Salinas:** respondió mirando el proyecto entero (más abajo).
 
 ## Qué no salió bien
 
@@ -30,7 +30,7 @@ las 21 historias del Product Backlog están terminadas: 109 story points.
   estaban disponibles".
 - **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
 - **Juliana Bustos:** respondió mirando el proyecto entero (más abajo).
-- **Agustín Salinas:** [pendiente]
+- **Agustín Salinas:** respondió mirando el proyecto entero (más abajo).
 
 ## Seguimiento de los acuerdos del Sprint 3
 
@@ -73,9 +73,15 @@ distinto. Lo que salga acá va a las conclusiones del informe final y a la prese
   story points resultaron más estables. También aprendí que hay que cargar las horas reales
   inmediatamente al terminar cada historia y que la capa web (accesibilidad y responsividad)
   requiere más trabajo que la regla de negocio que muestra".
-- **Agustín Salinas:** [pendiente]
+- **Agustín Salinas:** "Medirnos nos mostró lo lejos que estábamos al principio: en el Sprint 1
+  comprometimos 16 SP y terminamos 6, y eso nos obligó a replanificar con datos y no a ojo.
+  Después la estimación mejoró: en mis historias del Sprint 3 terminé por debajo de lo estimado
+  (la #11 en 4,5 h de 5,4 y la #18 en 10 h de 13,5), así que pasamos de quedarnos cortos a
+  sobreestimar un poco. Lo que haría distinto es arrancar con el contrato del dominio y las specs
+  por adelantado desde el Sprint 1, como hicimos en el modo sprint final, para no esperar puertas
+  ni depender de que otro termine".
 
 ## Pendientes
 
-- [ ] La mirada del proyecto entero de Agustín Salinas.
+- [x] Las respuestas de los cuatro (30/10).
 - [ ] Llevar las conclusiones al informe final y a la presentación.

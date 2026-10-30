@@ -106,5 +106,4 @@ final es la presentación del 2/11.
 - [x] Cerrar los números con `scripts/metricas.sh "Sprint 4"` (30/10).
 - [x] Las horas reales de la #19 y la #78, cargadas el 30/10.
 - [ ] El pull request de `dev` a `main` con la entrega final y su tag `v1.0.0`.
-- [x] La [retrospectiva](sprint-4-retrospectiva.md) (falta la mirada del proyecto entero de
-  Agustín Salinas).
+- [x] La [retrospectiva](sprint-4-retrospectiva.md), con las respuestas de los cuatro.

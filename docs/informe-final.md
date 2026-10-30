@@ -355,9 +355,11 @@ terminó siendo la historia más larga del proyecto. También los archivos que t
 (ESTADO.md, el índice de specs y el contrato del dominio), que chocaban seguido al cierre de
 cada sprint.
 
-**Qué haríamos distinto:** arrancar con la base de datos y la web desde el principio, en vez de
-sumarlas con el proyecto avanzado, y armar antes el CD con el deploy, para mostrar cada
-incremento funcionando.
+**Qué haríamos distinto:** arrancar desde el Sprint 1 con el contrato del dominio y las specs
+por adelantado, como dijo Agustín Salinas, para no esperar puertas ni depender de que otro
+termine. También empezar con la base de datos y la web desde el principio, en vez de sumarlas
+con el proyecto avanzado, y armar antes el CD con el deploy, para mostrar cada incremento
+funcionando.
 
 ## Anexos
 
