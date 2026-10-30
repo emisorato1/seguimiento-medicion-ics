@@ -1,0 +1,32 @@
+# Servicio de systemd que mantiene la web abierta en el servidor. Lo instala
+# scripts/despliegue/instalar.sh en /etc/systemd/system/ics-web.service.
+#
+# Corre con el usuario ics, sin permisos de root, y con un tope de memoria y de CPU: el
+# servidor lo compartimos con otra aplicacion y la web no le puede quitar recursos.
+
+[Unit]
+Description=Seguimiento y Medición ICS (web del proyecto integrador)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=ics
+Group=ics
+WorkingDirectory=/opt/ics
+Environment=PUERTO=8080
+ExecStart=/opt/ics/app/iniciar.sh
+Restart=on-failure
+RestartSec=3
+
+MemoryMax=256M
+CPUQuota=50%
+
+# La web solo puede escribir en su carpeta de datos.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/opt/ics/datos
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-29 16:50. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-30 09:14. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -10,13 +10,11 @@ Este archivo es una copia para poder leer el estado sin `gh` instalado.
 - Historias en el tablero: 24
 - Sin estimar: 3
 - Story points cargados: 109
-- Terminadas: 21
+- Terminadas: 22
 
 ## En review
 
-| # | Historia | SP | Prioridad | Sprint |
-|---|---|---|---|---|
-| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
+_No hay historias en este estado._
 
 ## En progreso
 
@@ -61,6 +59,7 @@ _No hay historias en este estado._
 | #14 | Registrar el esfuerzo real | 3 | Alta | Sprint 2 |
 | #15 | Gestionar defectos | 5 | Media | Sprint 2 |
 | #16 | Calcular las metricas del proyecto | 8 | Alta | Sprint 3 |
+| #17 | Mostrar el dashboard | 8 | Media | Sprint 3 |
 | #18 | Generar el reporte de proyecto o sprint | 5 | Media | Sprint 3 |
 | #24 | Operar el sistema desde una interfaz de consola | 3 | Media | Sprint 2 |
 | #73 | Resolver diferencias y acordar la estimacion | 5 | Alta | Sprint 3 |
@@ -70,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
-c145349 2026-10-28 docs: el PR de la historia 17 en el indice de specs
-d874ce7 2026-10-28 chore: la historia 17 pasa a En review en ESTADO.md
-9e00e87 2026-10-28 docs: la historia 17 en review, con la trazabilidad, el contrato y la documentacion tecnica al dia
-aefa169 2026-10-28 test: los dos tests de la historia 17 sin escenario lo dicen (tareas 8 y 17), solo comentarios
-cc29fa4 2026-10-28 Merge branch 'dev' into historia-17-dashboard
-665035c 2026-10-28 docs: la verificacion manual de la historia 17 en su Fase 4, con lo que queda a mano
-17ec982 2026-10-28 Merge pull request #206 from emisorato1/guia-defensa-177
-2b0b1be 2026-10-28 Merge pull request #179 from emisorato1/historia-177-planning
+b94eb52 2026-10-30 docs: el dashboard en el guion de la demo, y las capturas con el diseño nuevo
+6bd527b 2026-10-29 Merge pull request #205 from emisorato1/cierre-historia-177
+60818e0 2026-10-29 Merge pull request #215 from emisorato1/guia-defensa-17-18
+de794da 2026-10-29 Merge pull request #212 from emisorato1/guion-demo-ensayo
+4d5d202 2026-10-29 Merge pull request #214 from emisorato1/estilo-paleta-salvia
+58d71db 2026-10-29 docs: la #17 y la #18 en la guía de defensa, y la cobertura al 29/10
+72aa970 2026-10-29 chore: trazabilidad y ESTADO.md regenerados con dev en 5d1d556 (la #17 da 16 de 16)
+3a88881 2026-10-29 docs: la #17 terminada en su spec (PR #209)
 ```

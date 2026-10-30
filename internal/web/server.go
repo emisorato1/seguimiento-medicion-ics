@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"html/template"
+	"io"
 	"io/fs"
 	"net/http"
 	"path"
@@ -50,6 +51,10 @@ type Server struct {
 	// pasa cuando una operacion la necesita. El comando le da la de la computadora y los
 	// tests una fija.
 	today func() time.Time
+	// exportPDF escribe el PDF de un reporte (D5 de la #78): es Report.WritePDF de la #19. Los
+	// tests la reemplazan por una que falla, para probar el aviso de la RN-19: escrita en
+	// memoria, la exportacion de verdad no falla.
+	exportPDF func(domain.Report, io.Writer) error
 	// lock hace que los pedidos usen el registro de a uno (RN-20, D12): net/http atiende
 	// cada pedido en paralelo y el dominio no esta hecho para eso.
 	lock sync.RWMutex
@@ -59,11 +64,12 @@ type Server struct {
 // today es de donde toma la fecha de hoy.
 func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.Time) *Server {
 	s := &Server{
-		registry: registry,
-		saver:    saver,
-		today:    today,
-		mux:      http.NewServeMux(),
-		pages:    parsePages(),
+		registry:  registry,
+		saver:     saver,
+		today:     today,
+		exportPDF: domain.Report.WritePDF,
+		mux:       http.NewServeMux(),
+		pages:     parsePages(),
 	}
 
 	s.mux.HandleFunc("/", s.pageNotFound)
@@ -120,6 +126,8 @@ func NewServer(registry *domain.ProjectRegistry, saver Saver, today func() time.
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/votar", s.vote)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/revelar", s.reveal)
 	s.mux.HandleFunc("POST /proyectos/{id}/historias/{n}/rondas/{r}/acordar", s.agree)
+	s.mux.HandleFunc("GET /proyectos/{id}/reporte", s.showReport)
+	s.mux.HandleFunc("GET /proyectos/{id}/reporte/pdf", s.downloadReport)
 
 	// Sin usuarios ni contraseñas (D20), otra pagina abierta en el mismo navegador podria
 	// enviar un formulario a la web. La proteccion de la biblioteca estandar rechaza todo

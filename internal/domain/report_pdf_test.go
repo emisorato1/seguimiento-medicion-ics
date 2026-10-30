@@ -14,24 +14,37 @@ import (
 	"unicode/utf8"
 )
 
-// unDocChico arma el reporte del escenario: el sprint 1, generado el 25/10/2026, con dos
-// secciones de dos lineas. Hasta que la #18 este en dev, el PDF trabaja sobre pdfDoc, que
-// tiene los mismos tres datos que lee del reporte: titulo, fecha y secciones.
-func unDocChico() pdfDoc {
-	return pdfDoc{
-		title:       "Reporte del sprint 1 — Seguimiento ICS",
-		generatedOn: unDia(2026, 10, 25),
-		sections: []pdfSection{
-			{heading: "Resumen", lines: []string{"Proyecto: Seguimiento ICS", "Sprint Goal: Tener el MVP"}},
-			{heading: "Defectos", lines: []string{"Defectos detectados: 0", "No hay defectos en este sprint."}},
+// unReporteChico arma a mano el reporte del escenario, como un Report de la #18: el sprint 1,
+// generado el 25/10/2026, con dos secciones de dos lineas. Los escenarios se arman con el
+// Report y ya no con un tipo propio del PDF, para que la trazabilidad pase por el reporte real
+// (pedido de Maximiliano Eula en el #184, Fase 4 de la spec).
+func unReporteChico() Report {
+	return Report{
+		Title:       "Reporte del sprint 1 — Seguimiento ICS",
+		GeneratedOn: unDia(2026, 10, 25),
+		Scope:       ScopeSprint,
+		Sections: []Section{
+			{Heading: "Resumen", Lines: []string{"Proyecto: Seguimiento ICS", "Sprint Goal: Tener el MVP"}},
+			{Heading: "Defectos", Lines: []string{"Defectos detectados: 0", "No hay defectos en este sprint."}},
 		},
 	}
+}
+
+// exportar escribe el reporte como PDF con r.WritePDF en un destino en memoria y devuelve el
+// archivo. Si la exportacion falla, corta el test.
+func exportar(t *testing.T, report Report) []byte {
+	t.Helper()
+	var buf bytes.Buffer
+	if err := report.WritePDF(&buf); err != nil {
+		t.Fatalf("no se pudo exportar el reporte: %v", err)
+	}
+	return buf.Bytes()
 }
 
 // Escenario: Exportar el reporte de un sprint a PDF
 // Cubre: RN-2, RN-3, RN-8
 func TestExportarElReporteDeUnSprintAPDF(t *testing.T) {
-	pages := layoutReport(unDocChico())
+	pages := layoutReport(unReporteChico())
 
 	want := []pdfRow{
 		{text: "Reporte del sprint 1 — Seguimiento ICS", style: styleTitle},
@@ -57,11 +70,11 @@ func TestExportarElReporteDeUnSprintAPDF(t *testing.T) {
 // Escenario: Una linea vacia queda como renglon en blanco
 // Cubre: RN-2
 func TestUnaLineaVaciaQuedaComoRenglonEnBlanco(t *testing.T) {
-	doc := pdfDoc{title: "Reporte", generatedOn: unDia(2026, 10, 25), sections: []pdfSection{
-		{heading: "Resumen", lines: []string{"a", "", "b"}},
+	report := Report{Title: "Reporte", GeneratedOn: unDia(2026, 10, 25), Sections: []Section{
+		{Heading: "Resumen", Lines: []string{"a", "", "b"}},
 	}}
 
-	rows := layoutReport(doc)[0].rows
+	rows := layoutReport(report)[0].rows
 
 	want := []pdfRow{{text: "a", style: styleBody}, {text: "", style: styleBody}, {text: "b", style: styleBody}}
 	if !reflect.DeepEqual(rows[3:], want) {
@@ -74,7 +87,7 @@ func TestUnaLineaVaciaQuedaComoRenglonEnBlanco(t *testing.T) {
 //
 // Un reporte sin secciones no es un error: da una pagina con el titulo, "Generado el" y el pie.
 func TestUnReporteSinSeccionesTieneUnaPagina(t *testing.T) {
-	pages := layoutReport(pdfDoc{title: "Reporte", generatedOn: unDia(2026, 10, 25)})
+	pages := layoutReport(Report{Title: "Reporte", GeneratedOn: unDia(2026, 10, 25)})
 
 	if len(pages) != 1 || len(pages[0].rows) != 2 || pages[0].footer != "Página 1 de 1" {
 		t.Errorf("se esperaba una pagina con dos renglones y su pie, salio %v", pages)
@@ -150,9 +163,9 @@ func TestUnaLineaLargaSigueEnElRenglonSiguiente(t *testing.T) {
 // Escenario: Un titulo largo sigue en varios renglones con su letra
 // Cubre: RN-4, RN-5, RN-6
 func TestUnTituloLargoSigueEnVariosRenglonesConSuLetra(t *testing.T) {
-	doc := pdfDoc{title: strings.TrimSpace(strings.Repeat("REPORTE DEL PROYECTO ", 4)), generatedOn: unDia(2026, 10, 25)}
+	report := Report{Title: strings.TrimSpace(strings.Repeat("REPORTE DEL PROYECTO ", 4)), GeneratedOn: unDia(2026, 10, 25)}
 
-	rows := layoutReport(doc)[0].rows
+	rows := layoutReport(report)[0].rows
 
 	titleRows := 0
 	for _, row := range rows {
@@ -204,18 +217,18 @@ func TestUnaPalabraMasLargaQueElRenglonSeCortaEnElMargen(t *testing.T) {
 	}
 }
 
-// unDocConLineas arma un reporte con una seccion por cada cantidad de lineas pedida. Las
+// unReporteConLineas arma un reporte con una seccion por cada cantidad de lineas pedida. Las
 // lineas son cortas, asi que cada una ocupa un renglon.
-func unDocConLineas(counts ...int) pdfDoc {
-	doc := pdfDoc{title: "Reporte", generatedOn: unDia(2026, 10, 25)}
+func unReporteConLineas(counts ...int) Report {
+	report := Report{Title: "Reporte", GeneratedOn: unDia(2026, 10, 25)}
 	for s, count := range counts {
-		section := pdfSection{heading: fmt.Sprintf("Seccion %d", s+1)}
+		section := Section{Heading: fmt.Sprintf("Seccion %d", s+1)}
 		for i := 0; i < count; i++ {
-			section.lines = append(section.lines, fmt.Sprintf("Linea %d", i+1))
+			section.Lines = append(section.Lines, fmt.Sprintf("Linea %d", i+1))
 		}
-		doc.sections = append(doc.sections, section)
+		report.Sections = append(report.Sections, section)
 	}
-	return doc
+	return report
 }
 
 // Escenario: Un reporte largo ocupa varias paginas numeradas
@@ -232,7 +245,7 @@ func TestUnReporteLargoOcupaVariasPaginasNumeradas(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.pie, func(t *testing.T) {
-			pages := layoutReport(unDocConLineas(c.lineas))
+			pages := layoutReport(unReporteConLineas(c.lineas))
 
 			if len(pages) != c.paginas {
 				t.Fatalf("se esperaban %d paginas, salieron %d", c.paginas, len(pages))
@@ -262,7 +275,7 @@ func TestUnReporteLargoOcupaVariasPaginasNumeradas(t *testing.T) {
 func TestUnEncabezadoNuncaQuedaSoloAlPieDeUnaPagina(t *testing.T) {
 	// Titulo, "Generado el", encabezado y 35 lineas: 38 renglones. El encabezado de la seccion
 	// 2 caeria en el renglon 39, el ultimo de la pagina.
-	pages := layoutReport(unDocConLineas(35, 3))
+	pages := layoutReport(unReporteConLineas(35, 3))
 
 	if len(pages) != 2 {
 		t.Fatalf("se esperaban 2 paginas, salieron %d", len(pages))
@@ -283,7 +296,7 @@ func TestUnEncabezadoNuncaQuedaSoloAlPieDeUnaPagina(t *testing.T) {
 // Un encabezado sin lineas tampoco queda como ultimo renglon, y pasarlo a la pagina siguiente
 // no deja ninguna pagina vacia.
 func TestUnEncabezadoSinLineasAlFinalNoAgregaPaginaVacia(t *testing.T) {
-	pages := layoutReport(unDocConLineas(35, 0))
+	pages := layoutReport(unReporteConLineas(35, 0))
 
 	if len(pages) != 2 {
 		t.Fatalf("se esperaban 2 paginas, salieron %d", len(pages))
@@ -334,7 +347,7 @@ func parseXref(t *testing.T, pdf []byte) (int, []int) {
 // Lo que un lector controla antes de mostrar nada (Fase 3 de la spec). Que de verdad abra se
 // verifica a mano, y se anota en la Fase 4.
 func TestElArchivoSeAbreEnUnLectorDePDF(t *testing.T) {
-	pdf := buildPDF(layoutReport(unDocConLineas(100)))
+	pdf := exportar(t, unReporteConLineas(100))
 
 	if !bytes.HasPrefix(pdf, []byte("%PDF-1.4\n")) {
 		t.Errorf("el archivo no empieza con la cabecera de PDF 1.4: %q", pdf[:min(len(pdf), 12)])
@@ -410,10 +423,10 @@ func extraerTextos(pdf []byte) []textoPDF {
 // Amplia TestExportarElReporteDeUnSprintAPDF, que es del mismo escenario: aca se mira el
 // archivo escrito y no el maquetado. La raya del titulo es de la tarea 9.
 func TestExportarElReporteDeUnSprintAPDFTextoYLetras(t *testing.T) {
-	doc := unDocChico()
-	doc.title = "Reporte del sprint 1 - Seguimiento ICS"
+	report := unReporteChico()
+	report.Title = "Reporte del sprint 1 - Seguimiento ICS"
 
-	textos := extraerTextos(buildPDF(layoutReport(doc)))
+	textos := extraerTextos(exportar(t, report))
 
 	want := []textoPDF{
 		{font: "F2", size: "16", text: "Reporte del sprint 1 - Seguimiento ICS"},
@@ -444,9 +457,9 @@ func TestExportarElReporteDeUnSprintAPDFTextoYLetras(t *testing.T) {
 // Cubre: RN-11
 func TestLosParentesisYLasBarrasNoRompenElArchivo(t *testing.T) {
 	line := `Desviacion (sobre lo estimado): 25,0 % \ revisar`
-	doc := pdfDoc{title: "Reporte", generatedOn: unDia(2026, 10, 25), sections: []pdfSection{{heading: "Resumen", lines: []string{line}}}}
+	report := Report{Title: "Reporte", GeneratedOn: unDia(2026, 10, 25), Sections: []Section{{Heading: "Resumen", Lines: []string{line}}}}
 
-	pdf := buildPDF(layoutReport(doc))
+	pdf := exportar(t, report)
 
 	if !bytes.Contains(pdf, []byte(`(Desviacion \(sobre lo estimado\): 25,0 % \\ revisar) Tj`)) {
 		t.Errorf("la linea no se escribio con los parentesis y la barra escapados")
@@ -483,9 +496,9 @@ func TestLetrasDelCastellanoYCaracteresQueNoSePuedenRepresentar(t *testing.T) {
 		})
 	}
 
-	doc := unDocChico()
-	textos := extraerTextos(buildPDF(layoutReport(doc)))
-	if textos[0].text != doc.title || textos[len(textos)-1].text != "Página 1 de 1" {
+	report := unReporteChico()
+	textos := extraerTextos(exportar(t, report))
+	if textos[0].text != report.Title || textos[len(textos)-1].text != "Página 1 de 1" {
 		t.Errorf("se esperaba leer el titulo con su raya y el pie con su tilde, salio %q y %q", textos[0].text, textos[len(textos)-1].text)
 	}
 }
@@ -514,7 +527,7 @@ func TestUnPDFQueNoSePuedeEntregarSeInforma(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			err := writePDF(c.w, unDocChico())
+			err := unReporteChico().WritePDF(c.w)
 
 			if !errors.Is(err, ErrPDFNotGenerated) {
 				t.Fatalf("se esperaba que se informara que no se pudo generar el PDF, salio: %v", err)
@@ -526,40 +539,58 @@ func TestUnPDFQueNoSePuedeEntregarSeInforma(t *testing.T) {
 	}
 }
 
-// unDocDeTreintaLineas arma un reporte con las cuatro secciones de la #18 y 30 lineas en
-// total, inventadas: el PDF no mira que dicen.
-func unDocDeTreintaLineas(title string) pdfDoc {
-	doc := pdfDoc{title: title, generatedOn: unDia(2026, 10, 25)}
-	for s, heading := range []string{"Resumen", "Historias", "Estimación y esfuerzo", "Defectos"} {
-		section := pdfSection{heading: heading}
-		for i := 0; i < []int{6, 12, 6, 6}[s]; i++ {
-			section.lines = append(section.lines, fmt.Sprintf("%s, linea %d", heading, i+1))
-		}
-		doc.sections = append(doc.sections, section)
+// unReporteDeTreintaLineas arma un reporte con las cuatro secciones de la #18 y 30 lineas en
+// total, inventadas: el PDF no mira que dicen. Lleva metricas que no estan en ninguna linea,
+// para que se note si el PDF las escribe por su cuenta (RN-3).
+func unReporteDeTreintaLineas(title string, scope ReportScope) Report {
+	report := Report{
+		Title:       title,
+		GeneratedOn: unDia(2026, 10, 25),
+		Scope:       scope,
+		Metrics:     Metrics{PlannedPoints: 13, CompletedPoints: 8, Velocity: 8, EstimatedHours: 40, ActualHours: 52},
 	}
-	return doc
+	for s, heading := range []string{"Resumen", "Historias", "Estimación y esfuerzo", "Defectos"} {
+		section := Section{Heading: heading}
+		for i := 0; i < []int{6, 12, 6, 6}[s]; i++ {
+			section.Lines = append(section.Lines, fmt.Sprintf("%s, linea %d", heading, i+1))
+		}
+		report.Sections = append(report.Sections, section)
+	}
+	return report
 }
 
-// Escenario: El PDF no agrega ni quita nada del reporte
+// textosDelReporte son los textos que tiene que tener el PDF de un reporte de una pagina, en
+// orden: el titulo, "Generado el" con la fecha, cada encabezado con sus lineas y el pie. Es
+// lo unico que el PDF agrega al reporte (RN-3).
+func textosDelReporte(report Report) []string {
+	want := []string{report.Title, "Generado el " + report.GeneratedOn.Format("02/01/2006")}
+	for _, section := range report.Sections {
+		want = append(want, section.Heading)
+		want = append(want, section.Lines...)
+	}
+	return append(want, "Página 1 de 1")
+}
+
+// Esquema del escenario: El PDF no agrega ni quita nada del reporte
 // Cubre: RN-3, RN-13
 func TestElPDFNoAgregaNiQuitaNadaDelReporte(t *testing.T) {
-	for _, reporte := range []string{"Reporte del proyecto Seguimiento ICS", "Reporte del sprint 1 — Seguimiento ICS"} {
-		t.Run(reporte, func(t *testing.T) {
-			doc := unDocDeTreintaLineas(reporte)
-			var buf bytes.Buffer
+	cases := []struct {
+		reporte string
+		title   string
+		scope   ReportScope
+	}{
+		{reporte: "el reporte del proyecto", title: "Reporte del proyecto Seguimiento ICS", scope: ScopeProject},
+		{reporte: "el reporte de un sprint", title: "Reporte del sprint 1 — Seguimiento ICS", scope: ScopeSprint},
+	}
+	for _, c := range cases {
+		t.Run(c.reporte, func(t *testing.T) {
+			report := unReporteDeTreintaLineas(c.title, c.scope)
 
-			if err := writePDF(&buf, doc); err != nil {
-				t.Fatalf("no se pudo exportar: %v", err)
-			}
+			pdf := exportar(t, report)
 
-			want := []string{doc.title, "Generado el 25/10/2026"}
-			for _, section := range doc.sections {
-				want = append(want, section.heading)
-				want = append(want, section.lines...)
-			}
-			want = append(want, "Página 1 de 1")
+			want := textosDelReporte(report)
 			var got []string
-			for _, texto := range extraerTextos(buf.Bytes()) {
+			for _, texto := range extraerTextos(pdf) {
 				got = append(got, texto.text)
 			}
 			if len(want) != 2+4+30+1 || !reflect.DeepEqual(got, want) {
@@ -572,21 +603,52 @@ func TestElPDFNoAgregaNiQuitaNadaDelReporte(t *testing.T) {
 // Escenario: Exportar dos veces el mismo reporte da el mismo archivo
 // Cubre: RN-3
 func TestExportarDosVecesElMismoReporteDaElMismoArchivo(t *testing.T) {
-	var first, second bytes.Buffer
+	first := exportar(t, unReporteChico())
+	second := exportar(t, unReporteChico())
 
-	if err := writePDF(&first, unDocChico()); err != nil {
-		t.Fatalf("no se pudo exportar la primera vez: %v", err)
-	}
-	if err := writePDF(&second, unDocChico()); err != nil {
-		t.Fatalf("no se pudo exportar la segunda vez: %v", err)
-	}
-
-	if !bytes.Equal(first.Bytes(), second.Bytes()) {
+	if !bytes.Equal(first, second) {
 		t.Errorf("los dos archivos no son iguales byte por byte")
 	}
 	for _, from := range []string{"/CreationDate", "/ModDate", "/ID"} {
-		if bytes.Contains(first.Bytes(), []byte(from)) {
+		if bytes.Contains(first, []byte(from)) {
 			t.Errorf("el archivo tiene %s, que cambia en cada exportacion", from)
 		}
+	}
+}
+
+// Sin escenario: los reportes que genera la #18, exportados de punta a punta
+// Cubre: RN-2, RN-3, RN-13
+//
+// Los escenarios arman el reporte a mano. Este exporta los dos que genera el dominio para un
+// proyecto con un sprint cerrado, el del proyecto y el del sprint, y lee en el archivo
+// exactamente su titulo, "Generado el", sus encabezados, sus lineas y el pie.
+func TestLosReportesQueGeneraLaHistoria18SeExportanTalCual(t *testing.T) {
+	project := unProyectoLlamado(t, "Seguimiento ICS")
+	unSprintCerrado(t, project, "Tener el MVP", unDia(2026, 10, 20), unDia(2026, 10, 25), unDia(2026, 10, 25), []int{1}, 3, 5)
+	today := unDia(2026, 10, 27)
+	sprintReport, err := project.SprintReport(1, today)
+	if err != nil {
+		t.Fatalf("no se pudo generar el reporte del sprint 1: %v", err)
+	}
+	cases := []struct {
+		reporte string
+		report  Report
+	}{
+		{reporte: "el reporte del proyecto", report: project.ProjectReport(today)},
+		{reporte: "el reporte del sprint 1", report: sprintReport},
+	}
+	for _, c := range cases {
+		t.Run(c.reporte, func(t *testing.T) {
+			pdf := exportar(t, c.report)
+
+			want := textosDelReporte(c.report)
+			var got []string
+			for _, texto := range extraerTextos(pdf) {
+				got = append(got, texto.text)
+			}
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("se esperaba en el archivo exactamente el reporte de la #18:\n %q\nsalio:\n %q", want, got)
+			}
+		})
 	}
 }

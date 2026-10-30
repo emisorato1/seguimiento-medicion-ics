@@ -61,24 +61,24 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Consultar el estado de un proyecto](sprint-2/05-consultar-estado-proyecto.md) | #5 | 3 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #102) |
 | [Interfaz web: proyectos, integrantes y backlog](sprint-2/77-interfaz-web-base.md) | #77 | sin estimar | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #95) |
 
-### Sprint 3 — del 26 al 30 de octubre (36 SP)
+### Sprint 3 — del 26 al 28 de octubre (36 SP)
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
 | [Cerrar un sprint](sprint-3/10-cerrar-sprint.md) | #10 | 5 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #150) |
 | [Calcular las métricas del proyecto](sprint-3/16-calcular-metricas.md) | #16 | 8 | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PRs #81, #140 y #151) |
-| [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | 🔍 Implementada — en review (PR #209) |
+| [Mostrar el dashboard](sprint-3/17-mostrar-dashboard.md) | #17 | 8 | Juliana Bustos | ✅ Terminada — mergeada a `dev` (PR #209) |
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #141), adelantada al Sprint 2 |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #143) |
 | [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #181) |
-| [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | sin estimar | Emiliano Sorato | 📝 Borrador completo — pendiente de las tres puertas |
-| [Guardar los datos en una base de datos](sprint-3/177-guardar-en-base-de-datos.md) | #177 | sin estimar | Emiliano Sorato | 🟡 Puertas aprobadas por el responsable (26/10) — pendiente de ratificación de un compañero |
+| [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | 13 | Emiliano Sorato | 🔨 En implementación — partes en `dev` (PRs #149, #163, #165 y #170); el reporte y su PDF en su PR (rama `historia-78-reporte`) |
+| [Guardar los datos en una base de datos](sprint-3/177-guardar-en-base-de-datos.md) | #177 | sin estimar | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #186), agregada al Sprint 3 |
 
-### Sprint 4 — 31 de octubre y 1 de noviembre (10 SP)
+### Sprint 4 — jueves 29 de octubre (5 SP, o 0 si la #19 se adelanta al Sprint 3)
 
 | Spec | Historia | SP | Responsable | Estado |
 |---|---|---|---|---|
-| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 🟢 Puerta 3 aprobada — lista para implementar (espera la #18) |
+| [Exportar el reporte a PDF](sprint-4/19-exportar-reporte-pdf.md) | #19 | 5 | Emiliano Sorato | 🔨 En implementación — tareas 1 a 12 en `dev` (PR #184), y `r.WritePDF` sobre el reporte de la #18 en su segundo PR (rama `historia-19-reporte`); la descarga desde la web es de la #78 |
 | [Resolver diferencias y acordar la estimación](sprint-4/73-resolver-diferencias-y-acordar.md) | #73 | 5 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #148), adelantada al Sprint 3 |
 
 ### Qué es un "borrador completo"

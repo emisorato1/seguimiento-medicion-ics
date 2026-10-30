@@ -114,7 +114,16 @@ func differencesText(d domain.Differences) string {
 		return fmt.Sprintf("No hay diferencias: todos votaron %d.", d.Lowest.Points)
 	}
 	return fmt.Sprintf("Hay diferencias: el más bajo es %d, de %s, y el más alto es %d, de %s.",
-		d.Lowest.Points, strings.Join(d.Lowest.Members, " y "), d.Highest.Points, strings.Join(d.Highest.Members, " y "))
+		d.Lowest.Points, joinNames(d.Lowest.Members), d.Highest.Points, joinNames(d.Highest.Members))
+}
+
+// joinNames une los nombres como se escribe en castellano: todos con coma menos el ultimo,
+// que va con «y» (defecto #220). Uno solo queda como esta.
+func joinNames(names []string) string {
+	if len(names) < 2 {
+		return strings.Join(names, "")
+	}
+	return strings.Join(names[:len(names)-1], ", ") + " y " + names[len(names)-1]
 }
 
 // roundPage es lo que muestra la pagina de una ronda. Antes de revelar, solo lo que el
