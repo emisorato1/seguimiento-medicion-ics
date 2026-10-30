@@ -310,12 +310,18 @@ rojo.**
 | Análisis estático (`go vet`) | errores comunes que compilan pero están mal |
 | Tests y cobertura | que todos los tests pasen, con el reporte de cobertura en el resumen de la corrida y como archivo descargable (`cobertura`) |
 | Tests en Windows | los mismos tests en una máquina Windows. Es un chequeo aparte y no es obligatorio para mergear: existe porque parte del equipo trabaja en Windows (defecto #108) |
+| Prueba de humo de la web (`scripts/prueba-humo.sh`) | compila la web, la abre con los datos de demo en una base nueva y pide sus páginas principales: que el programa armado arranca y atiende. Tampoco es obligatoria |
 
 Cuando algo entra a `main`, el CD
-([`.github/workflows/cd.yml`](../.github/workflows/cd.yml)) vuelve a correr los tests y
-compila los binarios para Linux (amd64) y macOS (arm64).
+([`.github/workflows/cd.yml`](../.github/workflows/cd.yml)) vuelve a correr los tests,
+compila los binarios para Linux (amd64) y macOS (arm64) sin cgo, le hace la prueba de humo al
+de Linux y **despliega la web en el servidor**: entra con un usuario sin permisos de root y una
+llave propia, la pone en marcha con la base de demo limpia y, si no responde, vuelve a la
+versión anterior y la corrida queda en rojo. Cómo está preparado el servidor y qué hacer si
+algo falla está en [despliegue.md](despliegue.md).
 
-`main` y `dev` están protegidas: no se puede pushear directo, y todo entra por pull request.
+`main` y `dev` están protegidas: no se puede pushear directo, y todo entra por pull request. A
+`main` hace falta además una aprobación.
 
 ---
 
