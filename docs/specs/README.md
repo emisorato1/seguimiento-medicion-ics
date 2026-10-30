@@ -71,7 +71,7 @@ es donde se comprometieron, y no hay que rehacer sus specs.
 | [Votar en secreto en una ronda](sprint-3/13-votar-en-secreto.md) | #13 | 8 | Maximiliano Eula | ✅ Terminada — mergeada a `dev` (PR #141), adelantada al Sprint 2 |
 | [Consultar sprints anteriores](sprint-3/11-consultar-sprints-anteriores.md) | #11 | 2 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #143) |
 | [Generar el reporte de proyecto o sprint](sprint-3/18-generar-reporte.md) | #18 | 5 | Agustín Salinas | ✅ Terminada — mergeada a `dev` (PR #181) |
-| [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | 13 | Emiliano Sorato | 🔨 En implementación — partes en `dev` (PRs #149, #163, #165 y #170) |
+| [Interfaz web: sprints, esfuerzo, defectos, Planning Poker y reportes](sprint-3/78-interfaz-web-operaciones.md) | #78 | 13 | Emiliano Sorato | 🔨 En implementación — partes en `dev` (PRs #149, #163, #165 y #170); el reporte y su PDF en su PR (rama `historia-78-reporte`) |
 | [Guardar los datos en una base de datos](sprint-3/177-guardar-en-base-de-datos.md) | #177 | sin estimar | Emiliano Sorato | ✅ Terminada — mergeada a `dev` (PR #186), agregada al Sprint 3 |
 
 ### Sprint 4 — jueves 29 de octubre (5 SP, o 0 si la #19 se adelanta al Sprint 3)
