@@ -3,7 +3,7 @@
 - **Historia:** #19
 - **Sprint:** 4
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **en implementación**: las tareas 1 a 12 en `dev` (PR #184), y `r.WritePDF` sobre el reporte de la #18 en el segundo PR, rama `historia-19-reporte` (ver la Fase 4). La descarga desde la web es la tarea 21 de la #78
+- **Estado:** Terminada en el Sprint 4 — **mergeada a `dev`** el 30/10 (PR #184 con las tareas 1 a 12 y PR #222 con `r.WritePDF`). La descarga desde la web es la tarea 21 de la #78 (PR #224)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #18 (el reporte ya armado), y por ella de la #16. El código espera que el
   reporte y sus secciones estén en `dev` (ver Dependencias de la Fase 2)
