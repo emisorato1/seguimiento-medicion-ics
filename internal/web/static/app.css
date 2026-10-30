@@ -819,7 +819,8 @@ button:hover {
    de pantalla no los lee, porque el ::before no tiene texto.
 
    Los iconos son de Lucide 0.460.0 (https://lucide.dev): folder-kanban, info,
-   layout-dashboard, users, list-todo, iteration-cw, clock, bug y spade. Su licencia:
+   layout-dashboard, users, list-todo, iteration-cw, clock, bug y spade, y para el reporte
+   file-text, eye y download. Su licencia:
 
    ISC License
 
@@ -931,4 +932,43 @@ td a {
 #votos th:nth-child(2),
 #votos td:nth-child(2) {
   text-align: right;
+}
+
+/* El reporte (#78) con el mismo estilo: su icono en la barra lateral, y uno en el boton que lo
+   muestra y en el que lo descarga en PDF, tambien de Lucide y con la licencia de arriba. Los
+   iconos toman el color del texto del boton, asi que tienen su mismo contraste (6,16). */
+form[action$="/reporte"] button,
+a.boton[href*="/reporte/pdf"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+form[action$="/reporte"] button::before,
+a.boton[href*="/reporte/pdf"]::before {
+  content: "";
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  background: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.sidebar a[href$="/reporte"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' /%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4' /%3E%3Cpath d='M10 9H8' /%3E%3Cpath d='M16 13H8' /%3E%3Cpath d='M16 17H8' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' /%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4' /%3E%3Cpath d='M10 9H8' /%3E%3Cpath d='M16 13H8' /%3E%3Cpath d='M16 17H8' /%3E%3C/svg%3E");
+}
+
+form[action$="/reporte"] button::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0' /%3E%3Ccircle cx='12' cy='12' r='3' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0' /%3E%3Ccircle cx='12' cy='12' r='3' /%3E%3C/svg%3E");
+}
+
+a.boton[href*="/reporte/pdf"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' /%3E%3Cpolyline points='7 10 12 15 17 10' /%3E%3Cline x1='12' x2='12' y1='15' y2='3' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' /%3E%3Cpolyline points='7 10 12 15 17 10' /%3E%3Cline x1='12' x2='12' y1='15' y2='3' /%3E%3C/svg%3E");
 }
