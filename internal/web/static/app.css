@@ -867,3 +867,36 @@ button:hover {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M5 9c-1.5 1.5-3 3.2-3 5.5A5.5 5.5 0 0 0 7.5 20c1.8 0 3-.5 4.5-2 1.5 1.5 2.7 2 4.5 2a5.5 5.5 0 0 0 5.5-5.5c0-2.3-1.5-4-3-5.5l-7-7-7 7Z' /%3E%3Cpath d='M12 18v4' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M5 9c-1.5 1.5-3 3.2-3 5.5A5.5 5.5 0 0 0 7.5 20c1.8 0 3-.5 4.5-2 1.5 1.5 2.7 2 4.5 2a5.5 5.5 0 0 0 5.5-5.5c0-2.3-1.5-4-3-5.5l-7-7-7 7Z' /%3E%3Cpath d='M12 18v4' /%3E%3C/svg%3E");
 }
+
+/* Las tablas marcan la fila al pasar el mouse, con el color del fondo (el texto secundario da
+   4,88 y los enlaces 5,66 sobre el), y el numero de la historia, del sprint o del defecto va
+   en el gris del texto secundario. Los story points van a la derecha, como se alinean los
+   numeros que se comparan. */
+tbody tr:hover > td,
+tbody tr:hover > th {
+  background: var(--bg-app);
+}
+
+.historias td:first-child,
+.historias-sprint td:first-child,
+.sprints td:first-child,
+.defectos td:first-child {
+  color: var(--text-muted);
+}
+
+td a {
+  text-underline-offset: 0.2em;
+}
+
+.historias th:nth-child(5),
+.historias td:nth-child(5),
+.historias-sprint th:nth-child(3),
+.historias-sprint td:nth-child(3),
+.poker th:nth-child(2),
+.poker td:nth-child(2),
+.rondas th:nth-child(3),
+.rondas td:nth-child(3),
+#votos th:nth-child(2),
+#votos td:nth-child(2) {
+  text-align: right;
+}
