@@ -53,9 +53,10 @@ navegador. No hace falta internet. Para cerrarlo, volvé a la terminal y apretá
 
 ### Cómo se usa
 
-- **La barra de arriba** lleva siempre a la lista de proyectos. Dentro de un proyecto,
+- **La barra de la izquierda** lleva siempre a la lista de proyectos. Dentro de un proyecto,
   muestra su nombre y sus partes: **Datos**, **Dashboard**, **Integrantes**, **Backlog**,
-  **Sprints**, **Esfuerzo**, **Defectos** y **Planning Poker**.
+  **Sprints**, **Esfuerzo**, **Defectos** y **Planning Poker**, con la parte abierta
+  resaltada. En el celular, la barra pasa arriba y las partes se recorren de costado.
 - **Cada cambio se confirma** con un mensaje en verde arriba de la página. Recargar la página
   no repite el cambio.
 - **Si algo está mal**, el formulario vuelve con lo que escribiste y el motivo en rojo,
