@@ -6,7 +6,8 @@
 - **Estado:** En implementación. Parte 1 en dev (PR #149): sprints sin el cierre, esfuerzo,
   horas estimadas, Planning Poker hasta revelar y el resumen del proyecto. Parte 2 en dev
   (PR #163): los defectos. Parte 3 en su PR, rama `historia-78-cierre-acuerdo`: cerrar el
-  sprint, consultar uno anterior y el acuerdo del Planning Poker. Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
+  sprint, consultar uno anterior y el acuerdo del Planning Poker. Parte 4 en su PR, rama
+  `historia-78-reporte`: el reporte y su PDF (tareas 20, 21 y lo que faltaba de la 24). Maximiliano Eula **aprobó las tres puertas el 2026-10-22** en la issue #78
   (https://github.com/emisorato1/seguimiento-medicion-ics/issues/78#issuecomment-6348317557), con dos cambios que esta spec ya incorpora (la
   tarea 17 y el punto 8 de "Para decidir en la puerta") y una nota sobre los casos límite
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna, de
@@ -593,11 +594,11 @@ lo comparten le suman sus filas. Un test que pase sin código nuevo va a Desvío
 | 17 | Ningún valor antes de revelar en ninguna página, mensaje ni recarga; un voto rechazado vuelve sin el valor. El test no busca el número suelto, porque el formulario de votar ofrece la escala entera y el número puede estar en una fecha o un identificador: comprueba que la tabla de votos no existe hasta revelar, que ninguna fila ni elemento que nombra a quien votó lleva su valor, y que el mensaje que confirma el voto no lleva ningún número (revisión de Maximiliano Eula) | Nadie ve un voto antes de revelar / Un voto rechazado no muestra el valor elegido | RN-4, RN-6 | hecha |
 | 18 | Revelar: con votos faltantes, el mensaje arriba; con todos, cada voto con su integrante | No se puede revelar con votos faltantes / Una ronda de Planning Poker sin ver los votos hasta revelar | RN-2, RN-8 | hecha |
 | 19 | Diferencias, ronda nueva, acuerdo y la lista de rondas de una historia; historia 99 | Diferencias, nueva ronda y acuerdo / Pedir algo que no existe | RN-1, RN-8, RN-18 | hecha |
-| 20 | El reporte del proyecto y el de un sprint, con la fecha de hoy y las líneas del dominio sin reformatear | Ver el reporte | RN-1, RN-12, RN-14 | espera la #18 |
-| 21 | Descargar el PDF con su nombre como archivo para guardar; si no se puede generar, el aviso y ningún archivo | Descargar el reporte en PDF | RN-15, RN-19 | espera la #19 |
+| 20 | El reporte del proyecto y el de un sprint, con la fecha de hoy y las líneas del dominio sin reformatear | Ver el reporte | RN-1, RN-12, RN-14 | hecha |
+| 21 | Descargar el PDF con su nombre como archivo para guardar; si no se puede generar, el aviso y ningún archivo | Descargar el reporte en PDF | RN-15, RN-19 | hecha |
 | 22 | El resumen de la #5 en la página del proyecto | El proyecto muestra su resumen | RN-20 | hecha |
 | 23 | Con el archivo real: sprints, esfuerzo, defectos y rondas siguen al reabrir, y el sprint nuevo recibe el número siguiente | Los datos nuevos siguen al cerrar y volver a abrir | RN-2 | hecha: también el cierre, el acuerdo y el sprint siguiente |
-| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | en parte: los formularios hechos, también los de defectos, cierre y acuerdo; falta el del reporte |
+| 24 | En cada formulario nuevo, todo campo tiene su etiqueta y su error enlazado, y toda tabla está dentro de su recuadro | — (RN-18 y RN-19 de la #77, por la RN-2) | RN-2 | hecha: también los de defectos, cierre y acuerdo, y el del reporte |
 
 **Verificación manual**, como en la #77: el contraste, el modo celular a 360 de ancho, los
 formularios nuevos recorridos con el teclado, una ronda votada desde dos pestañas y el PDF
@@ -695,6 +696,9 @@ implementación en el siguiente.
 | 19. Diferencias, ronda nueva, acuerdo y lista de rondas | `43e3e5a` | `4ad7a5b` |
 | 23 y 24. Cierre, acuerdo y sprint 2 al reabrir; sus formularios | `44abfe2` | — (sin RED: pasa sin código nuevo) |
 | Fechas y casillas mal formadas al cerrar (cobertura) | `09d23fa` | — (sin RED: prueba código existente) |
+| 20. Ver el reporte del proyecto o de un sprint; la barra suma Reporte | `13e67ec` | `1a58c18` |
+| 21. Descargar el PDF con su nombre; el aviso si no se puede generar | `95e5dfa` | `d1455ef` |
+| 24. El formulario del reporte con el teclado y en el celular | `957a15e` | — (sin RED: pasa sin código nuevo) |
 
 ### Desvíos
 
@@ -773,6 +777,45 @@ implementación en el siguiente.
     de 93,8% a 92,5%. Había tres caminos de rechazo sin ningún test (abrir una ronda de
     una historia que no existe, quitar del sprint una historia no asignada y el filtro que
     no existe); con sus tests queda en 93,7%.
+
+- **Reporte y PDF (parte 4)**, rama `historia-78-reporte`, de Emiliano Sorato con asistencia
+  de IA. Sale de la rama del segundo PR de la #19, porque la tarea 21 usa `r.WritePDF`:
+  - **La descarga va a `/proyectos/{id}/reporte/pdf`**, con el mismo `?sprint=M` que la
+    página. El Enfoque nombraba solo `/proyectos/{id}/reporte`. El botón «Descargar en PDF»
+    aparece solo cuando hay un reporte armado.
+  - **La opción vacía de la lista del sprint es «Todo el proyecto»**, y no una que pide
+    elegir: en el reporte el sprint es optativo y sin sprint es el del proyecto (Entradas).
+    Nada queda elegido sin que nadie lo elija, que es lo que cuida la RN-2.
+  - **Un sprint que no es un número**, que solo se puede escribir a mano en la dirección, se
+    marca junto al campo con el error de forma de la parte 2 (`errInvalidSprint`), con estado
+    422, y no se arma ningún reporte ni se entrega ningún PDF (Condiciones de error). **Un
+    sprint que no existe** muestra el mensaje del núcleo y el acceso al proyecto (RN-18), en
+    la página y en el PDF. Ninguno de los dos está en los Ejemplos.
+  - **El aviso de la RN-19 va en la página del mismo reporte**, arriba, con estado 500 y el
+    botón para volver a descargarlo, y no en una página aparte. **El PDF se escribe en
+    memoria**, donde `r.WritePDF` no falla, así que el servidor recibe la exportación al
+    armarse (`exportPDF`, que en el programa es `domain.Report.WritePDF`), igual que la fecha
+    de hoy y el guardado, y el test la cambia por una que escribe un pedazo y falla. Así se
+    prueba también que no se entrega lo que se llegó a escribir.
+  - **El test de la tarea 21 falló por compilación** (`exportPDF` todavía no existía), y ese
+    es su RED. Para que se vea también el RED de comportamiento, los demás tests se corrieron
+    aparte sin esa línea (con `go test -overlay`): la salida está en el mismo commit.
+  - **Las líneas que espera el test de la tarea 20 las arma el propio dominio**, con la misma
+    fecha de hoy fija (31/10/2026), y la página se lee sin el escape del HTML, que el
+    navegador deshace. El escenario no nombra ningún número: con las líneas del dominio, el
+    test no repite su formato.
+  - **La tarea 21 compara el archivo byte por byte** con el que escribe la #19 para el mismo
+    reporte: es lo que prueba «el mismo título y las mismas líneas que veo en la página». La
+    fila del reporte del proyecto, con su nombre `reporte-proyecto-1.pdf`, no está en el
+    escenario.
+  - **Pasó sin código nuevo**, con «sin RED» en el asunto: la tarea 24 con el formulario del
+    reporte, porque la plantilla usa las partes comunes de la #77. Se rompió la plantilla dos
+    veces (sin el error enlazado y sin la etiqueta) y el test falló las dos.
+  - **La prueba de humo** (`scripts/prueba-humo.sh`, del 30/10, que no estaba en los Archivos
+    afectados) pide también el reporte del proyecto, el del sprint 1 y su PDF (`a212390`).
+  - **CSS**: cada sección del reporte es una tarjeta, como el resto de la web, con sus líneas
+    sin viñetas, y una línea larga se corta para no mover la página de costado.
+  - **Cobertura**: `internal/web` queda en 94,4%.
 
 ### Verificación manual de la parte 1
 
@@ -860,10 +903,43 @@ barra con el foco: el contraste de cada texto visible contra su fondo (WCAG AA: 
 enlace y botón tenga nombre. Resultado: ningún problema. Para saber que el control del
 contraste sirve, se le agregó a una página un texto gris claro y lo marcó (1,79 a 1).
 
+### Verificación del PDF descargado (parte 4)
+
+El 30/10, con la web compilada (`CGO_ENABLED=0 go build ./cmd/web`) y abierta con los datos de
+demo en una base nueva. Lo que se hizo:
+
+- **La descarga**, con `curl`: el PDF del proyecto 1, el de su sprint 1 y el de su sprint 2
+  llegan con estado 200, `Content-Type: application/pdf` y como archivo para guardar,
+  llamados `reporte-proyecto-1.pdf`, `reporte-proyecto-1-sprint-1.pdf` y
+  `reporte-proyecto-1-sprint-2.pdf`. El del sprint 99 da la página de «No se encontró», sin
+  archivo.
+- **`pdfinfo`** (poppler): los tres son PDF 1.4 en A4, de 2, 1 y 1 páginas.
+- **`pdftotext`** (poppler): el texto de cada PDF, sin los pies de página, es igual al de su
+  página web —el título, «Generado el», los encabezados y las líneas, leídos del HTML en
+  orden—, comparado con un script. Los pies dicen «Página 1 de 2», «Página 2 de 2» y
+  «Página 1 de 1».
+- **pypdf 6.15, en modo estricto**: abre los tres sin errores, con Helvetica y
+  Helvetica-Bold.
+- **PDFKit de macOS**, con un script de Swift: abre los archivos, su búsqueda encuentra
+  «Desviación» y «Estimación y esfuerzo», y la primera página dibujada muestra el título más
+  grande, los encabezados en negrita, el pie, y la línea de la #78, más larga que el
+  renglón, seguida en el siguiente. En el del proyecto, la sección Defectos sigue en la
+  página 2.
+- **El PDF del proyecto descargado es idéntico**, byte por byte, al que exporta el dominio con
+  la misma fecha para la verificación de la #19.
+
+**Lo que no se hizo**: no se abrió ningún PDF en Vista Previa ni en Chrome, Firefox o Safari,
+que es lo que pide la Fase 3. Tampoco se recorrió la página del reporte en un navegador: ni
+con el teclado, ni a 360 de ancho, ni el contraste. De la página, lo único probado son los
+tests de Go (las etiquetas, el error enlazado y el foco de la tarea 24).
+
 ### Lo que falta
 
-- **Reporte y PDF (tareas 20 y 21)**: esperan la #18 y la #19.
-- **La verificación manual** del reporte y su PDF.
+- **La verificación manual en el navegador** de la página del reporte y del PDF descargado
+  (ver arriba): el visor del sistema y Chrome, Firefox y Safari, con el teclado, a 360 de
+  ancho y el contraste de lo nuevo.
+- **Las capturas del reporte en el manual de usuario**: la sección nueva va sin captura,
+  porque no se abrió en un navegador.
 
 ## Trazabilidad
 

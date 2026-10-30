@@ -60,6 +60,9 @@ pagina /proyectos/1/planning-poker "Planning Poker"
 pagina /proyectos/1/historias/77/rondas/1 "Hay diferencias"
 pagina /proyectos/1/esfuerzo "Totales por historia"
 pagina /proyectos/1/defectos "Defectos"
+pagina /proyectos/1/reporte "Reporte del proyecto"
+pagina "/proyectos/1/reporte?sprint=1" "Reporte del sprint 1"
+pagina "/proyectos/1/reporte/pdf?sprint=1" "%PDF-1.4"
 pagina /static/app.css ".sidebar"
 
 if [ "$FALLAS" -gt 0 ]; then

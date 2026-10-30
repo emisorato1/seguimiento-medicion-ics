@@ -526,6 +526,38 @@ button:hover {
   background: #8a1c12;
 }
 
+/* El reporte (#78, D6): cada seccion es una tarjeta, como el resto de la web, con sus lineas
+   tal como las arma el nucleo, sin vinetas. Una linea larga, como el titulo de una historia,
+   se corta para no mover la pagina de costado en el celular. */
+.generado {
+  margin: -0.5rem 0 1rem;
+  color: var(--text-muted);
+}
+
+.seccion-reporte {
+  margin: 1rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.seccion-reporte h2 {
+  margin: 0 0 0.5rem;
+}
+
+.lineas-reporte {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.lineas-reporte li {
+  padding: 0.2rem 0;
+}
+
 /* En un celular los botones ocupan el ancho y la tabla de datos va en una columna. */
 @media (max-width: 40rem) {
   .datos {

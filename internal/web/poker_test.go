@@ -283,6 +283,63 @@ func TestDiferenciasNuevaRondaYAcuerdo(t *testing.T) {
 	}
 }
 
+// Defecto #220: con tres o mas integrantes en el voto mas bajo o en el mas alto, la frase de
+// las diferencias los separa con comas y une el ultimo con «y»; con dos, solo con «y».
+// Cubre: #78 RN-8
+func TestLasDiferenciasSeparanConComasTresOMasNombres(t *testing.T) {
+	casos := []struct {
+		nombre string
+		votos  map[string]int
+		frase  string
+	}{
+		{
+			nombre: "tres en el mas bajo",
+			votos:  map[string]int{"Emiliano Sorato": 5, "Agustín Salinas": 5, "Maximiliano Eula": 5, "Juliana Bustos": 8},
+			frase:  "Hay diferencias: el más bajo es 5, de Emiliano Sorato, Agustín Salinas y Maximiliano Eula, y el más alto es 8, de Juliana Bustos.",
+		},
+		{
+			nombre: "tres en el mas alto",
+			votos:  map[string]int{"Emiliano Sorato": 3, "Agustín Salinas": 8, "Maximiliano Eula": 8, "Juliana Bustos": 8},
+			frase:  "Hay diferencias: el más bajo es 3, de Emiliano Sorato, y el más alto es 8, de Agustín Salinas, Maximiliano Eula y Juliana Bustos.",
+		},
+		{
+			nombre: "dos en cada uno",
+			votos:  map[string]int{"Emiliano Sorato": 3, "Agustín Salinas": 3, "Maximiliano Eula": 8, "Juliana Bustos": 8},
+			frase:  "Hay diferencias: el más bajo es 3, de Emiliano Sorato y Agustín Salinas, y el más alto es 8, de Maximiliano Eula y Juliana Bustos.",
+		},
+	}
+	for _, caso := range casos {
+		t.Run(caso.nombre, func(t *testing.T) {
+			// Dado la ronda 1 de la historia 1, con cuatro integrantes, revelada.
+			registry := domain.NewProjectRegistry()
+			project := addProject(t, registry, "Sistema de metricas")
+			for _, nombre := range []string{"Emiliano Sorato", "Agustín Salinas", "Maximiliano Eula", "Juliana Bustos"} {
+				addMember(t, project, nombre, domain.RoleProductBuilder)
+			}
+			addStory(t, project, "Registrar esfuerzo", domain.PriorityHigh)
+			round, err := project.OpenVotingRound(1)
+			if err != nil {
+				t.Fatalf("no se pudo abrir la ronda: %v", err)
+			}
+			for nombre, puntos := range caso.votos {
+				if err := round.Vote(nombre, puntos); err != nil {
+					t.Fatalf("no se pudo votar: %v", err)
+				}
+			}
+			if err := round.Reveal(); err != nil {
+				t.Fatalf("no se pudo revelar: %v", err)
+			}
+
+			html := get(t, newTestServer(t, registry), "/proyectos/1/historias/1/rondas/1").Body.String()
+
+			diferencias := between(html, `<section id="diferencias"`, "</section>")
+			if !strings.Contains(diferencias, caso.frase) {
+				t.Errorf("se esperaba la frase %q, y las diferencias son:\n%s", caso.frase, diferencias)
+			}
+		})
+	}
+}
+
 // revealedRound abre la ronda 1 de la historia 1, con 3 de Ana Perez y 8 de Juan Gomez, y la
 // revela.
 func revealedRound(t *testing.T, project *domain.Project) *domain.VotingRound {
