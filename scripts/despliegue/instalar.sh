@@ -30,11 +30,15 @@ echo "restrict $LLAVE" >/opt/ics/.ssh/authorized_keys
 chown ics:ics /opt/ics/.ssh/authorized_keys
 chmod 600 /opt/ics/.ssh/authorized_keys
 
-cat >/etc/sudoers.d/ics-web <<'EOF'
+# Se valida antes de instalarlo: un archivo de sudoers con errores deja sin sudo a todo el
+# servidor.
+regla=$(mktemp)
+cat >"$regla" <<'EOF'
 ics ALL=(root) NOPASSWD: /usr/bin/systemctl stop ics-web.service, /usr/bin/systemctl start ics-web.service
 EOF
-chmod 440 /etc/sudoers.d/ics-web
-visudo -cf /etc/sudoers.d/ics-web
+visudo -cf "$regla"
+install -m 440 "$regla" /etc/sudoers.d/ics-web
+rm -f "$regla"
 
 install -m 644 "$AQUI/ics-web.service" /etc/systemd/system/ics-web.service
 systemctl daemon-reload
