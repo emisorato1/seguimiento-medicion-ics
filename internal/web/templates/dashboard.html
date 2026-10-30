@@ -16,8 +16,8 @@
 {{else}}
 <section id="estado-general" aria-labelledby="estado-general-titulo">
   <h2 id="estado-general-titulo">Estado general</h2>
-  <dl class="datos">
-    {{range .Dashboard.Overview}}<dt>{{.Label}}</dt><dd>{{.Text}}</dd>
+  <dl class="datos indicadores">
+    {{range .Dashboard.Overview}}<div class="indicador"><dt>{{.Label}}</dt><dd>{{.Text}}</dd></div>
     {{end}}
   </dl>
 </section>
@@ -25,8 +25,8 @@
   <h2 id="sprint-en-curso-titulo">Sprint en curso</h2>
   {{with .Dashboard.CurrentSprint}}
   <p><a href="/proyectos/{{$.Data.ID}}/sprints/{{.Number}}">Sprint {{.Number}}</a>: {{.Goal}} ({{fecha .Start}} al {{fecha .End}})</p>
-  <dl class="datos">
-    {{range .Figures}}<dt>{{.Label}}</dt><dd>{{.Text}}</dd>
+  <dl class="datos indicadores">
+    {{range .Figures}}<div class="indicador"><dt>{{.Label}}</dt><dd>{{.Text}}</dd></div>
     {{end}}
   </dl>
   {{else}}

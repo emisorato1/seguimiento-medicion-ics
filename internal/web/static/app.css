@@ -647,3 +647,46 @@ button:hover {
     padding: 1.5rem 1rem 3rem;
   }
 }
+
+/* Mejoras para la demo del 2/11 (issue #223). Se suman a la identidad salvia y no cambian el
+   contenido de ninguna celda ni de ningun dato: los tests de la web miran ese HTML tal cual.
+   No agregan colores: usan los de :root, con estos contrastes (formula de la WCAG) sobre las
+   tarjetas blancas y sobre el fondo, que es tambien el de la fila marcada al pasar el mouse:
+   peligro 6,57 y 6,05; Oro oscurecido 5,05 y 4,64; ok 9,11 y 8,38; texto secundario 5,30 y
+   4,88; enlaces 6,16 y 5,66. */
+
+/* El estado general y los numeros del sprint en curso, en tarjetas: el numero grande arriba y
+   su rotulo abajo. Cada par va en un div, que el dl permite; el orden en el HTML sigue siendo
+   rotulo y valor, para los lectores de pantalla. */
+.indicadores {
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.indicador dd {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.indicador dt {
+  font-size: 0.7rem;
+}
