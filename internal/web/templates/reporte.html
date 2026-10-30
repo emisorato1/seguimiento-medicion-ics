@@ -6,6 +6,7 @@
 {{else}}
 <h1>Reporte</h1>
 {{end}}
+{{template "error-formulario" .Error}}
 <form class="formulario" method="get" action="/proyectos/{{.ProjectID}}/reporte">
   {{with .Form.Field "sprint"}}
   <div class="campo">
@@ -20,6 +21,11 @@
     <button type="submit">Ver el reporte</button>
   </div>
 </form>
+{{if .Report}}
+<div class="acciones">
+  <a class="boton" href="/proyectos/{{.ProjectID}}/reporte/pdf{{if .Sprint}}?sprint={{.Sprint}}{{end}}">Descargar en PDF</a>
+</div>
+{{end}}
 {{with .Report}}
 {{range $i, $section := .Sections}}
 <section class="seccion-reporte" aria-labelledby="seccion-{{$i}}">
