@@ -43,7 +43,19 @@ distinto. Lo que salga acá va a las conclusiones del informe final y a la prese
     aparte desde el principio."
   - "Casi todos los defectos los encontramos revisando, así que la revisión con los tests
     corridos fue lo que más nos ayudó con la calidad."
-- **Emiliano Sorato:** [pendiente]
+- **Emiliano Sorato:**
+  - "Lo que más nos sirvió fue escribir la spec antes y pasarla por las puertas: con el
+    contrato del dominio acordado, cada uno avanzó sin esperar al otro, y la velocidad pasó de
+    6 en el Sprint 1 a 52 en el 2 y 33 en el 3."
+  - "Medirnos nos mostró que en horas estimábamos mal: con 2,7 h por punto quedamos siempre muy
+    por encima de lo real (−52% en el Sprint 2 y −51% en el 3). Los story points fueron más
+    estables. Las horas de lo hecho con asistencia de IA habría que haberlas medido aparte
+    desde el Sprint 1, como dicen Maxi y Juli."
+  - "La calidad salió de los tests y de revisar con los tests corridos: el dominio quedó al 100%
+    y casi todos los defectos salieron de revisiones o de la prueba exploratoria, no del uso."
+  - "Qué haría distinto: arrancar con la base de datos y la web desde el principio, y no
+    sumarlas con el proyecto avanzado, porque la #177 y la #78 fueron las que más trabajo dieron
+    al final. Y armar antes el CD con el deploy, para mostrar cada incremento andando."
 - **Juliana Bustos:** "Las horas estimadas quedaron por encima de las reales (-72 % en historias
   terminadas del Sprint 3). Las horas no miden bien nuestro ritmo con IA, mientras que los
   story points resultaron más estables. También aprendí que hay que cargar las horas reales
