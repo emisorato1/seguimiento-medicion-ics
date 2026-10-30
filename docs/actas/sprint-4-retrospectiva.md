@@ -1,35 +1,47 @@
 # Acta — Retrospectiva del Sprint 4
 
-> **Borrador armado el 29/10.** Se hace después de la [review](sprint-4-review.md). Es la última
-> del proyecto, así que también mira el proyecto entero. Lo que está entre corchetes,
-> **[pendiente]**, lo completa lo que diga cada uno: acá no se escribe nada que alguien no haya
-> dicho.
+> Se hizo por escrito, después de la [review](sprint-4-review.md). Es la última del proyecto,
+> así que también mira el proyecto entero. Lo que está entre corchetes, **[pendiente]**, lo
+> completa lo que diga cada uno: acá no se escribe nada que alguien no haya dicho.
 
-- **Fecha:** [pendiente: el día, y si fue por escrito o con reunión]
-- **Respondieron:** Maximiliano Eula y Juliana Bustos (29/10, por escrito, mirando el proyecto entero). [pendiente: los demás]
+- **Fecha:** 29 y 30/10, por escrito.
+- **Respondieron:** Maximiliano Eula y Juliana Bustos (29/10, mirando el proyecto entero) y
+  Emiliano Sorato (30/10), por escrito. Agustín Salinas: [pendiente].
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 
-Los números con los que se abre la retro salen del [acta de review](sprint-4-review.md):
-[pendiente: story points completados, velocidad, desviación, defectos y cobertura al cierre].
+Los números con los que se abre la retro salen del [acta de review](sprint-4-review.md): 18 de
+18 story points y 2 de 2 historias, velocidad 18, −93% de desviación (las dos historias, con
+asistencia de IA), un defecto detectado y resuelto, y 95,8% de cobertura con 426 tests. Con eso,
+las 21 historias del Product Backlog están terminadas: 109 story points.
 
 ## Qué salió bien
 
-- **Emiliano Sorato:** [pendiente]
+- **Emiliano Sorato:** "Terminamos la #19 y la #78 el mismo día, con su TDD, y la trazabilidad
+  quedó completa: todos los escenarios tienen su test. Y armamos el CI/CD: cada incremento se
+  despliega solo en el servidor".
 - **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
 - **Juliana Bustos:** respondió mirando el proyecto entero (más abajo).
 - **Agustín Salinas:** [pendiente]
 
 ## Qué no salió bien
 
-- **Emiliano Sorato:** [pendiente]
+- **Emiliano Sorato:** "El sprint iba a ser de un día y se estiró, porque la #78 y la #19
+  esperaban a la #18. Y varios PRs del 30/10 entraron sin la firma de un compañero, porque no
+  estaban disponibles".
 - **Maximiliano Eula:** respondió mirando el proyecto entero (más abajo).
 - **Juliana Bustos:** respondió mirando el proyecto entero (más abajo).
 - **Agustín Salinas:** [pendiente]
 
 ## Seguimiento de los acuerdos del Sprint 3
 
-[pendiente: los acuerdos que salgan de la [retrospectiva del Sprint 3](sprint-3-retrospectiva.md),
-y si se cumplieron.]
+Los cuatro acuerdos de la [retrospectiva del Sprint 3](sprint-3-retrospectiva.md):
+
+| Acuerdo | ¿Se cumplió? |
+|---|---|
+| ESTADO.md lo regenera una sola persona, una vez por día, y no cada PR | En parte: lo regeneró solo Emiliano Sorato, pero el 30/10 fueron dos veces (PRs #217 y #227) |
+| No se mergea un PR con cambios pedidos sin responder | Sí: ningún PR del sprint tenía cambios pedidos sin responder |
+| Se mergea apenas el PR tiene su revisión y el CI en verde | Sí |
+| Un test que pasa sin RED se revisa contra los otros lugares donde se aplica la misma regla | Sí: la tarea 24 de la #78 pasó sin RED, y antes de darla por cubierta se comprobó que el test fallaba rompiendo la plantilla |
 
 ## Mirando el proyecto entero
 
@@ -65,5 +77,5 @@ distinto. Lo que salga acá va a las conclusiones del informe final y a la prese
 
 ## Pendientes
 
-- [ ] Las respuestas de cada uno.
+- [ ] La mirada del proyecto entero de Agustín Salinas.
 - [ ] Llevar las conclusiones al informe final y a la presentación.
