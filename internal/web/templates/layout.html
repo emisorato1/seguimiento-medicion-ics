@@ -8,7 +8,8 @@
 </head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
-<header class="barra">
+<div class="app-layout">
+<aside class="sidebar">
   <nav aria-label="Navegación principal">
     <a class="marca" href="/proyectos">Seguimiento y Medición ICS</a>
     <ul>
@@ -18,6 +19,7 @@
     <p class="proyecto-actual" title="{{.Name}}">Proyecto: <strong>{{.Name}}</strong></p>
     <ul aria-label="Secciones del proyecto">
       <li><a href="/proyectos/{{.ID}}"{{if eq $.Section "datos"}} aria-current="page"{{end}}>Datos</a></li>
+      <li><a href="/proyectos/{{.ID}}/dashboard"{{if eq $.Section "dashboard"}} aria-current="page"{{end}}>Dashboard</a></li>
       <li><a href="/proyectos/{{.ID}}/integrantes"{{if eq $.Section "integrantes"}} aria-current="page"{{end}}>Integrantes</a></li>
       <li><a href="/proyectos/{{.ID}}/backlog"{{if eq $.Section "backlog"}} aria-current="page"{{end}}>Backlog</a></li>
       <li><a href="/proyectos/{{.ID}}/sprints"{{if eq $.Section "sprints"}} aria-current="page"{{end}}>Sprints</a></li>
@@ -27,11 +29,12 @@
     </ul>
     {{end}}
   </nav>
-</header>
-<main id="contenido" tabindex="-1">
+</aside>
+<main id="contenido" class="main-content" tabindex="-1">
 {{with .Flash}}<p class="aviso aviso-ok" role="status">{{.}}</p>{{end}}
 {{template "content" .}}
 </main>
+</div>
 </body>
 </html>
 {{end}}
