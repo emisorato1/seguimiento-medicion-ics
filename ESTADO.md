@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Generado por `scripts/estado.sh` el 2026-10-29 18:00. No editar a mano._
+_Generado por `scripts/estado.sh` el 2026-10-30 09:14. No editar a mano._
 
 La fuente de verdad es el tablero: https://github.com/users/emisorato1/projects/3
 Este archivo es una copia para poder leer el estado sin `gh` instalado.
@@ -69,12 +69,12 @@ _No hay historias en este estado._
 ## Ultimos commits
 
 ```
+b94eb52 2026-10-30 docs: el dashboard en el guion de la demo, y las capturas con el diseño nuevo
+6bd527b 2026-10-29 Merge pull request #205 from emisorato1/cierre-historia-177
+60818e0 2026-10-29 Merge pull request #215 from emisorato1/guia-defensa-17-18
+de794da 2026-10-29 Merge pull request #212 from emisorato1/guion-demo-ensayo
+4d5d202 2026-10-29 Merge pull request #214 from emisorato1/estilo-paleta-salvia
+58d71db 2026-10-29 docs: la #17 y la #18 en la guía de defensa, y la cobertura al 29/10
+72aa970 2026-10-29 chore: trazabilidad y ESTADO.md regenerados con dev en 5d1d556 (la #17 da 16 de 16)
 3a88881 2026-10-29 docs: la #17 terminada en su spec (PR #209)
-7a66266 2026-10-29 Merge origin/dev en cierre-historia-177: la #17 y la #18 terminadas en el índice, y la trazabilidad y ESTADO.md regenerados
-5d1d556 2026-10-29 Merge pull request #209 from emisorato1/historia-17-dashboard
-c61b079 2026-10-29 docs: el comentario de Dashboard dice que la web lo pide con p.Dashboard(), tambien en sus tests (revision de Agustin en el #209)
-d039489 2026-10-29 Merge branch 'dev' into historia-17-dashboard
-4c71445 2026-10-29 Merge pull request #211 from emisorato1/documentacion-tecnica-29-10
-0293c41 2026-10-29 docs: la historia 18 terminada, en su spec, en el indice y en ESTADO.md
-7c3bcfd 2026-10-29 Merge remote-tracking branch 'origin/dev' into documentacion-tecnica-29-10
 ```
