@@ -1122,6 +1122,10 @@ func TestPedirAlgoQueNoExiste(t *testing.T) {
 		{pedido: "/proyectos/1/defectos/99/resolver?sprint=1", err: domain.ErrDefectNotFound, volver: "/proyectos/1"},
 		{pedido: "/proyectos/99/defectos", err: domain.ErrProjectNotFound},
 		{pedido: "/proyectos/99/defectos/nuevo", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/99/reporte", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/reporte?sprint=99", err: domain.ErrSprintNotFound, volver: "/proyectos/1"},
+		{pedido: "/proyectos/99/reporte/pdf", err: domain.ErrProjectNotFound},
+		{pedido: "/proyectos/1/reporte/pdf?sprint=99", err: domain.ErrSprintNotFound, volver: "/proyectos/1"},
 	}
 
 	for _, caso := range casos {
@@ -1492,6 +1496,9 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		"cerrar sin fecha":             navegador.post("/proyectos/1/sprints/cerrar", url.Values{}),
 		"acordar":                      navegador.get("/proyectos/1/historias/2/rondas/1"),
 		"acordar sin elegir":           navegador.post("/proyectos/1/historias/2/rondas/1/acordar", url.Values{}),
+		"reporte del proyecto":         navegador.get("/proyectos/1/reporte"),
+		"reporte de un sprint":         navegador.get("/proyectos/1/reporte?sprint=1"),
+		"reporte con el sprint mal":    navegador.get("/proyectos/1/reporte?sprint=uno"),
 	}
 
 	for nombre, res := range paginas {

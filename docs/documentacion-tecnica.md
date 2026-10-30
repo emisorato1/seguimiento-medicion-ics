@@ -6,10 +6,10 @@ entregable "documentación técnica" de la consigna; el uso de la aplicación es
 de usuario.
 
 - **Responsable:** Agustín Salinas
-- **Estado:** en construcción. Las secciones marcadas *(en construcción)* se completan a medida
-  que las historias entran a `dev`. Última actualización: 27/10/2026, con lo que está en `dev`:
-  proyectos, integrantes, backlog, sprints (#8 a #11), estimación y Planning Poker (#12, #13 y
-  #73), esfuerzo (#14), defectos (#15), métricas (#16) y la web (#77 y #78, salvo el reporte).
+- **Estado:** última actualización 29/10/2026. Cubre los nueve requerimientos: proyectos,
+  integrantes, backlog, sprints (#8 a #11), estimación y Planning Poker (#12, #13 y #73),
+  esfuerzo (#14), defectos (#15), métricas (#16), dashboard (#17), reporte (#18) y la
+  exportación a PDF (#19), la web (#77 y #78) y la base de datos (#177).
 
 Las reglas de trabajo del equipo están en [CLAUDE.md](../CLAUDE.md) y las convenciones
 técnicas detalladas en [AGENTS.md](../AGENTS.md). Este documento no las repite: las explica y
@@ -55,7 +55,7 @@ internal/domain    el núcleo: entidades, reglas de negocio, validaciones, métr
 | `internal/store` | lee y escribe la base SQLite y el archivo de datos, e importa y exporta | no valida datos: eso lo hace el dominio, con su conversión |
 | `cmd/app` | la consola: lee lo que escribe el usuario, llama al dominio y muestra el resultado | no valida nada por su cuenta: le pregunta al dominio |
 | `cmd/web` | lee las opciones (`-puerto`, `-datos`, `-red`), carga los datos guardados, toma el puerto avisando si está ocupado o no hay permiso, y arranca la web con la fecha de la computadora | no guarda ni valida nada: lo hacen `store` y el dominio |
-| `internal/web` (#77 y #78) | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas. Cuando entre el dashboard (#17), dibuja sus barras | no valida reglas: las valida el dominio |
+| `internal/web` (#77 y #78) | lee los formularios, llama al dominio, guarda con `store` y muestra las páginas. En el dashboard (#17) mide y dibuja las barras de los gráficos en SVG | no valida reglas: las valida el dominio |
 
 Las dos interfaces usan **el mismo dominio**: una regla se escribe y se testea una sola vez,
 y vale igual en la consola y en la web.
@@ -105,7 +105,22 @@ ProjectRegistry ─── Project ─┬── Member       (integrantes, #4)
 | `Metrics` | #16 | las once métricas de un sprint o del proyecto, calculadas cada vez que se piden | `metrics.go` |
 | `Defect` | #15 | título, descripción, severidad, estado, historia, sprint de detección y de resolución | `defect.go` |
 | `VotingRound` | #13, #73 | historia, número de ronda, participantes fijados al abrirla, votos ocultos hasta revelar, diferencias y estimación acordada | `voting_round.go`, `voting_round_agreement.go` |
-| `Report` | #18, #19 | — | *(en construcción)* |
+| `Report` | #18, #19 | título, día de generación, alcance (proyecto o sprint), las métricas de la #16 y cuatro secciones con el texto ya escrito: Resumen, Historias, Estimación y esfuerzo, Defectos. Se arma cada vez que se pide y no se guarda; se exporta a PDF con `r.WritePDF(w)` (#19) | `report.go`, `format.go` |
+| `Dashboard` | #17 | el estado general con las métricas del proyecto, el sprint en curso y cuatro gráficos (story points, horas, defectos y velocidad), con los números ya escritos. Se arma cada vez que se pide y no se guarda | `dashboard.go`, `format.go` |
+| PDF del reporte | #19 | maqueta las líneas del reporte en páginas A4 y escribe el PDF 1.4 a mano, con la letra Helvetica que traen todos los lectores. Lo pide la web para descargarlo (#78) | `report_pdf.go` |
+
+**Lo que se calcula no se guarda.** Las métricas, el dashboard y el reporte no son datos del
+proyecto: se arman cada vez que se piden, con los datos de ese momento, y no cambian nada. Los
+números salen de un solo lugar, en cadena:
+
+```
+datos del proyecto ──► Metrics (#16) ──┬──► Dashboard (#17) ──► página de la web
+                                       └──► Report (#18) ─────► PDF (#19)
+```
+
+El dashboard y el reporte **reciben las métricas ya calculadas** y solo las escriben como
+texto, con la misma regla de formato (`format.go`): un número se lee igual en la pantalla, en
+el reporte y en el PDF, y ninguno puede mostrar algo distinto de lo que calculó la #16.
 
 **Un solo sprint abierto por proyecto.** El sprint nace abierto y se cierra con la #10: no
 hay un estado "planificado". El Sprint Backlog guarda solo los números de las historias, y
@@ -140,6 +155,9 @@ importantes, en una línea:
 | **Crear y modificar comparten la misma validación** (por ejemplo `prepare` en `project.go`) | las reglas no se pueden desincronizar entre las dos operaciones |
 | **El pedido de modificación distingue "no tocar", "cambiar" y "quitar"** (`ProjectChanges`, `OptionalChange`) | "no mandé el dato" y "quiero borrarlo" no se confunden, y un pedido contradictorio no se puede escribir |
 | **El dominio no lee el reloj del sistema**: la fecha de hoy la recibe de quien llama | los tests no dependen del día en que se corren |
+| **Las métricas se calculan en un solo lugar** (#16), y el dashboard y el reporte las reciben ya calculadas | un número no puede salir distinto en la pantalla y en el reporte, y los tests del formato pasan métricas armadas a mano con los valores exactos |
+| **Una sola regla para escribir números y fechas** (`format.go`): una cifra decimal con coma, la unidad, y las fechas como 01/10/2026 | el dashboard, el reporte y el PDF muestran lo mismo de la misma manera |
+| **El PDF se escribe a mano**, sin librería, con la letra Helvetica que traen todos los lectores de PDF | no suma otra dependencia, y el archivo es el mismo cada vez que se exporta el mismo reporte |
 | **Una sola dependencia externa, acordada con el equipo**: el driver de SQLite en Go puro (`modernc.org/sqlite`), sin CGO | así compila igual en Windows, Linux y macOS; fuera de eso, solo la biblioteca estándar, porque el proyecto es chico y se evalúa el código propio |
 
 Las decisiones propias de cada funcionalidad están en la Fase 2 (Diseño) de su spec, en
@@ -292,12 +310,18 @@ rojo.**
 | Análisis estático (`go vet`) | errores comunes que compilan pero están mal |
 | Tests y cobertura | que todos los tests pasen, con el reporte de cobertura en el resumen de la corrida y como archivo descargable (`cobertura`) |
 | Tests en Windows | los mismos tests en una máquina Windows. Es un chequeo aparte y no es obligatorio para mergear: existe porque parte del equipo trabaja en Windows (defecto #108) |
+| Prueba de humo de la web (`scripts/prueba-humo.sh`) | compila la web, la abre con los datos de demo en una base nueva y pide sus páginas principales: que el programa armado arranca y atiende. Tampoco es obligatoria |
 
 Cuando algo entra a `main`, el CD
-([`.github/workflows/cd.yml`](../.github/workflows/cd.yml)) vuelve a correr los tests y
-compila los binarios para Linux (amd64) y macOS (arm64).
+([`.github/workflows/cd.yml`](../.github/workflows/cd.yml)) vuelve a correr los tests,
+compila los binarios para Linux (amd64) y macOS (arm64) sin cgo, le hace la prueba de humo al
+de Linux y **despliega la web en el servidor**: entra con un usuario sin permisos de root y una
+llave propia, la pone en marcha con la base de demo limpia y, si no responde, vuelve a la
+versión anterior y la corrida queda en rojo. Cómo está preparado el servidor y qué hacer si
+algo falla está en [despliegue.md](despliegue.md).
 
-`main` y `dev` están protegidas: no se puede pushear directo, y todo entra por pull request.
+`main` y `dev` están protegidas: no se puede pushear directo, y todo entra por pull request. A
+`main` hace falta además una aprobación.
 
 ---
 

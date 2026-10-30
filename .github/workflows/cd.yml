@@ -1,11 +1,13 @@
 name: CD
 
-# Se ejecuta cuando algo entra a main, que es la rama "de produccion".
-# Compila la aplicacion y publica el binario como artefacto descargable.
+# Se ejecuta cuando algo entra a main, que es la rama "de produccion", o a mano desde la
+# pestaña Actions (solo sobre main). Corre los tests, compila la aplicacion, prueba la web
+# armada y, si todo pasa, la despliega en el servidor. Como se hace en docs/despliegue.md.
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   publicar:
@@ -23,17 +25,73 @@ jobs:
         run: go test ./...
 
       # Cada comando de cmd/ (la consola, la web) se compila por separado y con su nombre:
-      # con mas de un main, "go build -o archivo ./cmd/..." falla.
+      # con mas de un main, "go build -o archivo ./cmd/..." falla. Sin cgo, el binario de
+      # Linux no depende de las librerias del servidor.
       - name: Compilar
         run: |
           mkdir -p dist
           for carpeta in cmd/*/; do
             nombre=$(basename "$carpeta")
-            GOOS=linux  GOARCH=amd64 go build -o "dist/$nombre-linux-amd64"  "./$carpeta"
-            GOOS=darwin GOARCH=arm64 go build -o "dist/$nombre-darwin-arm64" "./$carpeta"
+            CGO_ENABLED=0 GOOS=linux  GOARCH=amd64 go build -o "dist/$nombre-linux-amd64"  "./$carpeta"
+            CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o "dist/$nombre-darwin-arm64" "./$carpeta"
           done
+
+      # El mismo binario que se va a desplegar, abierto con los datos de demo.
+      - name: Prueba de humo
+        run: scripts/prueba-humo.sh dist/web-linux-amd64
 
       - uses: actions/upload-artifact@v4
         with:
           name: binarios
           path: dist/
+
+  # Entra al servidor con el usuario ics y una llave que solo sirve para esto. La direccion,
+  # la llave y la huella del servidor estan en los secrets del entorno "produccion", que
+  # solo se puede usar desde main.
+  desplegar:
+    name: Desplegar en el servidor
+    needs: publicar
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: produccion
+    concurrency:
+      group: produccion
+      cancel-in-progress: false
+    timeout-minutes: 10
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: binarios
+          path: dist
+
+      - name: Preparar la llave
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Copiar la version nueva
+        run: |
+          mkdir nueva
+          cp dist/web-linux-amd64 nueva/web
+          cp scripts/despliegue/iniciar.sh scripts/despliegue/desplegar.sh docs/demo/datos-demo.json nueva/
+          scp -i ~/.ssh/deploy -o StrictHostKeyChecking=yes nueva/* "ics@$DEPLOY_HOST:/opt/ics/nueva/"
+
+      # Si la version nueva no responde, desplegar.sh vuelve a poner la anterior y falla.
+      - name: Ponerla en marcha
+        run: ssh -i ~/.ssh/deploy -o StrictHostKeyChecking=yes "ics@$DEPLOY_HOST" 'bash /opt/ics/nueva/desplegar.sh'
+
+      - name: Verificar desde afuera
+        run: curl -fsS -o /dev/null --retry 5 --retry-delay 2 --retry-all-errors "http://$DEPLOY_HOST:8080/proyectos"
+
+      - name: Borrar la llave
+        if: always()
+        run: rm -f ~/.ssh/deploy
