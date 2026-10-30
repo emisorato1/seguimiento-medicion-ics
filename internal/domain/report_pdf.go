@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"time"
 	"unicode/utf8"
 )
 
 // La exportacion del reporte a PDF (historia #19) tiene tres pasos, cada uno con sus tests:
 // maquetar el reporte en paginas de renglones, escribir esas paginas como un PDF y entregarlo
-// a quien lo pide. Este archivo empieza por el primero, que no sabe nada de PDF.
+// a quien lo pide. Este archivo empieza por el primero, que no sabe nada de PDF. Del reporte
+// de la #18 se leen solo el titulo, el dia de generacion y las secciones: las metricas y el
+// alcance no se miran, porque los numeros ya vienen escritos en las lineas (RN-3).
 
 // pdfStyle es la letra de un renglon: el cuerpo, un encabezado de seccion o el titulo.
 type pdfStyle int
@@ -21,20 +22,6 @@ const (
 	styleHeading
 	styleTitle
 )
-
-// pdfSection y pdfDoc son lo que el PDF lee del reporte: el titulo, el dia en que se genero y
-// las secciones con su encabezado y sus lineas. Se usan en lugar de Report mientras el codigo
-// de la #18 no este en dev (decidido el 26/10, ver la Fase 4 de la spec).
-type pdfSection struct {
-	heading string
-	lines   []string
-}
-
-type pdfDoc struct {
-	title       string
-	generatedOn time.Time
-	sections    []pdfSection
-}
 
 // Medidas de la pagina, en puntos (1/72 de pulgada): A4 vertical con margenes de 2 cm. Un
 // renglon entra si no pasa el ancho del A4 menos los dos margenes (Fase 2 de la spec).
@@ -199,18 +186,18 @@ type pdfPage struct {
 
 // layoutReport convierte el reporte en paginas: el titulo, "Generado el" con la fecha, y cada
 // encabezado con sus lineas, en el orden del reporte (RN-2, RN-3).
-func layoutReport(doc pdfDoc) []pdfPage {
+func layoutReport(report Report) []pdfPage {
 	var rows []pdfRow
 	add := func(text string, style pdfStyle) {
 		for _, row := range wrapText(text, style) {
 			rows = append(rows, pdfRow{text: row, style: style})
 		}
 	}
-	add(doc.title, styleTitle)
-	add("Generado el "+doc.generatedOn.Format("02/01/2006"), styleBody)
-	for _, section := range doc.sections {
-		add(section.heading, styleHeading)
-		for _, line := range section.lines {
+	add(report.Title, styleTitle)
+	add("Generado el "+report.GeneratedOn.Format("02/01/2006"), styleBody)
+	for _, section := range report.Sections {
+		add(section.Heading, styleHeading)
+		for _, line := range section.Lines {
 			add(line, styleBody)
 		}
 	}
@@ -355,11 +342,12 @@ func escapePDFString(text []byte) []byte {
 	return out
 }
 
-// writePDF es la entrega: arma el archivo entero en memoria y lo escribe de una vez donde lo
-// pide quien llama. Si el destino falla, o no recibe todos los bytes, informa que no se pudo
-// generar el PDF (RN-12).
-func writePDF(w io.Writer, doc pdfDoc) error {
-	pdf := buildPDF(layoutReport(doc))
+// WritePDF exporta el reporte a PDF y lo escribe en w (contrato del PR #94): la web lo manda
+// como descarga (#78) y el dominio no toca archivos. Es la entrega: arma el archivo entero en
+// memoria y lo escribe de una vez. Si el destino falla, o no recibe todos los bytes, informa
+// que no se pudo generar el PDF (RN-12).
+func (r Report) WritePDF(w io.Writer) error {
+	pdf := buildPDF(layoutReport(r))
 	if n, err := w.Write(pdf); err != nil || n != len(pdf) {
 		return ErrPDFNotGenerated
 	}

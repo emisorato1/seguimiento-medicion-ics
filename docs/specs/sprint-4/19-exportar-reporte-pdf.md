@@ -3,7 +3,7 @@
 - **Historia:** #19
 - **Sprint:** 4
 - **Responsable:** Emiliano Sorato
-- **Estado:** Puerta 3 aprobada — **en implementación**: las tareas 1 a 12, sin esperar la #18 (ver la Fase 4)
+- **Estado:** Puerta 3 aprobada — **en implementación**: las tareas 1 a 12 en `dev` (PR #184), y `r.WritePDF` sobre el reporte de la #18 en el segundo PR, rama `historia-19-reporte` (ver la Fase 4). La descarga desde la web es la tarea 21 de la #78
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace falta y lo presenta a las puertas.
 - **Depende de:** #18 (el reporte ya armado), y por ella de la #16. El código espera que el
   reporte y sus secciones estén en `dev` (ver Dependencias de la Fase 2)
@@ -489,6 +489,66 @@ que todos los caracteres ASCII imprimibles estén en las dos tablas.
 **Pendiente para el segundo PR:** `r.WritePDF(w)` sobre el `Report` de la #18, y la
 verificación manual en Vista Previa y en un navegador.
 
+### Segundo PR (`Refs #19`), 30/10: el PDF lee el reporte de la #18
+
+Rama `historia-19-reporte`, de Emiliano Sorato, con asistencia de IA. Va con `Refs #19` y no
+con `Closes #19`, como decía el Cambio de las dependencias: las historias se integran en
+`dev` y su issue se cierra a mano (CLAUDE.md), así que la #19 la cierra Emiliano Sorato.
+
+| Qué | Commit del test (RED) | Commit de la implementación (GREEN) |
+|---|---|---|
+| Los escenarios con un `Report` de la #18 y `r.WritePDF(w)` | `20ac523` | `709b953` |
+
+- **RED por compilación**: el test arma un `Report` y llama a `r.WritePDF`, que todavía no
+  existía, y `layoutReport` recibía `pdfDoc`. La salida está en el mensaje del commit.
+- **Se sacó `pdfDoc`.** Estaba en lugar de `Report` mientras la #18 no estaba en `dev`. Con la
+  #18 en `dev`, el maquetado vuelve a leer el `Report`, como dice la Fase 2, y la entrega
+  privada `writePDF(w, doc)` pasa a ser `r.WritePDF(w)`, la operación del contrato, con el
+  reporte como valor y no como puntero. Se descartó dejar `pdfDoc` con una conversión desde
+  `Report`: era un tipo más que copiaba tres datos del reporte sin agregar nada.
+- **La RN-3 se sigue cumpliendo**: el PDF lee solo `Title`, `GeneratedOn` y `Sections`, y no
+  mira `Metrics` ni `Scope`. Ya no es «por construcción», como con `pdfDoc`, así que lo cuida
+  un test: el esquema "El PDF no agrega ni quita nada del reporte" arma sus dos reportes con
+  métricas que no están en ninguna línea, y si el PDF las escribiera, el archivo tendría
+  textos de más y el test fallaría.
+- **Los tests de los escenarios arman un `Report`** a mano, con sus `Section`, como pidió
+  Maximiliano Eula en el #184. Los que miran el archivo escrito (tareas 6 a 12) lo piden con
+  `r.WritePDF` y ya no con `buildPDF`, así la trazabilidad pasa por la operación del reporte;
+  los del maquetado (tareas 1 a 5) siguen llamando a `layoutReport`, ahora con el `Report`.
+- **El esquema "El PDF no agrega ni quita nada del reporte"** nombra sus casos con el valor de
+  la fila de los Ejemplos ("el reporte del proyecto", "el reporte de un sprint"), como pide
+  AGENTS.md, y cada uno lleva su alcance.
+- **Un test más, sin escenario**: `TestLosReportesQueGeneraLaHistoria18SeExportanTalCual`
+  exporta los dos reportes que genera el dominio (`p.ProjectReport` y `p.SprintReport`) para
+  un proyecto con un sprint cerrado y lee en el archivo exactamente su título, "Generado el",
+  sus encabezados, sus líneas y el pie. Es el único que no arma el reporte a mano. Entró en el
+  mismo commit del RED.
+- **Cobertura**: `internal/domain` sigue al 100 %.
+
+### Verificación manual (30/10)
+
+Lo que se hizo, con los dos reportes del proyecto 1 de los datos de demo
+(`docs/demo/datos-demo.json`) exportados con `r.WritePDF` y la fecha 30/10/2026: el del
+proyecto, de 2 páginas, y el del sprint 1, de 1. Los generó un test temporal que no se
+commiteó (entró con `go test -overlay`).
+
+- **`pdfinfo`** (poppler): los dos son PDF 1.4, con páginas A4 de 595,28 × 841,89 pt.
+- **`pdftotext`** (poppler): el texto de cada archivo, sin "Generado el" ni los pies, es igual
+  al título y a las líneas del reporte, en el mismo orden. "Generado el 30/10/2026" aparece
+  una vez, y los pies dicen "Página 1 de 2", "Página 2 de 2" y "Página 1 de 1". Las tildes y
+  la raya del título salen bien, y el Sprint Goal del sprint 1, más largo que el renglón,
+  sigue en el renglón siguiente.
+- **pypdf 6.15, en modo estricto**: abre los dos sin errores, cada página A4 y con Helvetica y
+  Helvetica-Bold.
+- **PDFKit de macOS**, con un script de Swift: abre los dos, su búsqueda encuentra
+  "Desviación", "Estimación y esfuerzo" y "Página 1 de", y la primera página dibujada muestra
+  el título más grande, los encabezados en negrita y el pie abajo.
+
+**Lo que no se hizo**: no se abrieron los archivos en la aplicación Vista Previa ni en un
+navegador, que es lo que pide la Fase 3. PDFKit es la biblioteca de PDF de macOS, pero no es
+la aplicación. Queda para hacerlo a mano antes de la review, con el PDF descargado desde la
+web (#78, tarea 21).
+
 ## Trazabilidad
 
 | Eslabón | Dónde está |
@@ -498,4 +558,4 @@ verificación manual en Vista Previa y en un navegador.
 | Criterios de aceptación | Fase 1 |
 | Escenarios BDD | Fase 1 |
 | Tests | `internal/domain/report_pdf_test.go` |
-| Código Go | `internal/domain/report_pdf.go` y su error en `internal/domain/errors.go` |
+| Código Go | `internal/domain/report_pdf.go` (`r.WritePDF`, sobre el `Report` de `internal/domain/report.go`) y su error en `internal/domain/errors.go` |
