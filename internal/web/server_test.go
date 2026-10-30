@@ -1496,6 +1496,9 @@ func TestUsarLaPaginaEnUnCelularYConElTeclado(t *testing.T) {
 		"cerrar sin fecha":             navegador.post("/proyectos/1/sprints/cerrar", url.Values{}),
 		"acordar":                      navegador.get("/proyectos/1/historias/2/rondas/1"),
 		"acordar sin elegir":           navegador.post("/proyectos/1/historias/2/rondas/1/acordar", url.Values{}),
+		"reporte del proyecto":         navegador.get("/proyectos/1/reporte"),
+		"reporte de un sprint":         navegador.get("/proyectos/1/reporte?sprint=1"),
+		"reporte con el sprint mal":    navegador.get("/proyectos/1/reporte?sprint=uno"),
 	}
 
 	for nombre, res := range paginas {
