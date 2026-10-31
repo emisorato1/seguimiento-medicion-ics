@@ -639,6 +639,10 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   (`#A0522D`, 5,62 a 1 sobre blanco), Salvia vivo (`#4A7C59`, 4,86) y Oro oscurecido
   (`#8A6A1E`, 5,05). Los números de contraste de la verificación manual de abajo son los de la
   paleta anterior.
+  **Cambiado otra vez el 30/10, a pedido de Juliana Bustos** en su revisión del PR #226: lo
+  planificado pasa del Siena al Gris pizarra (`#3D5A73`, 7,22 a 1 sobre blanco). El Siena, al
+  lado del verde, se leía como alerta, y el gris se distingue mejor: entre las dos barras da
+  1,48 y el Siena daba 1,15.
 - **El texto alternativo empieza con una frase por gráfico** (tarea 15) que dice qué compara,
   y sigue con cada rótulo y su valor: «Story points planificados contra completados.
   Planificados: 40, Completados: 30.». La frase la da la web por la posición del gráfico,

@@ -9,7 +9,7 @@
 </div>
 {{else}}
 <div class="tabla">
-  <table>
+  <table class="rondas">
     <thead>
       <tr>
         <th scope="col">Ronda</th>
@@ -20,7 +20,7 @@
     <tbody>
       {{range .Rounds}}
       <tr>
-        <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}/rondas/{{.Number}}">Ronda {{.Number}}</a></td>
+        <td class="principal"><a href="/proyectos/{{$.Data.ProjectID}}/historias/{{.StoryID}}/rondas/{{.Number}}" data-estado="{{if .Revealed}}Revelada{{else}}En curso{{end}}">Ronda {{.Number}}</a></td>
         <td>{{if .Revealed}}Revelada{{else}}En curso{{end}}</td>
         <td>{{if .Agreed}}{{.Agreed}}{{else}}<span class="sin-dato">sin acordar</span>{{end}}</td>
       </tr>
