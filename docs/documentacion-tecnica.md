@@ -9,8 +9,7 @@ de usuario.
 - **Estado:** última actualización 29/10/2026. Cubre los nueve requerimientos: proyectos,
   integrantes, backlog, sprints (#8 a #11), estimación y Planning Poker (#12, #13 y #73),
   esfuerzo (#14), defectos (#15), métricas (#16), dashboard (#17), reporte (#18) y la
-  exportación a PDF (#19), la web (#77 y #78) y la base de datos (#177). Lo único marcado
-  *(en construcción)* es lo que la #19 todavía no terminó.
+  exportación a PDF (#19), la web (#77 y #78) y la base de datos (#177).
 
 Las reglas de trabajo del equipo están en [CLAUDE.md](../CLAUDE.md) y las convenciones
 técnicas detalladas en [AGENTS.md](../AGENTS.md). Este documento no las repite: las explica y
@@ -106,9 +105,9 @@ ProjectRegistry ─── Project ─┬── Member       (integrantes, #4)
 | `Metrics` | #16 | las once métricas de un sprint o del proyecto, calculadas cada vez que se piden | `metrics.go` |
 | `Defect` | #15 | título, descripción, severidad, estado, historia, sprint de detección y de resolución | `defect.go` |
 | `VotingRound` | #13, #73 | historia, número de ronda, participantes fijados al abrirla, votos ocultos hasta revelar, diferencias y estimación acordada | `voting_round.go`, `voting_round_agreement.go` |
-| `Report` | #18, #19 | título, día de generación, alcance (proyecto o sprint), las métricas de la #16 y cuatro secciones con el texto ya escrito: Resumen, Historias, Estimación y esfuerzo, Defectos. Se arma cada vez que se pide y no se guarda; la exportación a PDF (#19) está en construcción | `report.go`, `format.go` |
+| `Report` | #18, #19 | título, día de generación, alcance (proyecto o sprint), las métricas de la #16 y cuatro secciones con el texto ya escrito: Resumen, Historias, Estimación y esfuerzo, Defectos. Se arma cada vez que se pide y no se guarda; se exporta a PDF con `r.WritePDF(w)` (#19) | `report.go`, `format.go` |
 | `Dashboard` | #17 | el estado general con las métricas del proyecto, el sprint en curso y cuatro gráficos (story points, horas, defectos y velocidad), con los números ya escritos. Se arma cada vez que se pide y no se guarda | `dashboard.go`, `format.go` |
-| PDF del reporte | #19 | maqueta las líneas del reporte en páginas A4 y escribe el PDF 1.4 a mano, con la letra Helvetica que traen todos los lectores *(en construcción: falta conectarlo con `Report` y con la web)* | `report_pdf.go` |
+| PDF del reporte | #19 | maqueta las líneas del reporte en páginas A4 y escribe el PDF 1.4 a mano, con la letra Helvetica que traen todos los lectores. Lo pide la web para descargarlo (#78) | `report_pdf.go` |
 
 **Lo que se calcula no se guarda.** Las métricas, el dashboard y el reporte no son datos del
 proyecto: se arman cada vez que se piden, con los datos de ese momento, y no cambian nada. Los
@@ -311,12 +310,18 @@ rojo.**
 | Análisis estático (`go vet`) | errores comunes que compilan pero están mal |
 | Tests y cobertura | que todos los tests pasen, con el reporte de cobertura en el resumen de la corrida y como archivo descargable (`cobertura`) |
 | Tests en Windows | los mismos tests en una máquina Windows. Es un chequeo aparte y no es obligatorio para mergear: existe porque parte del equipo trabaja en Windows (defecto #108) |
+| Prueba de humo de la web (`scripts/prueba-humo.sh`) | compila la web, la abre con los datos de demo en una base nueva y pide sus páginas principales: que el programa armado arranca y atiende. Tampoco es obligatoria |
 
 Cuando algo entra a `main`, el CD
-([`.github/workflows/cd.yml`](../.github/workflows/cd.yml)) vuelve a correr los tests y
-compila los binarios para Linux (amd64) y macOS (arm64).
+([`.github/workflows/cd.yml`](../.github/workflows/cd.yml)) vuelve a correr los tests,
+compila los binarios para Linux (amd64) y macOS (arm64) sin cgo, le hace la prueba de humo al
+de Linux y **despliega la web en el servidor**: entra con un usuario sin permisos de root y una
+llave propia, la pone en marcha con la base de demo limpia y, si no responde, vuelve a la
+versión anterior y la corrida queda en rojo. Cómo está preparado el servidor y qué hacer si
+algo falla está en [despliegue.md](despliegue.md).
 
-`main` y `dev` están protegidas: no se puede pushear directo, y todo entra por pull request.
+`main` y `dev` están protegidas: no se puede pushear directo, y todo entra por pull request. A
+`main` hace falta además una aprobación.
 
 ---
 

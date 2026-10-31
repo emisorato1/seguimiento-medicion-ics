@@ -27,11 +27,14 @@ go run ./cmd/web -datos /tmp/demo.json
 ## Para la presentación
 
 - [guion-de-demo.md](guion-de-demo.md): el recorrido de 8 a 10 minutos, paso a paso.
-- [capturas/](capturas): una captura de cada pantalla con estos datos, a 1280 de ancho, para
-  el informe y la presentación. Solo muestran estados que existieron: estos datos, la ronda 2
-  de la #77 antes de que votara Juliana Bustos (el 26/10) y el Sprint 3 con el goal, las
-  fechas y el Sprint Backlog de su acta de planning, abierto. Las del dashboard (#17), el
-  reporte (#18) y el PDF (#19) se suman cuando esas historias estén en `dev`.
+- [capturas/](capturas): una captura de cada pantalla con estos datos, a 1280 de ancho y con
+  el diseño nuevo de la web (PR #214), para el informe y la presentación. Solo muestran estados
+  que existieron: estos datos, la ronda 2 de la #77 antes de que votara Juliana Bustos (el
+  26/10), el Sprint 3 con el goal, las fechas y el Sprint Backlog de su acta de planning,
+  abierto, y su cierre con la fecha de fin del sprint (28/10) y las cinco historias que la
+  review cuenta como terminadas. La del dashboard (#17) es
+  la de después de ese cierre, como en el guion, y las del reporte (#18) y su PDF (#19) son las
+  del Sprint 2.
 
 ## Qué tiene
 

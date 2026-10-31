@@ -1,17 +1,42 @@
 /* Estilos de la web. Sin CDN ni framework: todo sale del binario (D2, D3).
-   Los colores de texto tienen un contraste de al menos 4,5 a 1 con su fondo (RN-19). */
+   Los colores de texto tienen un contraste de al menos 4,5 a 1 con su fondo (RN-19).
+
+   La identidad en Verde Salvia la propuso Juliana Bustos el 28/10. Contraste, con la
+   formula de la WCAG: el texto 13,26 a 1 sobre el fondo y 14,42 sobre las tarjetas; el
+   secundario 4,88 y 5,30; la barra lateral 9,74, el rotulo del proyecto en ella 5,38 y la
+   seccion abierta, blanco sobre salvia, 6,16; los botones 6,16 (8,81 al pasar el mouse); los
+   enlaces 5,66. Las barras de los graficos, sobre blanco: Gris pizarra 7,22,
+   Salvia vivo 4,86 y Oro oscurecido 5,05; la Vara de Oro original (#d4a437) da 2,29 y no
+   llega al 3 a 1. Las fuentes son las que tenga la computadora: no se descarga ninguna (D3). */
 
 :root {
-  --fondo: #f6f7f9;
-  --superficie: #ffffff;
-  --texto: #1f2328;
-  --texto-suave: #57606a;
-  --borde: #d0d7de;
-  --primario: #0b5cad;
-  --primario-oscuro: #084a8c;
-  --barra: #0f2a44;
-  --barra-texto: #ffffff;
-  --foco: #1f2328;
+  /* Paleta base */
+  --bg-header: #2c4a3e;
+  --bg-app: #f3f6f5;
+  --bg-card: #ffffff;
+  --border-card: #d3dfd8;
+
+  /* Textos */
+  --text-primary: #1e2d24;
+  --text-muted: #5c7065;
+  --text-header: #ffffff;
+  --text-active-nav: #a3c9b8;
+
+  /* Botones y acciones */
+  --btn-primary-bg: #3b6b52;
+  --btn-primary-hover: #2c523e;
+  --btn-primary-text: #ffffff;
+
+  /* Graficos del dashboard (#17, RN-20) */
+  --chart-planned: #3d5a73;
+  --chart-actual: #4a7c59;
+  --chart-velocity: #8a6a1e;
+
+  /* Tipografia, sin descargas */
+  --font-primary: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: Georgia, Cambria, serif;
+
+  --foco: #1e2d24;
   --foco-barra: #ffd166;
   --error: #b42318;
   --error-fondo: #fdecea;
@@ -19,6 +44,8 @@
   --ok-fondo: #e6f4ea;
   --peligro: #b42318;
   --radio: 6px;
+  --radio-tarjeta: 10px;
+  --sombra-tarjeta: 0 4px 12px rgba(44, 74, 62, 0.05);
 }
 
 *,
@@ -29,11 +56,14 @@
 
 body {
   margin: 0;
-  background: var(--fondo);
-  color: var(--texto);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* El foco siempre a la vista, tambien en la barra oscura (RN-19). */
@@ -53,7 +83,7 @@ textarea:focus {
   outline-offset: 2px;
 }
 
-.barra :focus-visible {
+.sidebar :focus-visible {
   outline-color: var(--foco-barra);
 }
 
@@ -76,8 +106,8 @@ textarea:focus {
   left: 0.5rem;
   top: -3rem;
   padding: 0.5rem 1rem;
-  background: var(--superficie);
-  color: var(--texto);
+  background: var(--bg-card);
+  color: var(--text-primary);
   border-radius: var(--radio);
   z-index: 10;
 }
@@ -86,60 +116,86 @@ textarea:focus {
   top: 0.5rem;
 }
 
-/* La barra queda fija arriba al desplazarse (RN-4). */
-.barra {
+/* La navegacion va en una barra lateral a la izquierda, fija mientras se desplaza la pagina
+   (RN-4), y el contenido ocupa el resto. En un celular la barra pasa arriba (ver al final). */
+.app-layout {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
   position: sticky;
   top: 0;
   z-index: 5;
-  background: var(--barra);
-  color: var(--barra-texto);
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--bg-header);
+  color: var(--text-header);
 }
 
-.barra nav {
+.sidebar nav {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 1.5rem;
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 0.75rem;
 }
 
-.barra a {
-  color: var(--barra-texto);
-  text-decoration: none;
-}
-
-.barra a:hover,
-.barra a[aria-current="page"] {
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-}
-
-.barra .marca {
-  font-weight: 700;
-}
-
-/* El proyecto en el que se esta, siempre a la vista (RN-4). */
-.barra .proyecto-actual {
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.barra ul {
+.sidebar ul {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
+  flex-direction: column;
+  gap: 0.25rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* Una sola columna que se ensancha hasta un maximo en pantallas grandes (D22). */
-main {
+.sidebar a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-header);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* La seccion abierta es una pildora salvia, en negrita: no se distingue solo por el color. */
+.sidebar a[aria-current="page"] {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+}
+
+.sidebar .marca {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* El proyecto en el que se esta, siempre a la vista (RN-4). */
+.sidebar .proyecto-actual {
+  margin: 0.5rem 0 0;
+  padding: 0 0.75rem;
+  color: var(--text-active-nav);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.sidebar .proyecto-actual strong {
+  display: block;
+  color: var(--text-header);
+}
+
+/* El contenido, en una columna que se ensancha hasta un maximo en pantallas grandes (D22). */
+.main-content {
+  width: 100%;
   max-width: 64rem;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 2rem 1.5rem 3rem;
 }
 
 main:focus {
@@ -148,6 +204,15 @@ main:focus {
 
 /* Los titulos llevan nombres que escribe el usuario: una palabra que no entra se corta, como
    en las tablas, para que la pagina no se desplace de costado en el celular (#191). */
+/* Los titulos, con la pila editorial: Georgia o Cambria, que vienen con el sistema. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
 h1 {
   font-size: 1.6rem;
   line-height: 1.25;
@@ -162,7 +227,7 @@ h2 {
 }
 
 a {
-  color: var(--primario);
+  color: var(--btn-primary-bg);
 }
 
 /* Mensajes: la confirmacion despues de una operacion y el rechazo arriba del formulario. */
@@ -186,9 +251,9 @@ a {
 /* Lista vacia: dice que no hay datos y ofrece cargar el primero (RN-7). */
 .vacio {
   padding: 1.5rem;
-  background: var(--superficie);
-  border: 1px dashed var(--borde);
-  border-radius: var(--radio);
+  background: var(--bg-card);
+  border: 1px dashed var(--border-card);
+  border-radius: var(--radio-tarjeta);
   text-align: center;
 }
 
@@ -202,9 +267,10 @@ a {
 .tabla {
   position: relative;
   overflow-x: auto;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
 }
 
 table {
@@ -217,7 +283,7 @@ td {
   padding: 0.6rem 0.75rem;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid var(--borde);
+  border-bottom: 1px solid var(--border-card);
 }
 
 /* Los encabezados y los datos cortos no se cortan; un titulo largo pasa al renglon de
@@ -240,11 +306,32 @@ tr:last-child td {
 
 th {
   font-weight: 600;
-  color: var(--texto-suave);
+  color: var(--text-muted);
+}
+
+/* Las etiquetas chicas: los encabezados de columna y los rotulos de los datos van en
+   mayuscula, mas chicos y espaciados. Los encabezados de fila (scope="row") no, porque son
+   el dato de su fila. El gris sobre blanco da 5,30 a 1, sobre el 4,5 del texto (RN-19). */
+th[scope="col"],
+.datos dt {
+  text-transform: uppercase;
+  font-size: 0.725rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* Los numeros con todos los digitos del mismo ancho, para que se alineen en columna: las
+   celdas de las tablas, los valores de los datos y los rotulos y valores de los graficos
+   del dashboard (#17). */
+td,
+.datos dd,
+.grafico text {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
 .sin-dato {
-  color: var(--texto-suave);
+  color: var(--text-muted);
   font-style: italic;
 }
 
@@ -255,14 +342,15 @@ th {
   gap: 0.5rem 1.5rem;
   margin: 0 0 1.5rem;
   padding: 1rem;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
 }
 
 .datos dt {
   font-weight: 600;
-  color: var(--texto-suave);
+  color: var(--text-muted);
 }
 
 .datos dd {
@@ -284,9 +372,10 @@ th {
 form.formulario {
   max-width: 36rem;
   padding: 1.25rem;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
 }
 
 .campo {
@@ -302,7 +391,7 @@ form.formulario {
 .campo .ayuda {
   display: block;
   margin: 0 0 0.25rem;
-  color: var(--texto-suave);
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -312,9 +401,9 @@ textarea {
   width: 100%;
   padding: 0.5rem 0.6rem;
   font: inherit;
-  color: var(--texto);
-  background: var(--superficie);
-  border: 1px solid var(--texto-suave);
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--text-muted);
   border-radius: var(--radio);
 }
 
@@ -376,10 +465,11 @@ fieldset.campo legend {
 .confirmar {
   max-width: 36rem;
   padding: 1.25rem;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
   border-left: 4px solid var(--peligro);
-  border-radius: var(--radio);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
 }
 
 .confirmar p {
@@ -399,30 +489,32 @@ fieldset.campo legend {
 .boton,
 button {
   display: inline-block;
-  padding: 0.55rem 1.1rem;
+  padding: 0.6rem 1.25rem;
   font: inherit;
   font-weight: 600;
   line-height: 1.2;
-  color: #ffffff;
-  background: var(--primario);
-  border: 1px solid var(--primario);
+  color: var(--btn-primary-text);
+  background: var(--btn-primary-bg);
+  border: 1px solid var(--btn-primary-bg);
   border-radius: var(--radio);
   text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .boton:hover,
 button:hover {
-  background: var(--primario-oscuro);
+  background: var(--btn-primary-hover);
+  border-color: var(--btn-primary-hover);
 }
 
 .boton-secundario {
-  color: var(--primario);
-  background: var(--superficie);
+  color: var(--btn-primary-bg);
+  background: var(--bg-card);
 }
 
 .boton-secundario:hover {
-  color: #ffffff;
+  color: var(--btn-primary-text);
 }
 
 .boton-peligro {
@@ -434,17 +526,40 @@ button:hover {
   background: #8a1c12;
 }
 
+/* El reporte (#78, D6): cada seccion es una tarjeta, como el resto de la web, con sus lineas
+   tal como las arma el nucleo, sin vinetas. Una linea larga, como el titulo de una historia,
+   se corta para no mover la pagina de costado en el celular. */
+.generado {
+  margin: -0.5rem 0 1rem;
+  color: var(--text-muted);
+}
+
+.seccion-reporte {
+  margin: 1rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.seccion-reporte h2 {
+  margin: 0 0 0.5rem;
+}
+
+.lineas-reporte {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.lineas-reporte li {
+  padding: 0.2rem 0;
+}
+
 /* En un celular los botones ocupan el ancho y la tabla de datos va en una columna. */
 @media (max-width: 40rem) {
-  /* En un celular la barra queda fija pero baja: el nombre del proyecto va en un renglon y,
-     si no entra, se corta con puntos suspensivos. Completo esta en el titulo de la pagina. */
-  .barra .proyecto-actual {
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .datos {
     grid-template-columns: 1fr;
     gap: 0.1rem;
@@ -461,67 +576,19 @@ button:hover {
   }
 }
 
-/* El dashboard (#17) con la paleta que eligio Juliana Bustos el 27/10: es el foco de toda la
-   pagina del dashboard, y solo de esa pagina. Los colores de :root, del resto de la web
-   (#77), no cambian. Contraste sobre la tarjeta alabastro: Siena 4,58 a 1, que alcanza para
-   texto (RN-19 de la #77); Salvia y Oro, oscurecidos para llegar al 3 a 1 de las barras
-   (RN-20), 3,94 y 4,12. El Rosa Polvoriento solo decora lineas, sin texto encima. */
-.dashboard {
-  --dash-alabastro: #f5e6d3;
-  --dash-siena: #a0522d;
-  --dash-siena-oscuro: #84421f;
-  --dash-salvia: #5e7a47;
-  --dash-oro: #8a6a1e;
-  --dash-rosa: #c47a6d;
-}
-
-.dashboard h1 {
-  color: var(--dash-siena);
-}
-
-.dashboard h2 {
-  padding-bottom: 0.25rem;
-  border-bottom: 2px solid var(--dash-rosa);
-}
-
-.dashboard a {
-  color: var(--dash-siena);
-}
-
-.dashboard .datos,
-.dashboard .vacio {
-  background: var(--dash-alabastro);
-  border-color: var(--dash-alabastro);
-  border-left: 4px solid var(--dash-siena);
-}
-
-#sprint-en-curso .datos {
-  border-left-color: var(--dash-salvia);
-}
-
-.dashboard .vacio {
-  border-style: solid;
-}
-
-.dashboard a.boton {
-  background: var(--dash-siena);
-  border-color: var(--dash-siena);
-  color: #ffffff;
-}
-
-.dashboard a.boton:hover {
-  background: var(--dash-siena-oscuro);
-  border-color: var(--dash-siena-oscuro);
-}
-
-/* Los graficos: barras horizontales en SVG, cada grafico en su tarjeta. El color ayuda, pero
-   cada barra lleva su rotulo (D6). */
+/* Los graficos del dashboard (#17), con la identidad salvia: cada grafico es una tarjeta como
+   el resto de la web, y las barras usan los colores de los graficos de :root. Contraste sobre
+   blanco: Gris pizarra 7,22 a 1, Salvia vivo 4,86 y Oro oscurecido 5,05, todas sobre el 3 a 1
+   de la RN-20. Lo planificado va en gris pizarra y no en el Siena de antes, que al lado del
+   verde se leia como alerta: entre las dos barras el gris da 1,48 y el Siena daba 1,15
+   (revision de Juliana Bustos del 30/10). El color ayuda, pero cada barra lleva su rotulo (D6). */
 .grafico {
   margin: 0 0 1rem;
-  padding: 1rem;
-  background: var(--dash-alabastro);
-  border-left: 4px solid var(--dash-oro);
-  border-radius: var(--radio);
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
 }
 
 .grafico figcaption {
@@ -539,18 +606,371 @@ button:hover {
 }
 
 .grafico text {
-  fill: var(--texto);
+  fill: var(--text-primary);
   font-size: 0.875rem;
 }
 
 .barra-planificada {
-  fill: var(--dash-siena);
+  fill: var(--chart-planned);
 }
 
 .barra-real {
-  fill: var(--dash-salvia);
+  fill: var(--chart-actual);
 }
 
 .barra-velocidad {
-  fill: var(--dash-oro);
+  fill: var(--chart-velocity);
+}
+
+/* En una tableta o un celular la barra lateral pasa arriba y queda fija al desplazarse
+   (RN-4). Las secciones van en una fila que se recorre de costado dentro de la barra, asi la
+   pagina no se desplaza (RN-18). El nombre del proyecto va en un renglon y, si no entra, se
+   corta con puntos suspensivos: completo esta en el titulo de la pagina. */
+@media (max-width: 48rem) {
+  .app-layout {
+    display: block;
+  }
+
+  .sidebar {
+    height: auto;
+    overflow: visible;
+  }
+
+  /* El nombre del sistema y «Proyectos» comparten el primer renglon; el proyecto y sus
+     secciones van debajo, cada uno en el suyo. */
+  .sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .sidebar .proyecto-actual,
+  .sidebar ul[aria-label] {
+    flex-basis: 100%;
+  }
+
+  .sidebar ul {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .sidebar a {
+    padding: 0.3rem 0.65rem;
+    white-space: nowrap;
+  }
+
+  .sidebar .marca {
+    padding-left: 0;
+  }
+
+  .sidebar .proyecto-actual {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar .proyecto-actual strong {
+    display: inline;
+  }
+
+  .main-content {
+    padding: 1.5rem 1rem 3rem;
+  }
+}
+
+/* Mejoras para la demo del 2/11 (issue #223). Se suman a la identidad salvia y no cambian el
+   contenido de ninguna celda ni de ningun dato: los tests de la web miran ese HTML tal cual.
+   No agregan colores: usan los de :root, con estos contrastes (formula de la WCAG) sobre las
+   tarjetas blancas y sobre el fondo, que es tambien el de la fila marcada al pasar el mouse:
+   peligro 6,57 y 6,05; Oro oscurecido 5,05 y 4,64; ok 9,11 y 8,38; texto secundario 5,30 y
+   4,88; enlaces 6,16 y 5,66. */
+
+/* El estado general y los numeros del sprint en curso, en tarjetas: el numero grande arriba y
+   su rotulo abajo. Cada par va en un div, que el dl permite; el orden en el HTML sigue siendo
+   rotulo y valor, para los lectores de pantalla. */
+.indicadores {
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.indicador dd {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.indicador dt {
+  font-size: 0.7rem;
+}
+
+/* Un punto de color antes del estado, la prioridad y la severidad, en el backlog, el sprint, la
+   lista de sprints, los defectos y las rondas. El texto sigue al lado: el color no es lo unico
+   que informa (RN-19 de la #77). El valor va en un atributo data- de la fila, o del enlace de la
+   ronda, para no cambiar el contenido de las celdas. Cada color dice lo mismo en todas las
+   tablas: verde lo terminado, Oro oscurecido lo que esta en curso, rojo lo que pide atencion y
+   gris lo que espera. */
+[data-prioridad="Alta"],
+[data-severidad="Crítica"] {
+  --punto-urgencia: var(--peligro);
+}
+
+[data-prioridad="Media"],
+[data-severidad="Mayor"] {
+  --punto-urgencia: var(--chart-velocity);
+}
+
+[data-prioridad="Baja"],
+[data-severidad="Menor"] {
+  --punto-urgencia: var(--text-muted);
+}
+
+[data-estado="Terminada"],
+[data-estado="Cerrado"],
+[data-estado="Resuelto"],
+[data-estado="Revelada"],
+.rondas tr:has([data-estado="Revelada"]) {
+  --punto-estado: var(--ok);
+  --texto-estado: var(--ok);
+  --peso-estado: 600;
+}
+
+[data-estado="En curso"],
+[data-estado="Abierto"],
+.rondas tr:has([data-estado="En curso"]) {
+  --punto-estado: var(--chart-velocity);
+}
+
+[data-estado="Pendiente"] {
+  --punto-estado: var(--text-muted);
+}
+
+/* Un defecto abierto pide atencion; un sprint abierto solo esta en curso. */
+.defectos [data-estado="Abierto"] {
+  --punto-estado: var(--peligro);
+}
+
+.historias td:nth-child(3),
+.defectos td:nth-child(3) {
+  --punto: var(--punto-urgencia);
+}
+
+.historias td:nth-child(4),
+.historias-sprint td:nth-child(4),
+.sprints td:nth-child(5),
+.defectos td:nth-child(4),
+.rondas td:nth-child(2) {
+  --punto: var(--punto-estado);
+  color: var(--texto-estado, inherit);
+  font-weight: var(--peso-estado, inherit);
+  white-space: nowrap;
+}
+
+.historias td:nth-child(3),
+.defectos td:nth-child(3),
+.poker a[data-estado] {
+  white-space: nowrap;
+}
+
+.poker a[data-estado] {
+  --punto: var(--punto-estado);
+}
+
+.historias td:nth-child(3)::before,
+.historias td:nth-child(4)::before,
+.historias-sprint td:nth-child(4)::before,
+.sprints td:nth-child(5)::before,
+.defectos td:nth-child(3)::before,
+.defectos td:nth-child(4)::before,
+.rondas td:nth-child(2)::before,
+.poker a[data-estado]::before {
+  content: "";
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.45rem;
+  vertical-align: 0.05rem;
+  border-radius: 50%;
+  background: var(--punto, var(--text-muted));
+}
+
+/* Un icono por seccion en la barra lateral. Van como mascaras dentro de este archivo, sin
+   tocar el HTML ni descargar nada (D3 de la #77): el icono toma el color del texto del enlace,
+   asi que tiene su mismo contraste (9,74 en la barra y 6,16 en la seccion abierta). El lector
+   de pantalla no los lee, porque el ::before no tiene texto.
+
+   Los iconos son de Lucide 0.460.0 (https://lucide.dev): folder-kanban, info,
+   layout-dashboard, users, list-todo, iteration-cw, clock, bug y spade, y para el reporte
+   file-text, eye y download. Su licencia:
+
+   ISC License
+
+   Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather
+   (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2022.
+
+   Permission to use, copy, modify, and/or distribute this software for any
+   purpose with or without fee is hereby granted, provided that the above
+   copyright notice and this permission notice appear in all copies.
+
+   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+   WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+   MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+   ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+   ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+   OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. */
+.sidebar ul a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sidebar ul a::before {
+  content: "";
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  background: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.sidebar ul a[href="/proyectos"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z' /%3E%3Cpath d='M8 10v4' /%3E%3Cpath d='M12 10v2' /%3E%3Cpath d='M16 10v6' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z' /%3E%3Cpath d='M8 10v4' /%3E%3Cpath d='M12 10v2' /%3E%3Cpath d='M16 10v6' /%3E%3C/svg%3E");
+}
+
+.sidebar ul[aria-label] li:first-child a::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10' /%3E%3Cpath d='M12 16v-4' /%3E%3Cpath d='M12 8h.01' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10' /%3E%3Cpath d='M12 16v-4' /%3E%3Cpath d='M12 8h.01' /%3E%3C/svg%3E");
+}
+
+.sidebar a[href$="/dashboard"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect width='7' height='9' x='3' y='3' rx='1' /%3E%3Crect width='7' height='5' x='14' y='3' rx='1' /%3E%3Crect width='7' height='9' x='14' y='12' rx='1' /%3E%3Crect width='7' height='5' x='3' y='16' rx='1' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect width='7' height='9' x='3' y='3' rx='1' /%3E%3Crect width='7' height='5' x='14' y='3' rx='1' /%3E%3Crect width='7' height='9' x='14' y='12' rx='1' /%3E%3Crect width='7' height='5' x='3' y='16' rx='1' /%3E%3C/svg%3E");
+}
+
+.sidebar a[href$="/integrantes"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' /%3E%3Ccircle cx='9' cy='7' r='4' /%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87' /%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' /%3E%3Ccircle cx='9' cy='7' r='4' /%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87' /%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75' /%3E%3C/svg%3E");
+}
+
+.sidebar a[href$="/backlog"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect x='3' y='5' width='6' height='6' rx='1' /%3E%3Cpath d='m3 17 2 2 4-4' /%3E%3Cpath d='M13 6h8' /%3E%3Cpath d='M13 12h8' /%3E%3Cpath d='M13 18h8' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect x='3' y='5' width='6' height='6' rx='1' /%3E%3Cpath d='m3 17 2 2 4-4' /%3E%3Cpath d='M13 6h8' /%3E%3Cpath d='M13 12h8' /%3E%3Cpath d='M13 18h8' /%3E%3C/svg%3E");
+}
+
+.sidebar a[href$="/sprints"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M4 10c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8H4' /%3E%3Cpolyline points='8 22 4 18 8 14' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M4 10c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8H4' /%3E%3Cpolyline points='8 22 4 18 8 14' /%3E%3C/svg%3E");
+}
+
+.sidebar a[href$="/esfuerzo"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10' /%3E%3Cpolyline points='12 6 12 12 16 14' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10' /%3E%3Cpolyline points='12 6 12 12 16 14' /%3E%3C/svg%3E");
+}
+
+.sidebar a[href$="/defectos"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='m8 2 1.88 1.88' /%3E%3Cpath d='M14.12 3.88 16 2' /%3E%3Cpath d='M9 7.13v-1a3.003 3.003 0 1 1 6 0v1' /%3E%3Cpath d='M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6' /%3E%3Cpath d='M12 20v-9' /%3E%3Cpath d='M6.53 9C4.6 8.8 3 7.1 3 5' /%3E%3Cpath d='M6 13H2' /%3E%3Cpath d='M3 21c0-2.1 1.7-3.9 3.8-4' /%3E%3Cpath d='M20.97 5c0 2.1-1.6 3.8-3.5 4' /%3E%3Cpath d='M22 13h-4' /%3E%3Cpath d='M17.2 17c2.1.1 3.8 1.9 3.8 4' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='m8 2 1.88 1.88' /%3E%3Cpath d='M14.12 3.88 16 2' /%3E%3Cpath d='M9 7.13v-1a3.003 3.003 0 1 1 6 0v1' /%3E%3Cpath d='M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6' /%3E%3Cpath d='M12 20v-9' /%3E%3Cpath d='M6.53 9C4.6 8.8 3 7.1 3 5' /%3E%3Cpath d='M6 13H2' /%3E%3Cpath d='M3 21c0-2.1 1.7-3.9 3.8-4' /%3E%3Cpath d='M20.97 5c0 2.1-1.6 3.8-3.5 4' /%3E%3Cpath d='M22 13h-4' /%3E%3Cpath d='M17.2 17c2.1.1 3.8 1.9 3.8 4' /%3E%3C/svg%3E");
+}
+
+.sidebar a[href$="/planning-poker"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M5 9c-1.5 1.5-3 3.2-3 5.5A5.5 5.5 0 0 0 7.5 20c1.8 0 3-.5 4.5-2 1.5 1.5 2.7 2 4.5 2a5.5 5.5 0 0 0 5.5-5.5c0-2.3-1.5-4-3-5.5l-7-7-7 7Z' /%3E%3Cpath d='M12 18v4' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M5 9c-1.5 1.5-3 3.2-3 5.5A5.5 5.5 0 0 0 7.5 20c1.8 0 3-.5 4.5-2 1.5 1.5 2.7 2 4.5 2a5.5 5.5 0 0 0 5.5-5.5c0-2.3-1.5-4-3-5.5l-7-7-7 7Z' /%3E%3Cpath d='M12 18v4' /%3E%3C/svg%3E");
+}
+
+/* Las tablas marcan la fila al pasar el mouse, con el color del fondo (el texto secundario da
+   4,88 y los enlaces 5,66 sobre el), y el numero de la historia, del sprint o del defecto va
+   en el gris del texto secundario. Los story points van a la derecha, como se alinean los
+   numeros que se comparan. */
+tbody tr:hover > td,
+tbody tr:hover > th {
+  background: var(--bg-app);
+}
+
+.historias td:first-child,
+.historias-sprint td:first-child,
+.sprints td:first-child,
+.defectos td:first-child {
+  color: var(--text-muted);
+}
+
+td a {
+  text-underline-offset: 0.2em;
+}
+
+.historias th:nth-child(5),
+.historias td:nth-child(5),
+.historias-sprint th:nth-child(3),
+.historias-sprint td:nth-child(3),
+.poker th:nth-child(2),
+.poker td:nth-child(2),
+.rondas th:nth-child(3),
+.rondas td:nth-child(3),
+#votos th:nth-child(2),
+#votos td:nth-child(2) {
+  text-align: right;
+}
+
+/* El reporte (#78) con el mismo estilo: su icono en la barra lateral, y uno en el boton que lo
+   muestra y en el que lo descarga en PDF, tambien de Lucide y con la licencia de arriba. Los
+   iconos toman el color del texto del boton, asi que tienen su mismo contraste (6,16). */
+form[action$="/reporte"] button,
+a.boton[href*="/reporte/pdf"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+form[action$="/reporte"] button::before,
+a.boton[href*="/reporte/pdf"]::before {
+  content: "";
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  background: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.sidebar a[href$="/reporte"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' /%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4' /%3E%3Cpath d='M10 9H8' /%3E%3Cpath d='M16 13H8' /%3E%3Cpath d='M16 17H8' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' /%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4' /%3E%3Cpath d='M10 9H8' /%3E%3Cpath d='M16 13H8' /%3E%3Cpath d='M16 17H8' /%3E%3C/svg%3E");
+}
+
+form[action$="/reporte"] button::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0' /%3E%3Ccircle cx='12' cy='12' r='3' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0' /%3E%3Ccircle cx='12' cy='12' r='3' /%3E%3C/svg%3E");
+}
+
+a.boton[href*="/reporte/pdf"]::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' /%3E%3Cpolyline points='7 10 12 15 17 10' /%3E%3Cline x1='12' x2='12' y1='15' y2='3' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' /%3E%3Cpolyline points='7 10 12 15 17 10' /%3E%3Cline x1='12' x2='12' y1='15' y2='3' /%3E%3C/svg%3E");
 }

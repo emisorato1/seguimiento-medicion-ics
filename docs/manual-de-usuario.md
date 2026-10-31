@@ -3,7 +3,8 @@
 Guía breve para usar el sistema de seguimiento y medición de proyectos. Crece a medida que
 se terminan las historias: hoy cubre la **interfaz web** (historia #77) y la **interfaz de
 consola** (historia #24), y en la web también los sprints, el esfuerzo, los defectos y el
-Planning Poker (historia #78). El reporte y su PDF se suman cuando estén terminados.
+Planning Poker (historia #78), el dashboard (historia #17), y el reporte con su PDF
+(historias #18, #19 y #78).
 
 Las dos interfaces hacen lo mismo con los proyectos, los integrantes y el backlog; lo demás
 se hace solo desde la web. **No comparten los datos**: la web los guarda en una base de datos
@@ -52,9 +53,10 @@ navegador. No hace falta internet. Para cerrarlo, volvé a la terminal y apretá
 
 ### Cómo se usa
 
-- **La barra de arriba** lleva siempre a la lista de proyectos. Dentro de un proyecto,
-  muestra su nombre y sus partes: **Datos**, **Integrantes**, **Backlog**, **Sprints**,
-  **Esfuerzo**, **Defectos** y **Planning Poker**.
+- **La barra de la izquierda** lleva siempre a la lista de proyectos. Dentro de un proyecto,
+  muestra su nombre y sus partes: **Datos**, **Dashboard**, **Integrantes**, **Backlog**,
+  **Sprints**, **Esfuerzo**, **Defectos**, **Planning Poker** y **Reporte**, con la parte abierta
+  resaltada. En el celular, la barra pasa arriba y las partes se recorren de costado.
 - **Cada cambio se confirma** con un mensaje en verde arriba de la página. Recargar la página
   no repite el cambio.
 - **Si algo está mal**, el formulario vuelve con lo que escribiste y el motivo en rojo,
@@ -85,6 +87,31 @@ tiene, cuántas están completadas y cuántas pendientes, y qué sprint está en
 proyecto queda sin ellas.
 
 ![Datos de un proyecto](manual/proyecto.png)
+
+### Dashboard
+
+En **Dashboard** se ve de un vistazo cómo viene el proyecto. Solo muestra: abrirlo no cambia
+nada. Tiene tres partes:
+
+- **Estado general:** los story points y las historias planificados y completados, las horas
+  estimadas y reales con su desviación, los defectos detectados y resueltos, y la velocidad,
+  que es el promedio de los sprints cerrados. Mientras no hay ninguno cerrado, dice «sin
+  sprints cerrados» en lugar de un cero.
+- **Sprint en curso:** su objetivo, sus fechas, los story points planificados, las horas
+  reales y los defectos detectados. Con el enlace se abre el sprint. Si no hay ninguno
+  abierto, lo dice.
+
+![Dashboard de un proyecto](manual/dashboard.png)
+
+- **Gráficos:** cuatro gráficos de barras que comparan los story points planificados con los
+  completados, las horas estimadas con las reales, los defectos detectados con los resueltos
+  y la velocidad de cada sprint cerrado. Cada barra lleva su número escrito, y con **Ver los
+  valores** se ven en una tabla.
+
+![Gráficos del dashboard](manual/dashboard-graficos.png)
+
+Si el proyecto todavía no tiene sprints, el dashboard dice que no hay datos para mostrar y
+ofrece crear el primero.
 
 ### Integrantes
 
@@ -194,6 +221,18 @@ ronda nueva desde **Planning Poker**, eligiendo la historia otra vez.
 Con **Todas las rondas de la historia** se ven las rondas anteriores y lo que se acordó en
 cada una.
 
+### Reporte
+
+En **Reporte** está el reporte del proyecto entero, con la fecha de hoy: el resumen, las
+historias, la estimación y el esfuerzo, y los defectos. En **Reporte de** se elige un sprint
+y, con **Ver el reporte**, se ve el de ese sprint; con «Todo el proyecto» se vuelve al del
+proyecto. El reporte de un sprint abierto avisa que sus números son parciales.
+
+Con **Descargar en PDF** se baja ese mismo reporte como archivo, para guardarlo o
+presentarlo: se llama `reporte-proyecto-1.pdf`, o `reporte-proyecto-1-sprint-2.pdf` si es
+del sprint 2 del proyecto 1. El PDF tiene el mismo texto que la página, en hojas A4
+numeradas.
+
 ### Si algo sale mal
 
 | Lo que ves | Qué hacer |
@@ -202,6 +241,7 @@ cada una.
 | «no se encontró el proyecto» (o la historia, el sprint, el defecto o la ronda) | volver con el botón y elegirlo de la lista |
 | «ya hay un sprint abierto en el proyecto: el sprint 1» al crear uno | cerrar primero el sprint abierto |
 | «todavía faltan votos para revelar la ronda» | esperar a que voten todos los que figuran en «Faltan» |
+| «no se pudo generar el PDF» al descargar el reporte | volver a apretar **Descargar en PDF**; el reporte sigue en la página |
 | «No quedó guardado» | el cambio sigue cargado y se guarda con el próximo que funcione; revisá que se pueda escribir en la carpeta de los datos |
 | Al abrir, «el puerto ya lo está usando otro programa» | abrirlo con `-puerto 8081` |
 | Al abrir, «los datos guardados no se pueden leer» | arrancar con otra base usando `-datos` e importar ahí una copia exportada |

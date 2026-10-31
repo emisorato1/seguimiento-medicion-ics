@@ -112,13 +112,14 @@ nada, queda así.
 
 **Lo que quedó:**
 
-Emiliano Sorato votó el 26/10 por tres propuestas. Los votos de los demás están [pendientes].
+Emiliano Sorato votó el 26/10 por tres propuestas, y Maximiliano Eula por las mismas tres el
+29/10. Los votos de Juliana y Agustín están [pendientes].
 
 | Propuesta | Emiliano | Maximiliano | Juliana | Agustín |
 |---|---|---|---|---|
-| Reservar una franja fija por día para revisar los PRs asignados | sí | [pendiente] | [pendiente] | [pendiente] |
-| Pedir revisor apenas se abre el PR | sí | [pendiente] | [pendiente] | [pendiente] |
-| Seguir adelantando la próxima historia apenas uno termina lo suyo | sí | [pendiente] | [pendiente] | [pendiente] |
+| Reservar una franja fija por día para revisar los PRs asignados | sí | sí | [pendiente] | [pendiente] |
+| Pedir revisor apenas se abre el PR | sí | sí | [pendiente] | [pendiente] |
+| Seguir adelantando la próxima historia apenas uno termina lo suyo | sí | sí | [pendiente] | [pendiente] |
 
 | Acuerdo | Responsable |
 |---|---|

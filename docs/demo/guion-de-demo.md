@@ -4,8 +4,8 @@ Un recorrido de 8 a 10 minutos por el sistema con nuestro propio proyecto, carga
 [datos de demo](README.md). Cada paso dice qué abrir, qué hacer y qué contar. Las capturas
 de cada pantalla están en [capturas/](capturas).
 
-Los lugares del **dashboard (#17)**, del **reporte (#18)** y del **PDF (#19)** están marcados:
-se completan cuando esas historias entren a `dev`.
+El recorrido muestra todas las historias, también el **dashboard (#17)**, el **reporte (#18)** y
+su **PDF (#19)**, que se abren desde la web (#78).
 
 ## Antes de presentar
 
@@ -75,32 +75,56 @@ se completan cuando esas historias entren a `dev`.
   ([13](capturas/13-sprint-3-abierto.png))
 - **Cerrar el sprint:** *Cerrar el sprint* propone la fecha de hoy y una casilla por historia.
   ([14](capturas/14-cerrar-sprint.png))
-  - Como el Sprint 3 terminó el 28/10, se marcan **solo las historias que de verdad se
-    terminaron** (mirar el tablero antes de presentar) y se confirma.
+  - **Cambiar la fecha** por la del cierre real del Sprint 3 (28/10, o la que diga el acta de
+    la review). El formulario acepta una fecha posterior al fin del sprint: si se deja la de
+    hoy, el sprint queda cerrado el día de la presentación.
+  - Se marcan **solo las historias que de verdad se terminaron** (mirar el tablero antes de
+    presentar) y se confirma. En la captura están las cinco terminadas al 30/10: todas menos
+    la #78.
   - **Contar:** "Antes de cerrar, el sistema dice cuáles quedan completadas y cuáles vuelven
     al Product Backlog. Un sprint cerrado no se puede volver a abrir."
 
 ## 5. El esfuerzo y los defectos (1,5 minutos)
 
 - **Abrir** *Esfuerzo*. ([15](capturas/15-esfuerzo.png))
-  - **Contar:** "Son las horas reales del tablero: 69,25 en los dos primeros sprints, con el
+  - **Contar:** "Son las horas reales del tablero de los dos primeros sprints, unas 69, con el
     total por historia y por integrante."
-- **Abrir** *Defectos* y filtrar por la severidad *Mayor*. ([16](capturas/16-defectos.png))
+  - La página no muestra el total general, solo los de cada historia y cada integrante
+    (16 + 28 + 8 + 17,25 = 69,25). El dashboard lo redondea a 69,3.
+- **Abrir** *Defectos*: están los tres. ([16](capturas/16-defectos.png))
   - **Contar:** "Son los defectos que nos encontramos entre nosotros, con la historia y el
     sprint en que se detectaron y se resolvieron."
-- **Entrar** al defecto 60. ([17](capturas/17-defecto.png))
+- **Entrar** al defecto 60, *Menor*, y volver. ([17](capturas/17-defecto.png))
+- **Filtrar** por la severidad *Mayor*: quedan el 59 y el 108.
 
-> **[Dashboard — #17]** Cuando entre la #17: abrir el dashboard y mostrar los gráficos de la
-> velocidad, las horas estimadas contra las reales y los defectos. Tiempo: 1 minuto. Captura:
-> `capturas/18-dashboard.png`.
+## 6. El dashboard, el reporte y el PDF
 
-## 6. El reporte y el PDF
+- **Abrir** *Dashboard* (1 minuto). ([18](capturas/18-dashboard.png))
+  - **Contar:** "El dashboard junta todo lo que medimos. Con el Sprint 3 recién cerrado, el
+    proyecto lleva 86 de 109 story points y 18 de 21 historias completadas. La velocidad es
+    el promedio de los tres sprints cerrados: 6, 52 y 28, que da unos 29."
+  - **Mostrar** los gráficos: los story points planificados contra los completados, las horas
+    estimadas contra las reales, los defectos y la velocidad de cada sprint. Con *Ver los
+    valores* se ven en una tabla.
+  - *Sprint en curso* dice que no hay ninguno, porque el Sprint 3 se acaba de cerrar.
+  - Si preguntan por el Sprint 3: en la demo da 28 y no 33 como en su review, porque la #73 se
+    adelantó y no está asignada en estos datos. Y las horas reales son solo las de los dos
+    primeros sprints (69,3 h): las del Sprint 3 no se cargan en la demo. La desviación de cada
+    sprint está en su acta de review.
 
-> **[Reporte — #18]** Cuando entre la #18: abrir el reporte del proyecto y el del Sprint 2, y
-> mostrar sus secciones. Captura: `capturas/19-reporte.png`.
->
-> **[PDF — #19]** Cuando entre la #19: descargar el reporte en PDF y abrirlo. Captura:
-> `capturas/20-pdf.png`.
+
+- **Abrir** *Reporte* (1 minuto), elegir el Sprint 2 en *Reporte de* y apretar *Ver el
+  reporte*. ([19](capturas/19-reporte.png))
+  - **Contar:** "El reporte dice lo mismo que el dashboard, pero en texto y por secciones: el
+    resumen, las historias, la estimación y el esfuerzo, y los defectos. Sale de la misma cuenta
+    de métricas que el dashboard, así que no puede mostrar otra cosa. El Sprint 2 da 52 story
+    points de 52 y los dos defectos resueltos."
+  - Si preguntan por las horas: el reporte mide cada historia entera, y por eso da 53,3 h. El
+    acta de review cuenta 31, las trabajadas en el sprint, porque tres historias venían del
+    Sprint 1.
+- **Descargar en PDF** y abrir el archivo. ([20](capturas/20-pdf.png))
+  - **Contar:** "El PDF es el mismo reporte, con el nombre del proyecto y del sprint:
+    reporte-proyecto-1-sprint-2.pdf. Lo escribe nuestro código en Go, sin librerías."
 
 ## 7. La base de datos: cerrar y volver a abrir (1 minuto)
 

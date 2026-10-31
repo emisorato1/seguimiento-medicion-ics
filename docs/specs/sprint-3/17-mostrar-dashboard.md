@@ -3,7 +3,7 @@
 - **Historia:** #17
 - **Sprint:** 3
 - **Responsable:** Juliana Bustos
-- **Estado:** Implementada — **en review**
+- **Estado:** Terminada en el Sprint 3 — **mergeada a `dev`** el 29/10 (PR #209)
 - **Redacción inicial:** borrador preparado con asistencia de IA a partir de la consigna y
   de los criterios de aceptación de la issue. El responsable lo revisa, lo corrige si hace
   falta y lo presenta a las puertas. **Adaptado a la web el 20/10** (punto 1 de "Para decidir
@@ -633,6 +633,16 @@ Detalles que la Fase 2 no fijaba y que no cambian ningún escenario:
   Salvia oscurecido (`#5E7A47`, 3,94 a 1) y la velocidad en Vara de Oro oscurecida
   (`#8A6A1E`, 4,12 a 1). Los originales de la paleta, `#87A96B` y `#D4A437`, no llegaban al
   3 a 1 de la RN-20 sobre ese fondo. Las fuentes de la web no cambian.
+  **Cambiado el 29/10 por el rediseño de toda la web en Verde Salvia** (rama
+  `estilo-paleta-salvia`, con el ok del grupo): el dashboard deja su paleta propia y toma la
+  de toda la web. Los gráficos van en tarjetas blancas como el resto, y las barras en Siena
+  (`#A0522D`, 5,62 a 1 sobre blanco), Salvia vivo (`#4A7C59`, 4,86) y Oro oscurecido
+  (`#8A6A1E`, 5,05). Los números de contraste de la verificación manual de abajo son los de la
+  paleta anterior.
+  **Cambiado otra vez el 30/10, a pedido de Juliana Bustos** en su revisión del PR #226: lo
+  planificado pasa del Siena al Gris pizarra (`#3D5A73`, 7,22 a 1 sobre blanco). El Siena, al
+  lado del verde, se leía como alerta, y el gris se distingue mejor: entre las dos barras da
+  1,48 y el Siena daba 1,15.
 - **El texto alternativo empieza con una frase por gráfico** (tarea 15) que dice qué compara,
   y sigue con cada rótulo y su valor: «Story points planificados contra completados.
   Planificados: 40, Completados: 30.». La frase la da la web por la posición del gráfico,
