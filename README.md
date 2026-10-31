@@ -118,6 +118,7 @@ El rol de Product Architect lo ocupan los profesores de la cátedra.
 - [Guía de Planning Poker](docs/guia-planning-poker.md) — cómo estimamos las historias.
 - [Actas](docs/actas/) — plannings, reviews y retrospectivas de cada sprint.
 - [Informe de métricas y cobertura](docs/informe-de-metricas.md) — las métricas del propio proyecto, sprint por sprint, y la cobertura de los tests.
+- [Informe final](docs/informe-final.md) — el informe de la entrega: el producto, cómo trabajamos, las métricas sprint por sprint, las pruebas, la evidencia de TDD, la trazabilidad de la #13 y las retrospectivas.
 - [Documentación técnica](docs/documentacion-tecnica.md) — cómo está construido el sistema: arquitectura, modelo de dominio, decisiones de diseño, manejo de errores, persistencia, pruebas y trazabilidad.
 - [Integración y despliegue continuos](docs/despliegue.md) — qué prueba el CI en cada PR y cómo el CD despliega la web en el servidor con cada incremento a `main`.
 - [Trazabilidad](docs/trazabilidad.md) — el recorrido historia → spec → criterios → escenario BDD → test → código de cada historia con tests, con los huecos marcados. Lo genera [scripts/trazabilidad.sh](scripts/trazabilidad.sh).

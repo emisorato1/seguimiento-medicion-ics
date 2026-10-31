@@ -5,8 +5,8 @@
 > uno.
 
 - **Fecha:** 29 y 30/10, por escrito.
-- **Participantes:** Emiliano Sorato, Maximiliano Eula y Juliana Bustos, por escrito. Agustín
-  Salinas: [pendiente].
+- **Participantes:** Emiliano Sorato, Maximiliano Eula, Juliana Bustos y Agustín Salinas, por
+  escrito.
 - **Facilita:** Emiliano Sorato (Agile Enabler)
 - **Duración del sprint:** jueves 29/10, un solo día. La review y la retrospectiva se hacen el
   29 a la noche. La review final es la presentación del lunes 2/11. Se decidió el 26/10 a
@@ -24,8 +24,8 @@
 ## Sprint Goal
 
 Propuesta, que sale del plan: **cerrar el producto y tener todo lo que se entrega listo para
-presentar.** Lo confirmaron Maximiliano Eula y Juliana Bustos el 29/10, y Emiliano Sorato el
-30/10. [pendiente: Agustín Salinas]
+presentar.** Lo confirmaron los cuatro: Maximiliano Eula y Juliana Bustos el 29/10, y Emiliano
+Sorato y Agustín Salinas el 30/10.
 
 Es el objetivo que la consigna le da al Sprint 4: pulir, documentar y preparar la entrega
 final, con la exportación del informe del proyecto a PDF.
@@ -61,10 +61,11 @@ unen con «y».
 - **Maximiliano Eula:** "de acuerdo con el objetivo" (29/10).
 - **Juliana Bustos:** "De acuerdo: Cerrar el producto y dejar todo lo que se entrega listo para la
   defensa del lunes" (29/10).
-- **Agustín Salinas:** [pendiente]
+- **Agustín Salinas:** "Sí, estoy de acuerdo con el objetivo: cerrar el producto y tener todo lo
+  que se entrega listo para presentar" (30/10).
 
 ## Pendientes
 
-- [ ] La confirmación de Agustín Salinas.
+- [x] El Sprint Goal confirmado por los cuatro (30/10).
 - [x] Lo que vuelve del Sprint 3: la #78 (30/10).
 - [x] Las horas estimadas de la #19: 13,5 h, el 27/10.

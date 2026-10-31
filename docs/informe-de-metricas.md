@@ -94,18 +94,18 @@ escritas las horas que tenía cada historia al cierre.
 
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
 |---|---|---|---|---|
-| Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 28/10 | 29/10 |
-| SP planificados | 16 | 31 (44 con la #77) ‡ | 41 | _pendiente_ |
-| SP completados (velocidad) | **6** | 44 + 8 adelantados = **52** ‡ | 28 + 5 adelantados = **33** | _pendiente_ |
-| Historias completadas | 2 de 5 (40%) | 10 de 10 (100%) ‡ | 5 de 6 (83%) | _pendiente_ |
-| Horas estimadas | 48 | 56,7 | 110,7 | _pendiente_ |
-| Horas reales | 38,25 | 31 | 47 | _pendiente_ |
-| Desviación total | −20% | −45% | −58% | _pendiente_ |
-| Desviación de las historias terminadas | −11% | −52% † | −51% † | _pendiente_ |
-| Horas por story point completado | 2,7 | 1,0 † ‡ | 1,3 † | _pendiente_ |
-| Defectos detectados / resueltos | 2 / 1 | 1 / 2 | 6 / 6 | _pendiente_ |
-| Cobertura del dominio | 100% | 100% | 100% | _pendiente_ |
-| Tests | 52 | 263 | 420 | _pendiente_ |
+| Fechas | 28/09 → 16/10 | 20/10 → 25/10 | 26/10 → 28/10 | 29/10 → 30/10 |
+| SP planificados | 16 | 31 (44 con la #77) ‡ | 41 | 18 |
+| SP completados (velocidad) | **6** | 44 + 8 adelantados = **52** ‡ | 28 + 5 adelantados = **33** | **18** |
+| Historias completadas | 2 de 5 (40%) | 10 de 10 (100%) ‡ | 5 de 6 (83%) | 2 de 2 (100%) |
+| Horas estimadas | 48 | 56,7 | 110,7 | 48,6 |
+| Horas reales | 38,25 | 31 | 47 | 3,5 |
+| Desviación total | −20% | −45% | −58% | −93% |
+| Desviación de las historias terminadas | −11% | −52% † | −51% † | −93% † |
+| Horas por story point completado | 2,7 | 1,0 † ‡ | 1,3 † | 0,2 † |
+| Defectos detectados / resueltos | 2 / 1 | 1 / 2 | 6 / 6 | 1 / 1 |
+| Cobertura del dominio | 100% | 100% | 100% | 100% |
+| Tests | 52 | 263 | 420 | 426 |
 
 _Los números del Sprint 2 se midieron el 24/10 y la review del 26/10 los dejó así._
 
@@ -113,13 +113,14 @@ _† En el Sprint 2 la #5, la #14 y la #15 las implementó Emiliano Sorato con a
 la consigna permite. Sus horas reales son el tiempo humano de dirección y revisión, y por eso la
 desviación da muy negativa (ver el [Sprint 2](#sprint-2--interfaz-usable)). En el Sprint 3 pasa
 lo mismo con la #10 y la #16: sin ellas, las terminadas dan −21% (ver el
-[Sprint 3](#sprint-3--funcionalidad-y-calidad))._
+[Sprint 3](#sprint-3--funcionalidad-y-calidad)). En el Sprint 4 las dos historias, la #19 y la
+#78, se hicieron así: no queda ninguna para medir sin la asistencia de IA._
 
 _‡ La #77 se terminó en el Sprint 2 sin story points y el equipo la estimó en 13 el 26/10, en la
 planning del Sprint 3. Ya estimada, suma al Sprint 2: al cierre eran 31 de 31, velocidad 39 y
 1,3 h por story point._
 
-**Velocidad del proyecto:** 30 (el promedio de los sprints cerrados: 6 en el Sprint 1, 52 en el Sprint 2 y 33 en el Sprint 3).
+**Velocidad del proyecto:** 27 (el promedio de los cuatro sprints: 6, 52, 33 y 18).
 
 ## Sprint 1 — MVP
 
@@ -383,17 +384,93 @@ La #17 y la #18 tienen sus 16 escenarios con test cada una. El recorrido de cada
 
 ## Sprint 4 — cierre
 
-_[Se completa el 29/10 con la review.]_
+> **Cerrado el 30/10** con el [acta de review](actas/sprint-4-review.md) y
+> `scripts/metricas.sh "Sprint 4"`.
+
+- **Sprint Goal:** cerrar el producto y tener todo lo que se entrega listo para presentar. Se
+  cumplió.
+- **Duración:** del 29/10 al 30/10. Iba a durar un día, y siguió el 30/10 para terminar la #78 y
+  la #19.
+- Actas: [planning](actas/sprint-4-planning.md), [review](actas/sprint-4-review.md) y
+  [retrospectiva](actas/sprint-4-retrospectiva.md).
+
+### Historias y story points
+
+| # | Historia | SP | Estado al cierre |
+|---|---|---|---|
+| 19 | Exportar el reporte a PDF | 5 | Hecho (PRs #184 y #222) |
+| 78 | Operar todo desde la web (vuelve del Sprint 3) | 13 | Hecho (PRs #149, #163, #165, #170 y #224) |
+
+- Completados: **18 SP**, las 2 historias (100%). Velocidad **18**.
+- Agregadas, sin story points: la **#219** (el CI/CD que despliega en el servidor), terminada, y
+  la **#223** (las mejoras visuales para la demo).
+- Con esto, las **21 historias del Product Backlog están terminadas: 109 de 109 story points.**
+
+### Esfuerzo
+
+- Horas estimadas: **48,6**, las 13,5 de la #19 y las 35,1 de la #78.
+- Las dos las implementó **Emiliano Sorato con asistencia de IA**: sus horas reales son su
+  tiempo de dirección y revisión, 1 h en la #19 y 2,5 h en la #78 (1,5 del Sprint 3 y 1 del 4).
+  Medidas enteras dan **48,6 h estimadas contra 3,5 reales (−93%)** y 0,2 h por story point. No
+  sirven para comparar el costo de un punto con los otros sprints.
+- Horas trabajadas en el sprint: **3,5**, contando la #219.
+
+### Defectos
+
+| # | Defecto | Severidad | Detectado | Resuelto |
+|---|---|---|---|---|
+| 220 | Las diferencias de una ronda unen tres o más nombres con «y» | Menor | Sprint 4 (29/10) | Sprint 4 (30/10, PR #225) |
+
+- Detectados en el sprint: **1**. Resueltos en el sprint: **1**. Abiertos: **0**.
+
+### Cobertura y tests
+
+Medido sobre `dev` en `89e4afd` (30/10): dominio **100%**, `internal/store` 87,1%,
+`internal/web` 94,4%, consola (`cmd/app`) 96,2%, arranque de la web (`cmd/web`) 91,1% y
+**95,8% en total**, con **426 tests** (607 casos). La prueba de humo del CI pide también el
+reporte y su PDF.
+
+### Evidencia de TDD
+
+La #19 tiene sus 13 escenarios con test y la #78, sus 22. Del cierre del Sprint 3 al final se
+sumaron 6 ciclos RED → GREEN completos y ningún desvío. El recorrido está en la
+[trazabilidad](trazabilidad.md).
 
 ## Evolución del proyecto
 
-_[Al final: velocidad sprint por sprint, horas por story point, cómo cambió la desviación y
-la cobertura. Un gráfico de velocidad y uno de horas estimadas contra reales.]_
+| | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 |
+|---|---|---|---|---|
+| Velocidad | 6 | 52 | 33 | 18 |
+| Horas por story point | 2,7 | 1,0 (1,8 sin IA) | 1,3 | 0,2 (todo con IA) |
+| Desviación de las terminadas | −11% | −52% (−36% sin IA) | −51% (−21% sin IA) | −93% (todo con IA) |
+| Cobertura total | 99,2% | 96,0% | 95,7% | 95,8% |
+| Cobertura del dominio | 100% | 100% | 100% | 100% |
+
+![Velocidad por sprint](graficos/velocidad.png)
+
+![Horas estimadas contra horas reales por sprint](graficos/horas.png)
+
+- **La velocidad** pasó de 6 a 52 cuando empezamos a escribir las specs por adelantado y a
+  adelantar historias. Después bajó porque el Sprint 3 duró tres días y el 4, dos.
+- **Las horas por story point** bajaron de 2,7 en el Sprint 1 a 1,0 y 1,3 en los dos
+  siguientes. Con 2,7 h por punto estimamos siempre de más, aun sin contar lo hecho con
+  asistencia de IA.
+- **La cobertura total** bajó un poco cuando entraron la web y la base de datos, que tienen más
+  código difícil de probar. **La del dominio**, donde están las reglas de negocio, estuvo
+  siempre al 100%.
 
 ## Conclusiones
 
-_[Al final. Qué aprendimos midiéndonos: si estimamos mejor sprint a sprint, qué nos costó
-más de lo pensado y qué haríamos distinto.]_
+- **Estimar en story points funcionó mejor que en horas.** Los puntos fueron estables sprint a
+  sprint, y las horas no: la conversión del Sprint 1 nos dejó siempre muy por encima de lo real.
+- **Las horas de lo hecho con asistencia de IA hay que medirlas aparte desde el principio.** Son
+  el tiempo de dirigir y revisar, y mezcladas con las demás no dicen cuánto cuesta un punto.
+- **Escribir la spec antes y pasarla por las puertas** fue lo que más subió la velocidad: cada
+  uno avanzó sin esperar al otro.
+- **La calidad salió de los tests y de revisar con los tests corridos:** casi todos los defectos
+  aparecieron en las revisiones o en la prueba exploratoria, no usando el sistema.
+- **Lo que costó más de lo pensado** fue la web, y los archivos que tocábamos todos, que chocaban
+  al cierre de cada sprint.
 
 ## Notas sobre los datos
 

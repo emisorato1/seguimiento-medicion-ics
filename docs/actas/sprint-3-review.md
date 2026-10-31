@@ -134,7 +134,7 @@ El 30/10 se le sumó el dashboard de la #17 (PR #217).
   y cargadas en el tablero.
 - [x] Devolver al Product Backlog las historias no terminadas: la #78, que se termina en el
   Sprint 4 (30/10).
-- [ ] El pull request de `dev` a `main` con el incremento del Sprint 3, el 28/10 a la noche, y su
-  tag `v0.3.0-sprint3`. Cada sprint tiene su incremento: el del Sprint 4 es la entrega final,
+- [x] El pull request de `dev` a `main` con el incremento del Sprint 3 y su tag `v0.3.0-sprint3`:
+  PR #228, desde `5d1d556`, aprobado por Maximiliano Eula y mergeado el 30/10 (`da7ae57`). Cada sprint tiene su incremento: el del Sprint 4 es la entrega final,
   `v1.0.0`, el 29/10 (decisión del 27/10).
 - [x] La [retrospectiva](sprint-3-retrospectiva.md) (falta la respuesta de Agustín Salinas).
