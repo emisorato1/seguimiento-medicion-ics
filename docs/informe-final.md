@@ -318,7 +318,7 @@ Lo que se acordó en cada retro y si se cumplió en el sprint siguiente. Sale de
 |---|---|---|
 | Sprint 0 | Ningún PR se mergea sin la aprobación de otro integrante, sin bypass de administrador | No: en el Sprint 1 hubo cuatro PRs con bypass |
 | Sprint 0 | Cada integrante lleva al menos una historia de punta a punta | En parte |
-| Sprint 1 | Cero bypass de administrador, ni hacia `dev` ni hacia `main` | Sí, según los cuatro |
+| Sprint 1 | Cero bypass de administrador, ni hacia `dev` ni hacia `main` | Sí hasta la entrega. La única excepción fue el PR #232, el incremento final: el 31/10 no había nadie disponible para aprobarlo y lo mergeó Emiliano Sorato con permisos de administrador |
 | Sprint 1 | Un PR con cambios pedidos no se mergea hasta que se respondan | Sí, según los cuatro |
 | Sprint 1 | Un PR abierto antes de las 18 h se revisa ese mismo día | En parte |
 | Sprint 2 | Una franja fija por día para revisar los PRs asignados | No se midió |
