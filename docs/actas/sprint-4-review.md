@@ -108,6 +108,11 @@ final es la presentación del 2/11.
 - [x] El pull request de `dev` a `main` con la entrega final y su tag `v1.0.0`: PR #232, desde
   `d685090`, mergeado el 31/10 (`d4a6dfb`). **Se mergeó sin la aprobación de un compañero**, con
   permisos de administrador: el 31/10 los demás integrantes no estaban disponibles y el equipo le
-  pidió a Emiliano Sorato que lo cerrara él. Es la única vez en el proyecto que se usó el bypass
-  hacia `main`, y queda anotado acá porque el acuerdo del Sprint 1 era no usarlo.
+  pidió a Emiliano Sorato que lo cerrara él. Queda anotado acá porque el acuerdo del Sprint 1
+  era no usar el bypass.
+- [x] Los datos de demo con el proyecto completo y el despliegue también en Azure Container Apps:
+  PR #234 a `dev` (`1a569d2`) y PR #235 de `dev` a `main`, mergeado el 2/11 (`e43248c`), antes
+  de la presentación. **El #235 también se mergeó sin la aprobación de un compañero**, con
+  permisos de administrador, por Emiliano Sorato. Con este y el #232, son las dos veces que se
+  usó el bypass hacia `main` desde el Sprint 1. El CD lo desplegó en el servidor y en Azure.
 - [x] La [retrospectiva](sprint-4-retrospectiva.md), con las respuestas de los cuatro.
