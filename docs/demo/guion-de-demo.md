@@ -4,6 +4,11 @@ Un recorrido de 8 a 10 minutos por el sistema con nuestro propio proyecto, carga
 [datos de demo](README.md). Cada paso dice qué abrir, qué hacer y qué contar. Las capturas
 de cada pantalla están en [capturas/](capturas).
 
+> **Desde el 2/11 los datos de demo traen el proyecto completo**, con los cuatro sprints
+> cerrados. Los pasos que crean o cierran el Sprint 3 ya no se hacen en vivo: se muestran el
+> Sprint 3 y el 4 cerrados en *Sprints anteriores*, y el dashboard con todo el proyecto. La
+> web desplegada (en el servidor y en Azure) abre con estos mismos datos.
+
 El recorrido muestra todas las historias, también el **dashboard (#17)**, el **reporte (#18)** y
 su **PDF (#19)**, que se abren desde la web (#78).
 

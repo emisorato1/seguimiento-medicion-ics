@@ -194,9 +194,9 @@ Los tres gráficos salen de la tabla de la sección 3, con `scripts/graficos-inf
 
 ![Defectos detectados y resueltos por sprint](graficos/defectos.png)
 
-El dashboard de la aplicación muestra lo mismo con los datos de demo, que son nuestro proyecto
-al cierre del Sprint 2 con el Sprint 3 cerrado en vivo, como en el
-[guion de la demo](demo/guion-de-demo.md):
+El dashboard de la aplicación muestra lo mismo con los [datos de demo](demo/README.md), que
+desde el 2/11 son nuestro proyecto completo, al cierre del Sprint 4. La captura es de antes,
+con el Sprint 3 cerrado en vivo como en el [guion de la demo](demo/guion-de-demo.md):
 
 ![El dashboard con los datos de demo](demo/capturas/18-dashboard.png)
 
