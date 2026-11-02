@@ -2,7 +2,8 @@ name: CD
 
 # Se ejecuta cuando algo entra a main, que es la rama "de produccion", o a mano desde la
 # pestaña Actions (solo sobre main). Corre los tests, compila la aplicacion, prueba la web
-# armada y, si todo pasa, la despliega en el servidor. Como se hace en docs/despliegue.md.
+# armada y, si todo pasa, la despliega en dos lugares a la vez: el servidor del equipo y
+# Azure Container Apps (el de la catedra). Como se hace en docs/despliegue.md.
 
 on:
   push:
@@ -95,3 +96,66 @@ jobs:
       - name: Borrar la llave
         if: always()
         run: rm -f ~/.ssh/deploy
+
+  # Azure Container Apps de la catedra. Arma una imagen con el mismo binario, la sube al
+  # registro (ACR) y crea la app la primera vez o le cambia la imagen las siguientes. La
+  # clave del registro y las credenciales de Azure estan en los secrets del entorno
+  # "produccion". Es independiente del servidor: si uno falla, el otro se despliega igual.
+  azure:
+    name: Desplegar en Azure
+    needs: publicar
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: produccion
+    concurrency:
+      group: azure
+      cancel-in-progress: false
+    timeout-minutes: 15
+    env:
+      APP: grupo05-seguimiento-medicion-ics
+      GRUPO_RECURSOS: frsrutn
+      ENTORNO: utnapp-env
+      REGISTRO: ingcalidad2026.azurecr.io
+      USUARIO_REGISTRO: ingcalidad2026
+      IMAGEN: ingcalidad2026.azurecr.io/grupo05-seguimiento-medicion-ics:${{ github.sha }}
+      ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: binarios
+          path: dist
+
+      - name: Armar y subir la imagen
+        run: |
+          mkdir imagen
+          cp dist/web-linux-amd64 imagen/web
+          chmod +x imagen/web
+          cp docs/demo/datos-demo.json scripts/despliegue/Dockerfile imagen/
+          printf '%s' "$ACR_PASSWORD" | docker login "$REGISTRO" -u "$USUARIO_REGISTRO" --password-stdin
+          docker build -t "$IMAGEN" imagen
+          docker push "$IMAGEN"
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Crear o actualizar la app
+        run: |
+          az extension add --name containerapp --upgrade --yes --only-show-errors
+          if az containerapp show -n "$APP" -g "$GRUPO_RECURSOS" -o none 2>/dev/null; then
+            az containerapp update -n "$APP" -g "$GRUPO_RECURSOS" --image "$IMAGEN" -o none
+          else
+            az containerapp create -n "$APP" -g "$GRUPO_RECURSOS" --environment "$ENTORNO" \
+              --image "$IMAGEN" --registry-server "$REGISTRO" \
+              --registry-username "$USUARIO_REGISTRO" --registry-password "$ACR_PASSWORD" \
+              --ingress external --target-port 8080 \
+              --cpu 0.25 --memory 0.5Gi --min-replicas 0 --max-replicas 1 -o none
+          fi
+
+      - name: Verificar desde afuera
+        run: |
+          fqdn=$(az containerapp show -n "$APP" -g "$GRUPO_RECURSOS" --query properties.configuration.ingress.fqdn -o tsv)
+          echo "La web quedo en https://$fqdn"
+          curl -fsS -o /dev/null --retry 12 --retry-delay 5 --retry-all-errors "https://$fqdn/proyectos"

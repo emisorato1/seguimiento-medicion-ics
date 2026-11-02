@@ -134,7 +134,7 @@
           "title": "Cerrar un sprint",
           "description": "Como integrante del equipo quiero cerrar un sprint registrando que historias se completaron para poder medir la velocidad del equipo y planificar el siguiente sprint",
           "priority": "Alta",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 5,
           "acceptance_criteria": [
             "Al cerrar el sprint se marcan las historias completadas y las que no.",
@@ -149,7 +149,7 @@
           "title": "Consultar sprints anteriores",
           "description": "Como integrante del equipo quiero consultar los sprints ya cerrados para comparar como venimos sprint a sprint",
           "priority": "Media",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 2,
           "acceptance_criteria": [
             "Se listan los sprints cerrados con su goal, sus fechas y sus historias.",
@@ -225,7 +225,7 @@
           "title": "Calcular las metricas del proyecto",
           "description": "Como integrante del equipo quiero que el sistema calcule las metricas del proyecto y de cada sprint para saber con datos como venimos y no a ojo",
           "priority": "Alta",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 8,
           "acceptance_criteria": [
             "Calcula story points planificados y completados.",
@@ -242,7 +242,7 @@
           "title": "Mostrar el dashboard",
           "description": "Como integrante del equipo quiero ver un dashboard con el estado del proyecto para entender de un vistazo como viene el proyecto",
           "priority": "Media",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 8,
           "acceptance_criteria": [
             "Muestra el estado general del proyecto y del sprint en curso.",
@@ -256,7 +256,7 @@
           "title": "Generar el reporte de proyecto o sprint",
           "description": "Como integrante del equipo quiero generar un reporte de un proyecto o de un sprint para tener la informacion junta para mostrarla en la review",
           "priority": "Media",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 5,
           "acceptance_criteria": [
             "El reporte incluye historias planificadas y completadas.",
@@ -271,13 +271,14 @@
           "title": "Exportar el reporte a PDF",
           "description": "Como integrante del equipo quiero exportar el reporte a PDF para poder entregarlo y presentarlo en la review final",
           "priority": "Baja",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 5,
           "acceptance_criteria": [
             "El reporte se descarga como archivo PDF.",
             "El PDF tiene el mismo contenido que el reporte en pantalla.",
             "Esta previsto para el Sprint 4 segun el plan de la catedra."
-          ]
+          ],
+          "estimated_hours": 13.5
         },
         {
           "id": 24,
@@ -301,7 +302,7 @@
           "title": "Resolver diferencias y acordar la estimacion",
           "description": "Como integrante del equipo quiero que, despues de revelar los votos, el sistema me muestre las diferencias y me deje abrir una ronda nueva para llegar a una estimacion acordada en vez de quedarme con el promedio",
           "priority": "Alta",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 5,
           "acceptance_criteria": [
             "Con la ronda revelada, el sistema informa si hay diferencias entre los votos.",
@@ -338,7 +339,7 @@
           "title": "Operar sprints, esfuerzo, defectos, Planning Poker y reportes desde el navegador",
           "description": "Como integrante del equipo quiero hacer desde la web todo lo que el sistema permite sobre sprints, esfuerzo, defectos, estimacion y reportes para llevar el proyecto completo desde la misma interfaz",
           "priority": "Alta",
-          "state": "Pendiente",
+          "state": "Terminada",
           "story_points": 13,
           "acceptance_criteria": [
             "Desde la web se crea un sprint, se le asignan historias, se cierra y se consultan los anteriores.",
@@ -442,9 +443,72 @@
           "activity": "Dirección y revisión de la implementación con asistencia de IA (PR #95)",
           "hours": 1.5,
           "day": "2026-10-22"
+        },
+        {
+          "story_id": 10,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión con asistencia de IA (horas reales del tablero)",
+          "hours": 0.5,
+          "day": "2026-10-26"
+        },
+        {
+          "story_id": 16,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión con asistencia de IA (horas reales del tablero)",
+          "hours": 1,
+          "day": "2026-10-27"
+        },
+        {
+          "story_id": 11,
+          "member_name": "Agustín Salinas",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero)",
+          "hours": 4.5,
+          "day": "2026-10-27"
+        },
+        {
+          "story_id": 73,
+          "member_name": "Maximiliano Eula",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero)",
+          "hours": 3,
+          "day": "2026-10-26"
+        },
+        {
+          "story_id": 78,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión con asistencia de IA, Sprint 3 (horas reales del tablero)",
+          "hours": 1.5,
+          "day": "2026-10-28"
+        },
+        {
+          "story_id": 17,
+          "member_name": "Juliana Bustos",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero)",
+          "hours": 25,
+          "day": "2026-10-29"
+        },
+        {
+          "story_id": 18,
+          "member_name": "Agustín Salinas",
+          "activity": "Spec, tests, código y revisión (horas reales del tablero)",
+          "hours": 10,
+          "day": "2026-10-29"
+        },
+        {
+          "story_id": 19,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión con asistencia de IA (horas reales del tablero)",
+          "hours": 1,
+          "day": "2026-10-30"
+        },
+        {
+          "story_id": 78,
+          "member_name": "Emiliano Sorato",
+          "activity": "Dirección y revisión con asistencia de IA, Sprint 4 (horas reales del tablero)",
+          "hours": 1,
+          "day": "2026-10-30"
         }
       ],
-      "last_sprint_number": 2,
+      "last_sprint_number": 4,
       "sprints": [
         {
           "number": 1,
@@ -517,6 +581,58 @@
             "15": 5,
             "13": 8,
             "77": 13
+          }
+        },
+        {
+          "number": 3,
+          "goal": "Que el sistema mida el proyecto y lo muestre: métricas, dashboard y reporte.",
+          "start": "2026-10-26",
+          "end": "2026-10-28",
+          "state": "Cerrado",
+          "stories": [
+            10,
+            16,
+            11,
+            17,
+            18,
+            73
+          ],
+          "closed_on": "2026-10-28",
+          "completed_stories": [
+            10,
+            16,
+            11,
+            17,
+            18,
+            73
+          ],
+          "points_at_close": {
+            "10": 5,
+            "16": 8,
+            "11": 2,
+            "17": 8,
+            "18": 5,
+            "73": 5
+          }
+        },
+        {
+          "number": 4,
+          "goal": "Cerrar el producto y tener todo lo que se entrega listo para presentar.",
+          "start": "2026-10-29",
+          "end": "2026-10-30",
+          "state": "Cerrado",
+          "stories": [
+            19,
+            78
+          ],
+          "closed_on": "2026-10-30",
+          "completed_stories": [
+            19,
+            78
+          ],
+          "points_at_close": {
+            "19": 5,
+            "78": 13
           }
         }
       ],
@@ -640,7 +756,7 @@
           "agreed": 13
         }
       ],
-      "last_defect_id": 108,
+      "last_defect_id": 220,
       "defects": [
         {
           "id": 59,
@@ -671,6 +787,76 @@
           "story_id": 77,
           "detected_in": 2,
           "resolved_in": 2
+        },
+        {
+          "id": 156,
+          "title": "Una ronda revelada sin participantes, cargada del archivo, hace caer el cálculo de diferencias",
+          "description": "La carga del archivo aceptaba una ronda de Planning Poker revelada y sin participantes, y el cálculo de diferencias cortaba con un pánico. Detectado en la revisión del PR #148 y resuelto con el PR #157.",
+          "severity": "Mayor",
+          "state": "Resuelto",
+          "story_id": 73,
+          "detected_in": 3,
+          "resolved_in": 3
+        },
+        {
+          "id": 172,
+          "title": "Una ronda cargada con un participante repetido con otras mayúsculas, o con espacios de más, queda trabada",
+          "description": "La carga aceptaba dos participantes que son la misma persona escrita distinto; uno nunca podía votar y la ronda no se revelaba. Resuelto con el PR #173.",
+          "severity": "Mayor",
+          "state": "Resuelto",
+          "story_id": 73,
+          "detected_in": 3,
+          "resolved_in": 3
+        },
+        {
+          "id": 190,
+          "title": "Con una página vieja, algunos errores no se ven o muestran otra página",
+          "description": "Con una página desactualizada por un cambio en otra pestaña, resolver un defecto o cerrar un sprint mostraba otra página sin el mensaje de error. Prueba exploratoria del 26/10; resuelto con el PR #194.",
+          "severity": "Menor",
+          "state": "Resuelto",
+          "story_id": 15,
+          "detected_in": 3,
+          "resolved_in": 3
+        },
+        {
+          "id": 191,
+          "title": "Una palabra muy larga ensancha la página en el celular",
+          "description": "A 375 px de ancho, un título largo sin espacios hacía que la página se desplazara de costado. Prueba exploratoria del 26/10; resuelto con el PR #195.",
+          "severity": "Menor",
+          "state": "Resuelto",
+          "story_id": 78,
+          "detected_in": 3,
+          "resolved_in": 3
+        },
+        {
+          "id": 192,
+          "title": "Las horas aceptan notación científica y no tienen máximo",
+          "description": "Se podía cargar 1e3 o 1e300 como horas, y un registro de 25 horas en un día. Prueba exploratoria del 26/10; resuelto con el PR #196.",
+          "severity": "Mayor",
+          "state": "Resuelto",
+          "story_id": 14,
+          "detected_in": 3,
+          "resolved_in": 3
+        },
+        {
+          "id": 193,
+          "title": "El filtro de estado en minúsculas no queda elegido en la lista",
+          "description": "Con ?estado=resuelto la lista se filtraba bien, pero el desplegable no mostraba el estado elegido. Prueba exploratoria del 26/10; resuelto con el PR #197.",
+          "severity": "Menor",
+          "state": "Resuelto",
+          "story_id": 15,
+          "detected_in": 3,
+          "resolved_in": 3
+        },
+        {
+          "id": 220,
+          "title": "Las diferencias de una ronda unen tres o más nombres con «y»",
+          "description": "Con tres o más integrantes en el voto más bajo o más alto, la frase decía «A y B y C» en vez de «A, B y C». Resuelto con el PR #225.",
+          "severity": "Menor",
+          "state": "Resuelto",
+          "story_id": 73,
+          "detected_in": 4,
+          "resolved_in": 4
         }
       ]
     }
