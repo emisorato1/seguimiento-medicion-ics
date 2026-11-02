@@ -19,8 +19,9 @@ los scripts que usan, en `scripts/`.
    - compila la consola y la web para Linux y para macOS, sin cgo;
    - le hace la prueba de humo al mismo binario que va a desplegar;
    - guarda los binarios como artefacto descargable de la corrida;
-   - y **despliega la web en el servidor**. Si la versión nueva no responde, vuelve a poner
-     la anterior y la corrida queda en rojo.
+   - y **despliega la web en dos lugares a la vez**, con dos jobs independientes: en el
+     servidor del equipo (si la versión nueva no responde, vuelve a poner la anterior y la
+     corrida queda en rojo) y en **Azure Container Apps**, el de la cátedra (ver más abajo).
 
 El CD también se puede correr a mano desde la pestaña *Actions* → *CD* → *Run workflow*,
 siempre sobre `main`.
@@ -60,6 +61,33 @@ puede usar desde `main`:
 | `DEPLOY_KEY` | la llave privada del CD |
 | `DEPLOY_KNOWN_HOSTS` | la huella del servidor, para que el CD no se conecte a otro que se haga pasar por él |
 
+## Azure Container Apps
+
+La cátedra le da a cada grupo una app en su Azure: la nuestra es
+`grupo05-seguimiento-medicion-ics`, en el grupo de recursos `frsrutn` y el entorno
+`utnapp-env`, con el registro de imágenes `ingcalidad2026.azurecr.io`. El job *Desplegar en
+Azure* del CD:
+
+1. arma una imagen con el mismo binario de Linux y los datos de demo
+   (`scripts/despliegue/Dockerfile`; no compila adentro) y la sube al registro, con el commit
+   como etiqueta;
+2. entra a Azure con las credenciales de la cátedra y **crea la app la primera vez** (puerto
+   8080, acceso desde afuera, 0,25 de procesador, 0,5 GB de memoria, de 0 a 1 réplica) o **le
+   cambia la imagen** las siguientes;
+3. pide `/proyectos` a la dirección pública, que el log de la corrida muestra.
+
+La base vive adentro del contenedor: arranca con los datos de demo cada vez que la app se
+levanta, también cuando Azure la apaga por no tener visitas y la vuelve a prender (la
+primera página después de eso tarda unos segundos).
+
+Las credenciales son de la cátedra y las comparten todos los grupos: están solo en los
+secrets del entorno `produccion`, nunca en el repo.
+
+| Secret | Qué es |
+|---|---|
+| `ACR_PASSWORD` | la clave del registro de imágenes |
+| `AZURE_CREDENTIALS` | el acceso de la cátedra a Azure (un JSON con `clientId`, `clientSecret`, `subscriptionId` y `tenantId`) |
+
 ## Preparar el servidor (una sola vez)
 
 Ya está hecho. Si hubiera que repetirlo en otro servidor, como root:
@@ -78,5 +106,6 @@ correr el CD: el primer deploy pone la web en marcha.
 | Qué pasa | Qué hacer |
 |---|---|
 | El CD queda en rojo en *Desplegar en el servidor* | el servidor sigue con la versión anterior; mirar el log de *Ponerla en marcha* |
+| El CD queda en rojo en *Desplegar en Azure* | Azure sigue con la imagen anterior; mirar el paso que falló. El servidor se despliega igual |
 | La web del servidor quedó con datos raros | correr el CD a mano: la base vuelve a los datos de demo |
 | El CD no puede entrar al servidor | revisar que los tres secrets del entorno `produccion` estén cargados |

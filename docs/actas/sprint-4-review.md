@@ -105,5 +105,9 @@ final es la presentación del 2/11.
 
 - [x] Cerrar los números con `scripts/metricas.sh "Sprint 4"` (30/10).
 - [x] Las horas reales de la #19 y la #78, cargadas el 30/10.
-- [ ] El pull request de `dev` a `main` con la entrega final y su tag `v1.0.0`.
+- [x] El pull request de `dev` a `main` con la entrega final y su tag `v1.0.0`: PR #232, desde
+  `d685090`, mergeado el 31/10 (`d4a6dfb`). **Se mergeó sin la aprobación de un compañero**, con
+  permisos de administrador: el 31/10 los demás integrantes no estaban disponibles y el equipo le
+  pidió a Emiliano Sorato que lo cerrara él. Es la única vez en el proyecto que se usó el bypass
+  hacia `main`, y queda anotado acá porque el acuerdo del Sprint 1 era no usarlo.
 - [x] La [retrospectiva](sprint-4-retrospectiva.md), con las respuestas de los cuatro.

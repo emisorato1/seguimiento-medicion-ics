@@ -646,7 +646,7 @@ func TestTraerLosDatosDeDemo(t *testing.T) {
 		t.Fatalf("se esperaba la base con un proyecto, salio %v", err)
 	}
 	proyecto := registry.Projects()[0]
-	if len(proyecto.Backlog()) != 21 || len(proyecto.Sprints()) != 2 {
-		t.Errorf("se esperaban 21 historias y 2 sprints, hay %d y %d", len(proyecto.Backlog()), len(proyecto.Sprints()))
+	if len(proyecto.Backlog()) != 21 || len(proyecto.Sprints()) != 4 {
+		t.Errorf("se esperaban 21 historias y 4 sprints, hay %d y %d", len(proyecto.Backlog()), len(proyecto.Sprints()))
 	}
 }

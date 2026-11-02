@@ -194,9 +194,9 @@ Los tres gráficos salen de la tabla de la sección 3, con `scripts/graficos-inf
 
 ![Defectos detectados y resueltos por sprint](graficos/defectos.png)
 
-El dashboard de la aplicación muestra lo mismo con los datos de demo, que son nuestro proyecto
-al cierre del Sprint 2 con el Sprint 3 cerrado en vivo, como en el
-[guion de la demo](demo/guion-de-demo.md):
+El dashboard de la aplicación muestra lo mismo con los [datos de demo](demo/README.md), que
+desde el 2/11 son nuestro proyecto completo, al cierre del Sprint 4. La captura es de antes,
+con el Sprint 3 cerrado en vivo como en el [guion de la demo](demo/guion-de-demo.md):
 
 ![El dashboard con los datos de demo](demo/capturas/18-dashboard.png)
 
@@ -318,7 +318,7 @@ Lo que se acordó en cada retro y si se cumplió en el sprint siguiente. Sale de
 |---|---|---|
 | Sprint 0 | Ningún PR se mergea sin la aprobación de otro integrante, sin bypass de administrador | No: en el Sprint 1 hubo cuatro PRs con bypass |
 | Sprint 0 | Cada integrante lleva al menos una historia de punta a punta | En parte |
-| Sprint 1 | Cero bypass de administrador, ni hacia `dev` ni hacia `main` | Sí, según los cuatro |
+| Sprint 1 | Cero bypass de administrador, ni hacia `dev` ni hacia `main` | Sí hasta la entrega. La única excepción fue el PR #232, el incremento final: el 31/10 no había nadie disponible para aprobarlo y lo mergeó Emiliano Sorato con permisos de administrador |
 | Sprint 1 | Un PR con cambios pedidos no se mergea hasta que se respondan | Sí, según los cuatro |
 | Sprint 1 | Un PR abierto antes de las 18 h se revisa ese mismo día | En parte |
 | Sprint 2 | Una franja fija por día para revisar los PRs asignados | No se midió |
